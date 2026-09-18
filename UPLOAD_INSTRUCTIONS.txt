@@ -1,0 +1,14 @@
+TRANSITION TEAM - 2026 EXPANSION
+================================
+This expansion contains ONLY NEW resources and does not recreate the original 25 resource sets.
+
+UPLOAD:
+1. Unzip this folder on your iPhone.
+2. Upload the individual PDF and DOCX files to the root of your OC-Transition-Team GitHub repository.
+3. Upload career-explorer.html to the same location.
+4. Keep your original 25 resources.
+5. The website index.html still needs to be updated to display these new links. Do NOT delete your current index.html until the updated one is ready.
+
+Every activity includes a HOW TO USE THIS ACTIVITY box so coworkers can use it without extra explanation.
+
+career-explorer.html is a standalone searchable career library with 200+ career titles/categories. It can be linked from the main website as “Explore Careers A-Z.”
