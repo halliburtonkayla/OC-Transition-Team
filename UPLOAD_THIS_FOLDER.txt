@@ -1,0 +1,7 @@
+TRANSITION TEAM — FINAL WEBSITE PACKAGE
+
+Upload the CONTENTS of this folder to the root of the OC-Transition-Team GitHub repository.
+Keep index.html and career-explorer.html in the repository root.
+When GitHub identifies matching filenames, commit the updated versions to main.
+Do not delete the repository first.
+GitHub Pages may take a few minutes to refresh after the commit.
