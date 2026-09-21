@@ -30,7 +30,7 @@ summary span{font-size:13px;color:#68758a} .grid{padding:0 16px 18px;display:gri
 .actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px} .actions a{text-decoration:none;background:#edf4fc;color:var(--navy);padding:7px 10px;border-radius:8px;font-weight:750}
 .driver{display:inline-block;margin-top:10px;color:var(--navy);font-weight:800} footer{background:var(--navy);color:white;text-align:center;padding:22px;margin-top:30px}
 @media(max-width:780px){.top{grid-template-columns:1fr}.center{order:-1;min-height:210px}.school{min-height:145px}.intro{grid-template-columns:1fr}h1{font-size:42px}}
-</style></head>
+</style><link rel="stylesheet" href="session.css"></head>
 <body>
 <section class="top">
  <div class="school oc"><div class="monogram">OC</div><div class="schoolname">OBION COUNTY CENTRAL<br>HIGH SCHOOL</div><div class="schoolline">TRADITION • OPPORTUNITY • SUCCESS</div></div>
@@ -58,4 +58,4 @@ summary span{font-size:13px;color:#68758a} .grid{padding:0 16px 18px;display:gri
 <script>
 const box=document.getElementById('search');
 box.addEventListener('input',()=>{const q=box.value.toLowerCase().trim();document.querySelectorAll('.resource').forEach(r=>{const ok=!q||r.innerText.toLowerCase().includes(q);r.style.display=ok?'block':'none';if(ok&&q)r.closest('details').open=true;});});
-</script><script>(function(){let left=1800,id=null;const b=document.getElementById('sessionBtn'),t=document.getElementById('timer'),st=document.getElementById('sessionStatus');if(!b)return;b.onclick=function(){if(id){clearInterval(id);id=null;b.textContent='▶ RESUME SESSION';st.textContent='Session paused.';return}t.style.display='block';b.textContent='⏸ PAUSE SESSION';st.textContent='Session in progress — student information is not stored.';id=setInterval(()=>{left--;let m=Math.floor(left/60),s=left%60;t.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(left<=0){clearInterval(id);id=null;b.textContent='↻ START ANOTHER SESSION';st.textContent='30-minute session complete. Document the activity and next step.';left=1800}},1000)}})();</script></body></html>
+</script><script>(function(){let left=1800,id=null;const b=document.getElementById('sessionBtn'),t=document.getElementById('timer'),st=document.getElementById('sessionStatus');if(!b)return;b.onclick=function(){if(id){clearInterval(id);id=null;b.textContent='▶ RESUME SESSION';st.textContent='Session paused.';return}t.style.display='block';b.textContent='⏸ PAUSE SESSION';st.textContent='Session in progress — student information is not stored.';id=setInterval(()=>{left--;let m=Math.floor(left/60),s=left%60;t.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(left<=0){clearInterval(id);id=null;b.textContent='↻ START ANOTHER SESSION';st.textContent='30-minute session complete. Document the activity and next step.';left=1800}},1000)}})();</script><script src="session.js"></script></body></html>

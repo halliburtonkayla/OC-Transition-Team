@@ -1,0 +1,16 @@
+UPLOAD ALL FILES IN THIS ZIP TO THE ROOT OF YOUR GITHUB REPOSITORY.
+
+Allow matching HTML files to replace the old copies. Also upload the two NEW files:
+session.js
+session.css
+
+This repair adds:
+• persistent 30-minute timer across website pages
+• student name/initials entry
+• ONE Pre-ETS area per session: Job Exploration, Workplace Readiness, Self-Advocacy, or Postsecondary Education
+• printable Pre-ETS session summary
+• Print / Save as PDF
+• temporary browser-tab session data only
+• Payday answer positions shuffled instead of always putting the strongest answer first
+• Payday choices recorded in the session summary
+• Payday continues using your existing root scene-01.jpg through scene-20.jpg images
