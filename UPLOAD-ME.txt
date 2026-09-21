@@ -1,0 +1,4 @@
+UPLOAD ALL FILES IN THIS FOLDER TO THE ROOT OF YOUR GITHUB PAGES REPOSITORY.
+New file: animated-stories.html
+Updated: session.js and all HTML pages reference it.
+The 30-minute session keeps existing site content and adds Pre-ETS data, actual start/stop times, total minutes, copy-ready data, and Print/Save PDF.

@@ -31,4 +31,96 @@ let ep=null,node='start',steps=1;const menu=document.querySelector('#menu'),book
 function start(k){ep=k;node='start';steps=1;menu.style.display='none';book.style.display='block';render()}
 function render(){const n=S[ep].nodes[node];page.classList.remove('page');void page.offsetWidth;page.classList.add('page');let choices=n.c?`<div class="choices">${n.c.map((x,i)=>`<button class="choice" onclick="go('${x[1]}')">${String.fromCharCode(65+i)} — ${x[0]}</button>`).join('')}</div>`:'';let end=n.end?`<div class="ending"><b>YOUR STORY:</b> ${n.end}</div><div class="choices"><button class="choice" onclick="start('${ep}')">🔄 Try a Different Path</button><button class="back" onclick="home()">📚 Choose Another Story</button></div>`:'';page.innerHTML=`<div class="sceneArt ${n.cls||''}">${n.art}</div><div class="story"><div class="progress">${S[ep].title} • Page ${steps}</div><h2>${n.h}</h2><p id="storytext">${n.t}</p><div class="tools"><button class="speak" onclick="speak()">🔊 Read to Me</button><button class="back" onclick="home()">← Story Library</button></div>${choices}${end}</div>`;scrollTo({top:0,behavior:'smooth'})}
 function go(n){node=n;steps++;render()}function home(){speechSynthesis.cancel();book.style.display='none';menu.style.display='block';scrollTo({top:0,behavior:'smooth'})}function speak(){friendlySpeak(document.querySelector('#storytext').innerText)}
-</script><script src="session.js"></script></body></html>
+</script><script src="session.js"></script>
+<script>
+(function(){
+  const KEY='tt_sound_on';
+  let ctx=null;
+  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
+  function tone(freq,dur,type='sine',vol=.035){
+    if(!enabled()) return;
+    try{
+      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type; o.frequency.value=freq;
+      g.gain.setValueAtTime(vol,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
+      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
+    }catch(e){}
+  }
+  window.TTSound={
+    click:()=>tone(520,.055,'sine',.025),
+    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
+    consequence:()=>tone(330,.11,'triangle',.025)
+  };
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('button,.choice,.option,[role="button"]');
+    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
+  },true);
+  function addToggle(){
+    if(document.getElementById('ttSoundToggle')) return;
+    const b=document.createElement('button');
+    b.id='ttSoundToggle';
+    b.type='button';
+    b.setAttribute('aria-label','Turn website sounds on or off');
+    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
+    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
+    label();
+    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
+    document.body.appendChild(b);
+  }
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
+})();
+</script>
+
+
+<script id="ttUniversalChoiceShuffle">
+(function(){
+  const selectors=[
+    '.choices','.options','.choice-grid','.answer-grid','.answers',
+    '.decision-options','.response-options','.scenario-options',
+    '#choices','#options','#answers'
+  ];
+  const itemSel='button,.choice,.option,.answer,[role="button"],label';
+
+  function shuffleArray(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function signature(c){
+    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
+  }
+  function shuffleContainer(c){
+    const kids=[...c.children].filter(x=>x.matches(itemSel));
+    if(kids.length<2) return;
+    const sig=signature(c);
+    if(c.dataset.ttShuffleSig===sig) return;
+    shuffleArray(kids).forEach(k=>c.appendChild(k));
+    c.dataset.ttShuffleSig=signature(c);
+  }
+  function scan(root=document){
+    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
+    // Also detect ordinary containers holding 2–6 answer buttons.
+    root.querySelectorAll('div,section,article,form').forEach(c=>{
+      const kids=[...c.children].filter(x=>x.matches('button'));
+      if(kids.length>=2 && kids.length<=6){
+        const txt=(c.className+' '+c.id).toLowerCase();
+        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
+          shuffleContainer(c);
+      }
+    });
+  }
+  let queued=false;
+  function queue(){
+    if(queued)return; queued=true;
+    requestAnimationFrame(()=>{queued=false;scan();});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{scan();});
+  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+</body></html>

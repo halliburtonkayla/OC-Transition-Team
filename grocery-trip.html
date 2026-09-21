@@ -44,4 +44,96 @@ function entrance(){render(`<div class="scene">🏪🛒</div><h1>Welcome to the 
 function visit(a){let wanted=aisle[a].filter(x=>s.list.includes(x)&&!s.cart.includes(x));if(!wanted.length)s.wrong++;let msg=wanted.length?`You found something from your list in this section.`:`You look around, but none of the items still on your list are here. Check your list before spending money.`;render(`<div class="scene">${a==='Produce'?'🥬':a==='Meat'?'🥩':a==='Dairy'?'🥛':a==='Pantry'?'🥫':a==='Bread & Tortillas'?'🍞':a==='Frozen'?'❄️':a==='Household'?'🧴':'⚽'} 🛒</div><h1>${a}</h1><div class="feedback ${wanted.length?'good':''}">${msg}</div>${status()}<button id="read" class="read">🔊 READ TO ME</button><div class="itemgrid">${aisle[a].map(x=>`<button class="item ${s.cart.includes(x)?'sel':''}" onclick="add('${x.replaceAll("'","\\'")}','${a}')">${s.cart.includes(x)?'✓ ':''}${x}<br><span class="small">${money(price[x])}</span></button>`).join('')}</div><div class="choices"><button onclick="entrance()">← CHOOSE ANOTHER AISLE</button><button class="alt" onclick="checkout()">🧾 CHECKOUT</button></div>`)}
 function add(x,a){if(s.cart.includes(x))return; if(total()+price[x]>s.budget){alert('That would put you over your budget. You can still choose a different item or go to checkout.');return}s.cart.push(x);if(!s.list.includes(x))s.extras++;visit(a)}
 function checkout(){let missing=s.list.filter(x=>!s.cart.includes(x));let mealNeeded=meals[s.meal].needed;let forgotten=mealNeeded.filter(x=>!s.list.includes(x));let success=missing.length===0&&forgotten.length===0&&total()<=s.budget;render(`<div class="scene">🧾 ${success?'🎉':'🤔'}</div><h1>Checkout — Your Story</h1><div class="receipt"><b>${s.meal}</b><br><br>${s.cart.map(x=>`${x.padEnd(20,'.')} ${money(price[x])}`).join('<br>')}<hr><b>TOTAL: ${money(total())}</b><br>BUDGET: ${money(s.budget)}<br>LEFT: ${money(s.budget-total())}</div><p><b>List items found:</b> ${s.list.length-missing.length} of ${s.list.length}<br><b>Extra purchases:</b> ${s.extras}<br><b>Wrong/unhelpful aisles visited:</b> ${s.wrong}</p>${missing.length?`<div class="feedback">Still on your list: ${missing.join(', ')}</div>`:''}${forgotten.length?`<div class="feedback">When you planned your list, you left out: <b>${forgotten.join(', ')}</b>. Would your meal still work?</div>`:''}<button id="read" class="read">🔊 READ TO ME</button><div class="choices">${missing.length?'<button onclick="entrance()">🛒 GO BACK & KEEP SHOPPING</button>':''}<button class="alt" onclick="start()">🔄 WRITE A NEW GROCERY STORY</button><button onclick="window.print()">🖨 PRINT MY RESULTS</button></div>`)}start();
-</script><script src="session.js"></script></body></html>
+</script><script src="session.js"></script>
+<script>
+(function(){
+  const KEY='tt_sound_on';
+  let ctx=null;
+  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
+  function tone(freq,dur,type='sine',vol=.035){
+    if(!enabled()) return;
+    try{
+      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type; o.frequency.value=freq;
+      g.gain.setValueAtTime(vol,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
+      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
+    }catch(e){}
+  }
+  window.TTSound={
+    click:()=>tone(520,.055,'sine',.025),
+    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
+    consequence:()=>tone(330,.11,'triangle',.025)
+  };
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('button,.choice,.option,[role="button"]');
+    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
+  },true);
+  function addToggle(){
+    if(document.getElementById('ttSoundToggle')) return;
+    const b=document.createElement('button');
+    b.id='ttSoundToggle';
+    b.type='button';
+    b.setAttribute('aria-label','Turn website sounds on or off');
+    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
+    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
+    label();
+    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
+    document.body.appendChild(b);
+  }
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
+})();
+</script>
+
+
+<script id="ttUniversalChoiceShuffle">
+(function(){
+  const selectors=[
+    '.choices','.options','.choice-grid','.answer-grid','.answers',
+    '.decision-options','.response-options','.scenario-options',
+    '#choices','#options','#answers'
+  ];
+  const itemSel='button,.choice,.option,.answer,[role="button"],label';
+
+  function shuffleArray(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function signature(c){
+    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
+  }
+  function shuffleContainer(c){
+    const kids=[...c.children].filter(x=>x.matches(itemSel));
+    if(kids.length<2) return;
+    const sig=signature(c);
+    if(c.dataset.ttShuffleSig===sig) return;
+    shuffleArray(kids).forEach(k=>c.appendChild(k));
+    c.dataset.ttShuffleSig=signature(c);
+  }
+  function scan(root=document){
+    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
+    // Also detect ordinary containers holding 2–6 answer buttons.
+    root.querySelectorAll('div,section,article,form').forEach(c=>{
+      const kids=[...c.children].filter(x=>x.matches('button'));
+      if(kids.length>=2 && kids.length<=6){
+        const txt=(c.className+' '+c.id).toLowerCase();
+        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
+          shuffleContainer(c);
+      }
+    });
+  }
+  let queued=false;
+  function queue(){
+    if(queued)return; queued=true;
+    requestAnimationFrame(()=>{queued=false;scan();});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{scan();});
+  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+</body></html>

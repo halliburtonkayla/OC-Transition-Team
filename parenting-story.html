@@ -12,4 +12,96 @@
   u.rate=1.03; u.pitch=1.12; u.volume=1;
   speechSynthesis.speak(u);
 }
-const title="Parenting: Newborn to Toddler",icon="\ud83d\udc76",intro="You are the parent/parenting partner. The child grows as your story moves forward.",S=[{"text": "A newborn is coming home. What is your first priority?", "choices": ["Prepare a safe sleep space and supplies", "Buy mostly toys", "Assume you can figure everything out later"]}, {"text": "The baby wakes crying during the night.", "choices": ["Check feeding, diaper, comfort and safety needs", "Turn the TV louder", "Leave the baby in an unsafe place"]}, {"text": "You are exhausted and overwhelmed.", "choices": ["Put baby safely in the crib and get support/take a short reset", "Shake or yell at the baby", "Walk away without making sure baby is safe"]}, {"text": "The baby spits up after feeding.", "choices": ["Clean up, observe baby and follow care guidance", "Panic immediately", "Ignore concerning symptoms if they appear"]}, {"text": "Diapers are running low.", "choices": ["Plan the purchase before they run out", "Wait until the last diaper", "Spend supply money elsewhere"]}, {"text": "You have school/work tomorrow after a rough night.", "choices": ["Arrange shared care/support and plan ahead", "Just miss without contacting anyone", "Assume someone else will handle it"]}, {"text": "The baby has a routine medical appointment.", "choices": ["Keep the appointment and bring questions", "Skip routine care repeatedly", "Guess about every health question"]}, {"text": "The baby is starting solid foods.", "choices": ["Use age-appropriate foods and safe feeding guidance", "Give choking hazards", "Leave baby alone while eating"]}, {"text": "The baby begins crawling.", "choices": ["Babyproof reachable hazards", "Wait for an accident first", "Leave cleaners within reach"]}, {"text": "Childcare falls through unexpectedly.", "choices": ["Contact a trusted safe backup and communicate with work/school", "Leave the child with anyone available", "Leave the baby alone"]}, {"text": "The baby has a fever or seems unusually ill.", "choices": ["Check symptoms and contact an appropriate adult/medical professional as needed", "Give random medicine", "Ignore serious warning signs"]}, {"text": "Money is tight and baby needs supplies.", "choices": ["Prioritize needs and seek legitimate support/resources", "Buy wants first", "Skip necessary supplies"]}, {"text": "The child starts walking.", "choices": ["Secure stairs, furniture and hazards", "Assume they know what is dangerous", "Stop supervising"]}, {"text": "Your toddler throws food during dinner.", "choices": ["Stay calm, set a simple boundary and redirect", "Scream and scare them", "Give up on all routines"]}, {"text": "The toddler melts down in a store.", "choices": ["Keep them safe, stay calm and use a consistent response", "Leave them unattended", "Buy everything demanded"]}, {"text": "Bedtime becomes a battle.", "choices": ["Use a predictable routine and calm limits", "Change bedtime every night", "Use unsafe punishment"]}, {"text": "You want time with friends.", "choices": ["Plan safe childcare and personal time", "Leave without arranging care", "Take the toddler to an unsafe adult event"]}, {"text": "Your parenting partner disagrees about a rule.", "choices": ["Talk privately and make a consistent plan", "Argue in front of the child", "Undermine each other"]}, {"text": "Your toddler copies something you do.", "choices": ["Model the behavior you want to teach", "Say rules only apply to children", "Ignore your own example"]}, {"text": "Your child is now a toddler. What matters going forward?", "choices": ["Safety, consistency, support and learning as you go", "Being perfect all the time", "Doing everything alone"]}];let i=0,score=0,choices=[];function speak(){friendlySpeak(document.getElementById('copy').innerText)}function draw(){let s=S[i];document.getElementById('pg').textContent='Page '+(i+1)+' of '+S.length;let buttons=s.choices.map((c,j)=>`<button data-j="${j}">${c}</button>`).join('');document.getElementById('scene').innerHTML=`<div class="art">${icon}</div><h1>${i===0?title:'What happens next?'}</h1><p id="copy" style="font-size:19px;line-height:1.55">${i===0?intro+' ':''}${s.text}</p><div class="choices"><button class="read" id="read">🔊 READ TO ME</button>${buttons}</div>`;document.getElementById('read').onclick=speak;document.querySelectorAll('[data-j]').forEach(b=>b.onclick=()=>pick(+b.dataset.j));}function pick(j){choices.push(j); if(j===0)score+=2; else if(j===1)score+=1; i++; if(i>=S.length)finish(); else draw();}function finish(){let level=score>=S.length*1.45?'You consistently protected your priorities and handled problems early.':score>=S.length*.9?'You made a mix of strong choices and choices that created extra challenges.':'Several early choices created harder consequences later. Replay and see how a different decision changes the story.';document.getElementById('pg').textContent='THE END';document.getElementById('scene').innerHTML=`<div class="art">🏁</div><h1>Here’s How Your Story Turned Out</h1><div class="result"><p style="font-size:19px">${level}</p><p>You completed <b>${S.length} scenes</b>. Your decisions—not a single pass/fail answer—shaped this ending.</p></div><div class="choices"><button id="again">🔄 WRITE A DIFFERENT STORY</button><button class="read" id="readEnd">🔊 READ RESULTS</button><button onclick="print()">🖨 PRINT RESULTS</button></div>`;document.getElementById('again').onclick=()=>{i=0;score=0;choices=[];draw()};document.getElementById('readEnd').onclick=speak;}draw();</script><script src="session.js"></script></body></html>
+const title="Parenting: Newborn to Toddler",icon="\ud83d\udc76",intro="You are the parent/parenting partner. The child grows as your story moves forward.",S=[{"text": "A newborn is coming home. What is your first priority?", "choices": ["Prepare a safe sleep space and supplies", "Buy mostly toys", "Assume you can figure everything out later"]}, {"text": "The baby wakes crying during the night.", "choices": ["Check feeding, diaper, comfort and safety needs", "Turn the TV louder", "Leave the baby in an unsafe place"]}, {"text": "You are exhausted and overwhelmed.", "choices": ["Put baby safely in the crib and get support/take a short reset", "Shake or yell at the baby", "Walk away without making sure baby is safe"]}, {"text": "The baby spits up after feeding.", "choices": ["Clean up, observe baby and follow care guidance", "Panic immediately", "Ignore concerning symptoms if they appear"]}, {"text": "Diapers are running low.", "choices": ["Plan the purchase before they run out", "Wait until the last diaper", "Spend supply money elsewhere"]}, {"text": "You have school/work tomorrow after a rough night.", "choices": ["Arrange shared care/support and plan ahead", "Just miss without contacting anyone", "Assume someone else will handle it"]}, {"text": "The baby has a routine medical appointment.", "choices": ["Keep the appointment and bring questions", "Skip routine care repeatedly", "Guess about every health question"]}, {"text": "The baby is starting solid foods.", "choices": ["Use age-appropriate foods and safe feeding guidance", "Give choking hazards", "Leave baby alone while eating"]}, {"text": "The baby begins crawling.", "choices": ["Babyproof reachable hazards", "Wait for an accident first", "Leave cleaners within reach"]}, {"text": "Childcare falls through unexpectedly.", "choices": ["Contact a trusted safe backup and communicate with work/school", "Leave the child with anyone available", "Leave the baby alone"]}, {"text": "The baby has a fever or seems unusually ill.", "choices": ["Check symptoms and contact an appropriate adult/medical professional as needed", "Give random medicine", "Ignore serious warning signs"]}, {"text": "Money is tight and baby needs supplies.", "choices": ["Prioritize needs and seek legitimate support/resources", "Buy wants first", "Skip necessary supplies"]}, {"text": "The child starts walking.", "choices": ["Secure stairs, furniture and hazards", "Assume they know what is dangerous", "Stop supervising"]}, {"text": "Your toddler throws food during dinner.", "choices": ["Stay calm, set a simple boundary and redirect", "Scream and scare them", "Give up on all routines"]}, {"text": "The toddler melts down in a store.", "choices": ["Keep them safe, stay calm and use a consistent response", "Leave them unattended", "Buy everything demanded"]}, {"text": "Bedtime becomes a battle.", "choices": ["Use a predictable routine and calm limits", "Change bedtime every night", "Use unsafe punishment"]}, {"text": "You want time with friends.", "choices": ["Plan safe childcare and personal time", "Leave without arranging care", "Take the toddler to an unsafe adult event"]}, {"text": "Your parenting partner disagrees about a rule.", "choices": ["Talk privately and make a consistent plan", "Argue in front of the child", "Undermine each other"]}, {"text": "Your toddler copies something you do.", "choices": ["Model the behavior you want to teach", "Say rules only apply to children", "Ignore your own example"]}, {"text": "Your child is now a toddler. What matters going forward?", "choices": ["Safety, consistency, support and learning as you go", "Being perfect all the time", "Doing everything alone"]}];let i=0,score=0,choices=[];function speak(){friendlySpeak(document.getElementById('copy').innerText)}function draw(){let s=S[i];document.getElementById('pg').textContent='Page '+(i+1)+' of '+S.length;let buttons=s.choices.map((c,j)=>`<button data-j="${j}">${c}</button>`).join('');document.getElementById('scene').innerHTML=`<div class="art">${icon}</div><h1>${i===0?title:'What happens next?'}</h1><p id="copy" style="font-size:19px;line-height:1.55">${i===0?intro+' ':''}${s.text}</p><div class="choices"><button class="read" id="read">🔊 READ TO ME</button>${buttons}</div>`;document.getElementById('read').onclick=speak;document.querySelectorAll('[data-j]').forEach(b=>b.onclick=()=>pick(+b.dataset.j));}function pick(j){choices.push(j); if(j===0)score+=2; else if(j===1)score+=1; i++; if(i>=S.length)finish(); else draw();}function finish(){let level=score>=S.length*1.45?'You consistently protected your priorities and handled problems early.':score>=S.length*.9?'You made a mix of strong choices and choices that created extra challenges.':'Several early choices created harder consequences later. Replay and see how a different decision changes the story.';document.getElementById('pg').textContent='THE END';document.getElementById('scene').innerHTML=`<div class="art">🏁</div><h1>Here’s How Your Story Turned Out</h1><div class="result"><p style="font-size:19px">${level}</p><p>You completed <b>${S.length} scenes</b>. Your decisions—not a single pass/fail answer—shaped this ending.</p></div><div class="choices"><button id="again">🔄 WRITE A DIFFERENT STORY</button><button class="read" id="readEnd">🔊 READ RESULTS</button><button onclick="print()">🖨 PRINT RESULTS</button></div>`;document.getElementById('again').onclick=()=>{i=0;score=0;choices=[];draw()};document.getElementById('readEnd').onclick=speak;}draw();</script><script src="session.js"></script>
+<script>
+(function(){
+  const KEY='tt_sound_on';
+  let ctx=null;
+  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
+  function tone(freq,dur,type='sine',vol=.035){
+    if(!enabled()) return;
+    try{
+      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type; o.frequency.value=freq;
+      g.gain.setValueAtTime(vol,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
+      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
+    }catch(e){}
+  }
+  window.TTSound={
+    click:()=>tone(520,.055,'sine',.025),
+    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
+    consequence:()=>tone(330,.11,'triangle',.025)
+  };
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('button,.choice,.option,[role="button"]');
+    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
+  },true);
+  function addToggle(){
+    if(document.getElementById('ttSoundToggle')) return;
+    const b=document.createElement('button');
+    b.id='ttSoundToggle';
+    b.type='button';
+    b.setAttribute('aria-label','Turn website sounds on or off');
+    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
+    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
+    label();
+    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
+    document.body.appendChild(b);
+  }
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
+})();
+</script>
+
+
+<script id="ttUniversalChoiceShuffle">
+(function(){
+  const selectors=[
+    '.choices','.options','.choice-grid','.answer-grid','.answers',
+    '.decision-options','.response-options','.scenario-options',
+    '#choices','#options','#answers'
+  ];
+  const itemSel='button,.choice,.option,.answer,[role="button"],label';
+
+  function shuffleArray(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function signature(c){
+    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
+  }
+  function shuffleContainer(c){
+    const kids=[...c.children].filter(x=>x.matches(itemSel));
+    if(kids.length<2) return;
+    const sig=signature(c);
+    if(c.dataset.ttShuffleSig===sig) return;
+    shuffleArray(kids).forEach(k=>c.appendChild(k));
+    c.dataset.ttShuffleSig=signature(c);
+  }
+  function scan(root=document){
+    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
+    // Also detect ordinary containers holding 2–6 answer buttons.
+    root.querySelectorAll('div,section,article,form').forEach(c=>{
+      const kids=[...c.children].filter(x=>x.matches('button'));
+      if(kids.length>=2 && kids.length<=6){
+        const txt=(c.className+' '+c.id).toLowerCase();
+        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
+          shuffleContainer(c);
+      }
+    });
+  }
+  let queued=false;
+  function queue(){
+    if(queued)return; queued=true;
+    requestAnimationFrame(()=>{queued=false;scan();});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{scan();});
+  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+</body></html>
