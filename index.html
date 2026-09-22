@@ -1,9 +1,271 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Transition Team Resource Hub</title><style>
-:root{--oc:#0751bd;--sf:#d71935;--ink:#17233c;--paper:#f5f7fb;--card:#fff}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--paper);color:var(--ink)}header{background:linear-gradient(110deg,var(--oc),#173c77 52%,var(--sf));color:white;padding:34px 20px;text-align:center}header h1{margin:0;font-size:clamp(28px,5vw,52px)}header p{font-size:18px}.wrap{max-width:1050px;margin:24px auto;padding:0 16px}.hero{background:white;border-radius:22px;padding:24px;margin-bottom:18px;border:1px solid #dce3ef}.career{display:inline-block;background:#102a5c;color:#fff;text-decoration:none;padding:16px 22px;border-radius:16px;font-weight:800;font-size:18px}details{background:white;border:1px solid #dce3ef;border-radius:18px;margin:12px 0;overflow:hidden}summary{cursor:pointer;padding:20px;font-size:20px;font-weight:900;list-style:none}summary:after{content:'▼';float:right}.links{padding:0 20px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.links a{padding:14px;border-radius:12px;background:#eef3fb;color:#15325f;text-decoration:none;font-weight:700}.note{font-size:14px;color:#52617a}footer{text-align:center;padding:30px}</style></head><body><header><h1>Transition Team Resource Hub</h1><p>Obion County Schools • OCCHS + South Fulton</p></header><main class="wrap"><section class="hero"><h2>Choose a learning area</h2><p>The homepage is now kept simple. Open only the section you need.</p><a class="career" href="career-challenge.html">🔥 Open High School Career Challenge</a></section>
-<details><summary>🧩 CDC Student Center</summary><div class="links"><a href="#">Career Matching</a><a href="#">Alphabetical Order Challenge</a><a href="#">Telling Time</a><a href="#">Money & Grocery Practice</a><a href="#">Cooking & Cleaning</a><a href="#">Hygiene & Daily Routine</a><a href="#">Communication & Self-Advocacy</a></div></details>
-<details><summary>🕹️ Game Zone & Simulators</summary><div class="links"><a href="simulators.html">Simulator Library</a><a href="cooking-game.html">Cooking Game</a><a href="grocery-trip.html">Grocery Trip</a><a href="animated-stories.html">Animated Stories</a><a href="apartment-simulator.html">Apartment Simulator</a></div></details>
-<details><summary>🔎 Career Exploration</summary><div class="links"><a href="career-explorer.html">Career A–Z</a><a href="career-adventures.html">Career Adventures</a><a href="career-challenge.html">Career Challenge</a></div></details>
-<details><summary>🏠 Independent Living</summary><div class="links"><a href="cooking-game.html">Cooking</a><a href="grocery-trip.html">Shopping & Grocery</a><a href="apartment-simulator.html">Apartment Living</a><a href="payday-story.html">Payday & Money</a></div></details>
-<details><summary>🎓 College & Training</summary><div class="links"><a href="https://studentaid.gov/" target="_blank">FAFSA / StudentAid.gov</a><a href="#">Tennessee Colleges</a><a href="#">TCAT & Career Training</a><a href="#">Scholarships</a></div></details>
-<details><summary>🧰 Educator Tools & Downloads</summary><div class="links"><a href="worksheets.html">📄 Career Worksheets & Printables</a><a href="index-original-backup.html#library-title">Printable Library</a><a href="index-original-backup.html#staff">Educator Resources</a><a href="index-original-backup.html">Open Full Original Resource Hub</a></div></details>
-<p class="note">Your original full homepage is included as a backup so none of the existing resource content is lost.</p></main><footer>Transition Team Resource Hub</footer></body></html>
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transition Team | Obion County Schools</title>
+<style>
+:root{--oc:#0751bd;--sf:#e1192f;--navy:#102a5c;--pink:#f5c5d8;--paper:#fbfafb;--ink:#25324a}
+*{box-sizing:border-box} body{margin:0;background:var(--paper);font-family:Arial,Helvetica,sans-serif;color:var(--ink)}
+.top{display:grid;grid-template-columns:1fr 1.35fr 1fr;min-height:230px;background:white;border-top:6px solid var(--pink);border-bottom:5px solid var(--navy)}
+.school{color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 18px}
+.school.oc{background:linear-gradient(135deg,#063f9d,#0a65d8)} .school.sf{background:linear-gradient(135deg,#d10d24,#f02a3d)}
+.monogram{font-family:Georgia,serif;font-size:56px;font-weight:900;line-height:.9;text-shadow:2px 2px 0 rgba(255,255,255,.22)}
+.schoolname{font-size:20px;font-weight:900;max-width:280px;margin-top:14px;letter-spacing:.3px}
+.schoolline{font-size:12px;font-weight:800;letter-spacing:2px;margin-top:14px;opacity:.95}
+.center{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:22px;background:linear-gradient(180deg,#fff,#fffafd)}
+.eyebrow{font-size:12px;letter-spacing:4px;font-weight:800;color:#687086} h1{font-family:Georgia,serif;font-style:italic;font-size:50px;line-height:1.05;margin:12px 0 5px;color:var(--navy);text-shadow:2px 2px 0 #e8e9ef}
+.county{letter-spacing:4px;font-size:12px;font-weight:800} .ribbon{margin-top:18px;background:var(--pink);padding:8px 28px;border-radius:999px;font-family:Georgia,serif;font-style:italic}
+.nav{background:var(--navy);display:flex;gap:6px;padding:8px 10px;overflow:auto;white-space:nowrap;position:sticky;top:0;z-index:3;box-shadow:0 3px 10px #0002}
+.nav a{color:white;text-decoration:none;border:1px solid #ffffff55;border-radius:7px;padding:10px 14px;font-weight:800;font-size:14px}
+.nav a:first-child{background:var(--sf)} main{max-width:1180px;margin:auto;padding:28px 22px}
+.intro{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:18px;align-items:stretch}
+.card{background:white;border-radius:18px;padding:25px;box-shadow:0 6px 20px #0b234411;border:1px solid #e8e9ef}
+.card h2{font-family:Georgia,serif;color:var(--navy);font-size:28px;margin:0 0 10px} .career{background:linear-gradient(135deg,#fdebf2,#f4bdd2);text-align:center}
+.career .btn{display:inline-block;background:var(--sf);color:white;text-decoration:none;padding:12px 22px;border-radius:999px;font-weight:900;margin-top:10px}
+.motto{display:flex;align-items:center;justify-content:center;text-align:center;font-family:Georgia,serif;font-style:italic;color:var(--navy);font-size:31px;line-height:1.25;background:linear-gradient(135deg,#f3f9ff,#fff)}
+.library-title{font-family:Georgia,serif;text-align:center;color:var(--navy);font-size:36px;margin:34px 0 10px}
+.search{width:100%;margin:10px 0 18px;padding:15px 18px;border:2px solid #cbd6e7;border-radius:12px;font-size:17px;background:white}
+details{background:white;border-radius:14px;margin:12px 0;box-shadow:0 4px 15px #0011;overflow:hidden;border:1px solid #e1e6ef}
+summary{padding:17px 20px;cursor:pointer;color:var(--navy);font-size:19px;font-weight:900;display:flex;justify-content:space-between;border-left:7px solid var(--oc)}
+summary span{font-size:13px;color:#68758a} .grid{padding:0 16px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px}
+.resource{border:1px solid #dbe3ee;border-left:6px solid var(--sf);border-radius:12px;padding:13px;background:#fff}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px} .actions a{text-decoration:none;background:#edf4fc;color:var(--navy);padding:7px 10px;border-radius:8px;font-weight:750}
+.driver{display:inline-block;margin-top:10px;color:var(--navy);font-weight:800} footer{background:var(--navy);color:white;text-align:center;padding:22px;margin-top:30px}
+@media(max-width:780px){.top{grid-template-columns:1fr}.center{order:-1;min-height:210px}.school{min-height:145px}.intro{grid-template-columns:1fr}h1{font-size:42px}}
+
+.hub-title{font-family:Georgia,serif;text-align:center;color:var(--navy);font-size:36px;margin:34px 0 8px}
+.hub-sub{text-align:center;max-width:820px;margin:0 auto 20px;color:#5b667a;line-height:1.55}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px;margin:18px 0 28px}
+.hub-card{background:white;border:1px solid #e1e6ef;border-radius:18px;padding:22px;box-shadow:0 5px 18px #0b234411}
+.hub-card h3{margin:0 0 8px;color:var(--navy);font-family:Georgia,serif;font-size:23px}
+.hub-card p{line-height:1.45}
+.hub-card a,.hub-card .jump{display:inline-block;text-decoration:none;background:var(--navy);color:white;padding:10px 14px;border-radius:10px;font-weight:900;margin:4px 5px 0 0}
+.hub-card.cdc{border-top:7px solid #16a085;background:linear-gradient(135deg,#ecfff8,#fff)}
+.hub-card.game{border-top:7px solid #7c3aed;background:linear-gradient(135deg,#f5f0ff,#fff)}
+.hub-card.preets{border-top:7px solid var(--oc);background:linear-gradient(135deg,#eef6ff,#fff)}
+.hub-card.post{border-top:7px solid #d69e00;background:linear-gradient(135deg,#fff9df,#fff)}
+.hub-card.staff{border-top:7px solid var(--sf);background:linear-gradient(135deg,#fff0f3,#fff)}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef2f7;color:var(--navy);font-size:12px;font-weight:900;margin:2px}
+.quicklinks{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:15px 0 26px}
+.quicklinks a{text-decoration:none;background:white;border:2px solid #d9e2ef;color:var(--navy);padding:10px 13px;border-radius:999px;font-weight:900}
+
+.home-fold{margin:16px 0 22px;border:0;background:transparent;box-shadow:none;overflow:visible}
+.home-fold>summary{background:white;border:1px solid #e1e6ef;border-left:8px solid var(--oc);border-radius:16px;padding:18px 22px;box-shadow:0 5px 18px #0b234411;font-family:Georgia,serif;font-size:25px;color:var(--navy);list-style:none}
+.home-fold>summary::-webkit-details-marker{display:none}
+.home-fold>summary::after{content:"＋";font-family:Arial;font-size:25px;color:var(--sf)}
+.home-fold[open]>summary::after{content:"−"}
+.home-fold .fold-body{padding-top:4px}
+.feature-links{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:18px 0 8px}
+.feature-links a{background:var(--navy);color:white;text-decoration:none;padding:12px 17px;border-radius:10px;font-weight:900}
+.feature-links a:first-child{background:var(--sf)}
+
+</style><link rel="stylesheet" href="session.css"></head>
+<body>
+<section class="top">
+ <div class="school oc"><div class="monogram">OC</div><div class="schoolname">OBION COUNTY CENTRAL<br>HIGH SCHOOL</div><div class="schoolline">TRADITION • OPPORTUNITY • SUCCESS</div></div>
+ <div class="center"><div class="eyebrow">SAME COMMUNITY • BRIGHTER FUTURES</div><h1>Transition<br>Team ♡</h1><div class="county">OBION COUNTY SCHOOLS</div><div class="ribbon">Life Skills Today • Independence Tomorrow</div></div>
+ <div class="school sf"><div class="monogram">SF</div><div class="schoolname">SOUTH FULTON<br>MIDDLE HIGH SCHOOL</div><div class="schoolline">TRADITION • HARD WORK • BRIGHTER TOMORROWS</div></div>
+</section>
+<nav class="nav">
+<a href="#hub">⌂ Home</a>
+<a href="#preets">🧭 Pre-ETS</a>
+<a href="#cdc">🧩 CDC Center</a>
+<a href="#games">🕹️ Game Zone</a>
+<a href="career-explorer.html">🔎 Career A-Z</a>
+<a href="career-adventures.html">🎮 Career Adventures</a>
+<a href="career-challenge.html">🔥 Career Challenge</a>
+<a href="worksheets.html">🖨️ Worksheets</a>
+<a href="#independent">🏠 Independent Living</a>
+<a href="#postsecondary">🎓 Postsecondary</a>
+<a href="#staff">🧰 Educators</a>
+<a href="#library-title">📚 Downloads</a>
+</nav>
+<main>
+
+<section id="hub">
+<h2 class="hub-title">Transition Team Resource Hub</h2>
+<p class="hub-sub">Choose a pathway for today's session. Student activities, interactive practice, CDC supports, career exploration, independent living, postsecondary planning, and educator resources are organized below.</p>
+<div class="quicklinks">
+<a href="#preets">4 Pre-ETS Areas</a><a href="#cdc">CDC Center</a><a href="#games">Game Zone</a><a href="#independent">Independent Living</a><a href="#postsecondary">College & Training</a><a href="#staff">Educator Tools</a>
+</div>
+<div class="feature-links"><a href="career-challenge.html">🔥 High School Career Challenge</a><a href="worksheets.html">🖨️ Career Worksheets & Printables</a></div>
+</section>
+
+<section id="preets"><details class="home-fold"><summary>🧭 Pre-ETS</summary><div class="fold-body">
+<p class="hub-sub">Use one service area for each documented session.</p>
+<div class="hub-grid">
+<div class="hub-card preets"><h3>🔎 Job Exploration Counseling</h3><p>Explore careers, interests, job duties, training pathways, and career choices.</p><a href="career-explorer.html">Career A-Z</a><a href="career-adventures.html">Career Adventures</a></div>
+<div class="hub-card preets"><h3>💼 Workplace Readiness Training</h3><p>Practice workplace behavior, communication, interviewing, money skills, cooking, shopping, transportation, and independent living.</p><a href="#games">Practice Activities</a><a href="#library-title">Printables</a></div>
+<div class="hub-card preets"><h3>🎓 Counseling on Postsecondary Education Opportunities</h3><p>Explore college, community college, TCAT/trade training, financial aid concepts, and education after high school.</p><a href="#postsecondary">College & Training</a></div>
+<div class="hub-card preets"><h3>🗣️ Instruction in Self-Advocacy</h3><p>Practice asking for help, communicating needs, decision-making, speaking up appropriately, and handling real-life situations.</p><a href="stories.html">Decision Stories</a><a href="#library-title">Social Skills Resources</a></div>
+</div>
+</div></details></section>
+
+<section id="cdc"><details class="home-fold"><summary>🧩 CDC Center</summary><div class="fold-body">
+<p class="hub-sub">Visual, simplified, hands-on transition practice. Activities can be completed by pointing, tapping, choosing, matching, using yes/no responses, or following picture-supported steps.</p>
+<div class="hub-grid">
+<div class="hub-card cdc"><h3>🍳 Visual Cooking</h3><p>Simple recipes, kitchen safety, tools, measuring, picture-supported steps, and guided cooking practice.</p><a href="cooking-game.html">Cooking Game</a><a href="#library-title">Visual Recipes</a></div>
+<div class="hub-card cdc"><h3>🧹 Cleaning & Home Skills</h3><p>Practice broom, mop, paper towel, trash, laundry, room cleanup, and choosing the correct cleaning tool.</p><span class="badge">Picture Choices</span><span class="badge">Hands-On</span><span class="badge">Repeat Practice</span></div>
+<div class="hub-card cdc"><h3>🧼 Hygiene & Daily Routine</h3><p>Visual routines for handwashing, teeth, grooming, clothing, and getting ready for school or work.</p><span class="badge">Yes / No</span><span class="badge">Read to Me</span><span class="badge">Guided Steps</span></div>
+<div class="hub-card cdc"><h3>💼 Job Skills</h3><p>Simple job choices, matching tools to jobs, workplace behaviors, following directions, and practicing basic work tasks.</p><a href="career-adventures.html">Career Practice</a></div>
+<div class="hub-card cdc"><h3>🛒 Grocery & Money Practice</h3><p>Choose items, follow a short list, identify needs versus wants, compare simple prices, and practice checkout.</p><a href="grocery-trip.html">Grocery Trip</a></div>
+<div class="hub-card cdc"><h3>💬 Communication & Self-Advocacy</h3><p>Use yes/no, picture choices, requesting help, making choices, and practicing appropriate responses.</p><a href="stories.html">Choice Stories</a></div>
+</div>
+</div></details></section>
+
+<section id="games"><details class="home-fold"><summary>🕹️ Game Zone & Simulators</summary><div class="fold-body">
+<p class="hub-sub">Interactive practice for real-life transition skills. Keep the original activities and use the newer games as additional practice.</p>
+<div class="hub-grid">
+<div class="hub-card game"><h3>🎂 Cooking Simulator — Part 2</h3><p>New interactive kitchen game with movement, tools, measuring, mixing, baking, and kitchen decisions.</p><a href="cooking-game.html">Play Part 2</a></div>
+<div class="hub-card game"><h3>🛒 Grocery Trip</h3><p>Choose a meal, make a list, shop by aisle, manage a budget, and check out.</p><a href="grocery-trip.html">Start Grocery Trip</a></div>
+<div class="hub-card game"><h3>🏠 Apartment Hunt</h3><p>Compare rent, deposits, utilities, transportation, leases, and monthly costs.</p><a href="apartment-simulator.html">Apartment Hunt</a></div>
+<div class="hub-card game"><h3>💵 Payday: 14 Days</h3><p>Make a paycheck last through bills, food, transportation, wants, and unexpected expenses.</p><a href="payday-story.html">Start Payday</a></div>
+<div class="hub-card game"><h3>👶 Parenting / Childcare</h3><p>Practice decisions and responsibilities as a child grows from newborn to toddler.</p><a href="parenting-story.html">Parenting Story</a></div>
+<div class="hub-card game"><h3>🎓 College Life</h3><p>Choose a postsecondary path and practice academics, money, campus decisions, and graduation planning.</p><a href="college-story.html">College Story</a></div>
+<div class="hub-card game"><h3>📖 What Would You Do?</h3><p>Branching decision stories where choices change what happens next.</p><a href="stories.html">Start a Story</a></div>
+<div class="hub-card game"><h3>🚗 Driving • Hair • Nails • More</h3><p>Open the simulator collection for additional practice labs.</p><a href="simulators.html">Open Simulators</a></div>
+</div>
+</div></details></section>
+
+<section id="independent"><details class="home-fold"><summary>🏠 Independent Living</summary><div class="fold-body">
+<p class="hub-sub">Age-appropriate practice for managing life after high school.</p>
+<div class="hub-grid">
+<div class="hub-card"><h3>🍴 Cooking & Kitchen Skills</h3><p>Recipes, kitchen safety, measuring, meal planning, food preparation, and cleanup.</p><a href="cooking-game.html">Cooking Game</a><a href="#library-title">Cooking Printables</a></div>
+<div class="hub-card"><h3>🛒 Grocery Shopping</h3><p>Meal planning, grocery lists, unit prices, budgeting, shopping, and checkout.</p><a href="grocery-trip.html">Grocery Adventure</a></div>
+<div class="hub-card"><h3>💵 Budgeting & Bills</h3><p>Paychecks, spending choices, needs versus wants, rent, utilities, and unexpected costs.</p><a href="payday-story.html">Payday Game</a></div>
+<div class="hub-card"><h3>🏢 Moving Out</h3><p>Apartment shopping, leases, deposits, utilities, transportation, and monthly living costs.</p><a href="apartment-simulator.html">Apartment Hunt</a></div>
+<div class="hub-card"><h3>🧺 Home Care</h3><p>Laundry, cleaning routines, hygiene, organization, appointments, and transportation planning.</p><a href="#library-title">Open Resources</a></div>
+</div>
+</div></details></section>
+
+<section id="postsecondary"><details class="home-fold"><summary>🎓 Postsecondary Education</summary><div class="fold-body">
+<p class="hub-sub">Explore options after high school, including colleges, community colleges, technical training, financial aid education, and campus-life practice.</p>
+<div class="hub-grid">
+<div class="hub-card post"><h3>🏫 College & Training Explorer</h3><p>Use career and education resources to compare pathways, programs, and training needs.</p><a href="career-explorer.html">Explore Careers & Training</a></div>
+<div class="hub-card post"><h3>📚 College Story</h3><p>Practice choosing a path, navigating campus life, managing money, academics, and graduation decisions.</p><a href="college-story.html">Start College Story</a></div>
+<div class="hub-card post"><h3>💰 FAFSA & Financial Aid Learning</h3><p>Learn what FAFSA and financial aid are before using official applications. Practice activities should use fictional information only.</p><a href="https://studentaid.gov/" target="_blank" rel="noopener">Official StudentAid.gov</a></div>
+<div class="hub-card post"><h3>🏆 Scholarships</h3><p>Prepare to search for scholarships, compare requirements, organize deadlines, and complete applications safely.</p><span class="badge">Scholarship Planning</span><span class="badge">Deadline Skills</span></div>
+</div>
+</div></details></section>
+
+<section id="staff"><details class="home-fold"><summary>🧰 Educators & Session Tools</summary><div class="fold-body">
+<p class="hub-sub">Fast access to session planning, documentation, no-prep resources, group activities, and printable materials.</p>
+<div class="hub-grid">
+<div class="hub-card staff"><h3>⏱️ 30-Minute Session</h3><p>Start the session timer, use one appropriate Pre-ETS service area, complete an activity, and document the session.</p><a href="#sessionBox">Open Session Timer</a></div>
+<div class="hub-card staff"><h3>⚡ Student Isn't Feeling This Today</h3><p>Switch to a lower-pressure conversation, choice activity, story, simulator, or no-prep session without losing the transition focus.</p><a href="stories.html">Choice Activity</a><a href="#library-title">No-Prep Resources</a></div>
+<div class="hub-card staff"><h3>🆘 I Have 30 Minutes</h3><p>Pick a quick pathway: career exploration, workplace readiness, self-advocacy, postsecondary planning, simulator, or printable.</p><a href="#preets">Choose a Pre-ETS Area</a></div>
+<div class="hub-card staff"><h3>👥 Group Projects</h3><p>Use Build a Business, mock job fair, interview practice, cooking, budgeting, and other collaborative activities.</p><a href="#library-title">Open Group Resources</a></div>
+<div class="hub-card staff"><h3>🖨️ Downloads</h3><p>Keep access to the existing PDF and editable Word resource library.</p><a href="#library-title">Resource Library</a></div>
+<div class="hub-card staff"><h3>📝 Career Worksheets & Interviews</h3><p>Detailed job applications, interview practice, career-specific packets, and printable workplace activities.</p><a href="worksheets.html">Open Worksheets</a></div>
+<div class="hub-card staff"><h3>🔥 High School Career Challenge</h3><p>Explore job roles, match duties and tools, and practice career-based activities.</p><a href="career-challenge.html">Open Career Challenge</a></div>
+</div>
+</div></details></section>
+
+<section class="intro">
+ <div class="card"><h2>Welcome! ♡</h2><p>The Transition Team supports Obion County Central High School and South Fulton Middle High School students with practical skills, resources, and opportunities for a successful future.</p><a class="driver" href="https://www.tn.gov/content/dam/tn/safety/documents/DL_Manual.pdf">TN Driver Manual →</a></div>
+ <div class="card career"><h2>💼 EXPLORE CAREERS A-Z</h2><p>5,000+ career & job-title choices • searchable A–Z • career pathways • and more</p><a class="btn" href="career-explorer.html">START EXPLORING →</a></div>
+ <div class="card motto">Real Skills.<br>Real Opportunities.<br>Brighter Futures. ♡</div>
+</section>
+<section class="card" id="sessionBox" style="margin:22px 0;text-align:center;border:3px solid #22a06b"><h2>⏱️ 30-Minute Student Session</h2><p id="sessionStatus">Start a timer, use any resource, then document the activity when finished.</p><button id="sessionBtn" class="btn" style="border:0;cursor:pointer">▶ START 30-MINUTE SESSION</button><div id="timer" style="font-size:38px;font-weight:900;color:#102a5c;margin-top:12px;display:none">30:00</div></section><h2 class="library-title" id="library-title">Student Resource Library</h2>
+<input class="search" id="search" placeholder="Search resources...">
+<section style="margin:24px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px">
+<div class="card" style="background:linear-gradient(135deg,#eef5ff,#fff)"><h2>📖 What Would You Do?</h2><p>Interactive page-turn stories. Push a choice and your decision changes the next scene.</p><a class="btn" href="stories.html">START A STORY →</a></div>
+<div class="card" style="background:linear-gradient(135deg,#fff0f6,#fff)"><h2>🎮 Career Adventures</h2><p>Step into a job, make workplace decisions, and learn what the career requires.</p><a class="btn" href="career-adventures.html">TRY A CAREER →</a></div>
+<div class="card" style="background:linear-gradient(135deg,#eefcf4,#fff)"><h2>🛒 My Grocery Trip</h2><p>Pick a meal, build a clickable grocery list, travel to the store, choose aisles, shop to your list, and stay on budget in a page-turn life-skills adventure.</p><a class="btn" href="grocery-trip.html">START GROCERY STORY →</a></div><div class="card" style="background:linear-gradient(135deg,#effff5,#fff)"><h2>🕹️ Practice Simulators</h2><p>Launch outside cooking, driving, hair, nail, and other practice labs in a new tab.</p><a class="btn" href="simulators.html">OPEN SIMULATORS →</a></div><div class="card" style="background:linear-gradient(135deg,#fff8e8,#fff)"><h2>🏠 Apartment Hunt</h2><p>Compare rent, deposits, utilities, transportation, leases, and monthly budgets.</p><a class="btn" href="apartment-simulator.html">HUNT FOR AN APARTMENT →</a></div>
+<div class="card" style="background:linear-gradient(135deg,#fff7dc,#fff)"><h2>💵 Payday: 14 Days</h2><p>Make a $2,000 paycheck last through bills, groceries, transportation, wants and surprises.</p><a class="btn" href="payday-story.html">START PAYDAY STORY →</a></div><div class="card" style="background:linear-gradient(135deg,#f3efff,#fff)"><h2>👶 Parenting Story</h2><p>Make parenting decisions as a child grows from newborn to toddler.</p><a class="btn" href="parenting-story.html">START PARENTING STORY →</a></div><div class="card" style="background:linear-gradient(135deg,#eaf8ff,#fff)"><h2>🎓 College Story</h2><p>Graduate high school, choose a path, navigate campus life, academics, money and graduation.</p><a class="btn" href="college-story.html">START COLLEGE STORY →</a></div><div class="card" style="background:linear-gradient(135deg,#fff0f5,#fff)"><h2>📚 All Life Story Adventures</h2><p>Open the complete collection of full-length interactive books.</p><a class="btn" href="life-stories.html">OPEN STORY LIBRARY →</a></div></section><div id="library"><details><summary>Career Exploration<span>9 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Career Cluster Sort</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Cluster_Sort.pdf">👁 View PDF</a><a href="Transition_Team_Career_Cluster_Sort.docx">Editable Word</a></div></div><div class="resource"><strong>Career Exploration Packet</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Exploration_Packet.pdf">👁 View PDF</a><a href="Transition_Team_Career_Exploration_Packet.docx">Editable Word</a></div></div><div class="resource"><strong>Career Goal Plan</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Goal_Plan.pdf">👁 View PDF</a><a href="Transition_Team_Career_Goal_Plan.docx">Editable Word</a></div></div><div class="resource"><strong>Career Interest Inventory</strong><div class="actions"><a href="Transition_Team_Career_Interest_Inventory.docx">Editable Word</a></div></div><div class="resource"><strong>Career Mystery Game</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Mystery_Game.pdf">👁 View PDF</a><a href="Transition_Team_Career_Mystery_Game.docx">Editable Word</a></div></div><div class="resource"><strong>Career Pathway Starter Guide</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Pathway_Starter_Guide.pdf">👁 View PDF</a><a href="Transition_Team_Career_Pathway_Starter_Guide.docx">Editable Word</a></div></div><div class="resource"><strong>Career Research Worksheet</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Research_Worksheet.pdf">👁 View PDF</a><a href="Transition_Team_Career_Research_Worksheet.docx">Editable Word</a></div></div><div class="resource"><strong>Compare Two Careers</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Compare_Two_Careers.pdf">👁 View PDF</a><a href="Transition_Team_Compare_Two_Careers.docx">Editable Word</a></div></div><div class="resource"><strong>Education Training Comparison</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Education_Training_Comparison.pdf">👁 View PDF</a><a href="Transition_Team_Education_Training_Comparison.docx">Editable Word</a></div></div></div></details><details><summary>Career Spotlights<span>8 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Career Spotlight: Automotive Service Technician</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_Automotive_Service_Technician.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_Automotive_Service_Technician.docx">Editable Word</a></div></div><div class="resource"><strong>Career Spotlight: CNA Nursing Assistant</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_CNA_Nursing_Assistant.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_CNA_Nursing_Assistant.docx">Editable Word</a></div></div><div class="resource"><strong>Career Spotlight: Construction Carpenter</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_Construction_Carpenter.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_Construction_Carpenter.docx">Editable Word</a></div></div><div class="resource"><strong>Career Spotlight: Cosmetologist</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_Cosmetologist.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_Cosmetologist.docx">Editable Word</a></div></div><div class="resource"><strong>Career Spotlight: Diagnostic Medical Sonographer</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_Diagnostic_Medical_Sonographer.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_Diagnostic_Medical_Sonographer.docx">Editable Word</a></div></div><div class="resource"><strong>Career Spotlight: Electrician</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_Electrician.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_Electrician.docx">Editable Word</a></div></div><div class="resource"><strong>Career Spotlight: Pipeline Welder</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_Pipeline_Welder.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_Pipeline_Welder.docx">Editable Word</a></div></div><div class="resource"><strong>Career Spotlight: Veterinary Technician</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Career_Spotlight_Veterinary_Technician.pdf">👁 View PDF</a><a href="Transition_Team_Career_Spotlight_Veterinary_Technician.docx">Editable Word</a></div></div></div></details><details><summary>Job Readiness<span>22 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Calling In Requesting Off</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Calling_In_Requesting_Off.pdf">👁 View PDF</a><a href="Transition_Team_Calling_In_Requesting_Off.docx">Editable Word</a></div></div><div class="resource"><strong>Classroom Job Activities</strong><div class="actions"><a href="Transition_Team_Classroom_Job_Activities.docx">Editable Word</a></div></div><div class="resource"><strong>Dream Job Reality Check</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Dream_Job_Reality_Check.pdf">👁 View PDF</a><a href="Transition_Team_Dream_Job_Reality_Check.docx">Editable Word</a></div></div><div class="resource"><strong>First Day On The Job</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_First_Day_On_The_Job.pdf">👁 View PDF</a><a href="Transition_Team_First_Day_On_The_Job.docx">Editable Word</a></div></div><div class="resource"><strong>Handling Feedback</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Handling_Feedback.pdf">👁 View PDF</a><a href="Transition_Team_Handling_Feedback.docx">Editable Word</a></div></div><div class="resource"><strong>Job Application Practice</strong><div class="actions"><a href="Transition_Team_Job_Application_Practice.docx">Editable Word</a></div></div><div class="resource"><strong>Job Interview Roulette</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Job_Interview_Roulette.pdf">👁 View PDF</a><a href="Transition_Team_Job_Interview_Roulette.docx">Editable Word</a></div></div><div class="resource"><strong>Job Search Tracker</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Job_Search_Tracker.pdf">👁 View PDF</a><a href="Transition_Team_Job_Search_Tracker.docx">Editable Word</a></div></div><div class="resource"><strong>Mock Interview Packet</strong><div class="actions"><a href="Transition_Team_Mock_Interview_Packet.docx">Editable Word</a></div></div><div class="resource"><strong>Mock Job Fair</strong><div class="actions"><a href="Transition_Team_Mock_Job_Fair.docx">Editable Word</a></div></div><div class="resource"><strong>Professional Texting Email</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Professional_Texting_Email.pdf">👁 View PDF</a><a href="Transition_Team_Professional_Texting_Email.docx">Editable Word</a></div></div><div class="resource"><strong>Reading A Job Posting</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Reading_A_Job_Posting.pdf">👁 View PDF</a><a href="Transition_Team_Reading_A_Job_Posting.docx">Editable Word</a></div></div><div class="resource"><strong>Reading A Work Schedule</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Reading_A_Work_Schedule.pdf">👁 View PDF</a><a href="Transition_Team_Reading_A_Work_Schedule.docx">Editable Word</a></div></div><div class="resource"><strong>Resume Builder</strong><div class="actions"><a href="Transition_Team_Resume_Builder.docx">Editable Word</a></div></div><div class="resource"><strong>Understanding Your Paycheck</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Understanding_Your_Paycheck.pdf">👁 View PDF</a><a href="Transition_Team_Understanding_Your_Paycheck.docx">Editable Word</a></div></div><div class="resource"><strong>Workplace Behavior</strong><div class="actions"><a href="Transition_Team_Workplace_Behavior.docx">Editable Word</a></div></div><div class="resource"><strong>Workplace Communication</strong><div class="actions"><a href="Transition_Team_Workplace_Communication.docx">Editable Word</a></div></div><div class="resource"><strong>Workplace Dress Code</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Workplace_Dress_Code.pdf">👁 View PDF</a><a href="Transition_Team_Workplace_Dress_Code.docx">Editable Word</a></div></div><div class="resource"><strong>Workplace Expectations</strong><div class="actions"><a href="Transition_Team_Workplace_Expectations.docx">Editable Word</a></div></div><div class="resource"><strong>Workplace Red Green Flags</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Workplace_Red_Green_Flags.pdf">👁 View PDF</a><a href="Transition_Team_Workplace_Red_Green_Flags.docx">Editable Word</a></div></div><div class="resource"><strong>Workplace Scenario Cards</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Workplace_Scenario_Cards.pdf">👁 View PDF</a><a href="Transition_Team_Workplace_Scenario_Cards.docx">Editable Word</a></div></div><div class="resource"><strong>Would You Hire Them</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Would_You_Hire_Them.pdf">👁 View PDF</a><a href="Transition_Team_Would_You_Hire_Them.docx">Editable Word</a></div></div></div></details><details><summary>Independent Living<span>11 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Adulting Bingo</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Adulting_Bingo.pdf">👁 View PDF</a><a href="Transition_Team_Adulting_Bingo.docx">Editable Word</a></div></div><div class="resource"><strong>Apartment Living Skills</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Apartment_Living_Skills.pdf">👁 View PDF</a><a href="Transition_Team_Apartment_Living_Skills.docx">Editable Word</a></div></div><div class="resource"><strong>Budget Battle</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Budget_Battle.pdf">👁 View PDF</a><a href="Transition_Team_Budget_Battle.docx">Editable Word</a></div></div><div class="resource"><strong>Budgeting Worksheet</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Budgeting_Worksheet.pdf">👁 View PDF</a><a href="Transition_Team_Budgeting_Worksheet.docx">Editable Word</a></div></div><div class="resource"><strong>Grocery Meal Planning</strong><div class="actions"><a href="Transition_Team_Grocery_Meal_Planning.docx">Editable Word</a></div></div><div class="resource"><strong>Grocery Unit Price Challenge</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Grocery_Unit_Price_Challenge.pdf">👁 View PDF</a><a href="Transition_Team_Grocery_Unit_Price_Challenge.docx">Editable Word</a></div></div><div class="resource"><strong>Laundry Clothing Care</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Laundry_Clothing_Care.pdf">👁 View PDF</a><a href="Transition_Team_Laundry_Clothing_Care.docx">Editable Word</a></div></div><div class="resource"><strong>Making Appointments</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Making_Appointments.pdf">👁 View PDF</a><a href="Transition_Team_Making_Appointments.docx">Editable Word</a></div></div><div class="resource"><strong>Time Organization</strong><div class="actions"><a href="Transition_Team_Time_Organization.docx">Editable Word</a></div></div><div class="resource"><strong>Transportation Backup Plan</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Transportation_Backup_Plan.pdf">👁 View PDF</a><a href="Transition_Team_Transportation_Backup_Plan.docx">Editable Word</a></div></div><div class="resource"><strong>Transportation Planning</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Transportation_Planning.pdf">👁 View PDF</a><a href="Transition_Team_Transportation_Planning.docx">Editable Word</a></div></div></div></details><details><summary>Cooking & Kitchen Skills<span>17 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Beginner Recipe Book</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Beginner_Recipe_Book.pdf">👁 View PDF</a><a href="Transition_Team_Beginner_Recipe_Book.docx">Editable Word</a></div></div><div class="resource"><strong>Cooking Measurements</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Cooking_Measurements.pdf">👁 View PDF</a><a href="Transition_Team_Cooking_Measurements.docx">Editable Word</a></div></div><div class="resource"><strong>Grocery List From Recipe</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Grocery_List_From_Recipe.pdf">👁 View PDF</a><a href="Transition_Team_Grocery_List_From_Recipe.docx">Editable Word</a></div></div><div class="resource"><strong>Kitchen Measurement Match</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Kitchen_Measurement_Match.pdf">👁 View PDF</a><a href="Transition_Team_Kitchen_Measurement_Match.docx">Editable Word</a></div></div><div class="resource"><strong>Kitchen Safety</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Kitchen_Safety.pdf">👁 View PDF</a><a href="Transition_Team_Kitchen_Safety.docx">Editable Word</a></div></div><div class="resource"><strong>Recipe Reading</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Recipe_Reading.pdf">👁 View PDF</a><a href="Transition_Team_Recipe_Reading.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Baked Chicken</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Baked_Chicken.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Baked_Chicken.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Baked Potato</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Baked_Potato.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Baked_Potato.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Chicken and Rice</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Chicken_and_Rice.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Chicken_and_Rice.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Easy Dessert Parfait</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Easy_Dessert_Parfait.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Easy_Dessert_Parfait.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Grilled Cheese</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Grilled_Cheese.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Grilled_Cheese.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Pancakes</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Pancakes.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Pancakes.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Personal Pizza</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Personal_Pizza.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Personal_Pizza.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Quesadilla</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Quesadilla.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Quesadilla.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Scrambled Eggs</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Scrambled_Eggs.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Scrambled_Eggs.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Spaghetti</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Spaghetti.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Spaghetti.docx">Editable Word</a></div></div><div class="resource"><strong>Visual Recipe: Tacos</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Visual_Recipe_Tacos.pdf">👁 View PDF</a><a href="Transition_Team_Visual_Recipe_Tacos.docx">Editable Word</a></div></div></div></details><details><summary>Social Skills<span>6 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Asking For Help</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Asking_For_Help.pdf">👁 View PDF</a><a href="Transition_Team_Asking_For_Help.docx">Editable Word</a></div></div><div class="resource"><strong>Conflict Resolution</strong><div class="actions"><a href="Transition_Team_Conflict_Resolution.docx">Editable Word</a></div></div><div class="resource"><strong>Fix This Conversation</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Fix_This_Conversation.pdf">👁 View PDF</a><a href="Transition_Team_Fix_This_Conversation.docx">Editable Word</a></div></div><div class="resource"><strong>Teamwork Skills</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Teamwork_Skills.pdf">👁 View PDF</a><a href="Transition_Team_Teamwork_Skills.docx">Editable Word</a></div></div><div class="resource"><strong>Text Message Trouble</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Text_Message_Trouble.pdf">👁 View PDF</a><a href="Transition_Team_Text_Message_Trouble.docx">Editable Word</a></div></div><div class="resource"><strong>Tone Of Voice</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Tone_Of_Voice.pdf">👁 View PDF</a><a href="Transition_Team_Tone_Of_Voice.docx">Editable Word</a></div></div></div></details><details><summary>Conversation Pieces<span>6 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Conversation Coworker Drama</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Conversation_Coworker_Drama.pdf">👁 View PDF</a><a href="Transition_Team_Conversation_Coworker_Drama.docx">Editable Word</a></div></div><div class="resource"><strong>Conversation Everybody Else Looks Ahead</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Conversation_Everybody_Else_Looks_Ahead.pdf">👁 View PDF</a><a href="Transition_Team_Conversation_Everybody_Else_Looks_Ahead.docx">Editable Word</a></div></div><div class="resource"><strong>Conversation I Have No Idea What I Want</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Conversation_I_Have_No_Idea_What_I_Want.pdf">👁 View PDF</a><a href="Transition_Team_Conversation_I_Have_No_Idea_What_I_Want.docx">Editable Word</a></div></div><div class="resource"><strong>Conversation My Ride Didnt Show</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Conversation_My_Ride_Didnt_Show.pdf">👁 View PDF</a><a href="Transition_Team_Conversation_My_Ride_Didnt_Show.docx">Editable Word</a></div></div><div class="resource"><strong>Conversation Would You Quit</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Conversation_Would_You_Quit.pdf">👁 View PDF</a><a href="Transition_Team_Conversation_Would_You_Quit.docx">Editable Word</a></div></div><div class="resource"><strong>Conversation Your First $500 Paycheck</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Conversation_Your_First_$500_Paycheck.pdf">👁 View PDF</a><a href="Transition_Team_Conversation_Your_First_$500_Paycheck.docx">Editable Word</a></div></div></div></details><details><summary>Activities & Games<span>3 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Build A Business</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Build_A_Business.pdf">👁 View PDF</a><a href="Transition_Team_Build_A_Business.docx">Editable Word</a></div></div><div class="resource"><strong>Career Bingo</strong><div class="actions"><a href="Transition_Team_Career_Bingo.docx">Editable Word</a></div></div><div class="resource"><strong>Would You Rather Career</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Would_You_Rather_Career.pdf">👁 View PDF</a><a href="Transition_Team_Would_You_Rather_Career.docx">Editable Word</a></div></div></div></details><details><summary>No-Prep Sessions<span>5 resources ▾</span></summary><div class="grid"><div class="resource"><strong>No Prep Boss Texted After Hours</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_No_Prep_Boss_Texted_After_Hours.pdf">👁 View PDF</a><a href="Transition_Team_No_Prep_Boss_Texted_After_Hours.docx">Editable Word</a></div></div><div class="resource"><strong>No Prep Customer Is Rude</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_No_Prep_Customer_Is_Rude.pdf">👁 View PDF</a><a href="Transition_Team_No_Prep_Customer_Is_Rude.docx">Editable Word</a></div></div><div class="resource"><strong>No Prep Paycheck vs Weekend</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_No_Prep_Paycheck_vs_Weekend.pdf">👁 View PDF</a><a href="Transition_Team_No_Prep_Paycheck_vs_Weekend.docx">Editable Word</a></div></div><div class="resource"><strong>No Prep Training or Money Now</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_No_Prep_Training_or_Money_Now.pdf">👁 View PDF</a><a href="Transition_Team_No_Prep_Training_or_Money_Now.docx">Editable Word</a></div></div><div class="resource"><strong>No Prep Would You Take This Job</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_No_Prep_Would_You_Take_This_Job.pdf">👁 View PDF</a><a href="Transition_Team_No_Prep_Would_You_Take_This_Job.docx">Editable Word</a></div></div></div></details><details><summary>Staff Tools<span>2 resources ▾</span></summary><div class="grid"><div class="resource"><strong>Updated Resource Guide</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Resource_Library_Guide.pdf">👁 View PDF</a><a href="Transition_Team_Resource_Library_Guide.docx">Editable Word</a></div></div><div class="resource"><strong>Lesson Pathways</strong><div class="actions"><a href="pdf-viewer.html?file=Transition_Team_Lesson_Pathways.pdf">👁 View PDF</a><a href="Transition_Team_Lesson_Pathways.docx">Editable Word</a></div></div></div></details></div>
+</main>
+<footer>Transition Team • Obion County Schools • Learn • Prepare • Achieve</footer>
+<script>
+const box=document.getElementById('search');
+box.addEventListener('input',()=>{const q=box.value.toLowerCase().trim();document.querySelectorAll('.resource').forEach(r=>{const ok=!q||r.innerText.toLowerCase().includes(q);r.style.display=ok?'block':'none';if(ok&&q)r.closest('details').open=true;});});
+</script><script>(function(){let left=1800,id=null;const b=document.getElementById('sessionBtn'),t=document.getElementById('timer'),st=document.getElementById('sessionStatus');if(!b)return;b.onclick=function(){if(id){clearInterval(id);id=null;b.textContent='▶ RESUME SESSION';st.textContent='Session paused.';return}t.style.display='block';b.textContent='⏸ PAUSE SESSION';st.textContent='Session in progress — student information is not stored.';id=setInterval(()=>{left--;let m=Math.floor(left/60),s=left%60;t.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(left<=0){clearInterval(id);id=null;b.textContent='↻ START ANOTHER SESSION';st.textContent='30-minute session complete. Document the activity and next step.';left=1800}},1000)}})();</script><script src="session.js"></script>
+<script>
+(function(){
+  let ctx=null;
+  let soundOn=true;
+  function enabled(){ return soundOn; }
+  function tone(freq,dur,type='sine',vol=.035){
+    if(!enabled()) return;
+    try{
+      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=type; o.frequency.value=freq;
+      g.gain.setValueAtTime(vol,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
+      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
+    }catch(e){}
+  }
+  window.TTSound={
+    click:()=>tone(520,.055,'sine',.025),
+    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
+    consequence:()=>tone(330,.11,'triangle',.025)
+  };
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('button,.choice,.option,[role="button"]');
+    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
+  },true);
+  function addToggle(){
+    if(document.getElementById('ttSoundToggle')) return;
+    const b=document.createElement('button');
+    b.id='ttSoundToggle';
+    b.type='button';
+    b.setAttribute('aria-label','Turn website sounds on or off');
+    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
+    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
+    label();
+    b.onclick=()=>{soundOn=!soundOn;label();if(enabled())TTSound.success();}
+    document.body.appendChild(b);
+  }
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
+})();
+</script>
+
+
+<script id="ttUniversalChoiceShuffle">
+(function(){
+  const selectors=[
+    '.choices','.options','.choice-grid','.answer-grid','.answers',
+    '.decision-options','.response-options','.scenario-options',
+    '#choices','#options','#answers'
+  ];
+  const itemSel='button,.choice,.option,.answer,[role="button"],label';
+
+  function shuffleArray(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function signature(c){
+    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
+  }
+  function shuffleContainer(c){
+    const kids=[...c.children].filter(x=>x.matches(itemSel));
+    if(kids.length<2) return;
+    const sig=signature(c);
+    if(c.dataset.ttShuffleSig===sig) return;
+    shuffleArray(kids).forEach(k=>c.appendChild(k));
+    c.dataset.ttShuffleSig=signature(c);
+  }
+  function scan(root=document){
+    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
+    // Also detect ordinary containers holding 2–6 answer buttons.
+    root.querySelectorAll('div,section,article,form').forEach(c=>{
+      const kids=[...c.children].filter(x=>x.matches('button'));
+      if(kids.length>=2 && kids.length<=6){
+        const txt=(c.className+' '+c.id).toLowerCase();
+        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
+          shuffleContainer(c);
+      }
+    });
+  }
+  let queued=false;
+  function queue(){
+    if(queued)return; queued=true;
+    requestAnimationFrame(()=>{queued=false;scan();});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{scan();});
+  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+</body></html>
