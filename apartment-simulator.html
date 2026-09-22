@@ -1,22 +1,355 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apartment Living Simulator</title><style>
-:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
-header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}.wrap{max-width:1100px;margin:auto;padding:22px}
-nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
-.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#fff;color:var(--navy)!important;border:2px solid var(--navy)}
-.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card h2,.card h3{color:var(--navy);margin-top:0}.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
-.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}.choice:hover{border-color:var(--blue);background:#f3f7ff}
-.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none}.score{font-weight:900;color:var(--navy)}
-input,select,textarea{width:100%;padding:10px;border:1px solid #aebed6;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:88px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:18px 0}.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
-small.muted,.muted{color:#5d6d86}.pill{display:inline-block;border:1px solid #c9d7ef;background:#f5f8ff;padding:5px 9px;border-radius:999px;margin:3px}
-@media(max-width:650px){.row{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 14px}}
-@media print{header,nav,.no-print,.btn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}.only-print{display:block!important}}
-</style></head><body>
-<header><div class="wrap"><h1 style="margin:0">Apartment Living Simulator</h1><p style="margin:6px 0 0">Transition Team Resource Hub</p><nav><a href="index.html">⌂ Home</a><a href="index.html#staff">🧰 Staff</a><a href="worksheets.html">📝 Worksheets</a><a href="group-projects.html">👥 Group Projects</a><a href="simulators.html">🎮 Simulators</a></nav></div></header>
-<main class="wrap"><div class="card"><h2>🏠 Apartment Living Simulator</h2><p>Choose a situation and decide what you would do.</p><div class="grid">
-<div class="card"><h3>Rent Is Due</h3><p>You are short $60. What is your first step?</p><button class="choice" onclick="alert('Strong choice: contact the landlord early, review your budget, and ask about lawful options before the due date.')">Contact landlord early and review budget</button><button class="choice" onclick="alert('Risky: ignoring rent can lead to late fees or housing problems.')">Ignore it</button></div>
-<div class="card"><h3>Smoke Alarm Chirps</h3><p>What should you do?</p><button class="choice" onclick="alert('Good: replace the battery if safe/allowed or notify maintenance promptly.')">Replace battery or contact maintenance</button><button class="choice" onclick="alert('Unsafe: do not disable a smoke alarm and leave it that way.')">Remove the alarm</button></div>
-<div class="card"><h3>Water Is Leaking</h3><p>What is the safest response?</p><button class="choice" onclick="alert('Good: protect yourself, stop water if you can safely do so, and contact maintenance/landlord.')">Act safely and report it</button></div></div></div>
-<div class="print-sheet"><h2>Apartment Skills Reflection</h2><p>Name: __________________ Date: ________</p><p>Problem I practiced:</p><div class="line"></div><p>Safe first step:</p><div class="bigline"></div><p>Who should I contact?</p><div class="line"></div><button class="btn no-print" onclick="window.print()">Print</button></div></main><script></script></body></html>
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Apartment Living Simulator</title>
+<style>
+:root{
+  --navy:#12346b; --blue:#0d5bd7; --red:#e5223e; --green:#14875b;
+  --gold:#d99a00; --ink:#10254d; --soft:#f6f8fc; --line:#d6dfec;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--soft);color:#1a2944;line-height:1.45}
+header{background:linear-gradient(135deg,#12346b,#0d5bd7);color:#fff;padding:26px 18px}
+.wrap{max-width:1160px;margin:auto;padding:20px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+nav a,.btn{display:inline-block;background:#12346b;color:#fff;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+header nav a{background:rgba(9,42,99,.7)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.07)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.card h2,.card h3{color:var(--navy);margin-top:0}
+.section-title{color:var(--navy);margin-top:34px}
+.choice{display:block;width:100%;text-align:left;background:white;border:2px solid #cbd6e8;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}
+.choice:hover{border-color:var(--blue);background:#eef4ff}
+.feedback{display:none;padding:12px;border-radius:12px;margin-top:12px;font-weight:800}
+.good{background:#eaf8f0;border-left:5px solid var(--green)}
+.think{background:#fff6df;border-left:5px solid var(--gold)}
+.risky{background:#fff0f1;border-left:5px solid var(--red)}
+.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
+.score-box{background:#fff;border:3px solid var(--navy);border-radius:18px;padding:22px;margin:30px 0;text-align:center}
+.score-number{font-size:3rem;font-weight:900;color:var(--navy);margin:8px 0}
+.progress{height:18px;background:#e8eef8;border-radius:999px;overflow:hidden;max-width:650px;margin:14px auto}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#0d5bd7,#14875b);transition:width .3s ease}
+.print-sheet{background:#fff;border:2px solid var(--navy);border-radius:14px;padding:18px;margin:24px 0}
+.line{border-bottom:1px solid #555;min-height:28px;margin:8px 0}
+.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
+.muted{color:#62728b}
+@media(max-width:650px){.wrap{padding:14px}}
+@media print{header,nav,.choice,.feedback,.no-print,.score-box{display:none!important}body{background:white}.card{box-shadow:none;border:0}.print-sheet{border:1px solid #000}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<h1 style="margin:0">🏠 Apartment Living Simulator</h1>
+<p style="margin:6px 0 0">Real-life practice for living on your own after high school</p>
+<nav>
+<a href="index.html">⌂ Home</a>
+<a href="index.html#staff">🧰 Staff</a>
+<a href="worksheets.html">📝 Worksheets</a>
+<a href="group-projects.html">👥 Group Projects</a>
+<a href="simulators.html">🎮 Simulators</a>
+</nav>
+</div>
+</header>
+<main class="wrap">
+<div class="card">
+<h2>Adulting: Apartment Edition</h2>
+<p>Choose what you would do first. Each scenario gives feedback. Some choices are smart, some are okay but incomplete, and some could cause bigger problems.</p>
+<span class="tag">Workplace Readiness</span>
+<span class="tag">Independent Living</span>
+<span class="tag">Problem Solving</span>
+<span class="tag">Self-Advocacy</span>
+</div>
+<h2 class="section-title">💵 Money &amp; Bills</h2>
+<div class="grid">
+<div class="card scenario"><h3>1. Rent Is Due Friday</h3><p>You are $60 short and payday is next week.</p>
+<button class="choice" data-points="1">Check your budget and cut extra spending.</button>
+<button class="choice" data-points="2">Contact the landlord early and make a payment plan.</button>
+<button class="choice" data-points="0">Ignore it and hope it works out.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>2. Electric Bill Is Huge</h3><p>The bill is much higher than expected and you still need gas money.</p>
+<button class="choice" data-points="0">Do not pay it.</button>
+<button class="choice" data-points="2">Review the bill, reduce usage, and call if something looks wrong.</button>
+<button class="choice" data-points="1">Turn off extra lights and appliances.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>3. Friends Want Takeout</h3><p>You have $35 left until payday and still need groceries.</p>
+<button class="choice" data-points="2">Check your grocery budget before spending anything.</button>
+<button class="choice" data-points="0">Spend all $35 because payday is coming.</button>
+<button class="choice" data-points="1">Order something cheap only if necessities are covered.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>4. You Want a New TV</h3><p>The TV is $250, but rent is due next week.</p>
+<button class="choice" data-points="1">Look for a cheaper used TV later.</button>
+<button class="choice" data-points="0">Buy it now and worry about rent later.</button>
+<button class="choice" data-points="2">Pay required bills first and save for the TV.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>5. Phone Bill Is Past Due</h3><p>Your phone may be shut off tomorrow.</p>
+<button class="choice" data-points="2">Call the phone company and ask about payment options.</button>
+<button class="choice" data-points="1">Review your plan and see what can be lowered next month.</button>
+<button class="choice" data-points="0">Ignore the notice.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>6. You Get Paid Today</h3><p>You have rent, groceries, gas, and entertainment to cover.</p>
+<button class="choice" data-points="0">Spend on fun first because you worked hard.</button>
+<button class="choice" data-points="2">Pay needs first and set aside savings before wants.</button>
+<button class="choice" data-points="1">Write down what is due before spending.</button><div class="feedback"></div></div>
+</div>
+<h2 class="section-title">🧑‍🤝‍🧑 Roommates &amp; Neighbors</h2>
+<div class="grid">
+<div class="card scenario"><h3>7. Roommate Ate Your Food</h3><p>You planned that food for dinner and now it is gone.</p>
+<button class="choice" data-points="0">Eat their food to get even.</button>
+<button class="choice" data-points="2">Talk calmly and set a food rule together.</button>
+<button class="choice" data-points="1">Label your groceries next time.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>8. Roommate Never Cleans</h3><p>Dishes and trash keep piling up.</p>
+<button class="choice" data-points="1">Clean everything yourself this time.</button>
+<button class="choice" data-points="2">Have a roommate meeting and divide chores.</button>
+<button class="choice" data-points="0">Throw their belongings away.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>9. Noise Complaint</h3><p>A neighbor says your music is too loud at night.</p>
+<button class="choice" data-points="2">Turn it down and check quiet-hour rules.</button>
+<button class="choice" data-points="1">Use headphones.</button>
+<button class="choice" data-points="0">Turn the music up louder.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>10. Friend Wants to Move In</h3><p>They say it will only be a few weeks.</p>
+<button class="choice" data-points="0">Let them move in without telling anyone.</button>
+<button class="choice" data-points="1">Let them stay one night while you check the rules.</button>
+<button class="choice" data-points="2">Check your lease and ask the landlord first.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>11. Roommate Is Late With Their Half</h3><p>Rent is due tomorrow and your roommate has not paid you.</p>
+<button class="choice" data-points="2">Talk with them immediately and make a clear plan.</button>
+<button class="choice" data-points="0">Say nothing and let the rent be late.</button>
+<button class="choice" data-points="1">Send a reminder text and check the due date.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>12. Neighbor Keeps Parking in Your Spot</h3><p>Your lease gives you one assigned parking spot.</p>
+<button class="choice" data-points="1">Leave a polite note.</button>
+<button class="choice" data-points="0">Block their car in.</button>
+<button class="choice" data-points="2">Document it and contact the office if it keeps happening.</button><div class="feedback"></div></div>
+</div>
+<h2 class="section-title">🔧 Maintenance &amp; Safety</h2>
+<div class="grid">
+<div class="card scenario"><h3>13. Smoke Alarm Keeps Chirping</h3><p>It starts chirping while you are getting ready for work.</p>
+<button class="choice" data-points="2">Replace the battery if allowed or contact maintenance.</button>
+<button class="choice" data-points="0">Take it down and leave it off.</button>
+<button class="choice" data-points="1">Ask for help if you are unsure what to do.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>14. Water Under the Sink</h3><p>You notice a leak before leaving the apartment.</p>
+<button class="choice" data-points="1">Put towels down and then contact maintenance.</button>
+<button class="choice" data-points="0">Ignore it until tonight.</button>
+<button class="choice" data-points="2">Move belongings away and report the leak immediately.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>15. You Smell Gas</h3><p>There is a strong gas smell inside.</p>
+<button class="choice" data-points="0">Light a candle to cover the smell.</button>
+<button class="choice" data-points="2">Leave immediately and call emergency/utility help from outside.</button>
+<button class="choice" data-points="0">Go to sleep and check tomorrow.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>16. You Get Locked Out</h3><p>Your keys are inside.</p>
+<button class="choice" data-points="1">Call your roommate if they are authorized to enter.</button>
+<button class="choice" data-points="2">Call the landlord, office, or maintenance.</button>
+<button class="choice" data-points="0">Break a window.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>17. Toilet Is Overflowing</h3><p>Water is rising quickly.</p>
+<button class="choice" data-points="0">Keep flushing.</button>
+<button class="choice" data-points="2">Stop using it, shut off water if you know how safely, and call maintenance.</button>
+<button class="choice" data-points="1">Move items away from the water and get help.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>18. Power Goes Out</h3><p>Your apartment suddenly loses electricity.</p>
+<button class="choice" data-points="2">Check whether the outage affects the building and report it if needed.</button>
+<button class="choice" data-points="1">Use a flashlight and keep the refrigerator closed.</button>
+<button class="choice" data-points="0">Use candles right beside curtains.</button><div class="feedback"></div></div>
+</div>
+<h2 class="section-title">🧺 Everyday Living</h2>
+<div class="grid">
+<div class="card scenario"><h3>19. Laundry Disaster</h3><p>A red shirt turned your white clothes pink.</p>
+<button class="choice" data-points="2">Learn to sort clothes and read care labels.</button>
+<button class="choice" data-points="0">Pour bleach on everything.</button>
+<button class="choice" data-points="1">Try rewashing correctly.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>20. Trash Is Piling Up</h3><p>The apartment is starting to smell.</p>
+<button class="choice" data-points="1">Spray air freshener.</button>
+<button class="choice" data-points="2">Take the trash out and make a cleaning routine.</button>
+<button class="choice" data-points="0">Keep adding more bags.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>21. No Food for Dinner</h3><p>The refrigerator is almost empty.</p>
+<button class="choice" data-points="0">Use rent money for delivery.</button>
+<button class="choice" data-points="2">Make a simple meal from what you have and plan groceries.</button>
+<button class="choice" data-points="1">Check your budget before ordering food.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>22. Wi-Fi Stops Working</h3><p>You need internet for homework or a job application.</p>
+<button class="choice" data-points="1">Use the library or another safe backup connection.</button>
+<button class="choice" data-points="0">Give up and miss the deadline.</button>
+<button class="choice" data-points="2">Restart equipment, check outages, and contact the provider if needed.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>23. You Burn Dinner</h3><p>The smoke alarm goes off while cooking.</p>
+<button class="choice" data-points="2">Turn off the heat, remove the pan safely, and ventilate the area.</button>
+<button class="choice" data-points="0">Leave the stove on and go outside.</button>
+<button class="choice" data-points="1">Open a window after making sure the stove is off.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>24. You Oversleep</h3><p>You are late for school or work.</p>
+<button class="choice" data-points="0">Do not show up and do not tell anyone.</button>
+<button class="choice" data-points="2">Contact the school/workplace, get ready quickly, and make a plan to prevent it.</button>
+<button class="choice" data-points="1">Set multiple alarms for next time.</button><div class="feedback"></div></div>
+</div>
+<h2 class="section-title">📋 Lease, Rules &amp; Responsibility</h2>
+<div class="grid">
+<div class="card scenario"><h3>25. You Get a Lease</h3><p>The landlord says, “Just sign here.”</p>
+<button class="choice" data-points="1">Ask a trusted adult to review it with you.</button>
+<button class="choice" data-points="2">Read it, ask questions, and understand fees and rules before signing.</button>
+<button class="choice" data-points="0">Sign without reading it.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>26. You Want a Pet</h3><p>Your friend offers you a puppy for free.</p>
+<button class="choice" data-points="0">Hide the puppy from the landlord.</button>
+<button class="choice" data-points="2">Check pet rules, fees, and your ability to care for it first.</button>
+<button class="choice" data-points="1">Make a monthly pet budget.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>27. Maintenance Is Coming</h3><p>You receive notice they will enter tomorrow.</p>
+<button class="choice" data-points="2">Read the notice and prepare the repair area.</button>
+<button class="choice" data-points="0">Pretend you never saw it.</button>
+<button class="choice" data-points="1">Call the office if the timing or reason is unclear.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>28. A Package Is Missing</h3><p>Tracking says delivered, but it is not outside your door.</p>
+<button class="choice" data-points="1">Check nearby safe locations.</button>
+<button class="choice" data-points="0">Accuse a neighbor immediately.</button>
+<button class="choice" data-points="2">Check delivery details and contact the carrier/building office.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>29. You Want to Paint the Walls</h3><p>You want a different color in your bedroom.</p>
+<button class="choice" data-points="2">Check the lease and ask for permission first.</button>
+<button class="choice" data-points="1">Use removable decorations instead.</button>
+<button class="choice" data-points="0">Paint without asking.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>30. You Plan to Move Out</h3><p>Your lease ends in two months.</p>
+<button class="choice" data-points="0">Just leave when you feel like it.</button>
+<button class="choice" data-points="1">Start packing and cleaning.</button>
+<button class="choice" data-points="2">Review notice requirements, clean, document condition, and return keys properly.</button><div class="feedback"></div></div>
+</div>
+<h2 class="section-title">🧾 More Real-Life Apartment Situations</h2>
+<div class="grid">
+<div class="card scenario"><h3>31. Grocery Money Is Running Low</h3><p>You have $18 left for food until payday.</p>
+<button class="choice" data-points="2">Plan low-cost meals and buy only what you need.</button>
+<button class="choice" data-points="0">Use the money for snacks and hope someone else buys dinner.</button>
+<button class="choice" data-points="1">Check what food you already have first.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>32. Your Sink Is Clogged</h3><p>The water is draining very slowly.</p>
+<button class="choice" data-points="1">Stop using the sink and try a safe basic fix if allowed.</button>
+<button class="choice" data-points="2">Report the problem if it does not clear or you are unsure.</button>
+<button class="choice" data-points="0">Pour random chemicals together.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>33. Laundry Room Is Full</h3><p>All the washers are being used.</p>
+<button class="choice" data-points="0">Take someone else's clothes out immediately.</button>
+<button class="choice" data-points="2">Wait, come back later, or follow the posted laundry rules.</button>
+<button class="choice" data-points="1">Check when the laundry room is usually less busy.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>34. Your Heater Stops Working</h3><p>It is very cold outside.</p>
+<button class="choice" data-points="2">Contact maintenance or the landlord right away.</button>
+<button class="choice" data-points="1">Use safe blankets and approved heating options while waiting.</button>
+<button class="choice" data-points="0">Use the oven to heat the apartment.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>35. You Forgot Your Rent Due Date</h3><p>You realize rent was due yesterday.</p>
+<button class="choice" data-points="0">Avoid the landlord.</button>
+<button class="choice" data-points="1">Set reminders for next month.</button>
+<button class="choice" data-points="2">Contact the landlord and pay or make arrangements as soon as possible.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>36. Your Roommate Has Guests Every Night</h3><p>You cannot sleep or study.</p>
+<button class="choice" data-points="2">Talk calmly and agree on guest rules and quiet hours.</button>
+<button class="choice" data-points="0">Yell at the guests every night.</button>
+<button class="choice" data-points="1">Use headphones or study elsewhere temporarily.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>37. You See Bugs in the Kitchen</h3><p>You notice several roaches near the cabinets.</p>
+<button class="choice" data-points="1">Clean food crumbs and store food in sealed containers.</button>
+<button class="choice" data-points="0">Ignore them and hope they leave.</button>
+<button class="choice" data-points="2">Clean up and report the pest problem to the landlord or maintenance.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>38. You Lose Your Job</h3><p>Rent and bills are still due next month.</p>
+<button class="choice" data-points="2">Review your budget, apply for work, and contact bill providers early if needed.</button>
+<button class="choice" data-points="1">Cut nonessential spending immediately.</button>
+<button class="choice" data-points="0">Keep spending like normal.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>39. Your Refrigerator Stops Cooling</h3><p>Your food is getting warm.</p>
+<button class="choice" data-points="0">Leave all the food inside for several days.</button>
+<button class="choice" data-points="2">Report the appliance problem and protect perishable food safely.</button>
+<button class="choice" data-points="1">Keep the door closed as much as possible while getting help.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>40. You Spill Something on the Carpet</h3><p>You accidentally spill a drink.</p>
+<button class="choice" data-points="1">Blot the spill right away.</button>
+<button class="choice" data-points="2">Clean it promptly using the correct method for the carpet.</button>
+<button class="choice" data-points="0">Leave it until the end of the week.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>41. Your Friend Wants to Borrow Your Key</h3><p>They want to get into your apartment while you are gone.</p>
+<button class="choice" data-points="0">Give them a copy without checking rules.</button>
+<button class="choice" data-points="2">Keep your key secure and follow lease/building rules.</button>
+<button class="choice" data-points="1">Meet them yourself if they need something important.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>42. Mail Looks Important</h3><p>You receive an envelope from your landlord or utility company.</p>
+<button class="choice" data-points="2">Open it, read it, and respond by the deadline if needed.</button>
+<button class="choice" data-points="0">Throw it away without reading it.</button>
+<button class="choice" data-points="1">Ask someone you trust for help understanding it.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>43. Your Bathroom Has Mold</h3><p>You see dark spots growing near the ceiling.</p>
+<button class="choice" data-points="1">Keep the area ventilated and dry if possible.</button>
+<button class="choice" data-points="2">Report the moisture/mold problem so it can be handled properly.</button>
+<button class="choice" data-points="0">Paint over it and say nothing.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>44. You Need Furniture</h3><p>You want a couch but do not have much money.</p>
+<button class="choice" data-points="0">Use rent money to buy an expensive couch.</button>
+<button class="choice" data-points="1">Look for low-cost or secondhand options.</button>
+<button class="choice" data-points="2">Set a budget and buy only after necessities are covered.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>45. You Hear a Fire Alarm</h3><p>The building alarm starts sounding.</p>
+<button class="choice" data-points="2">Leave using the safe exit route and follow emergency instructions.</button>
+<button class="choice" data-points="0">Stay inside because you do not see smoke.</button>
+<button class="choice" data-points="1">Grab only essential items if they are immediately available, then leave.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>46. Your Package Needs a Signature</h3><p>You will be at work when it arrives.</p>
+<button class="choice" data-points="1">Check whether delivery can be rescheduled.</button>
+<button class="choice" data-points="2">Use an approved delivery option such as pickup, reschedule, or building office.</button>
+<button class="choice" data-points="0">Post your building entry code online so the driver can get in.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>47. Your Bathroom Is Always Messy</h3><p>You keep running out of clean towels and toiletries.</p>
+<button class="choice" data-points="2">Make a weekly cleaning and supply-check routine.</button>
+<button class="choice" data-points="1">Buy extra toiletries when you notice you are getting low.</button>
+<button class="choice" data-points="0">Wait until you completely run out every time.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>48. You Find a Better Apartment</h3><p>Your current lease still has months left.</p>
+<button class="choice" data-points="0">Move out immediately and stop paying.</button>
+<button class="choice" data-points="2">Review your current lease before making any move.</button>
+<button class="choice" data-points="1">Ask the landlord about early-termination options.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>49. You Are Going Away for a Week</h3><p>You will be out of town.</p>
+<button class="choice" data-points="1">Take out trash and secure food before leaving.</button>
+<button class="choice" data-points="0">Leave doors unlocked for convenience.</button>
+<button class="choice" data-points="2">Secure the apartment, manage mail/packages, and follow any building rules.</button><div class="feedback"></div></div>
+<div class="card scenario"><h3>50. Your Budget Finally Has Extra Money</h3><p>All bills are paid and you have $100 left.</p>
+<button class="choice" data-points="2">Put some into savings and decide how much is safe to spend.</button>
+<button class="choice" data-points="0">Spend all of it immediately because it is extra.</button>
+<button class="choice" data-points="1">Save part and use part for something you want.</button><div class="feedback"></div></div>
+</div>
+<div class="score-box no-print">
+<h2>🏆 Apartment Life Score</h2>
+<p>Complete all 50 scenarios, then check your score.</p>
+<div class="score-number" id="scoreNumber">0 / 100</div>
+<div class="progress"><div id="scoreBar"></div></div>
+<p class="muted" id="answeredCount">0 of 50 scenarios answered</p>
+<p id="scoreMessage"><strong>Finish the scenarios to see your result.</strong></p>
+<button class="btn" onclick="showScore()">CHECK MY SCORE</button>
+<button class="btn" onclick="resetScore()" style="background:#e5223e">RESET</button>
+</div>
+<div class="print-sheet">
+<h2>Apartment Skills Reflection</h2>
+<p>Name: ______________________________ Date: ____________</p>
+<p>Scenario I practiced:</p><div class="line"></div>
+<p>Best first step:</p><div class="bigline"></div>
+<p>Why was this the best choice?</p><div class="bigline"></div>
+<p>Who could I contact for help?</p><div class="line"></div>
+<p>One thing I learned about living on my own:</p><div class="bigline"></div>
+<button class="btn no-print" onclick="window.print()">🖨️ Print Reflection</button>
+</div>
+</main>
+<script>
+const scores = new Map();
+document.querySelectorAll('.scenario').forEach((card,idx)=>{
+  card.dataset.id = idx+1;
+  card.querySelectorAll('.choice').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const points = Number(btn.dataset.points);
+      scores.set(card.dataset.id, points);
+      const box = card.querySelector('.feedback');
+      box.style.display='block';
+      box.className='feedback ' + (points===2?'good':points===1?'think':'risky');
+      box.textContent = points===2 ? '✅ Smart choice. This is the safest or most responsible first step.'
+                      : points===1 ? '🟡 This could help, but there is a stronger first step.'
+                      : '❌ Risky choice. This could make the problem worse.';
+      card.querySelectorAll('.choice').forEach(b=>{b.style.outline='';b.style.background='';});
+      btn.style.outline='3px solid #0d5bd7';
+      btn.style.background='#eef4ff';
+      updateScore();
+    });
+  });
+});
+function updateScore(){
+  const total=[...scores.values()].reduce((a,b)=>a+b,0);
+  const answered=scores.size;
+  document.getElementById('scoreNumber').textContent=`${total} / 100`;
+  document.getElementById('answeredCount').textContent=`${answered} of 50 scenarios answered`;
+  document.getElementById('scoreBar').style.width=`${(total/100)*100}%`;
+}
+function showScore(){
+  const total=[...scores.values()].reduce((a,b)=>a+b,0);
+  const answered=scores.size;
+  const m=document.getElementById('scoreMessage');
+  if(answered<50){m.innerHTML=`<strong>You have ${answered} of 50 completed. Finish the rest for your final score.</strong>`;return;}
+  if(total>=90)m.innerHTML='<strong>Excellent apartment-living skills. You are making strong, safe, responsible choices.</strong>';
+  else if(total>=75)m.innerHTML='<strong>Great job. You understand most apartment-living decisions. Review the yellow choices.</strong>';
+  else if(total>=55)m.innerHTML='<strong>Good start. You have several solid skills, but some situations need more practice.</strong>';
+  else m.innerHTML='<strong>Keep practicing. Review the feedback and try again before living on your own.</strong>';
+}
+function resetScore(){
+  scores.clear();
+  document.querySelectorAll('.feedback').forEach(x=>{x.style.display='none';x.textContent='';});
+  document.querySelectorAll('.choice').forEach(x=>{x.style.outline='';x.style.background='';});
+  document.getElementById('scoreNumber').textContent='0 / 100';
+  document.getElementById('answeredCount').textContent='0 of 50 scenarios answered';
+  document.getElementById('scoreBar').style.width='0%';
+  document.getElementById('scoreMessage').innerHTML='<strong>Finish the scenarios to see your result.</strong>';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
