@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>My First Apartment Simulator</title>
+<style>
+:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
+header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}
+.wrap{max-width:1150px;margin:auto;padding:22px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+.btn.red{background:var(--red)} .btn.green{background:var(--green)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.card h2,.card h3{color:var(--navy);margin-top:0}
+.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}
+.choice:hover{border-color:var(--blue);background:#f3f7ff}
+.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none;font-weight:700}
+.feedback.good{background:#eaf8f0;border-left:5px solid var(--green)}
+.feedback.think{background:#fff6df;border-left:5px solid var(--gold)}
+.feedback.risky{background:#fff0f1;border-left:5px solid var(--red)}
+.section-title{margin-top:34px;color:var(--navy);font-size:1.55rem}
+.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:24px 0}
+.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}
+.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
+.muted{color:#5d6d86}
+.score-box{background:#fff;border:3px solid var(--navy);border-radius:18px;padding:22px;margin:28px 0;text-align:center}
+.score-number{font-size:3rem;font-weight:900;color:var(--navy);margin:8px 0}
+.score-message{font-size:1.15rem;font-weight:700;margin:8px 0}
+.progress{height:18px;background:#e8eef8;border-radius:999px;overflow:hidden;margin:14px auto;max-width:620px}
+.progress > div{height:100%;width:0;background:linear-gradient(90deg,#0d5bd7,#138a55);transition:width .3s ease}
+@media(max-width:650px){.wrap{padding:14px}header{padding:22px 14px}}
+@media print{header,nav,.no-print,.btn,.choice,.feedback,.sim-only{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<h1 style="margin:0">🏠 My First Apartment</h1>
+<p style="margin:6px 0 0">Real-life practice for living on your own after high school</p>
+<nav>
+<a href="index.html">⌂ Home</a>
+<a href="index.html#staff">🧰 Staff</a>
+<a href="worksheets.html">📝 Worksheets</a>
+<a href="group-projects.html">👥 Group Projects</a>
+<a href="simulators.html">🎮 Simulators</a>
+</nav>
+</div>
+</header>
+<main class="wrap">
+<div class="card">
+<h2>Adulting: Apartment Edition</h2>
+<p>Pick what you would do first. Some choices are smart, some are risky, and some need more thinking.</p>
+<span class="tag">Workplace Readiness</span>
+<span class="tag">Independent Living</span>
+<span class="tag">Problem Solving</span>
+<span class="tag">Self-Advocacy</span>
+</div>
+<h2 class="section-title">💵 Money &amp; Bills</h2>
+<div class="grid">
+<div class="card"><h3>Rent Is Due Friday</h3><p>You are $60 short and payday is next week. What do you do first?</p>
+
+
+<button class="choice" onclick="fb(this,'think','Good thinking: checking your budget helps, but you still need to communicate about rent.')">Look at your budget and cut extra spending.</button><button class="choice" onclick="fb(this,'good','Smart choice: contact the landlord early and review your budget before the due date.')">Call or message the landlord early and make a plan.</button><button class="choice" onclick="fb(this,'risky','Risky: ignoring rent can lead to late fees and bigger housing problems.')">Ignore it and hope it works out.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>The Electric Bill Is Huge</h3><p>Your bill is much higher than expected and you still need gas money.</p>
+
+
+<button class="choice" onclick="fb(this,'risky','Risky: unpaid utilities may be shut off or charged late fees.')">Do not pay it.</button><button class="choice" onclick="fb(this,'good','Smart choice: review the bill, reduce usage, and contact the utility company if something looks wrong.')">Check the bill and figure out why it went up.</button><button class="choice" onclick="fb(this,'think','That may help later, but first you need to understand the current bill and due date.')">Turn off every light for the rest of the month.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>Your Friends Want Takeout</h3><p>You only have $35 left until payday and still need groceries.</p>
+
+
+<button class="choice" onclick="fb(this,'good','Smart choice: needs come before wants. Plan food money first.')">Check your food budget before spending.</button><button class="choice" onclick="fb(this,'risky','Risky: spending your last grocery money can leave you without essentials.')">Spend all $35 because payday is coming.</button><button class="choice" onclick="fb(this,'think','A small treat might fit, but only after you know what necessities cost.')">Order the cheapest thing on the menu.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>You Want a New TV</h3><p>The TV is $250, but rent is due next week.</p>
+
+
+<button class="choice" onclick="fb(this,'think','Compare prices if you truly need one, but bills still come first.')">Look for a cheaper used TV.</button><button class="choice" onclick="fb(this,'risky','Risky: rent and utilities should come before entertainment purchases.')">Buy it now and worry about rent later.</button><button class="choice" onclick="fb(this,'good','Smart choice: pay required bills first and save for the TV.')">Wait and save after bills are paid.</button><div class="feedback"></div>
+</div>
+</div>
+<h2 class="section-title">🧑‍🤝‍🧑 Roommates &amp; Neighbors</h2>
+<div class="grid">
+<div class="card"><h3>Your Roommate Ate Your Food</h3><p>You planned that food for dinner and now it is gone.</p>
+
+
+<button class="choice" onclick="fb(this,'risky','Risky: getting revenge usually creates a bigger roommate problem.')">Eat their food to get even.</button><button class="choice" onclick="fb(this,'think','Labeling food may help, but communication is still important.')">Label your groceries next time.</button><button class="choice" onclick="fb(this,'good','Smart choice: address the problem calmly and make a plan for shared versus personal food.')">Talk calmly and set a food rule together.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>Your Roommate Never Cleans</h3><p>Dishes and trash keep piling up.</p>
+
+
+<button class="choice" onclick="fb(this,'good','Smart choice: make a clear chore plan and agree on expectations.')">Have a roommate meeting and divide chores.</button><button class="choice" onclick="fb(this,'think','Cleaning it yourself fixes today, but not the ongoing problem.')">Clean everything yourself.</button><button class="choice" onclick="fb(this,'risky','Risky: throwing away someone else’s belongings can create conflict.')">Throw their stuff away.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>Noise Complaint</h3><p>A neighbor says your music is too loud at night.</p>
+
+
+<button class="choice" onclick="fb(this,'think','Headphones can be a great solution if you still want loud music.')">Use headphones.</button><button class="choice" onclick="fb(this,'good','Smart choice: lower the volume and respect quiet hours.')">Turn it down and check apartment quiet-hour rules.</button><button class="choice" onclick="fb(this,'risky','Risky: repeated noise complaints can lead to lease problems.')">Turn it up louder.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>A Friend Wants to Move In</h3><p>They say it will only be for a few weeks.</p>
+
+
+<button class="choice" onclick="fb(this,'risky','Risky: an unauthorized resident can violate your lease.')">Let them move in without telling anyone.</button><button class="choice" onclick="fb(this,'good','Smart choice: check the lease before allowing another person to live there.')">Check your lease and talk with the landlord first.</button><button class="choice" onclick="fb(this,'think','Helping a friend is kind, but your housing rules still matter.')">Let them stay one night while you figure it out.</button><div class="feedback"></div>
+</div>
+</div>
+<h2 class="section-title">🔧 Maintenance &amp; Safety</h2>
+<div class="grid">
+<div class="card"><h3>Smoke Alarm Keeps Chirping</h3><p>It starts chirping while you are getting ready for school or work.</p>
+
+
+<button class="choice" onclick="fb(this,'good','Smart choice: replace the battery if allowed and safe, or contact maintenance promptly.')">Replace the battery or contact maintenance.</button><button class="choice" onclick="fb(this,'risky','Unsafe: a smoke alarm should not be disabled and left off.')">Take the alarm down and leave it off.</button><button class="choice" onclick="fb(this,'think','Asking a trusted adult or maintenance for help is fine if you are unsure.')">Ask someone for help.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>Water Under the Sink</h3><p>You notice a leak before leaving for work.</p>
+
+
+<button class="choice" onclick="fb(this,'think','Towels can limit damage for a short time, but maintenance still needs to know.')">Put towels down and then call maintenance.</button><button class="choice" onclick="fb(this,'risky','Risky: small leaks can become major water damage.')">Ignore it until tonight.</button><button class="choice" onclick="fb(this,'good','Smart choice: protect your belongings, act safely, and report the leak right away.')">Move items away and report it immediately.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>You Smell Gas</h3><p>You notice a strong gas smell inside the apartment.</p>
+
+
+<button class="choice" onclick="fb(this,'risky','Unsafe: do not stay inside and wait when you suspect a gas leak.')">Go to sleep and check tomorrow.</button><button class="choice" onclick="fb(this,'risky','Unsafe: do not create flames or sparks when gas may be present.')">Light a candle to cover the smell.</button><button class="choice" onclick="fb(this,'good','Safety first: leave the area and contact emergency/utility help from a safe location.')">Leave immediately and call for emergency help from outside.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>You Get Locked Out</h3><p>Your keys are inside and the door locked behind you.</p>
+
+
+<button class="choice" onclick="fb(this,'good','Smart choice: use the building’s approved lockout procedure or contact the landlord/maintenance.')">Call the landlord, office, or maintenance.</button><button class="choice" onclick="fb(this,'think','A trusted roommate may be able to help if they are authorized to enter.')">Call your roommate.</button><button class="choice" onclick="fb(this,'risky','Risky: forcing entry can damage property and cost you money.')">Break a window.</button><div class="feedback"></div>
+</div>
+</div>
+<h2 class="section-title">🧺 Everyday Living</h2>
+<div class="grid">
+<div class="card"><h3>Laundry Disaster</h3><p>You washed a red shirt with white clothes and everything turned pink.</p>
+
+
+<button class="choice" onclick="fb(this,'think','Rewashing may help depending on the fabric, but learning the cause matters too.')">Try rewashing correctly.</button><button class="choice" onclick="fb(this,'good','Smart choice: sort clothes by color and read care labels before washing next time.')">Learn how to sort clothes and check labels.</button><button class="choice" onclick="fb(this,'risky','Risky: bleach can damage colored clothing and some fabrics.')">Pour bleach on everything.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>The Trash Is Piling Up</h3><p>Your apartment is starting to smell.</p>
+
+
+<button class="choice" onclick="fb(this,'risky','Risky: leaving trash can attract pests and create sanitation problems.')">Keep adding more trash bags.</button><button class="choice" onclick="fb(this,'good','Smart choice: remove trash and build a regular cleaning routine.')">Take the trash out and make a weekly routine.</button><button class="choice" onclick="fb(this,'think','Air freshener may cover the smell, but it does not fix the cause.')">Spray air freshener.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>No Food for Dinner</h3><p>You get home late and the refrigerator is almost empty.</p>
+
+
+<button class="choice" onclick="fb(this,'good','Smart choice: use what you have and make a grocery plan for tomorrow.')">Make a simple meal from what you have.</button><button class="choice" onclick="fb(this,'risky','Risky: repeatedly using bill money for takeout can create bigger problems.')">Use your rent money for delivery.</button><button class="choice" onclick="fb(this,'think','Takeout is okay sometimes if it fits your budget.')">Check your budget before ordering food.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>The Wi-Fi Stops Working</h3><p>You need internet to finish homework or complete a job application.</p>
+
+
+<button class="choice" onclick="fb(this,'think','A library or trusted public connection can be a backup for urgent school/work tasks.')">Use the library as a backup.</button><button class="choice" onclick="fb(this,'risky','Risky: missing deadlines without trying alternatives can create school or work problems.')">Give up and miss the deadline.</button><button class="choice" onclick="fb(this,'good','Smart choice: troubleshoot, check for an outage, and contact the provider if needed.')">Restart equipment and check for an outage.</button><div class="feedback"></div>
+</div>
+</div>
+<h2 class="section-title">📋 Lease &amp; Responsibility</h2>
+<div class="grid">
+<div class="card"><h3>You Get a Lease</h3><p>The landlord says, “Just sign here.” It is several pages long.</p>
+
+
+<button class="choice" onclick="fb(this,'risky','Risky: signing without understanding the lease can create expensive surprises.')">Sign without reading it.</button><button class="choice" onclick="fb(this,'think','Having a trusted adult review it can help, but you should understand it too.')">Ask a trusted adult to review it with you.</button><button class="choice" onclick="fb(this,'good','Smart choice: read the lease, ask questions, and understand fees and rules before signing.')">Read it and ask questions before signing.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>You Want a Pet</h3><p>Your friend offers you a puppy for free.</p>
+
+
+<button class="choice" onclick="fb(this,'good','Smart choice: check pet rules, deposits, monthly fees, and your ability to care for the animal first.')">Check the lease and calculate the real cost first.</button><button class="choice" onclick="fb(this,'think','Thinking about food, vet care, and time is important too.')">Make a monthly pet budget.</button><button class="choice" onclick="fb(this,'risky','Risky: hiding a pet can violate the lease and lead to fees.')">Hide the puppy from the landlord.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>Maintenance Is Coming</h3><p>You receive notice that maintenance will enter tomorrow.</p>
+
+
+<button class="choice" onclick="fb(this,'think','Calling the office is fine if the timing or purpose is unclear.')">Call if you have questions.</button><button class="choice" onclick="fb(this,'good','Smart choice: read the notice, secure personal items, and make sure the repair area is accessible.')">Read the notice and prepare the area.</button><button class="choice" onclick="fb(this,'risky','Risky: ignoring repair notices can delay important maintenance.')">Pretend you never saw the notice.</button><div class="feedback"></div>
+</div>
+<div class="card"><h3>A Package Is Missing</h3><p>Tracking says delivered, but it is not outside your door.</p>
+
+
+<button class="choice" onclick="fb(this,'risky','Risky: accusing someone without evidence can create unnecessary conflict.')">Accuse a neighbor immediately.</button><button class="choice" onclick="fb(this,'good','Smart choice: check the delivery details, building office, neighbors, and then report the missing package.')">Check delivery details and contact the carrier/building office.</button><button class="choice" onclick="fb(this,'think','Checking nearby safe locations may solve it quickly.')">Look around the building first.</button><div class="feedback"></div>
+</div>
+</div>
+<div class="score-box no-print">
+<h2>🏆 Apartment Life Score</h2>
+<p>Answer all 20 scenarios, then check your score.</p>
+<div class="score-number" id="scoreNumber">0 / 40</div>
+<div class="progress"><div id="scoreBar"></div></div>
+<div class="score-message" id="scoreMessage">Complete the scenarios to see your result.</div>
+<p class="muted" id="answeredCount">0 of 20 scenarios answered</p>
+<button class="btn green" onclick="showScore()">CHECK MY SCORE</button>
+<button class="btn red" onclick="resetScore()">RESET SCORE</button>
+</div>
+<div class="print-sheet">
+<h2>My First Apartment Reflection</h2>
+<p>Name: ______________________________ Date: ____________</p>
+<p>Scenario I practiced:</p><div class="line"></div>
+<p>What was the smartest first step?</p><div class="bigline"></div>
+<p>Why was that the best choice?</p><div class="bigline"></div>
+<p>Who could I contact for help?</p><div class="line"></div>
+<p>One thing I learned about living on my own:</p><div class="bigline"></div>
+<button class="btn no-print" onclick="window.print()">🖨️ Print Reflection</button>
+</div>
+</main>
+<script>
+const scenarioScores = new Map();
+
+function fb(btn,type,msg){
+  const card=btn.closest('.card');
+  const box=card.querySelector('.feedback');
+  box.className='feedback '+type;
+  box.textContent=msg;
+  box.style.display='block';
+
+  // One recorded answer per scenario. Students may change their answer.
+  const scenarioTitle = card.querySelector('h3')?.textContent || ('Scenario ' + scenarioScores.size);
+  const points = type === 'good' ? 2 : type === 'think' ? 1 : 0;
+  scenarioScores.set(scenarioTitle, points);
+
+  // Visually mark the current choice.
+  card.querySelectorAll('.choice').forEach(b => {
+    b.style.outline = '';
+    b.style.background = '';
+  });
+  btn.style.outline = '3px solid #0d5bd7';
+  btn.style.background = '#eef5ff';
+
+  updateScorePreview();
+}
+
+function updateScorePreview(){
+  const total = [...scenarioScores.values()].reduce((a,b)=>a+b,0);
+  const answered = scenarioScores.size;
+  const max = 40;
+  document.getElementById('scoreNumber').textContent = total + ' / ' + max;
+  document.getElementById('answeredCount').textContent = answered + ' of 20 scenarios answered';
+  document.getElementById('scoreBar').style.width = ((total/max)*100) + '%';
+}
+
+function showScore(){
+  const total = [...scenarioScores.values()].reduce((a,b)=>a+b,0);
+  const answered = scenarioScores.size;
+  const msg = document.getElementById('scoreMessage');
+
+  if(answered < 20){
+    msg.textContent = 'You have answered ' + answered + ' of 20 scenarios. Finish the rest for your final score.';
+    msg.style.color = '#b36a00';
+    return;
+  }
+
+  if(total >= 36){
+    msg.textContent = 'Excellent! You are making strong, safe, responsible apartment-living choices.';
+    msg.style.color = '#138a55';
+  } else if(total >= 30){
+    msg.textContent = 'Great job! You understand most apartment-living decisions. Review the choices where you selected “think about it.”';
+    msg.style.color = '#0d5bd7';
+  } else if(total >= 22){
+    msg.textContent = 'Good start. You have some solid skills, but a few situations need more practice.';
+    msg.style.color = '#b36a00';
+  } else {
+    msg.textContent = 'Keep practicing. Review the feedback and try the scenarios again before living on your own.';
+    msg.style.color = '#c62828';
+  }
+}
+
+function resetScore(){
+  scenarioScores.clear();
+  document.querySelectorAll('.feedback').forEach(box => {
+    box.style.display='none';
+    box.textContent='';
+  });
+  document.querySelectorAll('.choice').forEach(b => {
+    b.style.outline='';
+    b.style.background='';
+  });
+  document.getElementById('scoreNumber').textContent='0 / 40';
+  document.getElementById('scoreBar').style.width='0%';
+  document.getElementById('scoreMessage').textContent='Complete the scenarios to see your result.';
+  document.getElementById('scoreMessage').style.color='';
+  document.getElementById('answeredCount').textContent='0 of 20 scenarios answered';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
