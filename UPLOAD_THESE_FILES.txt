@@ -1,0 +1,9 @@
+WORKSHEET FIX
+
+Upload ALL HTML files in this folder to the MAIN ROOT of your GitHub repository,
+the same place where index.html lives.
+
+Do NOT create a worksheet-pages folder for this version.
+Replace the old worksheets.html with the worksheets.html in this folder.
+
+After GitHub updates, refresh with Ctrl+F5.
