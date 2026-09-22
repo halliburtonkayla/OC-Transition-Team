@@ -1,3 +1,6 @@
-RESTORED ORIGINAL STYLE UPDATE
+CAREER WORKSHEETS & PRINTABLES
 
-Upload index.html to replace the redesigned homepage. Keep all existing GitHub files. Also upload career-challenge.html, worksheets.html, the worksheets folder, and game-style-reference.png if they are not already present. The original OC/SF design is preserved; major homepage sections are collapsible to reduce crowding.
+Open Career_Worksheet_Library.pdf to print the complete packet.
+The website homepage also links directly to this packet under Educator Tools & Downloads.
+
+Includes detailed application/interview practice and career-specific worksheets for retail, restaurant/food service, healthcare, sonography, automotive, welding, construction, childcare, veterinary, cosmetology, photography, warehouse, office/reception, housekeeping, and cafeteria/food service.
