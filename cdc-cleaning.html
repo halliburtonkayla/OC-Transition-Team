@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CDC Cleaning & Home Skills</title>
+<style>
+:root{--navy:#12346b;--blue:#0d5bd7;--red:#e5223e;--green:#149b72;--soft:#f6f8fc;--ink:#10254d;--line:#d8e0ec}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.45}
+header{background:var(--navy);color:white;padding:18px}
+.wrap{max-width:1050px;margin:auto;padding:18px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+nav a,.btn{background:white;color:var(--navy);text-decoration:none;border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+h1{margin:0;font-size:clamp(1.8rem,4vw,2.6rem)}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin:16px 0;box-shadow:0 6px 18px rgba(20,40,80,.07)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.choice{display:block;width:100%;margin:8px 0;padding:14px;border:2px solid #cbd7ea;background:white;border-radius:14px;font-size:1.05rem;text-align:left;cursor:pointer}
+.choice:hover{border-color:var(--blue);background:#eef5ff}
+.feedback{display:none;margin-top:10px;padding:12px;border-radius:12px;font-weight:800}
+.good{background:#e9f8f1;border-left:5px solid var(--green)} .try{background:#fff4e4;border-left:5px solid #e0a126}
+.big{font-size:1.15rem;font-weight:800}
+.pic{font-size:2rem;margin-right:8px;vertical-align:middle}
+.checklist label{display:block;background:#f7f9fd;border:1px solid #d9e1ed;border-radius:12px;padding:12px;margin:8px 0;font-size:1.05rem}
+.readbtn{background:#eaf1ff;color:var(--navy);border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+.print-box{background:#fff;border:2px solid var(--navy);border-radius:14px;padding:18px;margin-top:22px}
+@media print{header,.no-print,.choice,.feedback,.readbtn{display:none!important}body{background:white}.card{box-shadow:none;border:0}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>🧹 Cleaning & Home Skills</h1>
+<p>Picture-supported practice for choosing tools, following steps, and keeping a space clean.</p>
+<nav>
+<a href="index.html#cdc">← CDC Center</a>
+<a href="index.html">⌂ Home</a>
+</nav>
+</div></header>
+<main class="wrap">
+
+<div class="card">
+  <p class="big">Choose the best tool for each job.</p>
+  <button class="readbtn no-print" onclick="speak('Choose the best tool for each job. Tap one answer.')">🔊 Read to Me</button>
+</div>
+<div class="grid">
+  <div class="card"><h2>🍎 Juice spilled on the table</h2>
+    <button class="choice" onclick="answer(this,true)">🧻 Paper towel</button>
+    <button class="choice" onclick="answer(this,false)">🧹 Broom</button>
+    <button class="choice" onclick="answer(this,false)">🧺 Laundry basket</button><div class="feedback"></div></div>
+  <div class="card"><h2>🥨 Crumbs are on the floor</h2>
+    <button class="choice" onclick="answer(this,false)">🧽 Sponge</button>
+    <button class="choice" onclick="answer(this,true)">🧹 Broom</button>
+    <button class="choice" onclick="answer(this,false)">🧴 Soap</button><div class="feedback"></div></div>
+  <div class="card"><h2>👕 Dirty clothes are on the floor</h2>
+    <button class="choice" onclick="answer(this,true)">🧺 Laundry basket</button>
+    <button class="choice" onclick="answer(this,false)">🗑️ Trash can</button>
+    <button class="choice" onclick="answer(this,false)">🧻 Paper towel</button><div class="feedback"></div></div>
+  <div class="card"><h2>🗑️ Empty chip bag</h2>
+    <button class="choice" onclick="answer(this,false)">🧺 Laundry basket</button>
+    <button class="choice" onclick="answer(this,false)">🪣 Mop bucket</button>
+    <button class="choice" onclick="answer(this,true)">🗑️ Trash can</button><div class="feedback"></div></div>
+  <div class="card"><h2>💧 Sticky kitchen floor</h2>
+    <button class="choice" onclick="answer(this,false)">🧹 Broom only</button>
+    <button class="choice" onclick="answer(this,true)">🪣 Mop</button>
+    <button class="choice" onclick="answer(this,false)">🧺 Laundry basket</button><div class="feedback"></div></div>
+  <div class="card"><h2>🛏️ Bed is messy</h2>
+    <button class="choice" onclick="answer(this,false)">🧹 Sweep the bed</button>
+    <button class="choice" onclick="answer(this,true)">🛏️ Straighten sheets and blanket</button>
+    <button class="choice" onclick="answer(this,false)">🗑️ Throw bedding away</button><div class="feedback"></div></div>
+</div>
+<div class="card">
+<h2>✅ Room Cleanup Order</h2>
+<div class="checklist">
+<label><input type="checkbox"> 1. 🗑️ Pick up trash.</label>
+<label><input type="checkbox"> 2. 👕 Put dirty clothes in the laundry basket.</label>
+<label><input type="checkbox"> 3. 🧸 Put items back where they belong.</label>
+<label><input type="checkbox"> 4. 🧹 Sweep or vacuum the floor.</label>
+<label><input type="checkbox"> 5. 🛏️ Make the bed or straighten the area.</label>
+</div></div>
+<div class="print-box">
+<h2>🖨️ Cleaning Practice Sheet</h2>
+<p>Name: ______________________________ Date: ____________</p>
+<p>Tool I practiced using: ______________________________</p>
+<p>Support: ☐ Independent ☐ Verbal prompts ☐ Visual prompts ☐ Physical assistance</p>
+<p>What I did well: ________________________________________________</p>
+<p>Next skill to practice: __________________________________________</p>
+<button class="btn no-print" style="background:#12346b;color:#fff" onclick="window.print()">Print Practice Sheet</button>
+</div>
+<script>
+function answer(btn,ok){const card=btn.closest('.card'),box=card.querySelector('.feedback');box.style.display='block';box.className='feedback '+(ok?'good':'try');box.textContent=ok?'✅ Yes! Good choice.':'↩️ Try another choice.';if(ok)speak('Yes. Good choice.');}
+function speak(t){if('speechSynthesis'in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t));}}
+</script></main></body></html>
