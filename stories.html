@@ -1,18 +1,183 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What Would You Do?</title><style>
-:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
-header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}.wrap{max-width:1100px;margin:auto;padding:22px}
-nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
-.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#fff;color:var(--navy)!important;border:2px solid var(--navy)}
-.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card h2,.card h3{color:var(--navy);margin-top:0}.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
-.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}.choice:hover{border-color:var(--blue);background:#f3f7ff}
-.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none}.score{font-weight:900;color:var(--navy)}
-input,select,textarea{width:100%;padding:10px;border:1px solid #aebed6;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:88px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:18px 0}.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
-small.muted,.muted{color:#5d6d86}.pill{display:inline-block;border:1px solid #c9d7ef;background:#f5f8ff;padding:5px 9px;border-radius:999px;margin:3px}
-@media(max-width:650px){.row{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 14px}}
-@media print{header,nav,.no-print,.btn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}.only-print{display:block!important}}
-</style></head><body>
-<header><div class="wrap"><h1 style="margin:0">What Would You Do?</h1><p style="margin:6px 0 0">Interactive decision story</p><nav><a href="index.html">⌂ Home</a><a href="index.html#staff">🧰 Staff</a><a href="worksheets.html">📝 Worksheets</a><a href="group-projects.html">👥 Group Projects</a><a href="simulators.html">🎮 Simulators</a></nav></div></header>
-<main class="wrap"><div class="card"><p><span class="tag">Instruction in Self-Advocacy</span></p><h2 id="sceneTitle"></h2><p id="sceneText"></p><div id="storyChoices"></div></div><div class="print-sheet"><h2>Student Reflection</h2><p>Name: __________________ Date: __________</p><p>What choice did you make?</p><div class="bigline"></div><p>What happened because of that choice?</p><div class="bigline"></div><p>What would you do in real life?</p><div class="bigline"></div><button class="btn no-print" onclick="window.print()">🖨️ Print Reflection</button></div></main><script>const scenes={"start": {"title": "Your Shift Starts Now", "text": "Your supervisor asks you to help a coworker, but you still have your own task to finish.", "choices": [["Say yes immediately", "yes"], ["Explain what you are working on and ask what should come first", "ask"], ["Ignore the coworker", "ignore"]]}, "yes": {"title": "Now You Are Behind", "text": "You help, but your own task is late. Your supervisor asks why.", "choices": [["Be honest and ask how to prioritize next time", "endgood"], ["Blame the coworker", "endbad"]]}, "ask": {"title": "Clear Priorities", "text": "Your supervisor tells you which task comes first and thanks you for checking.", "choices": [["Follow the priority and communicate when finished", "endgood"]]}, "ignore": {"title": "Communication Problem", "text": "The coworker reports that you would not respond.", "choices": [["Apologize and explain what you were working on", "recover"], ["Argue that it was not your job", "endbad"]]}, "recover": {"title": "Recovery", "text": "You repair the communication problem and make a plan for next time.", "choices": [["Finish the shift professionally", "endgood"]]}, "endgood": {"title": "Strong Finish", "text": "You handled the situation with communication, priorities, and professionalism.", "choices": []}, "endbad": {"title": "Try a Different Path", "text": "The situation gets harder because communication broke down. Replay and test another response.", "choices": []}}; let i=0; function show(id){let s=scenes[id]; document.getElementById('sceneTitle').textContent=s.title;document.getElementById('sceneText').textContent=s.text;let c=document.getElementById('storyChoices');c.innerHTML='';(s.choices||[]).forEach(ch=>{let b=document.createElement('button');b.className='choice';b.textContent=ch[0];b.onclick=()=>show(ch[1]);c.appendChild(b)});if(!s.choices||!s.choices.length){c.innerHTML='<p><b>Story complete.</b> Use the reflection below or replay.</p><button class="btn" onclick="show('start')">Replay</button>';}}; show('start');</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What Would You Do? | Transition Team</title>
+<style>
+:root{--navy:#16366f;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#17834c;--gold:#f0a500}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#101820;background:linear-gradient(180deg,#f8f8fc,#eef4ff);min-height:100vh}
+.sessionbar{position:sticky;top:0;z-index:20;background:#17376f;color:#fff;padding:10px 16px;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;font-weight:800}
+.sessionbar button{border:0;border-radius:999px;background:#fff;color:#111;padding:10px 17px;font:inherit;cursor:pointer}.sessionbar button:hover{background:#e8eefb}
+.topnav{background:#16366f;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px 26px;font-weight:800}.topnav a{color:#fff;text-decoration:none}.topnav a:hover{text-decoration:underline}
+main{max-width:1180px;margin:auto;padding:34px 18px 60px}.hero{text-align:center;margin:4px auto 28px}.hero h1{font-family:Georgia,serif;color:var(--navy);font-size:clamp(2.3rem,6vw,4rem);margin:0}.hero p{font-size:1.15rem;color:#13264e;margin:12px 0 0}
+.story-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.story-card{width:100%;text-align:left;border:0;background:#fff;border-radius:24px;padding:28px 24px;box-shadow:0 10px 32px rgba(25,47,92,.08);cursor:pointer;min-height:210px;transition:.2s;outline:3px solid transparent}.story-card:hover,.story-card:focus-visible{transform:translateY(-3px);outline-color:#93b5ff;box-shadow:0 14px 38px rgba(25,47,92,.16)}.story-card .emoji{font-size:1.15rem}.story-card h2{font-family:Georgia,serif;color:#072e70;font-size:1.75rem;margin:16px 0 10px}.story-card p{font-size:1.05rem;margin:0;line-height:1.35}.story-card .tap{display:block;margin-top:18px;color:#0d5bd7;font-weight:800}
+#reader{display:none}.book{background:#fff;border-radius:28px;box-shadow:0 16px 45px rgba(24,52,110,.12);overflow:hidden;border:1px solid #dce4f3}.book-head{padding:20px 24px;background:#f3f6ff;border-bottom:1px solid #dce4f3;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.book-title{margin:0;color:var(--navy);font-family:Georgia,serif;font-size:1.7rem}.meta{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#e8efff;color:#16366f;border-radius:999px;padding:6px 10px;font-weight:800;font-size:.9rem}.scene{padding:34px 30px 26px;min-height:430px;animation:fade .25s ease}.scene h2{font-family:Georgia,serif;color:var(--navy);font-size:2rem;margin:0 0 18px}.scene p{font-size:1.16rem;line-height:1.65}.choice-list{display:grid;gap:12px;margin-top:28px}.choice{border:2px solid #c9d6ef;background:#fff;color:#10254d;border-radius:14px;padding:15px 16px;text-align:left;font-size:1.04rem;font-weight:700;cursor:pointer}.choice:hover,.choice:focus-visible{border-color:#0d5bd7;background:#f5f8ff}.toolrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{border:0;border-radius:12px;background:var(--navy);color:#fff;padding:11px 16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-block}.btn.secondary{background:#e8eef9;color:#17376f}.btn.green{background:var(--green)}.btn.red{background:var(--red)}
+.progress-wrap{height:10px;background:#e7ecf5}.progress{height:100%;width:0;background:linear-gradient(90deg,#0d5bd7,#e51f3f);transition:width .25s}.ending{padding:18px;border-radius:16px;background:#eef7ff;border:1px solid #bfd7ff;margin-top:18px}.ending.good{background:#ecf8f0;border-color:#b8e2c7}.ending.warn{background:#fff7e8;border-color:#f5d497}
+.reflection{margin-top:22px;border-top:2px dashed #c8d3e9;padding-top:20px}.reflection textarea{width:100%;min-height:80px;border:1px solid #aebbd2;border-radius:10px;padding:10px;font:inherit;margin:6px 0 12px}.reflection label{font-weight:800;color:#17376f}
+.modal{display:none;position:fixed;inset:0;background:rgba(8,24,57,.5);z-index:50;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modal-card{max-width:650px;width:100%;background:#fff;border-radius:20px;padding:24px;box-shadow:0 20px 70px rgba(0,0,0,.25)}.modal-card h2{font-family:Georgia,serif;color:var(--navy)}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.summary-box{background:#f5f8ff;border:1px solid #dce5f5;border-radius:12px;padding:12px}.summary-box b{display:block;color:#17376f;margin-bottom:4px}
+@keyframes fade{from{opacity:.35;transform:translateX(10px)}to{opacity:1;transform:none}}
+@media(max-width:900px){.story-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.story-grid{grid-template-columns:1fr}.scene{padding:24px 18px}.topnav{padding:14px 16px}.summary-grid{grid-template-columns:1fr}}
+@media print{.sessionbar,.topnav,.hero,.story-grid,.toolrow,.choice-list,.progress-wrap{display:none!important}body{background:#fff}main{padding:0}.book{box-shadow:none;border:0}.book-head{background:#fff}.scene{min-height:auto;padding:0}.reflection{display:block!important}.modal{position:static;background:#fff;display:block}.modal-card{box-shadow:none;max-width:none}}
+</style>
+</head>
+<body>
+<div class="sessionbar">
+  <span id="sessionState">No active Pre-ETS session</span>
+  <span id="timer">30:00</span>
+  <button id="startBtn" type="button">Start Session</button>
+  <button id="summaryBtn" type="button">Session Summary</button>
+</div>
+<div class="topnav"><a href="index.html">← Transition Team Home</a><span>Interactive Storybook</span></div>
+<main>
+  <section id="library">
+    <div class="hero"><h1>📖 What Would You Do?</h1><p>Real situations. Your choices control what happens next. Tap a story to begin.</p></div>
+    <div class="story-grid">
+      <button class="story-card" data-story="party" type="button"><span class="emoji">🏀</span><h2>The After-Party</h2><p>Basketball night turns into a party and your choices follow you.</p><span class="tap">Start story →</span></button>
+      <button class="story-card" data-story="joke" type="button"><span class="emoji">🧁</span><h2>It Was Just a Joke…</h2><p>You are part of the bullying. What happens next?</p><span class="tap">Start story →</span></button>
+      <button class="story-card" data-story="drama" type="button"><span class="emoji">📱</span><h2>The Drama</h2><p>A secret becomes a rumor. You decide whether it grows.</p><span class="tap">Start story →</span></button>
+      <button class="story-card" data-story="worlds" type="button"><span class="emoji">🧭</span><h2>Between Two Worlds</h2><p>Family values, friend pressure, and finding your own path.</p><span class="tap">Start story →</span></button>
+    </div>
+  </section>
+
+  <section id="reader">
+    <div class="book">
+      <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+      <div class="book-head">
+        <div><h1 class="book-title" id="bookTitle"></h1></div>
+        <div class="meta"><span class="pill" id="preetsPill"></span><span class="pill" id="pagePill"></span></div>
+      </div>
+      <div class="scene" id="sceneBox">
+        <h2 id="sceneTitle"></h2>
+        <p id="sceneText"></p>
+        <div class="choice-list" id="choices"></div>
+        <div class="toolrow">
+          <button class="btn secondary" id="readBtn" type="button">🔊 Read to Me</button>
+          <button class="btn secondary" id="backBtn" type="button">← Back One Page</button>
+          <button class="btn secondary" id="libraryBtn" type="button">📚 Story Library</button>
+          <button class="btn secondary" id="replayBtn" type="button">↻ Replay Story</button>
+        </div>
+        <div class="reflection" id="reflection" style="display:none">
+          <h3>Student Reflection</h3>
+          <label>What choice are you most proud of?</label><textarea id="reflect1"></textarea>
+          <label>What consequence surprised you?</label><textarea id="reflect2"></textarea>
+          <label>What would you do in real life?</label><textarea id="reflect3"></textarea>
+          <button class="btn green" type="button" onclick="window.print()">🖨️ Print Reflection</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="summaryModal" role="dialog" aria-modal="true" aria-labelledby="summaryTitle">
+  <div class="modal-card">
+    <h2 id="summaryTitle">Session Summary</h2>
+    <div class="summary-grid">
+      <div class="summary-box"><b>Pre-ETS Area</b><span id="sumArea">—</span></div>
+      <div class="summary-box"><b>Story</b><span id="sumStory">—</span></div>
+      <div class="summary-box"><b>Decisions Made</b><span id="sumChoices">0</span></div>
+      <div class="summary-box"><b>Session Time</b><span id="sumTime">0 min</span></div>
+      <div class="summary-box" style="grid-column:1/-1"><b>Last Outcome</b><span id="sumOutcome">—</span></div>
+    </div>
+    <p><strong>Suggested documentation:</strong> Student participated in an interactive decision-making story focused on communication, self-advocacy, problem-solving, and consequences. Student considered multiple choices and discussed how decisions can affect school, work, relationships, and future goals.</p>
+    <div class="toolrow"><button class="btn" type="button" onclick="window.print()">🖨️ Print Summary</button><button class="btn secondary" id="closeSummary" type="button">Close</button></div>
+  </div>
+</div>
+<script>
+const STORIES={
+party:{title:'The After-Party',area:'Workplace Readiness / Self-Advocacy',start:'p1',nodes:{
+p1:{t:'Game Night',x:'Your school wins a big basketball game. A friend says there is an after-party at an older student’s house and everybody is going.',c:[['Go because you do not want to miss out','p2'],['Ask who will be there and how you will get home','p3'],['Decide the party is not for you and suggest food somewhere public','p4']]},
+p2:{t:'The Ride',x:'You get into a car with friends. The driver says, “Relax, my cousin lives right around the corner.” You do not know the driver well.',c:[['Stay in the car','p5'],['Text a trusted adult your location and ask for a ride','p6'],['Ask the driver if they have been drinking','p7']]},
+p3:{t:'Details Matter',x:'Your friend says the host’s parents are gone and nobody has a real ride plan yet.',c:[['Go anyway','p5'],['Make a clear ride-home plan before deciding','p8'],['Skip it and make another plan','p4']]},
+p4:{t:'Different Plan',x:'Two friends agree to meet you for food. Another friend teases you for being “boring.”',c:[['Change your mind and go to the party','p5'],['Laugh it off and stick with your plan','p9'],['Tell your friend directly that you are making your own choice','p10']]},
+p5:{t:'At the House',x:'The house is crowded. Someone hands you a drink and says, “Just hold it so nobody thinks you are weird.”',c:[['Hold it to fit in','p11'],['Say no and get a sealed drink you choose yourself','p12'],['Leave the room and call for a ride','p6']]},
+p6:{t:'Calling for Help',x:'A trusted adult answers. They can pick you up, but your friends say you are overreacting.',c:[['Cancel the ride','p11'],['Keep the ride and wait in a safe place','p13'],['Ask a friend to leave with you','p14']]},
+p7:{t:'The Driver Answers',x:'The driver laughs and says, “I only had one.” You notice they are talking louder than usual.',c:[['Ride anyway','p15'],['Get out and arrange another ride','p6'],['Call another friend to follow behind you','p15']]},
+p8:{t:'A Real Plan',x:'You arrange for a sober adult to pick you up at a set time and save their number.',c:[['Go with the plan and keep checking your surroundings','p12'],['Decide the party still feels risky and skip it','p9']]},
+p9:{t:'No Regrets',x:'You end up having a good night without the party. The next morning you hear police broke up the party after neighbors complained.',c:[['Think about why planning ahead helped','p16']]},
+p10:{t:'Using Your Voice',x:'Your friend rolls their eyes, then says, “Fine, do you.” You realize saying no did not end the friendship.',c:[['Keep your boundary and enjoy your alternate plan','p16']]},
+p11:{t:'Pressure Builds',x:'Someone takes a picture while you are holding the drink and posts it. You did not drink it, but the picture tells a different story.',c:[['Ask them to delete it and explain why','p17'],['Ignore it and hope nobody sees','p18'],['Get angry and start an argument','p18']]},
+p12:{t:'You Stay Aware',x:'You keep your own drink, stay with people you trust, and notice the driver who brought you is now drinking.',c:[['Use your backup ride plan','p13'],['Ride home with the original driver anyway','p15']]},
+p13:{t:'Safe Exit',x:'You leave with the sober adult you arranged. You text a friend to make sure they have a safe ride too.',c:[['Finish the story','p16']]},
+p14:{t:'Bring a Friend',x:'One friend admits they were uncomfortable too and leaves with you.',c:[['Finish the story','p16']]},
+p15:{t:'Risky Ride',x:'The car ride feels unsafe. The driver speeds and misses a stop sign. Everyone gets home, but you know the decision could have ended differently.',c:[['Reflect on what you could change next time','p18']]},
+p16:{t:'Ending: You Chose Your Own Path',x:'You used planning, boundaries, and safe transportation. You learned that fitting in is not worth giving up control of your safety.',end:'good'},
+p17:{t:'Repairing the Situation',x:'You calmly ask for the photo to be removed and explain that it gives the wrong impression. The post comes down.',c:[['Finish the story','p16']]},
+p18:{t:'Ending: A Lesson With Consequences',x:'Nothing terrible happened this time, but your choices created avoidable risk or confusion. The strongest next step is to plan your transportation, set boundaries early, and ask for help when something feels unsafe.',end:'warn'}
+}},
+joke:{title:'It Was Just a Joke…',area:'Self-Advocacy / Workplace Readiness',start:'j1',nodes:{
+j1:{t:'The Group Chat',x:'A class group chat starts making fun of a student’s presentation. You add a laughing emoji because everyone else is doing it.',c:[['Keep joining in','j2'],['Delete your reaction and stop participating','j3'],['Message the student privately','j4']]},
+j2:{t:'It Gets Meaner',x:'Someone posts an edited picture of the student. People are laughing and sharing it.',c:[['Share it too','j5'],['Say the joke has gone too far','j6'],['Stay silent but keep watching','j7']]},
+j3:{t:'You Pull Back',x:'A friend messages you, “Why are you acting scared? It is just a joke.”',c:[['Go along with them','j2'],['Say you do not want to be part of embarrassing somebody','j6']]},
+j4:{t:'Private Message',x:'The student replies, “I saw the chat. I do not even want to come to school tomorrow.”',c:[['Tell them they are too sensitive','j8'],['Apologize and ask how you can help','j9'],['Tell them to report everyone but leave out your part','j10']]},
+j5:{t:'The Screenshot',x:'A screenshot of the chat is sent to a teacher. Your name is clearly visible.',c:[['Delete your messages and deny it','j11'],['Own what you did','j12']]},
+j6:{t:'Speaking Up',x:'A few people tell you to relax, but two others stop posting too.',c:[['Keep the boundary and ask people to delete the picture','j13'],['Back down because you feel embarrassed','j2']]},
+j7:{t:'Watching Is Still a Choice',x:'You do not post anything else, but the bullying continues for hours.',c:[['Leave the chat and report the harmful post','j14'],['Do nothing','j15']]},
+j8:{t:'The Hurt Gets Deeper',x:'The student stops replying. The next day they are absent.',c:[['Think about the impact and choose how to respond','j12']]},
+j9:{t:'Repair Starts',x:'The student says they want the picture removed and want the chat to stop.',c:[['Help report and remove the content','j14'],['Apologize but do nothing else','j15']]},
+j10:{t:'Half the Truth',x:'The student reports the chat. When the screenshots are reviewed, your reaction is there too.',c:[['Tell the truth now','j12'],['Keep blaming others','j11']]},
+j11:{t:'Denial Makes It Worse',x:'Screenshots show what happened. Now the problem is both the bullying and the dishonesty.',c:[['Take responsibility and apologize','j12']]},
+j12:{t:'Accountability',x:'You explain exactly what you did without making excuses. You apologize and accept the consequence.',c:[['Help repair the harm','j13']]},
+j13:{t:'Changing the Group',x:'You ask people to stop sharing the image and redirect the group chat back to class work.',c:[['Finish the story','j16']]},
+j14:{t:'Using Support',x:'A trusted adult helps remove the post and checks in with the student. You also admit your own part.',c:[['Finish the story','j16']]},
+j15:{t:'Silence Has an Effect',x:'The content keeps circulating. Even though you stopped posting, the student still experienced the harm.',c:[['Decide whether to act now','j14'],['Keep avoiding it','j17']]},
+j16:{t:'Ending: Repair Is Possible',x:'You cannot undo the first choice, but you can stop adding harm, own your behavior, and help repair the situation. That is stronger than hiding behind “just a joke.”',end:'good'},
+j17:{t:'Ending: Avoiding It Did Not Make It Go Away',x:'The situation grew because nobody interrupted it soon enough. In real life, a safer choice is to stop participating, save evidence if needed, and involve a trusted adult.',end:'warn'}
+}},
+drama:{title:'The Drama',area:'Workplace Readiness / Self-Advocacy',start:'d1',nodes:{
+d1:{t:'A Secret',x:'Your friend tells you something personal and says, “Please do not tell anybody.” Later, another friend asks what is going on.',c:[['Tell them everything','d2'],['Say it is not your story to tell','d3'],['Hint at the secret without using names','d4']]},
+d2:{t:'One Person Becomes Three',x:'The friend you told promises not to repeat it. By lunch, three people know.',c:[['Pretend you never said anything','d5'],['Tell everyone to stop spreading it','d6'],['Tell the original friend before they hear it elsewhere','d7']]},
+d3:{t:'Holding the Boundary',x:'The other friend keeps pushing and says, “You can trust me.”',c:[['Give in','d2'],['Repeat your boundary','d8']]},
+d4:{t:'The Hint Is Enough',x:'People guess who you mean. Someone posts a vague comment online and the rumor starts.',c:[['Join the comments','d9'],['Ask the poster to take it down','d6'],['Tell yourself you never used a name','d5']]},
+d5:{t:'The Rumor Comes Back',x:'Your original friend asks, “Did you tell somebody?”',c:[['Lie','d10'],['Tell the truth','d7']]},
+d6:{t:'Trying to Stop It',x:'Some people delete their posts, but screenshots are already circulating.',c:[['Tell the original friend what happened','d7'],['Keep trying to fix it without telling them','d11']]},
+d7:{t:'A Hard Conversation',x:'Your friend is hurt and angry. They ask why you shared something private.',c:[['Make excuses','d12'],['Own it and apologize without excuses','d13']]},
+d8:{t:'Respecting Privacy',x:'The pressure dies down because you do not give the rumor anything to grow on.',c:[['Finish the story','d16']]},
+d9:{t:'Public Drama',x:'The post gets more attention. People begin adding details that are not true.',c:[['Correct the false information and ask people to stop','d6'],['Keep watching','d14']]},
+d10:{t:'The Screenshot Again',x:'A message screenshot proves you shared it. Now your friend is upset about the secret and the lie.',c:[['Admit it now','d13'],['Blame the person who screenshot it','d12']]},
+d11:{t:'Fixing It Quietly',x:'You get some posts removed, but your friend learns from someone else that you were the source.',c:[['Apologize directly','d13']]},
+d12:{t:'Excuses',x:'Saying “everybody was talking about it” does not repair the trust.',c:[['Try again with accountability','d13']]},
+d13:{t:'Repairing Trust',x:'You apologize, explain what you will do differently, and give your friend space to decide what they need.',c:[['Help stop the rumor without sharing more details','d15']]},
+d14:{t:'Rumors Grow in Silence',x:'The story keeps changing. People are now repeating things that never happened.',c:[['Step in and correct your part','d6'],['Avoid the situation','d17']]},
+d15:{t:'A Better Boundary',x:'You stop discussing the details and tell others that private information should not be entertainment.',c:[['Finish the story','d16']]},
+d16:{t:'Ending: Trust Needs Boundaries',x:'You protected privacy or took responsibility when trust was broken. A strong boundary is simple: if it is not your story, do not tell it.',end:'good'},
+d17:{t:'Ending: The Rumor Took Over',x:'Avoiding responsibility allowed the story to grow. In real life, stop repeating private information, correct your own statements, and involve a trusted adult when online drama becomes harassment.',end:'warn'}
+}},
+worlds:{title:'Between Two Worlds',area:'Self-Advocacy / Postsecondary Education',start:'w1',nodes:{
+w1:{t:'Two Different Plans',x:'Your family wants you to stay close to home after graduation. Your friends keep talking about moving away. You are not sure what YOU want yet.',c:[['Agree with your family immediately','w2'],['Tell your friends you will go wherever they go','w3'],['Give yourself time to compare options','w4']]},
+w2:{t:'The Safe Choice',x:'Staying home could save money, but you worry you are choosing it only to avoid disappointing people.',c:[['Ignore that feeling','w5'],['Talk honestly with your family about your goals','w6']]},
+w3:{t:'Following the Group',x:'Your friends choose a school because they like the campus. The program you want is not offered there.',c:[['Go anyway so you are not alone','w7'],['Research schools that fit your career goal','w4']]},
+w4:{t:'Make a Comparison',x:'You compare a local program, a two-year college, and a university. The costs and training paths are very different.',c:[['Only look at what seems most fun','w8'],['Compare cost, program quality, transportation, housing, and career fit','w9']]},
+w5:{t:'Quiet Resentment',x:'You keep your feelings to yourself. Every time someone asks about your future, you feel irritated.',c:[['Keep avoiding the conversation','w10'],['Write down what matters to you and prepare to talk','w6']]},
+w6:{t:'Family Conversation',x:'You explain that you value your family’s advice but need to explore options. They have questions about cost and safety.',c:[['Get defensive and shut down','w11'],['Answer what you can and research the rest together','w12']]},
+w7:{t:'Wrong Program',x:'You realize you would have to change your career goal or transfer later.',c:[['Stay because your friends are there','w13'],['Reconsider before committing','w4']]},
+w8:{t:'The Missing Details',x:'The campus looks exciting, but you still do not know the total cost or whether the program leads to your goal.',c:[['Commit anyway','w13'],['Go back and compare the facts','w9']]},
+w9:{t:'Your Decision Matrix',x:'One option is close and affordable. Another has the exact program you want. A third offers more campus life but higher cost.',c:[['Choose based on your priorities and create a backup plan','w14'],['Let somebody else decide for you','w15']]},
+w10:{t:'Deadline Pressure',x:'An application deadline is coming and you still have not talked to anyone or gathered information.',c:[['Ask a counselor or trusted adult for help','w12'],['Skip the application because deciding feels stressful','w16']]},
+w11:{t:'Conversation Stops',x:'Everyone gets frustrated. The real questions about cost, distance, and support are still unanswered.',c:[['Try the conversation again with facts','w12'],['Refuse to discuss it','w16']]},
+w12:{t:'Build the Plan Together',x:'You gather tuition, program, transportation, and housing information. The conversation becomes less emotional and more practical.',c:[['Choose the option that best matches your goals','w14']]},
+w13:{t:'A Choice for Other People',x:'You realize you are planning your future around someone else’s comfort instead of your own goals.',c:[['Pause before committing and compare again','w9'],['Keep going with the choice','w17']]},
+w14:{t:'Own Your Plan',x:'You choose a path and can explain why it fits your career goal, budget, support needs, and values.',c:[['Finish the story','w18']]},
+w15:{t:'Someone Else Chooses',x:'The plan gets made, but you still feel uncertain because you did not practice making the decision yourself.',c:[['Take back part of the decision by researching and asking questions','w12']]},
+w16:{t:'No Decision Is Also a Decision',x:'The deadline passes. You still have options, but fewer of them are available now.',c:[['Make a new timeline and ask for help','w12'],['Keep avoiding it','w17']]},
+w17:{t:'Ending: Your Voice Got Lost',x:'You let pressure or avoidance make the decision. The next step is to identify your goals, compare real options, and practice explaining what you need.',end:'warn'},
+w18:{t:'Ending: Your Future, Your Voice',x:'You listened to advice without giving away your decision. Self-advocacy means gathering facts, asking questions, and choosing a path you can explain and own.',end:'good'}
+}}
+};
+let currentStory=null,currentNode=null,history=[],decisionCount=0,lastOutcome='—';
+let seconds=1800,timerId=null,sessionStartedAt=null;
+const $=id=>document.getElementById(id);
+function showLibrary(){speechSynthesis.cancel();$('reader').style.display='none';$('library').style.display='block';window.scrollTo({top:0,behavior:'smooth'});}
+function openStory(key){currentStory=key;history=[];decisionCount=0;lastOutcome='In progress';$('library').style.display='none';$('reader').style.display='block';$('bookTitle').textContent=STORIES[key].title;$('preetsPill').textContent=STORIES[key].area;showNode(STORIES[key].start,false);window.scrollTo({top:0,behavior:'smooth'});}
+function showNode(id,push=true){speechSynthesis.cancel();if(push&&currentNode)history.push(currentNode);currentNode=id;const story=STORIES[currentStory],n=story.nodes[id];$('sceneTitle').textContent=n.t;$('sceneText').textContent=n.x;$('choices').innerHTML='';$('reflection').style.display=n.end?'block':'none';$('replayBtn').style.display=n.end?'inline-block':'none';if(n.end){lastOutcome=n.t;$('choices').innerHTML='<div class="ending '+(n.end==='good'?'good':'warn')+'"><strong>Story complete.</strong> Use the reflection questions below, replay the story, or choose another story.</div>';}else{n.c.forEach((choice,idx)=>{const b=document.createElement('button');b.className='choice';b.type='button';b.textContent=String.fromCharCode(65+idx)+' — '+choice[0];b.addEventListener('click',()=>{decisionCount++;showNode(choice[1],true)});$('choices').appendChild(b);});}
+const total=Object.keys(story.nodes).length,seen=new Set([...history,currentNode]).size;$('pagePill').textContent='Scene '+seen+' of '+total;$('progress').style.width=Math.min(100,(seen/total)*100)+'%';$('backBtn').disabled=history.length===0;$('backBtn').style.opacity=history.length?1:.45;}
+function readCurrent(){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance($('sceneTitle').textContent+'. '+$('sceneText').textContent);u.rate=.95;speechSynthesis.speak(u);}
+function backOne(){if(!history.length)return;const prev=history.pop();currentNode=null;showNode(prev,false);}
+function replay(){if(currentStory)openStory(currentStory);}
+function toggleSession(){if(timerId){clearInterval(timerId);timerId=null;$('startBtn').textContent='Resume Session';$('sessionState').textContent='Session paused';return;}if(!sessionStartedAt)sessionStartedAt=Date.now();$('sessionState').textContent='Active Pre-ETS session';$('startBtn').textContent='Pause Session';timerId=setInterval(()=>{if(seconds>0)seconds--;const m=Math.floor(seconds/60),s=seconds%60;$('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(seconds===0){clearInterval(timerId);timerId=null;$('sessionState').textContent='30-minute session complete';$('startBtn').textContent='Restart Session';}},1000);}
+function summary(){const elapsed=sessionStartedAt?Math.max(0,Math.round((Date.now()-sessionStartedAt)/60000)):0;$('sumArea').textContent=currentStory?STORIES[currentStory].area:'—';$('sumStory').textContent=currentStory?STORIES[currentStory].title:'—';$('sumChoices').textContent=decisionCount;$('sumTime').textContent=elapsed+' min';$('sumOutcome').textContent=lastOutcome;$('summaryModal').classList.add('open');}
+document.querySelectorAll('.story-card').forEach(card=>card.addEventListener('click',()=>openStory(card.dataset.story)));
+$('readBtn').addEventListener('click',readCurrent);$('backBtn').addEventListener('click',backOne);$('libraryBtn').addEventListener('click',showLibrary);$('replayBtn').addEventListener('click',replay);$('startBtn').addEventListener('click',toggleSession);$('summaryBtn').addEventListener('click',summary);$('closeSummary').addEventListener('click',()=>$('summaryModal').classList.remove('open'));$('summaryModal').addEventListener('click',e=>{if(e.target===$('summaryModal'))$('summaryModal').classList.remove('open')});
+</script>
+</body>
+</html>
