@@ -1,93 +1,77 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kitchen Challenge | Transition Team</title><style>:root{--navy:#102a5c;--red:#e1192f;--blue:#0751bd;--pink:#f5c5d8;--paper:#fbfafb;--ink:#25324a}*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:Arial,sans-serif;color:var(--ink)}header{background:var(--navy);color:white;padding:18px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}header a{color:white;text-decoration:none;font-weight:800}main{max-width:1000px;margin:auto;padding:24px}.panel{background:white;border:1px solid #dde5ef;border-radius:18px;padding:22px;margin:16px 0;box-shadow:0 5px 18px #102a5c12}h1,h2{font-family:Georgia,serif;color:var(--navy)}button,.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;background:var(--blue);color:white;text-decoration:none;display:inline-block;margin:4px}button.alt{background:var(--red)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.choice{width:100%;text-align:left}.muted{color:#66758a}.big{font-size:42px}.status{padding:12px;border-radius:12px;background:#edf4fc;margin:12px 0}.meter{height:18px;background:#e6eaf0;border-radius:99px;overflow:hidden}.meter i{display:block;height:100%;background:var(--blue)}select,input{font-size:16px;padding:11px;border:2px solid #cbd6e7;border-radius:10px;width:100%}@media(max-width:600px){main{padding:14px}}</style><link rel="stylesheet" href="session.css"></head><body><header><a href="index.html">← Transition Team Home</a><strong>Kitchen Challenge</strong></header><main><h1>🍳 Kitchen Challenge</h1><p class="muted">Build the spaghetti dinner. Your choices are scored together at the end—just like a real recipe.</p><div class="panel"><div class="big">🍝</div><h2 id="stepTitle">Step 1 of 5: Water</h2><p id="prompt">How much water will you put in the pot?</p><div id="choices" class="grid"></div><div id="progress" class="status">Nothing added yet.</div></div><div class="panel" id="result" hidden></div></main><script>const steps=[{k:'water',t:'Water',q:'How much water will you put in the pot?',o:['2 cups','4 cups','8 cups','12 cups'],best:'8 cups'},{k:'pasta',t:'Pasta',q:'How much dry spaghetti for about 4 servings?',o:['4 oz','8 oz','12 oz','1 lb'],best:'8 oz'},{k:'sauce',t:'Sauce',q:'How much pasta sauce will you use?',o:['1/2 cup','1 cup','2 cups','4 cups'],best:'2 cups'},{k:'salt',t:'Salt',q:'How much salt will you add to the finished sauce?',o:['None','1/4 tsp','1 tsp','2 Tbsp'],best:'1/4 tsp'},{k:'pepper',t:'Pepper',q:'How much black pepper?',o:['None','1/4 tsp','1 tsp','1 Tbsp'],best:'1/4 tsp'}];let i=0,a={};const c=document.querySelector('#choices'),r=document.querySelector('#result');function draw(){let s=steps[i];document.querySelector('#stepTitle').textContent=`Step ${i+1} of ${steps.length}: ${s.t}`;document.querySelector('#prompt').textContent=s.q;c.innerHTML='';s.o.forEach(x=>{let b=document.createElement('button');b.className='choice';b.textContent=x;b.onclick=()=>{a[s.k]=x;i++;if(i<steps.length)draw();else finish()};c.appendChild(b)});document.querySelector('#progress').textContent=Object.entries(a).map(([k,v])=>`${k}: ${v}`).join(' • ')||'Nothing added yet.'}function finish(){document.querySelector('.panel').hidden=true;let score=steps.filter(s=>a[s.k]===s.best).length;let msg=score===5?'🍝 PERFECT! Great balance and measurements.':score>=3?'🙂 PRETTY GOOD — a few measurements need adjusting.':'👩‍🍳 BACK TO THE KITCHEN — your ratios need some work.';if(a.salt==='2 Tbsp')msg='🧂 WAY TOO SALTY — that amount of salt would overpower the dish.';else if(a.sauce==='1/2 cup')msg='🥫 TOO DRY — there is not enough sauce for this pasta.';else if(a.sauce==='4 cups')msg='🥫 SAUCE OVERLOAD — the pasta-to-sauce ratio is off.';r.hidden=false;r.innerHTML=`<h2>${msg}</h2><p>You matched ${score} of 5 target measurements.</p><div class="status">${steps.map(s=>`<b>${s.t}:</b> ${a[s.k]} ${a[s.k]===s.best?'✓':`→ try ${s.best}`}`).join('<br>')}</div><button onclick="location.reload()">Cook Again</button><a class="btn" href="index.html#games">Back to Games</a>`}draw();</script><script src="session.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HD Interactive Cooking & Life Simulator</title>
+  <style>
+    :root { --bg:#0b0f19; --panel:#1e293b; --accent:#38bdf8; --success:#10b981; --warning:#f59e0b; --text:#f8fafc; }
+    * { box-sizing:border-box; margin:0; padding:0; user-select:none; -webkit-user-select:none; }
+    body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+    .game-container { max-width:1200px; margin:10px auto; padding:0 10px; display:flex; flex-direction:column; gap:12px; }
+    .hud-bar { display:flex; justify-content:space-between; align-items:center; background:var(--panel); padding:12px 18px; border-radius:12px; border:1px solid #334155; font-size:.9rem; box-shadow:0 4px 12px rgba(0,0,0,.3); }
+    .hud-step { color:var(--accent); font-weight:800; font-size:1rem; }
+    .timer-badge { background:#0f172a; padding:6px 12px; border-radius:8px; border:1px solid #475569; font-weight:bold; color:var(--warning); }
+    .viewport-card { background:#020617; border-radius:16px; border:2px solid #334155; position:relative; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,.6); }
+    #kitchenCanvas { width:100%; height:520px; display:block; }
+    .svg-store { display:none; }
+    .touch-controls { display:flex; justify-content:space-between; align-items:center; padding:12px 20px; background:#0f172a; border-top:2px solid #334155; }
+    .dpad { display:grid; grid-template-columns:repeat(3,44px); grid-template-rows:repeat(3,44px); gap:4px; }
+    .dbtn { background:#334155; color:#fff; border:none; border-radius:8px; font-weight:bold; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 0 #1e293b; }
+    .dbtn:active { background:var(--accent); color:#0f172a; transform:translateY(2px); box-shadow:none; }
+    .btn-game { background:var(--accent); color:#0f172a; border:none; padding:12px 24px; border-radius:10px; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 4px 12px rgba(56,189,248,.3); transition:all .15s ease; }
+    .btn-game:hover { background:#7dd3fc; transform:translateY(-2px); }
+    .btn-game.success { background:var(--success); color:#fff; box-shadow:0 4px 12px rgba(16,185,129,.3); }
+    .game-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,.92); backdrop-filter:blur(6px); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; z-index:10; text-align:center; }
+    .overlay-title { font-size:1.75rem; color:var(--accent); font-weight:800; margin-bottom:6px; }
+    .overlay-sub { font-size:.95rem; color:#94a3b8; margin-bottom:20px; max-width:550px; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; width:100%; max-width:620px; }
+    .choice-card { background:#1e293b; border:2px solid #475569; border-radius:12px; padding:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; transition:all .2s; }
+    .choice-card:hover { border-color:var(--accent); transform:scale(1.04); background:#334155; }
+    .choice-card.selected { border-color:var(--success); background:#064e3b; }
+    .choice-icon { font-size:2.2rem; }
+    .pour-meter-container { width:70px; height:220px; background:#334155; border:4px solid #64748b; border-radius:12px; position:relative; overflow:hidden; margin:15px 0; }
+    .pour-fill { position:absolute; bottom:0; width:100%; background:linear-gradient(180deg,#38bdf8 0%,#0284c7 100%); height:0%; transition:height .05s linear; }
+    .target-line { position:absolute; top:35%; width:100%; height:8px; background:#f59e0b; box-shadow:0 0 8px #f59e0b; z-index:2; }
+    .log-card { background:var(--panel); border-radius:12px; border:1px solid #334155; padding:12px 18px; max-height:120px; overflow-y:auto; font-family:monospace; font-size:.85rem; color:#94a3b8; }
+  </style>
+</head>
+<body>
+<div class="svg-store">
+<svg id="asset-fridge" viewBox="0 0 200 300" width="200" height="300"><defs><linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#cbd5e1"/><stop offset="50%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#94a3b8"/></linearGradient></defs><rect x="5" y="5" width="190" height="290" rx="16" fill="url(#metal)" stroke="#475569" stroke-width="4"/><line x1="5" y1="110" x2="195" y2="110" stroke="#64748b" stroke-width="3"/><rect x="20" y="60" width="10" height="40" rx="4" fill="#475569"/><rect x="20" y="130" width="10" height="60" rx="4" fill="#475569"/><rect x="120" y="30" width="45" height="55" rx="6" fill="#1e293b"/></svg>
+<svg id="asset-oven" viewBox="0 0 200 300" width="200" height="300"><rect x="5" y="5" width="190" height="290" rx="12" fill="#334155" stroke="#1e293b" stroke-width="4"/><rect x="15" y="15" width="170" height="80" rx="6" fill="#0f172a"/><circle cx="55" cy="40" r="22" stroke="#f59e0b" stroke-width="3" fill="none"/><circle cx="145" cy="40" r="18" stroke="#ef4444" stroke-width="3" fill="none"/><rect x="20" y="120" width="160" height="145" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="3"/><rect x="35" y="140" width="130" height="90" rx="4" fill="#020617"/><rect x="30" y="102" width="140" height="10" rx="3" fill="#cbd5e1"/></svg>
+<svg id="asset-chef" viewBox="0 0 160 240" width="160" height="240"><defs><linearGradient id="skin" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffedd5"/><stop offset="100%" stop-color="#fdba74"/></linearGradient><linearGradient id="apron" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#fff"/><stop offset="100%" stop-color="#cbd5e1"/></linearGradient></defs><path d="M45 210Q30 210 30 225L65 225Q65 210 45 210Z" fill="#0f172a"/><path d="M115 210Q95 210 95 225L130 225Q130 210 115 210Z" fill="#0f172a"/><rect x="42" y="160" width="20" height="55" fill="#1e293b" rx="4"/><rect x="98" y="160" width="20" height="55" fill="#1e293b" rx="4"/><rect x="35" y="80" width="90" height="90" rx="14" fill="#0284c7"/><path d="M45 95L115 95L122 170L38 170Z" fill="url(#apron)"/><rect x="70" y="65" width="20" height="20" fill="url(#skin)" rx="3"/><ellipse cx="80" cy="50" rx="28" ry="32" fill="url(#skin)"/><ellipse cx="68" cy="46" rx="6" ry="8" fill="#fff"/><ellipse cx="92" cy="46" rx="6" ry="8" fill="#fff"/><circle cx="70" cy="46" r="3.5" fill="#0284c7"/><circle cx="94" cy="46" r="3.5" fill="#0284c7"/><path d="M70 62Q80 72 90 62" stroke="#b91c1c" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="15" y="85" width="22" height="60" rx="10" fill="#0284c7"/><circle cx="26" cy="150" r="9" fill="url(#skin)"/><rect x="123" y="85" width="22" height="60" rx="10" fill="#0284c7"/><circle cx="134" cy="150" r="9" fill="url(#skin)"/><path d="M48 30L112 30L115 18L45 18Z" fill="#fff"/><path d="M40 18C30-10 70-20 80-5C90-20 130-10 120 18Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/></svg>
+</div>
+<div class="game-container">
+<div class="hud-bar"><div><span style="color:#94a3b8">Task Objective:</span> <span class="hud-step" id="goalText">Step 1: Select Cake Recipe Flavor</span></div><div><span class="timer-badge" id="preEtsTimer">Pre-ETS Session: 00:00</span></div><div><span style="color:#94a3b8">Kitchen Status:</span> <span id="safetyStatusText" style="color:var(--success);font-weight:700">Safety Verified</span></div></div>
+<div class="viewport-card"><canvas id="kitchenCanvas" width="960" height="520"></canvas>
+<div class="game-overlay" id="flavorOverlay"><div class="overlay-title">🎂 Select Recipe Mix</div><div class="overlay-sub">Choose a recipe box to start cooking.</div><div class="card-grid"><div class="choice-card" onclick="selectCakeFlavor('Fudge Chocolate')"><div class="choice-icon">🍫</div><b>Fudge Chocolate</b></div><div class="choice-card" onclick="selectCakeFlavor('Classic Vanilla')"><div class="choice-icon">🍦</div><b>Classic Vanilla</b></div><div class="choice-card" onclick="selectCakeFlavor('Sweet Strawberry')"><div class="choice-icon">🍓</div><b>Sweet Strawberry</b></div></div></div>
+<div class="game-overlay" id="toolsOverlay" style="display:none"><div class="overlay-title">🥣 Equip Station Tools</div><div class="overlay-sub">Select the mandatory equipment needed to proceed safely.</div><div class="card-grid" id="toolsGrid"></div><button class="btn-game success" style="margin-top:15px" onclick="confirmToolsSelection()">Confirm Selected Equipment</button></div>
+<div class="game-overlay" id="measureOverlay" style="display:none"><div class="overlay-title">🥛 Precision Liquid Measurement</div><div class="overlay-sub">Press and HOLD the pour button to fill the cup to the yellow mark.</div><div class="pour-meter-container"><div class="target-line"></div><div class="pour-fill" id="pourFill"></div></div><button class="btn-game" id="pourBtn" onmousedown="startPouring()" onmouseup="stopPouring()" ontouchstart="startPouring()" ontouchend="stopPouring()">HOLD TO POUR</button></div>
+<div class="game-overlay" id="mixOverlay" style="display:none"><div class="overlay-title">🥣 Whisk Batter to Smooth Consistency</div><div class="overlay-sub">Move your pointer back and forth inside the bowl to mix the ingredients!</div><div style="width:190px;height:190px;border-radius:50%;border:6px solid #64748b;background:#334155;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center" id="mixBowl" onmousemove="handleWhiskDrag(event)" ontouchmove="handleWhiskDrag(event)"><div id="batterVisual" style="width:75%;height:75%;border-radius:50%;background:#a16207;opacity:.4"></div><div style="position:absolute;font-size:2.5rem">🧹</div></div><div style="margin-top:12px;font-weight:bold;color:var(--accent)" id="mixProgressText">Mixing Progress: 0%</div></div>
+</div>
+<div class="touch-controls"><div class="dpad"><div></div><button class="dbtn" onclick="movePlayer(0,-18)">▲</button><div></div><button class="dbtn" onclick="movePlayer(-18,0)">◀</button><button class="dbtn" onclick="movePlayer(0,18)">▼</button><button class="dbtn" onclick="movePlayer(15,0)">▶</button></div><div style="font-size:.85rem;color:#94a3b8;text-align:center">🎮 Use Arrow Keys / D-Pad to navigate.</div><button class="btn-game" onclick="handleInteraction()">✋ Interact / Open Station</button></div>
+<div class="log-card" id="actionLog"><div>[System Engine Initialized] Pre-ETS Activity Logger active.</div></div>
+</div>
 <script>
-(function(){
-  const KEY='tt_sound_on';
-  let ctx=null;
-  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
-  function tone(freq,dur,type='sine',vol=.035){
-    if(!enabled()) return;
-    try{
-      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type=type; o.frequency.value=freq;
-      g.gain.setValueAtTime(vol,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
-    }catch(e){}
-  }
-  window.TTSound={
-    click:()=>tone(520,.055,'sine',.025),
-    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
-    consequence:()=>tone(330,.11,'triangle',.025)
-  };
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('button,.choice,.option,[role="button"]');
-    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
-  },true);
-  function addToggle(){
-    if(document.getElementById('ttSoundToggle')) return;
-    const b=document.createElement('button');
-    b.id='ttSoundToggle';
-    b.type='button';
-    b.setAttribute('aria-label','Turn website sounds on or off');
-    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
-    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
-    label();
-    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
-    document.body.appendChild(b);
-  }
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
-})();
+const canvas=document.getElementById('kitchenCanvas'),ctx=canvas.getContext('2d');
+let currentStep=0,chosenFlavor=null,selectedTools=[],characterPos={x:480,y:380},activeZone=null,animFrame=0,currentAnimState='IDLE',sessionSeconds=0;
+setInterval(()=>{sessionSeconds++;let m=String(Math.floor(sessionSeconds/60)).padStart(2,'0'),s=String(sessionSeconds%60).padStart(2,'0');document.getElementById('preEtsTimer').innerText=`Pre-ETS Session: ${m}:${s}`},1000);
+function logAction(msg){let l=document.getElementById('actionLog');l.innerHTML+=`<div>[${new Date().toLocaleTimeString()}] ${msg}</div>`;l.scrollTop=l.scrollHeight}
+function createSvgImage(id){let e=document.getElementById(id),b=new Blob([new XMLSerializer().serializeToString(e)],{type:'image/svg+xml;charset=utf-8'}),u=URL.createObjectURL(b),i=new Image();i.src=u;return i}
+const imgFridge=createSvgImage('asset-fridge'),imgOven=createSvgImage('asset-oven'),imgChef=createSvgImage('asset-chef');
+const STATIONS=[{id:'pantry',label:'Pantry Cabinet',x:80,y:110,w:130,h:220,type:'pantry'},{id:'fridge',label:'Refrigerator',x:250,y:90,w:140,h:240,type:'fridge'},{id:'sink',label:'Granite Sink',x:420,y:160,w:140,h:110,type:'sink'},{id:'island',label:'Prep Kitchen Island',x:600,y:260,w:230,h:140,type:'island'},{id:'oven',label:'Modern Range & Oven',x:810,y:120,w:120,h:220,type:'oven'}];
+const keys={};addEventListener('keydown',e=>keys[e.key]=true);addEventListener('keyup',e=>keys[e.key]=false);
+function movePlayer(dx,dy){characterPos.x=Math.max(90,Math.min(canvas.width-90,characterPos.x+dx));characterPos.y=Math.max(220,Math.min(canvas.height-70,characterPos.y+dy));currentAnimState='WALK'}
+function renderLoop(){animFrame++;let moving=false;if(keys.ArrowUp||keys.w){movePlayer(0,-4);moving=true}if(keys.ArrowDown||keys.s){movePlayer(0,4);moving=true}if(keys.ArrowLeft||keys.a){movePlayer(-4,0);moving=true}if(keys.ArrowRight||keys.d){movePlayer(4,0);moving=true}if(!moving&&currentAnimState==='WALK')currentAnimState='IDLE';ctx.clearRect(0,0,canvas.width,canvas.height);let wg=ctx.createLinearGradient(0,0,0,160);wg.addColorStop(0,'#1e1b4b');wg.addColorStop(1,'#0f172a');ctx.fillStyle=wg;ctx.fillRect(0,0,canvas.width,160);let fg=ctx.createLinearGradient(0,160,0,canvas.height);fg.addColorStop(0,'#27190c');fg.addColorStop(1,'#0f0a05');ctx.fillStyle=fg;ctx.fillRect(0,160,canvas.width,canvas.height-160);activeZone=null;STATIONS.forEach(s=>{ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.ellipse(s.x+s.w/2,s.y+s.h,s.w/1.8,15,0,0,Math.PI*2);ctx.fill();if(s.type==='fridge')ctx.drawImage(imgFridge,s.x,s.y,s.w,s.h);else if(s.type==='oven')ctx.drawImage(imgOven,s.x,s.y,s.w,s.h);else{ctx.fillStyle='#334155';ctx.fillRect(s.x,s.y,s.w,s.h)}ctx.fillStyle='#f8fafc';ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.fillText(s.label,s.x+s.w/2,s.y+23);let d=Math.hypot(characterPos.x-(s.x+s.w/2),characterPos.y-(s.y+s.h/2));if(d<100)activeZone=s});drawHDCharacter(characterPos.x,characterPos.y,currentAnimState,animFrame);requestAnimationFrame(renderLoop)}
+function drawHDCharacter(x,y,state,frame){ctx.save();ctx.translate(x-40,y-100);let bob=state==='WALK'?Math.abs(Math.sin(frame*.25))*6:Math.sin(frame*.08)*2;ctx.translate(0,-bob);ctx.drawImage(imgChef,0,0,80,120);ctx.restore()}
+function selectCakeFlavor(f){chosenFlavor=f;document.getElementById('flavorOverlay').style.display='none';logAction(`Selected Recipe Mix: ${f}`);updateGoal('Step 2: Walk to Prep Island & Select Tools',1)}
+function updateGoal(t,n){currentStep=n;document.getElementById('goalText').innerText=t}
+function handleInteraction(){if(!activeZone){logAction('Interaction attempted out of range.');return}if(currentStep===1&&activeZone.id==='island')openToolsPicker();else if(currentStep===2&&(activeZone.id==='pantry'||activeZone.id==='fridge')){logAction('Retrieved raw ingredients safely.');updateGoal('Step 3: Measure Water & Oil at Prep Island',3)}else if(currentStep===3&&activeZone.id==='island')openPourMiniGame();else if(currentStep===4&&activeZone.id==='island')openMixMiniGame();else if(currentStep===5&&activeZone.id==='oven'){logAction('Placed baking pan into oven safely.');updateGoal('Step 6: Task Complete!',6)}}
+function openToolsPicker(){let tools=[['Mixing Bowl','🥣'],['Whisk','🧹'],['Measuring Cup','🥛'],['Baking Pan','🥘']],g=document.getElementById('toolsGrid');g.innerHTML='';selectedTools=[];tools.forEach(t=>{let c=document.createElement('div');c.className='choice-card';c.innerHTML=`<div class="choice-icon">${t[1]}</div><b>${t[0]}</b>`;c.onclick=()=>{c.classList.toggle('selected');selectedTools.includes(t[0])?selectedTools=selectedTools.filter(x=>x!==t[0]):selectedTools.push(t[0])};g.appendChild(c)});document.getElementById('toolsOverlay').style.display='flex'}
+function confirmToolsSelection(){document.getElementById('toolsOverlay').style.display='none';logAction(`Equipped Tools: ${selectedTools.join(', ')}`);updateGoal('Step 3: Walk to Refrigerator/Pantry for Ingredients',2)}
+let pourValue=0,pourTimer=null;function openPourMiniGame(){pourValue=0;document.getElementById('pourFill').style.height='0%';document.getElementById('measureOverlay').style.display='flex'}function startPouring(){pourTimer=setInterval(()=>{if(pourValue<100){pourValue+=3;document.getElementById('pourFill').style.height=`${pourValue}%`}},50)}function stopPouring(){clearInterval(pourTimer);if(pourValue>=55&&pourValue<=75){logAction('Accurately measured required liquid ingredients.');document.getElementById('measureOverlay').style.display='none';updateGoal('Step 4: Whisk Ingredients at Prep Island',4)}else{pourValue=0;document.getElementById('pourFill').style.height='0%'}}
+let mixProgress=0;function openMixMiniGame(){mixProgress=0;document.getElementById('mixProgressText').innerText='Mixing Progress: 0%';document.getElementById('mixOverlay').style.display='flex'}function handleWhiskDrag(){if(mixProgress<100){mixProgress+=3;document.getElementById('mixProgressText').innerText=`Mixing Progress: ${Math.min(100,Math.floor(mixProgress))}%`;if(mixProgress>=100)setTimeout(()=>{logAction('Batter whisked to smooth consistency.');document.getElementById('mixOverlay').style.display='none';updateGoal('Step 5: Walk to Oven to Bake',5)},300)}}
+renderLoop();
 </script>
-
-
-<script id="ttUniversalChoiceShuffle">
-(function(){
-  const selectors=[
-    '.choices','.options','.choice-grid','.answer-grid','.answers',
-    '.decision-options','.response-options','.scenario-options',
-    '#choices','#options','#answers'
-  ];
-  const itemSel='button,.choice,.option,.answer,[role="button"],label';
-
-  function shuffleArray(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-  function signature(c){
-    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
-  }
-  function shuffleContainer(c){
-    const kids=[...c.children].filter(x=>x.matches(itemSel));
-    if(kids.length<2) return;
-    const sig=signature(c);
-    if(c.dataset.ttShuffleSig===sig) return;
-    shuffleArray(kids).forEach(k=>c.appendChild(k));
-    c.dataset.ttShuffleSig=signature(c);
-  }
-  function scan(root=document){
-    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
-    // Also detect ordinary containers holding 2–6 answer buttons.
-    root.querySelectorAll('div,section,article,form').forEach(c=>{
-      const kids=[...c.children].filter(x=>x.matches('button'));
-      if(kids.length>=2 && kids.length<=6){
-        const txt=(c.className+' '+c.id).toLowerCase();
-        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
-          shuffleContainer(c);
-      }
-    });
-  }
-  let queued=false;
-  function queue(){
-    if(queued)return; queued=true;
-    requestAnimationFrame(()=>{queued=false;scan();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{scan();});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
 </body></html>
