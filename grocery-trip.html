@@ -1,139 +1,25 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Grocery Trip | Transition Team</title><style>
-:root{--navy:#102a5c;--blue:#0751bd;--red:#e1192f;--paper:#f6f8fc;--ink:#25324a;--green:#16784a;--gold:#f3b61f}*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:Arial,sans-serif;color:var(--ink)}header{background:var(--navy);color:white;padding:15px 18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}header a{color:white;text-decoration:none;font-weight:800}main{max-width:900px;margin:auto;padding:18px}.book{background:white;border:1px solid #dbe3ef;border-radius:22px;padding:24px;box-shadow:0 8px 28px #102a5c18;min-height:560px;position:relative;overflow:hidden}.turn{animation:turn .38s ease}@keyframes turn{0%{opacity:.25;transform:perspective(800px) rotateY(-12deg) translateX(18px)}100%{opacity:1;transform:none}}h1,h2{font-family:Georgia,serif;color:var(--navy)}h1{font-size:38px;margin:4px 0 8px}.scene{font-size:72px;text-align:center;background:linear-gradient(180deg,#eaf4ff,#fff);border-radius:18px;padding:20px;margin:14px 0}.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:18px 0}.choices button,.btn{border:0;border-radius:13px;padding:14px;font-size:16px;font-weight:850;cursor:pointer;background:var(--blue);color:white;min-height:52px}.choices button.alt{background:var(--green)}.choices button.warn{background:#8a5b00}.status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.pill{background:#edf4fc;border-radius:12px;padding:10px;text-align:center;font-weight:800}.list{background:#f8fafc;border:1px solid #dde5ef;border-radius:14px;padding:14px}.itemgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}.item{border:2px solid #d7dfeb;background:white;border-radius:12px;padding:12px;cursor:pointer;text-align:left;font-weight:750}.item.sel{border-color:var(--green);background:#edfff6}.small{color:#66758a;font-size:14px}.read{background:#5b3f91;color:white;border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer}.feedback{padding:14px;border-radius:12px;background:#fff4c9;margin:12px 0}.good{background:#eafff1}.receipt{font-family:ui-monospace,monospace;background:#fffdf5;border:1px dashed #999;padding:18px;border-radius:10px}.progress{height:10px;background:#e5eaf1;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green)}@media(max-width:560px){main{padding:10px}.book{padding:16px}.scene{font-size:54px}.status{grid-template-columns:1fr}h1{font-size:30px}}
-</style><link rel="stylesheet" href="session.css"></head><body><header><a href="index.html">← Transition Team Home</a><a href="simulators.html">Game Zone</a></header><main><div id="book" class="book"></div></main><script>function friendlySpeak(text){
-  if(!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  const voices=speechSynthesis.getVoices();
-  const en=voices.filter(v=>/^en(-|_)/i.test(v.lang||''));
-  const preferred=['Ava','Samantha','Zoe','Aria','Jenny','Emma','Joanna','Allison','Serena','Tessa','Victoria','Karen','Moira','Fiona','Siri Female'];
-  let voice=preferred.map(n=>en.find(v=>(v.name||'').toLowerCase().includes(n.toLowerCase()))).find(Boolean);
-  if(!voice) voice=en.find(v=>/female|woman|girl|natural|premium|enhanced/i.test(v.name||''));
-  if(!voice) voice=en[0]||voices[0];
-  if(voice) u.voice=voice;
-  u.rate=1.03; u.pitch=1.12; u.volume=1;
-  speechSynthesis.speak(u);
-}
-
-const meals={
-'Taco Night':{emoji:'🌮',budget:30,needed:['Ground beef','Taco seasoning','Tortillas','Shredded cheese','Lettuce','Tomatoes','Salsa']},
-'Spaghetti Dinner':{emoji:'🍝',budget:25,needed:['Spaghetti noodles','Pasta sauce','Ground beef','Parmesan cheese','Garlic bread']},
-'Cheeseburgers':{emoji:'🍔',budget:30,needed:['Ground beef','Hamburger buns','Cheese slices','Lettuce','Tomatoes','Ketchup']},
-'Breakfast':{emoji:'🥞',budget:25,needed:['Eggs','Bacon','Pancake mix','Milk','Syrup']},
-'Chicken Dinner':{emoji:'🍗',budget:35,needed:['Chicken','Potatoes','Green beans','Dinner rolls','Seasoning']},
-'Tortilla Pizza':{emoji:'🍕',budget:22,needed:['Tortillas','Pizza sauce','Pepperoni','Shredded cheese']}}
-const aisle={
-'Produce':['Lettuce','Tomatoes','Bananas','Apples','Potatoes','Onions'],
-'Meat':['Ground beef','Chicken','Bacon','Pork chops'],
-'Dairy':['Shredded cheese','Cheese slices','Parmesan cheese','Eggs','Milk','Yogurt'],
-'Pantry':['Taco seasoning','Salsa','Spaghetti noodles','Pasta sauce','Pancake mix','Syrup','Ketchup','Seasoning'],
-'Bread & Tortillas':['Tortillas','Hamburger buns','Garlic bread','Dinner rolls','Bread'],
-'Frozen':['Frozen pizza','Ice cream','Frozen vegetables'],
-'Household':['Paper towels','Dish soap','Trash bags'],
-'Sporting Goods':['Basketball','Fishing lure','Water bottle']};
-const price={'Ground beef':5.49,'Taco seasoning':0.89,'Tortillas':2.29,'Shredded cheese':2.49,'Lettuce':1.99,'Tomatoes':1.79,'Salsa':2.39,'Spaghetti noodles':1.49,'Pasta sauce':2.19,'Parmesan cheese':2.89,'Garlic bread':2.49,'Hamburger buns':2.39,'Cheese slices':2.79,'Ketchup':2.49,'Eggs':2.99,'Bacon':4.99,'Pancake mix':2.69,'Milk':3.19,'Syrup':2.99,'Chicken':6.49,'Potatoes':3.49,'Green beans':1.39,'Dinner rolls':2.49,'Seasoning':1.29,'Pizza sauce':1.79,'Pepperoni':3.29,'Bananas':1.49,'Apples':3.49,'Onions':1.29,'Pork chops':6.99,'Yogurt':1.19,'Bread':2.29,'Frozen pizza':5.99,'Ice cream':4.49,'Frozen vegetables':2.19,'Paper towels':6.99,'Dish soap':3.49,'Trash bags':8.49,'Basketball':12.99,'Fishing lure':5.99,'Water bottle':7.99};
-let s={meal:null,list:[],cart:[],budget:0,wrong:0,extras:0,page:0};const book=document.getElementById('book');
-function speak(){friendlySpeak(book.innerText.replace(/READ TO ME/g,''))}function render(html){book.classList.remove('turn');void book.offsetWidth;book.innerHTML=html;book.classList.add('turn');const r=book.querySelector('#read');if(r)r.onclick=speak;window.scrollTo({top:0,behavior:'smooth'})}function money(n){return '$'+n.toFixed(2)}function total(){return s.cart.reduce((a,x)=>a+(price[x]||0),0)}function status(){return `<div class="status"><div class="pill">💵 Budget<br>${money(s.budget)}</div><div class="pill">🛒 Cart<br>${s.cart.length} items</div><div class="pill">💰 Remaining<br>${money(s.budget-total())}</div></div>`}
-function start(){render(`<div class="scene">🛒📖</div><h1>My Grocery Trip</h1><p>Build your own shopping story. Pick a meal, make your grocery list, drive to the store, choose aisles, shop, and see how your choices turn out.</p><button id="read" class="read">🔊 READ TO ME</button><h2>What are you cooking?</h2><div class="choices">${Object.entries(meals).map(([m,v])=>`<button onclick="chooseMeal('${m}')">${v.emoji} ${m}</button>`).join('')}</div>`)}
-function chooseMeal(m){s={meal:m,list:[],cart:[],budget:meals[m].budget,wrong:0,extras:0,page:1};buildList()}
-function buildList(){let n=meals[s.meal].needed;let distract=['Ice cream','Paper towels','Bananas','Dish soap','Frozen pizza','Water bottle'].filter(x=>!n.includes(x));let opts=[...n,...distract].sort();render(`<div class="scene">${meals[s.meal].emoji} 📝</div><h1>Make Your Grocery List</h1><p>You chose <b>${s.meal}</b>. Click everything you think you need. Some choices do not belong in this meal.</p><button id="read" class="read">🔊 READ TO ME</button><div class="itemgrid">${opts.map(x=>`<button class="item ${s.list.includes(x)?'sel':''}" onclick="toggleList('${x.replaceAll("'","\\'")}')">${s.list.includes(x)?'✓ ':''}${x}</button>`).join('')}</div><div class="choices"><button class="alt" onclick="listReady()">MY LIST IS READY →</button></div><p class="small">Selected: ${s.list.length} items. Your choices become the list you take into the store.</p>`)}
-function toggleList(x){s.list.includes(x)?s.list=s.list.filter(i=>i!==x):s.list.push(x);buildList()}
-function listReady(){if(!s.list.length){alert('Choose at least one item for your grocery list.');return}s.page=2;render(`<div class="scene">🚗 🛒</div><h1>Your List Is Ready</h1><div class="list"><b>${s.meal}</b><br>${s.list.map(x=>'☐ '+x).join('<br>')}</div><p>You have <b>${money(s.budget)}</b> to shop. Now it's time to go to the store.</p><button id="read" class="read">🔊 READ TO ME</button><div class="choices"><button onclick="arrive()">🚗 GO TO THE STORE →</button></div>`)}
-function arrive(){render(`<div class="scene">🚗🏪</div><h1>You Pulled Up to the Grocery Store</h1><p>You parked safely. Your grocery list is with you and you have a budget.</p><button id="read" class="read">🔊 READ TO ME</button><div class="choices"><button onclick="entrance()">GET OUT OF THE CAR →</button></div>`)}
-function entrance(){render(`<div class="scene">🏪🛒</div><h1>Welcome to the Store</h1><p>You grab a cart. Which section will you visit first?</p>${status()}<button id="read" class="read">🔊 READ TO ME</button><div class="choices">${Object.keys(aisle).map(a=>`<button onclick="visit('${a}')">${a==='Produce'?'🥬':a==='Meat'?'🥩':a==='Dairy'?'🥛':a==='Pantry'?'🥫':a==='Bread & Tortillas'?'🍞':a==='Frozen'?'❄️':a==='Household'?'🧴':'⚽'} ${a}</button>`).join('')}<button class="alt" onclick="checkout()">🧾 GO TO CHECKOUT</button></div>`)}
-function visit(a){let wanted=aisle[a].filter(x=>s.list.includes(x)&&!s.cart.includes(x));if(!wanted.length)s.wrong++;let msg=wanted.length?`You found something from your list in this section.`:`You look around, but none of the items still on your list are here. Check your list before spending money.`;render(`<div class="scene">${a==='Produce'?'🥬':a==='Meat'?'🥩':a==='Dairy'?'🥛':a==='Pantry'?'🥫':a==='Bread & Tortillas'?'🍞':a==='Frozen'?'❄️':a==='Household'?'🧴':'⚽'} 🛒</div><h1>${a}</h1><div class="feedback ${wanted.length?'good':''}">${msg}</div>${status()}<button id="read" class="read">🔊 READ TO ME</button><div class="itemgrid">${aisle[a].map(x=>`<button class="item ${s.cart.includes(x)?'sel':''}" onclick="add('${x.replaceAll("'","\\'")}','${a}')">${s.cart.includes(x)?'✓ ':''}${x}<br><span class="small">${money(price[x])}</span></button>`).join('')}</div><div class="choices"><button onclick="entrance()">← CHOOSE ANOTHER AISLE</button><button class="alt" onclick="checkout()">🧾 CHECKOUT</button></div>`)}
-function add(x,a){if(s.cart.includes(x))return; if(total()+price[x]>s.budget){alert('That would put you over your budget. You can still choose a different item or go to checkout.');return}s.cart.push(x);if(!s.list.includes(x))s.extras++;visit(a)}
-function checkout(){let missing=s.list.filter(x=>!s.cart.includes(x));let mealNeeded=meals[s.meal].needed;let forgotten=mealNeeded.filter(x=>!s.list.includes(x));let success=missing.length===0&&forgotten.length===0&&total()<=s.budget;render(`<div class="scene">🧾 ${success?'🎉':'🤔'}</div><h1>Checkout — Your Story</h1><div class="receipt"><b>${s.meal}</b><br><br>${s.cart.map(x=>`${x.padEnd(20,'.')} ${money(price[x])}`).join('<br>')}<hr><b>TOTAL: ${money(total())}</b><br>BUDGET: ${money(s.budget)}<br>LEFT: ${money(s.budget-total())}</div><p><b>List items found:</b> ${s.list.length-missing.length} of ${s.list.length}<br><b>Extra purchases:</b> ${s.extras}<br><b>Wrong/unhelpful aisles visited:</b> ${s.wrong}</p>${missing.length?`<div class="feedback">Still on your list: ${missing.join(', ')}</div>`:''}${forgotten.length?`<div class="feedback">When you planned your list, you left out: <b>${forgotten.join(', ')}</b>. Would your meal still work?</div>`:''}<button id="read" class="read">🔊 READ TO ME</button><div class="choices">${missing.length?'<button onclick="entrance()">🛒 GO BACK & KEEP SHOPPING</button>':''}<button class="alt" onclick="start()">🔄 WRITE A NEW GROCERY STORY</button><button onclick="window.print()">🖨 PRINT MY RESULTS</button></div>`)}start();
-</script><script src="session.js"></script>
-<script>
-(function(){
-  const KEY='tt_sound_on';
-  let ctx=null;
-  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
-  function tone(freq,dur,type='sine',vol=.035){
-    if(!enabled()) return;
-    try{
-      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type=type; o.frequency.value=freq;
-      g.gain.setValueAtTime(vol,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
-    }catch(e){}
-  }
-  window.TTSound={
-    click:()=>tone(520,.055,'sine',.025),
-    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
-    consequence:()=>tone(330,.11,'triangle',.025)
-  };
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('button,.choice,.option,[role="button"]');
-    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
-  },true);
-  function addToggle(){
-    if(document.getElementById('ttSoundToggle')) return;
-    const b=document.createElement('button');
-    b.id='ttSoundToggle';
-    b.type='button';
-    b.setAttribute('aria-label','Turn website sounds on or off');
-    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
-    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
-    label();
-    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
-    document.body.appendChild(b);
-  }
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
-})();
-</script>
-
-
-<script id="ttUniversalChoiceShuffle">
-(function(){
-  const selectors=[
-    '.choices','.options','.choice-grid','.answer-grid','.answers',
-    '.decision-options','.response-options','.scenario-options',
-    '#choices','#options','#answers'
-  ];
-  const itemSel='button,.choice,.option,.answer,[role="button"],label';
-
-  function shuffleArray(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-  function signature(c){
-    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
-  }
-  function shuffleContainer(c){
-    const kids=[...c.children].filter(x=>x.matches(itemSel));
-    if(kids.length<2) return;
-    const sig=signature(c);
-    if(c.dataset.ttShuffleSig===sig) return;
-    shuffleArray(kids).forEach(k=>c.appendChild(k));
-    c.dataset.ttShuffleSig=signature(c);
-  }
-  function scan(root=document){
-    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
-    // Also detect ordinary containers holding 2–6 answer buttons.
-    root.querySelectorAll('div,section,article,form').forEach(c=>{
-      const kids=[...c.children].filter(x=>x.matches('button'));
-      if(kids.length>=2 && kids.length<=6){
-        const txt=(c.className+' '+c.id).toLowerCase();
-        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
-          shuffleContainer(c);
-      }
-    });
-  }
-  let queued=false;
-  function queue(){
-    if(queued)return; queued=true;
-    requestAnimationFrame(()=>{queued=false;scan();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{scan();});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-</body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Grocery Trip</title><style>
+:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
+header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}.wrap{max-width:1100px;margin:auto;padding:22px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#fff;color:var(--navy)!important;border:2px solid var(--navy)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card h2,.card h3{color:var(--navy);margin-top:0}.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}.choice:hover{border-color:var(--blue);background:#f3f7ff}
+.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none}.score{font-weight:900;color:var(--navy)}
+input,select,textarea{width:100%;padding:10px;border:1px solid #aebed6;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:88px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:18px 0}.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
+small.muted,.muted{color:#5d6d86}.pill{display:inline-block;border:1px solid #c9d7ef;background:#f5f8ff;padding:5px 9px;border-radius:999px;margin:3px}
+@media(max-width:650px){.row{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 14px}}
+@media print{header,nav,.no-print,.btn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}.only-print{display:block!important}}
+</style></head><body>
+<header><div class="wrap"><h1 style="margin:0">My Grocery Trip</h1><p style="margin:6px 0 0">Transition Team Resource Hub</p><nav><a href="index.html">⌂ Home</a><a href="index.html#staff">🧰 Staff</a><a href="worksheets.html">📝 Worksheets</a><a href="group-projects.html">👥 Group Projects</a><a href="simulators.html">🎮 Simulators</a></nav></div></header>
+<main class="wrap"><div class="card"><h2>🛒 My Grocery Trip</h2><p><span class="tag">Workplace Readiness</span> <span class="tag">Independent Living</span></p><p>Your challenge: plan a meal and shop with a <b>$25 budget</b>. Add items to your cart, check your total, and make changes if needed.</p><div class="row"><div><h3>Store</h3><div id="foods"></div></div><div><h3>Your Cart</h3><div id="cart"></div><hr><p><b>Total:</b> $<span id="total">0.00</span></p><p><b>Money left:</b> $<span id="left">25.00</span></p><p id="status"></p></div></div></div>
+<div class="print-sheet"><h2>Grocery Trip Student Guide</h2><p>Name: ____________________ Date: __________</p><p>Meal I am planning:</p><div class="line"></div><p>My budget:</p><div class="line"></div><p>Items I need:</p><div class="bigline"></div><p>Final total:</p><div class="line"></div><p>One item I removed or changed to stay on budget:</p><div class="bigline"></div><p>What did I learn about grocery shopping?</p><div class="bigline"></div><button class="btn no-print" onclick="window.print()">🖨️ Print Student Guide</button></div></main><script>
+const foods=[['Bread',3.25],['Tortillas',2.75],['Ground beef',6.50],['Chicken',7.25],['Rice',2.50],['Pasta',1.75],['Pasta sauce',2.25],['Cheese',3.50],['Lettuce',2.00],['Tomatoes',2.25],['Green beans',1.50],['Potatoes',3.75],['Milk',3.25],['Eggs',3.00],['Fruit',4.00]];
+let budget=25,cart=[];
+function render(){let f=document.getElementById('foods');f.innerHTML='';foods.forEach(([n,p])=>{let b=document.createElement('button');b.className='choice';b.textContent=`${n} — $${p.toFixed(2)}`;b.onclick=()=>{cart.push([n,p]);renderCart()};f.appendChild(b)});renderCart()}
+function renderCart(){let total=cart.reduce((s,x)=>s+x[1],0);document.getElementById('cart').innerHTML=cart.map((x,i)=>`<div>${x[0]} — $${x[1].toFixed(2)} <button onclick="cart.splice(${i},1);renderCart()">remove</button></div>`).join('')||'<span class="muted">Cart is empty.</span>';document.getElementById('total').textContent=total.toFixed(2);document.getElementById('left').textContent=(budget-total).toFixed(2);document.getElementById('status').textContent=total<=budget?'✅ Within budget':'⚠️ Over budget';}
+render();
+</script></body></html>

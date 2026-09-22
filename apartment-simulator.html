@@ -1,93 +1,22 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apartment Hunt | Transition Team</title><style>:root{--navy:#102a5c;--blue:#0751bd;--red:#e1192f;--paper:#f7f9fc;--ink:#25324a}*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:Arial,sans-serif;color:var(--ink)}header{background:var(--navy);padding:18px}header a{color:white;text-decoration:none;font-weight:800}main{max-width:1000px;margin:auto;padding:20px}.panel{background:white;border:1px solid #dce4ef;border-radius:18px;padding:20px;margin:14px 0}h1,h2{color:var(--navy)}label{display:block;font-weight:800;margin:10px 0 5px}input{width:100%;font-size:16px;padding:11px;border:2px solid #ccd7e6;border-radius:9px}.listings{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.apt{border:2px solid #dce4ef;border-radius:14px;padding:14px}.apt button,button{border:0;border-radius:10px;padding:11px 14px;background:var(--blue);color:white;font-weight:800;cursor:pointer}.selected{border-color:var(--blue);background:#f0f6ff}.result{padding:14px;border-radius:12px;background:#edf4fc}.warn{background:#fff0f2}.small{color:#65748a;font-size:14px}@media(max-width:600px){main{padding:12px}}</style><link rel="stylesheet" href="session.css"></head><body><header><a href="index.html">← Transition Team Home</a></header><main><h1>🏠 Apartment Hunt: Can I Afford It?</h1><p>Compare apartments, calculate move-in costs, and see what is left after monthly housing expenses.</p><section class="panel"><h2>1. Your Budget</h2><label>Monthly take-home income ($)<input id="income" type="number" min="0" value="1800"></label><label>Other monthly bills ($)<input id="bills" type="number" min="0" value="450"></label></section><section class="panel"><h2>2. Compare Listings</h2><div class="listings" id="listings"></div></section><section class="panel"><h2>3. Your Apartment Math</h2><div id="result" class="result">Choose a listing to begin.</div></section><section class="panel"><h2>4. Before You Sign</h2><p>Practice questions: What utilities are included? How long is the lease? Is there an application fee? What happens if rent is late? Who handles repairs? Are pets allowed? What transportation will you need?</p><p class="small">Training simulator: example prices are fictional and are not current local apartment listings.</p></section></main><script>const A=[{n:'Maple Court Studio',rent:625,dep:625,util:145,trans:90,fee:35,lease:'12 months',note:'Lower rent, smaller space.'},{n:'Parkview 1 Bedroom',rent:775,dep:400,util:175,trans:55,fee:50,lease:'12 months',note:'More room and closer to work.'},{n:'River Place 2 Bedroom',rent:950,dep:950,util:220,trans:110,fee:40,lease:'6 months',note:'More space, higher monthly cost.'}];let pick=null;const box=document.querySelector('#listings');A.forEach((a,i)=>{let d=document.createElement('article');d.className='apt';d.innerHTML=`<h3>${a.n}</h3><p><b>Rent:</b> $${a.rent}/mo<br><b>Deposit:</b> $${a.dep}<br><b>Estimated utilities:</b> $${a.util}/mo<br><b>Transportation:</b> $${a.trans}/mo<br><b>Application:</b> $${a.fee}<br><b>Lease:</b> ${a.lease}</p><p>${a.note}</p><button type="button">Choose this apartment</button>`;d.querySelector('button').onclick=()=>{pick=i;[...box.children].forEach((x,j)=>x.classList.toggle('selected',j===i));calc()};box.appendChild(d)});function num(id){return Math.max(0,Number(document.querySelector(id).value)||0)}function calc(){if(pick===null)return;let a=A[pick],inc=num('#income'),b=num('#bills'),housing=a.rent+a.util+a.trans,left=inc-b-housing,move=a.dep+a.rent+a.fee;let r=document.querySelector('#result');r.className='result'+(left<0?' warn':'');r.innerHTML=`<h3>${a.n}</h3><p><b>Estimated move-in money needed:</b> $${move.toLocaleString()}</p><p><b>Monthly housing + utilities + transportation:</b> $${housing.toLocaleString()}</p><p><b>Other bills:</b> $${b.toLocaleString()}</p><p><b>Money left after these expenses:</b> $${left.toLocaleString()}</p><p>${left<0?'⚠️ This example budget does not cover all of these expenses. What could you change?':'✓ This example leaves money over, but you still need to plan for food, savings, emergencies, clothing, and other expenses.'}</p>`}document.querySelector('#income').addEventListener('input',calc);document.querySelector('#bills').addEventListener('input',calc);</script><script src="session.js"></script>
-<script>
-(function(){
-  const KEY='tt_sound_on';
-  let ctx=null;
-  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
-  function tone(freq,dur,type='sine',vol=.035){
-    if(!enabled()) return;
-    try{
-      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type=type; o.frequency.value=freq;
-      g.gain.setValueAtTime(vol,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
-    }catch(e){}
-  }
-  window.TTSound={
-    click:()=>tone(520,.055,'sine',.025),
-    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
-    consequence:()=>tone(330,.11,'triangle',.025)
-  };
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('button,.choice,.option,[role="button"]');
-    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
-  },true);
-  function addToggle(){
-    if(document.getElementById('ttSoundToggle')) return;
-    const b=document.createElement('button');
-    b.id='ttSoundToggle';
-    b.type='button';
-    b.setAttribute('aria-label','Turn website sounds on or off');
-    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
-    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
-    label();
-    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
-    document.body.appendChild(b);
-  }
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
-})();
-</script>
-
-
-<script id="ttUniversalChoiceShuffle">
-(function(){
-  const selectors=[
-    '.choices','.options','.choice-grid','.answer-grid','.answers',
-    '.decision-options','.response-options','.scenario-options',
-    '#choices','#options','#answers'
-  ];
-  const itemSel='button,.choice,.option,.answer,[role="button"],label';
-
-  function shuffleArray(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-  function signature(c){
-    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
-  }
-  function shuffleContainer(c){
-    const kids=[...c.children].filter(x=>x.matches(itemSel));
-    if(kids.length<2) return;
-    const sig=signature(c);
-    if(c.dataset.ttShuffleSig===sig) return;
-    shuffleArray(kids).forEach(k=>c.appendChild(k));
-    c.dataset.ttShuffleSig=signature(c);
-  }
-  function scan(root=document){
-    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
-    // Also detect ordinary containers holding 2–6 answer buttons.
-    root.querySelectorAll('div,section,article,form').forEach(c=>{
-      const kids=[...c.children].filter(x=>x.matches('button'));
-      if(kids.length>=2 && kids.length<=6){
-        const txt=(c.className+' '+c.id).toLowerCase();
-        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
-          shuffleContainer(c);
-      }
-    });
-  }
-  let queued=false;
-  function queue(){
-    if(queued)return; queued=true;
-    requestAnimationFrame(()=>{queued=false;scan();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{scan();});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-</body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apartment Living Simulator</title><style>
+:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
+header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}.wrap{max-width:1100px;margin:auto;padding:22px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#fff;color:var(--navy)!important;border:2px solid var(--navy)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card h2,.card h3{color:var(--navy);margin-top:0}.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}.choice:hover{border-color:var(--blue);background:#f3f7ff}
+.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none}.score{font-weight:900;color:var(--navy)}
+input,select,textarea{width:100%;padding:10px;border:1px solid #aebed6;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:88px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:18px 0}.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
+small.muted,.muted{color:#5d6d86}.pill{display:inline-block;border:1px solid #c9d7ef;background:#f5f8ff;padding:5px 9px;border-radius:999px;margin:3px}
+@media(max-width:650px){.row{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 14px}}
+@media print{header,nav,.no-print,.btn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}.only-print{display:block!important}}
+</style></head><body>
+<header><div class="wrap"><h1 style="margin:0">Apartment Living Simulator</h1><p style="margin:6px 0 0">Transition Team Resource Hub</p><nav><a href="index.html">⌂ Home</a><a href="index.html#staff">🧰 Staff</a><a href="worksheets.html">📝 Worksheets</a><a href="group-projects.html">👥 Group Projects</a><a href="simulators.html">🎮 Simulators</a></nav></div></header>
+<main class="wrap"><div class="card"><h2>🏠 Apartment Living Simulator</h2><p>Choose a situation and decide what you would do.</p><div class="grid">
+<div class="card"><h3>Rent Is Due</h3><p>You are short $60. What is your first step?</p><button class="choice" onclick="alert('Strong choice: contact the landlord early, review your budget, and ask about lawful options before the due date.')">Contact landlord early and review budget</button><button class="choice" onclick="alert('Risky: ignoring rent can lead to late fees or housing problems.')">Ignore it</button></div>
+<div class="card"><h3>Smoke Alarm Chirps</h3><p>What should you do?</p><button class="choice" onclick="alert('Good: replace the battery if safe/allowed or notify maintenance promptly.')">Replace battery or contact maintenance</button><button class="choice" onclick="alert('Unsafe: do not disable a smoke alarm and leave it that way.')">Remove the alarm</button></div>
+<div class="card"><h3>Water Is Leaking</h3><p>What is the safest response?</p><button class="choice" onclick="alert('Good: protect yourself, stop water if you can safely do so, and contact maintenance/landlord.')">Act safely and report it</button></div></div></div>
+<div class="print-sheet"><h2>Apartment Skills Reflection</h2><p>Name: __________________ Date: ________</p><p>Problem I practiced:</p><div class="line"></div><p>Safe first step:</p><div class="bigline"></div><p>Who should I contact?</p><div class="line"></div><button class="btn no-print" onclick="window.print()">Print</button></div></main><script></script></body></html>

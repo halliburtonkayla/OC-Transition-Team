@@ -1,101 +1,24 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Outside Simulators | Transition Team</title><style>body{margin:0;font-family:Arial;background:#f6f8fc;color:#25324a}header{background:#102a5c;padding:16px}header a{color:white;text-decoration:none;font-weight:800}main{max-width:1000px;margin:auto;padding:24px}h1{font:900 40px Georgia;color:#102a5c}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.card{background:white;border-radius:18px;padding:20px;box-shadow:0 7px 22px #102a5c18}.icon{font-size:58px}.btn{display:block;text-align:center;background:#0751bd;color:white;padding:13px;border-radius:12px;text-decoration:none;font-weight:900}.note{background:#fff4c9;padding:14px;border-radius:12px;margin:18px 0}</style><link rel="stylesheet" href="session.css"></head><body><header><a href="index.html">← Transition Team Home</a></header><main><h1>🎮 Practice Labs & Outside Simulators</h1><div class="note"><b>Teacher note:</b> These activities open outside websites in a new tab. Preview external sites before student use because outside content can change.</div><div class="grid">
-<div class="card"><div class="icon">🛒</div><h2>My Grocery Trip</h2><p>Choose a meal, create your own list, navigate store aisles, stick to the plan, and manage a grocery budget.</p><a class="btn" href="grocery-trip.html">Start Grocery Story →</a></div>
-<div class="card"><div class="icon">🍳</div><h2>SaffronLab</h2><p>Kitchen techniques, food science, and safety situations.</p><a class="btn" target="_blank" rel="noopener" href="https://www.sparkanvil.org/play/saffronlab/">Launch Cooking Lab ↗</a></div>
-<div class="card"><div class="icon">🥘</div><h2>Infinite Chef</h2><p>Open-ended browser cooking simulator for experimenting with ingredients and preparation.</p><a class="btn" target="_blank" rel="noopener" href="https://r74n.com/cook/">Launch Virtual Kitchen ↗</a></div>
-<div class="card"><div class="icon">🚘</div><h2>Hazard Perception Driving</h2><p>Practice noticing developing road hazards and making safer observations.</p><a class="btn" target="_blank" rel="noopener" href="https://driving-tests.org/driving-simulator/">Launch Driving Practice ↗</a></div>
-<div class="card"><div class="icon">🅿️</div><h2>Parking Practice</h2><p>Practice parking decisions in a browser-based drivers-ed game.</p><a class="btn" target="_blank" rel="noopener" href="https://www.driverseddirect.com/game/index.aspx">Launch Parking Practice ↗</a></div>
-<div class="card"><div class="icon">💇</div><h2>Hair Salon 3D</h2><p>Practice matching requested hairstyles, precision, and attention to detail.</p><a class="btn" target="_blank" rel="noopener" href="https://www.y8.com/games/hair_salon_3d">Launch Hair Simulator ↗</a></div>
-<div class="card"><div class="icon">💅</div><h2>Nail Salon Beauty</h2><p>Explore nail-art tasks including filing, stencils, polish, and design.</p><a class="btn" target="_blank" rel="noopener" href="https://www.y8.com/games/nail_salon_beauty">Launch Nail Simulator ↗</a></div>
-</div><section class="card"><h2>🏠 Apartment Hunt & Budget Simulator</h2><p>Compare fictional listings, move-in costs, rent, utilities, transportation, and monthly income.</p><a class="btn" href="apartment-simulator.html">START APARTMENT HUNT →</a></section><div class="card"><h2>💵 Payday: 14 Days</h2><p>Full 20-scene budgeting story.</p><a class="btn" href="payday-story.html">Start</a></div><div class="card"><h2>👶 Parenting Story</h2><p>Newborn-to-toddler decision adventure.</p><a class="btn" href="parenting-story.html">Start</a></div><div class="card"><h2>🎓 College Story</h2><p>High-school graduation through college.</p><a class="btn" href="college-story.html">Start</a></div></main><script src="session.js"></script>
-<script>
-(function(){
-  const KEY='tt_sound_on';
-  let ctx=null;
-  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
-  function tone(freq,dur,type='sine',vol=.035){
-    if(!enabled()) return;
-    try{
-      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type=type; o.frequency.value=freq;
-      g.gain.setValueAtTime(vol,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
-    }catch(e){}
-  }
-  window.TTSound={
-    click:()=>tone(520,.055,'sine',.025),
-    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
-    consequence:()=>tone(330,.11,'triangle',.025)
-  };
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('button,.choice,.option,[role="button"]');
-    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
-  },true);
-  function addToggle(){
-    if(document.getElementById('ttSoundToggle')) return;
-    const b=document.createElement('button');
-    b.id='ttSoundToggle';
-    b.type='button';
-    b.setAttribute('aria-label','Turn website sounds on or off');
-    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
-    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
-    label();
-    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
-    document.body.appendChild(b);
-  }
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
-})();
-</script>
-
-
-<script id="ttUniversalChoiceShuffle">
-(function(){
-  const selectors=[
-    '.choices','.options','.choice-grid','.answer-grid','.answers',
-    '.decision-options','.response-options','.scenario-options',
-    '#choices','#options','#answers'
-  ];
-  const itemSel='button,.choice,.option,.answer,[role="button"],label';
-
-  function shuffleArray(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-  function signature(c){
-    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
-  }
-  function shuffleContainer(c){
-    const kids=[...c.children].filter(x=>x.matches(itemSel));
-    if(kids.length<2) return;
-    const sig=signature(c);
-    if(c.dataset.ttShuffleSig===sig) return;
-    shuffleArray(kids).forEach(k=>c.appendChild(k));
-    c.dataset.ttShuffleSig=signature(c);
-  }
-  function scan(root=document){
-    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
-    // Also detect ordinary containers holding 2–6 answer buttons.
-    root.querySelectorAll('div,section,article,form').forEach(c=>{
-      const kids=[...c.children].filter(x=>x.matches('button'));
-      if(kids.length>=2 && kids.length<=6){
-        const txt=(c.className+' '+c.id).toLowerCase();
-        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
-          shuffleContainer(c);
-      }
-    });
-  }
-  let queued=false;
-  function queue(){
-    if(queued)return; queued=true;
-    requestAnimationFrame(()=>{queued=false;scan();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{scan();});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-</body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Game Zone &amp; Simulators</title><style>
+:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
+header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}.wrap{max-width:1100px;margin:auto;padding:22px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#fff;color:var(--navy)!important;border:2px solid var(--navy)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card h2,.card h3{color:var(--navy);margin-top:0}.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}.choice:hover{border-color:var(--blue);background:#f3f7ff}
+.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none}.score{font-weight:900;color:var(--navy)}
+input,select,textarea{width:100%;padding:10px;border:1px solid #aebed6;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:88px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:18px 0}.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
+small.muted,.muted{color:#5d6d86}.pill{display:inline-block;border:1px solid #c9d7ef;background:#f5f8ff;padding:5px 9px;border-radius:999px;margin:3px}
+@media(max-width:650px){.row{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 14px}}
+@media print{header,nav,.no-print,.btn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}.only-print{display:block!important}}
+</style></head><body>
+<header><div class="wrap"><h1 style="margin:0">Game Zone &amp; Simulators</h1><p style="margin:6px 0 0">Transition Team Resource Hub</p><nav><a href="index.html">⌂ Home</a><a href="index.html#staff">🧰 Staff</a><a href="worksheets.html">📝 Worksheets</a><a href="group-projects.html">👥 Group Projects</a><a href="simulators.html">🎮 Simulators</a></nav></div></header>
+<main class="wrap"><div class="card"><h2>🎮 Game Zone & Simulators</h2><div class="grid">
+<div class="card"><h3>🛒 Grocery Trip</h3><p>Plan a meal and stay under budget.</p><a class="btn" href="grocery-trip.html">Play</a></div>
+<div class="card"><h3>🍳 Cooking</h3><p>Practice kitchen safety and sequencing.</p><a class="btn" href="cooking-game.html">Play</a></div>
+<div class="card"><h3>🏠 Apartment Living</h3><p>Practice common independent-living decisions.</p><a class="btn" href="apartment-simulator.html">Play</a></div>
+<div class="card"><h3>💵 Payday</h3><p>Make paycheck and budgeting choices.</p><a class="btn" href="payday-story.html">Play</a></div>
+<div class="card"><h3>👶 Childcare</h3><p>Practice safe childcare decisions.</p><a class="btn" href="parenting-story.html">Play</a></div>
+<div class="card"><h3>📖 What Would You Do?</h3><p>Branching workplace choices and consequences.</p><a class="btn" href="stories.html">Play</a></div></div></div></main><script></script></body></html>

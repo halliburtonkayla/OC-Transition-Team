@@ -1,126 +1,18 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What Would You Do? | Transition Team</title>
-<style>:root{--navy:#102a5c;--blue:#0751bd;--red:#e1192f;--pink:#ef4a9a;--paper:#f7f9fd;--ink:#25324a}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#eef5ff,#fff7fb);color:var(--ink)}header{background:var(--navy);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}header a{color:white;text-decoration:none;font-weight:800}.wrap{max-width:980px;margin:auto;padding:20px}.hero{text-align:center}.hero h1{font:900 42px Georgia,serif;color:var(--navy);margin:10px}.episodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.episode{border:0;border-radius:18px;padding:20px;text-align:left;background:white;box-shadow:0 8px 25px #102a5c18;cursor:pointer}.episode b{display:block;font-size:21px;color:var(--navy);margin:8px 0}.book{display:none;perspective:1400px}.page{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 18px 50px #102a5c2b;transform-origin:left center;animation:turn .48s ease}.sceneArt{min-height:300px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:white;font-size:90px;background:linear-gradient(135deg,#193b77,#e1192f)}.sceneArt.party{background:linear-gradient(135deg,#132b55,#8338ec)}.sceneArt.school{background:linear-gradient(135deg,#0751bd,#59a5ff)}.sceneArt.home{background:linear-gradient(135deg,#7a4b2b,#f0a45d)}.sceneArt.work{background:linear-gradient(135deg,#155e75,#22a6b3)}.story{padding:24px}.story h2{font:900 30px Georgia,serif;color:var(--navy);margin:0 0 10px}.story p{font-size:19px;line-height:1.55}.choices{display:grid;gap:10px;margin-top:18px}.choice,.speak,.back{border:0;border-radius:14px;padding:15px 16px;font-weight:900;font-size:16px;cursor:pointer}.choice{background:var(--blue);color:white;text-align:left}.choice:nth-child(2){background:var(--red)}.choice:nth-child(3){background:#6f42c1}.choice:nth-child(4){background:#198754}.speak{background:#17233d;color:white}.back{background:#e9eef7;color:var(--navy)}.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.progress{font-weight:800;color:#66758a;margin:8px 0}.ending{background:#fff6cf;border:2px solid #f1ce55;border-radius:14px;padding:14px}.hidden{display:none}@keyframes turn{0%{transform:rotateY(-12deg);opacity:.35}100%{transform:rotateY(0);opacity:1}}@media(max-width:600px){.sceneArt{min-height:220px;font-size:70px}.story{padding:18px}.story p{font-size:17px}.hero h1{font-size:34px}}</style><link rel="stylesheet" href="session.css"></head><body>
-<header><a href="index.html">← Transition Team Home</a><strong>Interactive Storybook</strong></header><main class="wrap"><section id="menu"><div class="hero"><h1>📖 What Would You Do?</h1><p>Real situations. Your choices control what happens next. Tap a story to begin.</p></div><div class="episodes">
-<button class="episode" onclick="start('party')">🏀<b>The After-Party</b>Basketball night turns into a party and your choices follow you.</button>
-<button class="episode" onclick="start('bully')">🎒<b>It Was Just a Joke…</b>You are part of the bullying. What happens next?</button>
-<button class="episode" onclick="start('drama')">📱<b>The Drama</b>A secret becomes a rumor. You decide whether it grows.</button>
-<button class="episode" onclick="start('values')">🧭<b>Between Two Worlds</b>Family values, friend pressure, and finding your own path.</button>
-</div></section><section id="book" class="book"><div id="page" class="page"></div></section></main>
-<script>function friendlySpeak(text){
-  if(!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  const voices=speechSynthesis.getVoices();
-  const en=voices.filter(v=>/^en(-|_)/i.test(v.lang||''));
-  const preferred=['Ava','Samantha','Zoe','Aria','Jenny','Emma','Joanna','Allison','Serena','Tessa','Victoria','Karen','Moira','Fiona','Siri Female'];
-  let voice=preferred.map(n=>en.find(v=>(v.name||'').toLowerCase().includes(n.toLowerCase()))).find(Boolean);
-  if(!voice) voice=en.find(v=>/female|woman|girl|natural|premium|enhanced/i.test(v.name||''));
-  if(!voice) voice=en[0]||voices[0];
-  if(voice) u.voice=voice;
-  u.rate=1.03; u.pitch=1.12; u.volume=1;
-  speechSynthesis.speak(u);
-}
-
-const S={
-party:{title:'The After-Party',nodes:{start:{art:'🏀 🎉',cls:'party',h:'Friday Night — After the Game',t:'The basketball game just ended. Your friends are excited and someone says there is an after-party nearby. You arrive and everything feels fun: music is pumping, food is out, people are laughing, and drinks are being passed around. A friend walks over with a cup and asks, “You want one?”',c:[['Take the drink','drink'],['No thanks — I’ll get punch','sober'],['I’m driving tonight — I’m good','driver']]},drink:{art:'🥤 😵',cls:'party',h:'Later That Night',t:'One drink turned into several. You feel dizzy and sick. Suddenly you hear yelling. Someone has fallen and may be hurt. A friend says, “Don’t call anybody. We’ll all get in trouble.”',c:[['Call 911 / get help','help'],['Find a sober trusted person','help'],['Leave and say nothing','leave']]},sober:{art:'🔑 🚗',cls:'party',h:'Your Friend Wants the Keys',t:'You stayed sober. Now your friend is clearly impaired and says, “I’m fine. Give me my keys.” They are getting angry and insisting they can drive.',c:[['Give them the keys','keys'],['Keep the keys and find a safe ride','safe'],['Get a trusted adult to help','safe']]},driver:{art:'🚙 👥',cls:'party',h:'Everybody Needs a Ride',t:'Because you said you were driving, three friends now want rides. One person is sick and another wants you to take more people than your car safely holds.',c:[['Pack everybody in','crowd'],['Only take the number of safe seats','safe'],['Get more safe drivers or rides','safe']]},help:{art:'🚑 ❤️',cls:'party',h:'You Got Help',t:'Emergency help is called and the injured person is not left alone. You may still have difficult conversations about what happened, but getting help mattered.',end:'Getting help in an emergency is more important than avoiding embarrassment or trouble.'},leave:{art:'📞 🚓',cls:'party',h:'The Problem Did Not Disappear',t:'You went home, but emergency services were eventually called. The next day you are asked what you witnessed. Avoiding the situation did not erase it.',end:'Leaving a serious situation does not necessarily remove your responsibility to tell the truth or help someone get care.'},keys:{art:'🚗 ⚠️',cls:'party',h:'A Dangerous Decision',t:'Your friend drives away impaired. Even if nothing happens immediately, the decision put your friend, passengers, and other people on the road at risk.',end:'A safer choice is to prevent impaired driving and involve a sober, trusted person when needed.'},crowd:{art:'🚙 ⚠️',cls:'party',h:'Too Many People',t:'There are not enough seat belts for everyone. The ride becomes distracting and unsafe.',end:'Being the designated driver also means setting limits and making sure every passenger can ride safely.'},safe:{art:'🏠 ✅',cls:'party',h:'Everyone Gets Home Safely',t:'You set a boundary, arrange safe transportation, and make sure nobody drives impaired.',end:'Good judgment sometimes means disappointing a friend for a few minutes to protect everyone for much longer.'}}},
-bully:{title:'It Was Just a Joke…',nodes:{start:{art:'🎒 📱',cls:'school',h:'Before the Bell',t:'Your friends start making fun of Jordan’s clothes and the way Jordan talks. Someone pulls out a phone and says, “We should post this. Everybody would die laughing.”',c:[['Join in','join'],['Record and post it','post'],['Tell them to stop','stop']]},join:{art:'😂 😟',cls:'school',h:'Jordan Heard You',t:'You did not start the joke, but you laughed and added comments. Later Jordan asks, “Why were you laughing at me too? I thought we were cool.”',c:[['Say it was only a joke','blame'],['Own it and apologize','repair'],['Avoid Jordan','avoid']]},post:{art:'📲 🔥',cls:'school',h:'It Is Spreading',t:'The video is getting views and comments. Then Jordan gets tagged and sees it. People are now adding harsher comments you never expected.',c:[['Delete it and tell people to stop sharing','repair'],['Leave it up','consequence'],['Blame the friend who suggested it','blame']]},stop:{art:'✋ 🤝',cls:'school',h:'You Changed the Moment',t:'Your friends roll their eyes, but you refuse to participate. You check on Jordan later instead of helping the joke spread.',end:'You cannot control everyone, but you can choose whether your attention helps bullying grow.'},repair:{art:'💬 ❤️',cls:'school',h:'Trying to Repair It',t:'You apologize and take responsibility. Jordan says, “I appreciate that, but I’m still mad. Give me some space.”',c:[['Give Jordan space and change your behavior','goodrepair'],['Demand forgiveness','badrepair'],['Tell people Jordan is dramatic','consequence']]},avoid:{art:'🚪 😔',cls:'school',h:'Avoiding It',t:'You avoid Jordan, but the tension is still there and the situation has not been repaired.',end:'Not starting the bullying does not mean your participation had no effect.'},blame:{art:'👉 😬',cls:'school',h:'Passing the Blame',t:'You focus on what everyone else did instead of your own part. The conflict continues because nobody is taking responsibility.',end:'Accountability means being truthful about your own actions even when other people also made poor choices.'},consequence:{art:'🏫 🗣️',cls:'school',h:'There Are Consequences',t:'A teacher and administrator become involved. Jordan is upset, families are contacted, and you are asked directly what you did.',end:'Online actions can become school and real-life problems very quickly.'},goodrepair:{art:'🌱 🤝',cls:'school',h:'Change Takes Time',t:'You give Jordan space and stop participating in the behavior. You cannot force forgiveness, but you can show change through what you do next.',end:'An apology matters most when your behavior changes afterward.'},badrepair:{art:'😠 💬',cls:'school',h:'An Apology Is Not a Demand',t:'Jordan becomes more upset because the apology now feels like pressure to make you feel better.',end:'The person who was hurt gets to decide when—or whether—they are ready to forgive.'}}},
-drama:{title:'The Drama',nodes:{start:{art:'🤫 📱',cls:'school',h:'It Starts Here',t:'At lunch, your friend tells you a private story about another student and says, “You cannot tell anybody.” Before the next class, another friend asks why you look shocked.',c:[['Keep the secret','quiet'],['Tell just one friend','one'],['Post a vague hint online','post']]},one:{art:'💬 ➡️ 💬',cls:'school',h:'Now It Is Spreading',t:'The friend you told says they will not repeat it. By the end of the day, three people text you asking whether the rumor is true. One version now includes details you never even said.',c:[['Tell everyone to stop repeating it','repair'],['Add more details','worse'],['Pretend you know nothing','deny']]},post:{art:'📱 👀',cls:'school',h:'Everybody Wants the Tea',t:'Your vague post makes people curious. Screenshots spread and classmates start guessing who you meant. The student realizes the posts are about them.',c:[['Delete it and own what you did','repair'],['Keep posting','worse'],['Blame someone else','deny']]},quiet:{art:'🤐 ✅',cls:'school',h:'The Story Stops With You',t:'You do not repeat the private information. When someone asks, you say it is not your story to tell.',end:'Not every piece of information you hear needs an audience.'},repair:{art:'🧹 💬',cls:'school',h:'Cleaning Up the Mess',t:'You tell people you should not have repeated it, stop adding details, remove what you posted, and apologize directly without demanding forgiveness.',end:'You cannot always pull a rumor back, but you can stop feeding it and take responsibility for your part.'},worse:{art:'🔥 📲',cls:'school',h:'The Drama Gets Bigger',t:'More people join in. The story changes, screenshots spread, feelings are hurt, and a teacher now wants to speak with everyone involved.',end:'Drama grows when attention rewards it. Adding details can cause harm even when you call it entertainment.'},deny:{art:'🙈 🗣️',cls:'school',h:'People Have Screenshots',t:'You deny being involved, but messages and screenshots show what happened. Now the original problem also includes dishonesty.',end:'Trying to escape drama by denying your own actions can create a second problem.'}}},
-values:{title:'Between Two Worlds',nodes:{start:{art:'🏠 🧭 👥',cls:'home',h:'That Is How I Was Raised',t:'Your family has conservative expectations about parties, dating, drinking, curfews, clothing, and how you carry yourself. Your friends do not live by all the same rules. Tonight they invite you somewhere your family probably would not approve of.',c:[['Go with my friends','friends'],['Do what my family expects','family'],['Think about what I believe first','self']]},friends:{art:'🎉 🧠',cls:'party',h:'Now You Have Your Own Choices',t:'You go. Your friends assume that because you came, you will do everything they are doing. But attending does not require you to abandon every boundary you have.',c:[['Do whatever the group does','pressure'],['Set my own limits','own'],['Leave when I feel uncomfortable','own']]},family:{art:'🏠 💭',cls:'home',h:'You Stayed Home',t:'You followed the rule, but later you wonder: “Do I personally believe this, or am I only afraid of disappointing my family?”',c:[['Talk with my family about why the rule matters','own'],['Never question anything','reflect'],['Secretly do the opposite next time','pressure']]},self:{art:'🧭 💬',cls:'home',h:'Whose Values Are These?',t:'You think about safety, your family’s reasons, your friends’ opinions, and the kind of person you want to become. You realize growing up means learning to make choices you can explain and live with.',c:[['Talk openly with my family','own'],['Listen to friends but set my boundaries','own'],['Lie to both sides','pressure']]},own:{art:'🌅 🧭',cls:'home',h:'Finding Your Own Path',t:'You listen to people you care about without handing them complete control of your decisions. You choose boundaries you can explain and adjust as you mature.',end:'Independence is not automatically doing the opposite of your family—or automatically copying your friends. It includes thinking about your values, safety, consequences, and goals.'},pressure:{art:'🌪️ 😕',cls:'party',h:'Someone Else Is Steering',t:'You make the choice mainly to avoid disappointing someone else. Later, you realize you still have not decided what you actually believe.',end:'Peer pressure can come from friends, family, or any group. Growing independence includes learning to think through your own choices.'},reflect:{art:'🪞 💭',cls:'home',h:'Rules Without Reflection',t:'Following expectations can keep things simple, but you may eventually need to understand why those values matter to you personally.',end:'As you approach adulthood, it can be useful to understand the reasons behind your values—not only the rules themselves.'}}}}
-};
-let ep=null,node='start',steps=1;const menu=document.querySelector('#menu'),book=document.querySelector('#book'),page=document.querySelector('#page');
-function start(k){ep=k;node='start';steps=1;menu.style.display='none';book.style.display='block';render()}
-function render(){const n=S[ep].nodes[node];page.classList.remove('page');void page.offsetWidth;page.classList.add('page');let choices=n.c?`<div class="choices">${n.c.map((x,i)=>`<button class="choice" onclick="go('${x[1]}')">${String.fromCharCode(65+i)} — ${x[0]}</button>`).join('')}</div>`:'';let end=n.end?`<div class="ending"><b>YOUR STORY:</b> ${n.end}</div><div class="choices"><button class="choice" onclick="start('${ep}')">🔄 Try a Different Path</button><button class="back" onclick="home()">📚 Choose Another Story</button></div>`:'';page.innerHTML=`<div class="sceneArt ${n.cls||''}">${n.art}</div><div class="story"><div class="progress">${S[ep].title} • Page ${steps}</div><h2>${n.h}</h2><p id="storytext">${n.t}</p><div class="tools"><button class="speak" onclick="speak()">🔊 Read to Me</button><button class="back" onclick="home()">← Story Library</button></div>${choices}${end}</div>`;scrollTo({top:0,behavior:'smooth'})}
-function go(n){node=n;steps++;render()}function home(){speechSynthesis.cancel();book.style.display='none';menu.style.display='block';scrollTo({top:0,behavior:'smooth'})}function speak(){friendlySpeak(document.querySelector('#storytext').innerText)}
-</script><script src="session.js"></script>
-<script>
-(function(){
-  const KEY='tt_sound_on';
-  let ctx=null;
-  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
-  function tone(freq,dur,type='sine',vol=.035){
-    if(!enabled()) return;
-    try{
-      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type=type; o.frequency.value=freq;
-      g.gain.setValueAtTime(vol,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
-    }catch(e){}
-  }
-  window.TTSound={
-    click:()=>tone(520,.055,'sine',.025),
-    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
-    consequence:()=>tone(330,.11,'triangle',.025)
-  };
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('button,.choice,.option,[role="button"]');
-    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
-  },true);
-  function addToggle(){
-    if(document.getElementById('ttSoundToggle')) return;
-    const b=document.createElement('button');
-    b.id='ttSoundToggle';
-    b.type='button';
-    b.setAttribute('aria-label','Turn website sounds on or off');
-    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
-    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
-    label();
-    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
-    document.body.appendChild(b);
-  }
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
-})();
-</script>
-
-
-<script id="ttUniversalChoiceShuffle">
-(function(){
-  const selectors=[
-    '.choices','.options','.choice-grid','.answer-grid','.answers',
-    '.decision-options','.response-options','.scenario-options',
-    '#choices','#options','#answers'
-  ];
-  const itemSel='button,.choice,.option,.answer,[role="button"],label';
-
-  function shuffleArray(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-  function signature(c){
-    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
-  }
-  function shuffleContainer(c){
-    const kids=[...c.children].filter(x=>x.matches(itemSel));
-    if(kids.length<2) return;
-    const sig=signature(c);
-    if(c.dataset.ttShuffleSig===sig) return;
-    shuffleArray(kids).forEach(k=>c.appendChild(k));
-    c.dataset.ttShuffleSig=signature(c);
-  }
-  function scan(root=document){
-    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
-    // Also detect ordinary containers holding 2–6 answer buttons.
-    root.querySelectorAll('div,section,article,form').forEach(c=>{
-      const kids=[...c.children].filter(x=>x.matches('button'));
-      if(kids.length>=2 && kids.length<=6){
-        const txt=(c.className+' '+c.id).toLowerCase();
-        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
-          shuffleContainer(c);
-      }
-    });
-  }
-  let queued=false;
-  function queue(){
-    if(queued)return; queued=true;
-    requestAnimationFrame(()=>{queued=false;scan();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{scan();});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-</body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>What Would You Do?</title><style>
+:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
+header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}.wrap{max-width:1100px;margin:auto;padding:22px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#fff;color:var(--navy)!important;border:2px solid var(--navy)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card h2,.card h3{color:var(--navy);margin-top:0}.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}.choice:hover{border-color:var(--blue);background:#f3f7ff}
+.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none}.score{font-weight:900;color:var(--navy)}
+input,select,textarea{width:100%;padding:10px;border:1px solid #aebed6;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:88px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:18px 0}.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
+small.muted,.muted{color:#5d6d86}.pill{display:inline-block;border:1px solid #c9d7ef;background:#f5f8ff;padding:5px 9px;border-radius:999px;margin:3px}
+@media(max-width:650px){.row{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 14px}}
+@media print{header,nav,.no-print,.btn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}.only-print{display:block!important}}
+</style></head><body>
+<header><div class="wrap"><h1 style="margin:0">What Would You Do?</h1><p style="margin:6px 0 0">Interactive decision story</p><nav><a href="index.html">⌂ Home</a><a href="index.html#staff">🧰 Staff</a><a href="worksheets.html">📝 Worksheets</a><a href="group-projects.html">👥 Group Projects</a><a href="simulators.html">🎮 Simulators</a></nav></div></header>
+<main class="wrap"><div class="card"><p><span class="tag">Instruction in Self-Advocacy</span></p><h2 id="sceneTitle"></h2><p id="sceneText"></p><div id="storyChoices"></div></div><div class="print-sheet"><h2>Student Reflection</h2><p>Name: __________________ Date: __________</p><p>What choice did you make?</p><div class="bigline"></div><p>What happened because of that choice?</p><div class="bigline"></div><p>What would you do in real life?</p><div class="bigline"></div><button class="btn no-print" onclick="window.print()">🖨️ Print Reflection</button></div></main><script>const scenes={"start": {"title": "Your Shift Starts Now", "text": "Your supervisor asks you to help a coworker, but you still have your own task to finish.", "choices": [["Say yes immediately", "yes"], ["Explain what you are working on and ask what should come first", "ask"], ["Ignore the coworker", "ignore"]]}, "yes": {"title": "Now You Are Behind", "text": "You help, but your own task is late. Your supervisor asks why.", "choices": [["Be honest and ask how to prioritize next time", "endgood"], ["Blame the coworker", "endbad"]]}, "ask": {"title": "Clear Priorities", "text": "Your supervisor tells you which task comes first and thanks you for checking.", "choices": [["Follow the priority and communicate when finished", "endgood"]]}, "ignore": {"title": "Communication Problem", "text": "The coworker reports that you would not respond.", "choices": [["Apologize and explain what you were working on", "recover"], ["Argue that it was not your job", "endbad"]]}, "recover": {"title": "Recovery", "text": "You repair the communication problem and make a plan for next time.", "choices": [["Finish the shift professionally", "endgood"]]}, "endgood": {"title": "Strong Finish", "text": "You handled the situation with communication, priorities, and professionalism.", "choices": []}, "endbad": {"title": "Try a Different Path", "text": "The situation gets harder because communication broke down. Replay and test another response.", "choices": []}}; let i=0; function show(id){let s=scenes[id]; document.getElementById('sceneTitle').textContent=s.title;document.getElementById('sceneText').textContent=s.text;let c=document.getElementById('storyChoices');c.innerHTML='';(s.choices||[]).forEach(ch=>{let b=document.createElement('button');b.className='choice';b.textContent=ch[0];b.onclick=()=>show(ch[1]);c.appendChild(b)});if(!s.choices||!s.choices.length){c.innerHTML='<p><b>Story complete.</b> Use the reflection below or replay.</p><button class="btn" onclick="show('start')">Replay</button>';}}; show('start');</script></body></html>

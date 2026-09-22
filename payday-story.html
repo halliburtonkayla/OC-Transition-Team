@@ -1,108 +1,18 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payday: Can You Make It 14 Days?</title><style>:root{--navy:#102a5c;--blue:#0751bd;--red:#e1192f;--paper:#f7f9fc;--ink:#24324a;--green:#16794b}*{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:Arial,sans-serif;color:var(--ink)}header{background:var(--navy);color:white;padding:14px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}header a{color:white;text-decoration:none;font-weight:800}main{max-width:980px;margin:auto;padding:18px}.book{background:white;border:1px solid #dce3ed;border-radius:22px;padding:24px;box-shadow:0 8px 24px #102a5c12;min-height:520px}.scene{animation:turn .35s ease}@keyframes turn{from{opacity:.2;transform:rotateY(-8deg) translateX(16px)}to{opacity:1;transform:none}}h1,h2{font-family:Georgia,serif;color:var(--navy)}.art{background:#eef5ff;border-radius:18px;margin:12px 0;overflow:hidden}.art img{display:block;width:100%;max-height:430px;object-fit:cover;object-position:center}.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}.choices button,.btn{border:0;border-radius:13px;padding:14px 16px;background:var(--blue);color:white;font-size:16px;font-weight:800;cursor:pointer;text-decoration:none}.choices button:nth-child(even){background:var(--navy)}.bar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:#eef3fa;padding:10px 14px;border-radius:12px;margin-bottom:12px}.read{background:var(--green)!important}.muted{color:#66758a}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.card{background:white;border:1px solid #dce3ed;border-radius:16px;padding:18px}.card a{display:inline-block;margin-top:8px}.result{background:#eef8f2;border-radius:14px;padding:14px;margin:12px 0}@media(max-width:600px){main{padding:10px}.book{padding:16px}.art{font-size:48px;padding:20px}}</style><link rel="stylesheet" href="session.css"></head><body><header><a href="index.html">← Home</a><a href="life-stories.html">Life Stories</a><strong>Payday: Can You Make It 14 Days?</strong></header><main><div class="book"><div class="bar"><span id="pg">Page 1 of 20</span><span id="status">Choices shape your story</span></div><div id="scene" class="scene"></div></div></main><script>function friendlySpeak(text){
-  if(!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  const voices=speechSynthesis.getVoices();
-  const en=voices.filter(v=>/^en(-|_)/i.test(v.lang||''));
-  const preferred=['Ava','Samantha','Zoe','Aria','Jenny','Emma','Joanna','Allison','Serena','Tessa','Victoria','Karen','Moira','Fiona','Siri Female'];
-  let voice=preferred.map(n=>en.find(v=>(v.name||'').toLowerCase().includes(n.toLowerCase()))).find(Boolean);
-  if(!voice) voice=en.find(v=>/female|woman|girl|natural|premium|enhanced/i.test(v.name||''));
-  if(!voice) voice=en[0]||voices[0];
-  if(voice) u.voice=voice;
-  u.rate=1.03; u.pitch=1.12; u.volume=1;
-  speechSynthesis.speak(u);
-}
-const title="Payday: Can You Make It 14 Days?",icon="\ud83d\udcb5",intro="You have $2,000 and two weeks until the next paycheck.",S=[{"text": "Your $2,000 paycheck just hit. Your next payday is 14 days away. What gets your attention first?", "choices": ["\ud83d\udcb3 Check bills and due dates", "\ud83d\uded2 Go grocery shopping", "\ud83d\udc55 Go buy clothes"]}, {"text": "You see rent, electric, phone, insurance and transportation costs. What do you do?", "choices": ["Pay bills that are due first", "Pay only the smallest bill", "Ignore them until next week"]}, {"text": "Now you need food for two weeks.", "choices": ["Make a meal plan and grocery budget", "Buy whatever looks good", "Order delivery tonight"]}, {"text": "Your friends invite you out for dinner.", "choices": ["Check what fun money is available", "Spend $80 without checking", "Pay for everybody"]}, {"text": "Day 3: your gas light comes on.", "choices": ["Budget for enough gas to get to work/school", "Put in a little and hope", "Spend the gas money on a game"]}, {"text": "A paid app you want is on sale for $12.", "choices": ["Check wants money before buying", "Download it immediately", "Start several subscriptions"]}, {"text": "Day 5: the electric bill reminder arrives.", "choices": ["Confirm it is paid/scheduled", "Wait and spend the money", "Ignore the notice"]}, {"text": "Your shoes are worn but still usable. A new pair is $95.", "choices": ["Decide whether it can wait", "Buy them plus another pair", "Use grocery money"]}, {"text": "Day 7: halfway to payday.", "choices": ["Check balance and remaining needs", "Avoid looking at balance", "Go shopping because it is the weekend"]}, {"text": "A streaming subscription renews tomorrow.", "choices": ["Keep/cancel based on budget", "Add another service too", "Forget all subscriptions"]}, {"text": "Day 9: you need lunch away from home.", "choices": ["Pack food you already bought", "Spend $25 on delivery", "Skip planning and buy snacks"]}, {"text": "A friend asks to borrow $50.", "choices": ["Check whether you can afford it and set a boundary", "Give it from bill money", "Give $100 instead"]}, {"text": "Day 10: an unexpected $40 expense comes up.", "choices": ["Use planned cushion/savings if available", "Ignore the expense", "Use money needed for a bill"]}, {"text": "You notice groceries are running low.", "choices": ["Use the remaining grocery plan", "Order expensive takeout", "Buy unrelated items instead"]}, {"text": "Day 11: someone invites you to shop for clothes.", "choices": ["Go only if your budget allows", "Spend the rest of your balance", "Use a pay-later app without a plan"]}, {"text": "Day 12: transportation costs more than expected.", "choices": ["Adjust the remaining budget", "Pretend it did not happen", "Spend normally anyway"]}, {"text": "Day 13: one day until payday.", "choices": ["Review bills, food and transportation", "Spend whatever is left", "Start a new monthly subscription"]}, {"text": "You have some money remaining.", "choices": ["Put part in savings and keep a cushion", "Spend every dollar tonight", "Commit it to several new payments"]}, {"text": "Before the next paycheck, what do you review?", "choices": ["What worked and what needs changing", "Only what you bought for fun", "Nothing"]}, {"text": "Payday arrives again. What is your new plan?", "choices": ["Needs, savings, then planned wants", "Spend first and figure it out later", "Avoid making a plan"]}];let i=0,score=0,choices=[];function speak(){friendlySpeak(document.getElementById('copy').innerText)}function draw(){let s=S[i];document.getElementById('pg').textContent='Page '+(i+1)+' of '+S.length;let mixed=s.choices.map((c,j)=>({c,q:j})).sort(()=>Math.random()-.5);let buttons=mixed.map((o,j)=>`<button data-j="${j}" data-q="${o.q}">${o.c}</button>`).join('');document.getElementById('scene').innerHTML=`<div class="art"><img src="scene-${String(i+1).padStart(2,'0')}.jpg" alt="Illustration for scene ${i+1}"></div><h1>${i===0?title:'What happens next?'}</h1><p id="copy" style="font-size:19px;line-height:1.55">${i===0?intro+' ':''}${s.text}</p><div class="choices"><button class="read" id="read">🔊 READ TO ME</button>${buttons}</div>`;document.getElementById('read').onclick=speak;document.querySelectorAll('[data-j]').forEach(b=>b.onclick=()=>pick(+b.dataset.q,b.textContent));}function pick(q,label){choices.push({scene:i+1,choice:label,quality:q});if(q===0)score+=2;else if(q===1)score+=1;if(window.TTSession)TTSession.recordChoice({activity:title,scene:i+1,prompt:S[i].text,choice:label,quality:q});i++;if(i>=S.length)finish();else draw();}function finish(){let level=score>=S.length*1.45?'You consistently protected your priorities and handled problems early.':score>=S.length*.9?'You made a mix of strong choices and choices that created extra challenges.':'Several early choices created harder consequences later. Replay and see how a different decision changes the story.';document.getElementById('pg').textContent='THE END';document.getElementById('scene').innerHTML=`<div class="art">🏁</div><h1>Here’s How Your Story Turned Out</h1><div class="result"><p style="font-size:19px">${level}</p><p>You completed <b>${S.length} scenes</b>. Your decisions—not a single pass/fail answer—shaped this ending.</p></div><div class="choices"><button id="again">🔄 WRITE A DIFFERENT STORY</button><button class="read" id="readEnd">🔊 READ RESULTS</button><button onclick="print()">🖨 PRINT RESULTS</button></div>`;document.getElementById('again').onclick=()=>{i=0;score=0;choices=[];draw()};document.getElementById('readEnd').onclick=speak;}draw();</script><script src="session.js"></script>
-<script>
-(function(){
-  const KEY='tt_sound_on';
-  let ctx=null;
-  function enabled(){ return localStorage.getItem(KEY)!=='0'; }
-  function tone(freq,dur,type='sine',vol=.035){
-    if(!enabled()) return;
-    try{
-      ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
-      const o=ctx.createOscillator(), g=ctx.createGain();
-      o.type=type; o.frequency.value=freq;
-      g.gain.setValueAtTime(vol,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);
-      o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime+dur);
-    }catch(e){}
-  }
-  window.TTSound={
-    click:()=>tone(520,.055,'sine',.025),
-    success:()=>{tone(660,.10,'sine',.035);setTimeout(()=>tone(880,.13,'sine',.03),90)},
-    consequence:()=>tone(330,.11,'triangle',.025)
-  };
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('button,.choice,.option,[role="button"]');
-    if(b && !b.id?.startsWith('ttSound')) TTSound.click();
-  },true);
-  function addToggle(){
-    if(document.getElementById('ttSoundToggle')) return;
-    const b=document.createElement('button');
-    b.id='ttSoundToggle';
-    b.type='button';
-    b.setAttribute('aria-label','Turn website sounds on or off');
-    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:99998;border:0;border-radius:999px;padding:10px 14px;background:#111827;color:white;font-weight:800;box-shadow:0 3px 12px #0003';
-    function label(){b.textContent=enabled()?'🔊 Sound On':'🔇 Sound Off'}
-    label();
-    b.onclick=()=>{localStorage.setItem(KEY,enabled()?'0':'1');label();if(enabled())TTSound.success();}
-    document.body.appendChild(b);
-  }
-  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',addToggle):addToggle();
-})();
-</script>
-
-
-
-<script id="ttUniversalChoiceShuffle">
-(function(){
-  const selectors=[
-    '.choices','.options','.choice-grid','.answer-grid','.answers',
-    '.decision-options','.response-options','.scenario-options',
-    '#choices','#options','#answers'
-  ];
-  const itemSel='button,.choice,.option,.answer,[role="button"],label';
-
-  function shuffleArray(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-  function signature(c){
-    return [...c.children].map(x=>(x.textContent||'').trim()).join('|');
-  }
-  function shuffleContainer(c){
-    const kids=[...c.children].filter(x=>x.matches(itemSel));
-    if(kids.length<2) return;
-    const sig=signature(c);
-    if(c.dataset.ttShuffleSig===sig) return;
-    shuffleArray(kids).forEach(k=>c.appendChild(k));
-    c.dataset.ttShuffleSig=signature(c);
-  }
-  function scan(root=document){
-    selectors.forEach(sel=>root.querySelectorAll(sel).forEach(shuffleContainer));
-    // Also detect ordinary containers holding 2–6 answer buttons.
-    root.querySelectorAll('div,section,article,form').forEach(c=>{
-      const kids=[...c.children].filter(x=>x.matches('button'));
-      if(kids.length>=2 && kids.length<=6){
-        const txt=(c.className+' '+c.id).toLowerCase();
-        if(/choice|answer|option|decision|response|scenario|quiz|question/.test(txt))
-          shuffleContainer(c);
-      }
-    });
-  }
-  let queued=false;
-  function queue(){
-    if(queued)return; queued=true;
-    requestAnimationFrame(()=>{queued=false;scan();});
-  }
-  document.addEventListener('DOMContentLoaded',()=>{scan();});
-  new MutationObserver(queue).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
-
-</body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Payday Story</title><style>
+:root{--navy:#12346b;--blue:#0d5bd7;--red:#e51f3f;--ink:#10254d;--soft:#f6f8fc;--line:#dbe3ef;--green:#138a55;--gold:#f2b544}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#182848;background:#f6f8fc;line-height:1.45}
+header{background:linear-gradient(135deg,var(--navy),#0b57c9);color:#fff;padding:28px 20px}.wrap{max-width:1100px;margin:auto;padding:22px}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}nav a,.btn{display:inline-block;background:var(--navy);color:white!important;text-decoration:none;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer}
+.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.light{background:#fff;color:var(--navy)!important;border:2px solid var(--navy)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 7px 20px rgba(20,45,90,.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}.card h2,.card h3{color:var(--navy);margin-top:0}.tag{display:inline-block;background:#eaf1ff;color:var(--navy);padding:4px 9px;border-radius:999px;font-weight:700;margin:2px}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:2px solid #cbd7ea;border-radius:12px;padding:12px;margin:8px 0;font-size:1rem;cursor:pointer}.choice:hover{border-color:var(--blue);background:#f3f7ff}
+.feedback{padding:12px;border-radius:12px;background:#eef7ff;margin-top:12px;display:none}.score{font-weight:900;color:var(--navy)}
+input,select,textarea{width:100%;padding:10px;border:1px solid #aebed6;border-radius:9px;font:inherit;margin:6px 0 12px}textarea{min-height:88px}.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.print-sheet{background:#fff;border:2px solid #182848;border-radius:10px;padding:18px;margin:18px 0}.line{border-bottom:1px solid #444;min-height:28px;margin:8px 0}.bigline{border:1px solid #777;min-height:70px;margin:8px 0;padding:6px}
+small.muted,.muted{color:#5d6d86}.pill{display:inline-block;border:1px solid #c9d7ef;background:#f5f8ff;padding:5px 9px;border-radius:999px;margin:3px}
+@media(max-width:650px){.row{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 14px}}
+@media print{header,nav,.no-print,.btn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.card{box-shadow:none;border:0;padding:0}.print-sheet{break-inside:avoid;border:1px solid #000}.only-print{display:block!important}}
+</style></head><body>
+<header><div class="wrap"><h1 style="margin:0">Payday Story</h1><p style="margin:6px 0 0">Budgeting decision simulator</p><nav><a href="index.html">⌂ Home</a><a href="index.html#staff">🧰 Staff</a><a href="worksheets.html">📝 Worksheets</a><a href="group-projects.html">👥 Group Projects</a><a href="simulators.html">🎮 Simulators</a></nav></div></header>
+<main class="wrap"><div class="card"><p><span class="tag">Workplace Readiness Training</span></p><h2 id="sceneTitle"></h2><p id="sceneText"></p><div id="storyChoices"></div></div><div class="print-sheet"><h2>Student Reflection</h2><p>Name: __________________ Date: __________</p><p>What choice did you make?</p><div class="bigline"></div><p>What happened because of that choice?</p><div class="bigline"></div><p>What would you do in real life?</p><div class="bigline"></div><button class="btn no-print" onclick="window.print()">🖨️ Print Reflection</button></div></main><script>const scenes={"start": {"title": "Your First $500 Paycheck", "text": "You have $500. You need transportation, phone service, food, and you want new shoes.", "choices": [["Pay needs first, set aside savings, then decide about shoes", "good"], ["Spend $250 on shoes first", "tight"]]}, "good": {"title": "Money Left for Choices", "text": "You covered important needs and still know what is available for wants.", "choices": []}, "tight": {"title": "Budget Is Tight", "text": "Now required expenses are harder to cover.", "choices": [["Return/rethink the purchase and rebuild the budget", "good"], ["Ignore the bills", "bad"]]}, "bad": {"title": "Bills Are Due", "text": "Ignoring required expenses creates bigger problems. Replay and try a different plan.", "choices": []}}; let i=0; function show(id){let s=scenes[id]; document.getElementById('sceneTitle').textContent=s.title;document.getElementById('sceneText').textContent=s.text;let c=document.getElementById('storyChoices');c.innerHTML='';(s.choices||[]).forEach(ch=>{let b=document.createElement('button');b.className='choice';b.textContent=ch[0];b.onclick=()=>show(ch[1]);c.appendChild(b)});if(!s.choices||!s.choices.length){c.innerHTML='<p><b>Story complete.</b> Use the reflection below or replay.</p><button class="btn" onclick="show('start')">Replay</button>';}}; show('start');</script></body></html>
