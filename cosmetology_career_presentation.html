@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Cosmetology Career Presentation | Transition Team</title>
+<style>
+:root{
+  --rose:#b73770; --pink:#f7c8da; --blush:#fff1f6; --plum:#5b2847;
+  --gold:#b58a4a; --cream:#fffaf7; --ink:#2e2630; --soft:#f4e7ee;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#241d24;color:var(--ink);overflow:hidden}
+.deck{height:100vh;display:flex;align-items:center;justify-content:center;padding:14px}
+.slide{
+ display:none; position:relative; width:min(1180px,100%); height:calc(100vh - 28px);
+ background:linear-gradient(145deg,#fff 0%,var(--cream) 58%,#fbe7ef 100%);
+ border-radius:28px; overflow:hidden; box-shadow:0 22px 70px #0007;
+ border:1px solid #ffffffaa;
+}
+.slide.active{display:flex;flex-direction:column}
+.topbar{height:12px;background:linear-gradient(90deg,var(--plum),var(--rose),#e99ab9,var(--gold))}
+.content{padding:42px 62px 96px;overflow:auto;height:100%}
+.kicker{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--rose);font-weight:800}
+h1{font-family:Georgia,serif;color:var(--plum);font-size:clamp(42px,6vw,82px);line-height:.95;margin:12px 0 18px}
+h2{font-family:Georgia,serif;color:var(--plum);font-size:clamp(32px,4vw,58px);margin:4px 0 20px}
+h3{color:var(--rose);margin:5px 0 8px;font-size:20px}
+p,li{font-size:clamp(17px,1.8vw,23px);line-height:1.45}
+.lead{max-width:780px;font-size:clamp(20px,2.2vw,28px)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+.card{background:#ffffffd9;border:1px solid #ead4df;border-radius:20px;padding:20px;box-shadow:0 8px 25px #5b284712}
+.icon{font-size:38px;display:block;margin-bottom:7px}
+.tag{display:inline-block;background:var(--soft);color:var(--plum);padding:7px 12px;border-radius:99px;font-weight:700;margin:3px}
+.callout{background:linear-gradient(110deg,var(--plum),#81365f);color:white;border-radius:22px;padding:20px 24px;margin-top:20px}
+.callout strong{color:#ffd6e7}
+.two{display:grid;grid-template-columns:1.12fr .88fr;gap:30px;align-items:center}
+.beauty-board{background:#fff;border:2px solid #f0cedc;border-radius:28px;padding:22px;box-shadow:0 15px 35px #5b28471c;transform:rotate(1deg)}
+.toolrow{display:flex;justify-content:space-around;align-items:end;gap:10px;font-size:55px;padding:12px}
+.big-number{font-family:Georgia,serif;font-size:48px;color:var(--rose);font-weight:bold}
+.steps{counter-reset:s}
+.step{display:flex;gap:14px;margin:12px 0;align-items:flex-start}
+.step:before{counter-increment:s;content:counter(s);min-width:38px;height:38px;border-radius:50%;background:var(--rose);color:#fff;display:grid;place-items:center;font-weight:800}
+.footer{
+ position:absolute;left:0;right:0;bottom:0;padding:15px 22px;
+ background:#fffdfaf2;border-top:1px solid #ead4df;display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+.controls{display:flex;gap:9px}
+button{border:0;border-radius:999px;padding:11px 17px;font-size:15px;font-weight:800;cursor:pointer}
+.primary{background:var(--plum);color:white}.secondary{background:#f4dce7;color:var(--plum)}
+.counter{font-weight:800;color:var(--plum)}
+.corner{position:absolute;font-size:48px;opacity:.16;pointer-events:none}
+.c1{right:26px;top:32px;transform:rotate(15deg)} .c2{right:95px;bottom:90px;transform:rotate(-14deg)}
+.c3{left:18px;bottom:90px;transform:rotate(8deg)}
+.title-slide .content{display:flex;align-items:center}
+.title-slide .beauty-board{font-size:70px;text-align:center}
+.mini{font-size:15px;color:#6c5964}
+.quiz button.answer{display:block;width:100%;text-align:left;margin:9px 0;background:#fff;border:1px solid #e3c7d5;border-radius:14px;color:var(--ink)}
+.quiz button.answer:hover{background:#fff0f6}
+.result{font-weight:800;color:var(--rose);min-height:30px}
+
+.music-wrap{display:flex;align-items:center;gap:8px}
+.volume{width:88px;accent-color:var(--rose)}
+.music-note{font-size:13px;color:var(--plum);font-weight:800;white-space:nowrap}
+@media(max-width:760px){
+ .music-note,.volume{display:none}
+}
+
+@media(max-width:760px){
+ .content{padding:28px 24px 94px}.two,.grid,.grid3{grid-template-columns:1fr}
+ .beauty-board{display:none}.footer{padding:10px}.footer button{padding:9px 11px;font-size:13px}
+ p,li{font-size:17px} h1{font-size:45px} h2{font-size:34px}
+}
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" loop preload="auto">
+  <source src="saturday_salon_shuffle.mp3" type="audio/mpeg">
+</audio>
+
+<div class="deck">
+
+<section class="slide active title-slide">
+<div class="topbar"></div><div class="corner c1">💄</div><div class="corner c2">✂️</div>
+<div class="content two">
+ <div>
+  <div class="kicker">Transition Team • Career Exploration</div>
+  <h1>Beauty Is a Business.</h1>
+  <p class="lead">Explore careers in <b>cosmetology, hairstyling, barbering, nails, skincare, esthetics, makeup artistry</b> and salon entrepreneurship.</p>
+  <span class="tag">Creativity</span><span class="tag">People Skills</span><span class="tag">Hands-On Work</span><span class="tag">Business</span>
+ </div>
+ <div class="beauty-board"><div>💇🏽‍♀️ 💅🏽</div><div>🧴 ✨ 💄</div><div>🪮 ✂️ 🪞</div><p class="mini">CAREER BEAUTY BOARD</p></div>
+</div>
+</section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c1">🪞</div>
+<div class="content">
+<div class="kicker">01 • The Industry</div><h2>What Is Cosmetology?</h2>
+<p class="lead">Cosmetology is the professional study and practice of beauty services. Depending on training and licensing, professionals may work with hair, nails, skin, makeup, grooming, or specialized services.</p>
+<div class="grid3">
+<div class="card"><span class="icon">💇🏽‍♀️</span><h3>Hair</h3><p>Cutting, styling, coloring, chemical services, natural hair care and extensions.</p></div>
+<div class="card"><span class="icon">💅🏽</span><h3>Nails</h3><p>Manicures, pedicures, nail art, enhancements and nail health.</p></div>
+<div class="card"><span class="icon">✨</span><h3>Skin</h3><p>Facials, skincare routines, hair removal and other services within the professional's license.</p></div>
+</div>
+</div></section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c2">✂️</div>
+<div class="content">
+<div class="kicker">02 • Hair Careers</div><h2>Cosmetologist & Hair Stylist</h2>
+<div class="two"><div>
+<div class="steps"><div class="step"><div><b>Consult.</b> Ask what the client wants and discuss realistic options.</div></div><div class="step"><div><b>Create.</b> Shampoo, cut, style, color or perform permitted chemical services.</div></div><div class="step"><div><b>Protect.</b> Follow sanitation, product-safety and infection-control procedures.</div></div><div class="step"><div><b>Build clientele.</b> Rebooking, customer service and professional communication matter.</div></div></div>
+</div><div class="beauty-board"><div class="toolrow">🪮 ✂️ 🧴</div><div class="toolrow">🎨 💇🏽‍♀️ 🪞</div><p><b>Possible workplaces:</b> salons, spas, specialty studios, resorts, entertainment settings, or self-employment.</p></div></div>
+</div></section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c1">💅🏽</div>
+<div class="content">
+<div class="kicker">03 • Nail Careers</div><h2>Nail Technician</h2>
+<div class="grid">
+<div class="card"><span class="icon">💅🏽</span><h3>Services</h3><p>Manicures, pedicures, polish, nail art and enhancement services allowed by the technician's training and license.</p></div>
+<div class="card"><span class="icon">🧼</span><h3>Sanitation</h3><p>Clean tools, safe work practices and preventing cross-contamination are essential professional responsibilities.</p></div>
+<div class="card"><span class="icon">🎨</span><h3>Creative Skills</h3><p>Color theory, detail work, steady hands, design and following client inspiration.</p></div>
+<div class="card"><span class="icon">📅</span><h3>Business Skills</h3><p>Appointments, time management, customer service, inventory and repeat clients.</p></div>
+</div></div></section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c1">🧴</div><div class="corner c3">✨</div>
+<div class="content">
+<div class="kicker">04 • Skincare Careers</div><h2>Esthetician</h2>
+<p class="lead">Estheticians focus on professional skincare and beauty services that fall within their scope of practice.</p>
+<div class="grid3">
+<div class="card"><span class="icon">🫧</span><h3>Facials & Skin Care</h3><p>Client consultation, cleansing, skincare services and product education.</p></div>
+<div class="card"><span class="icon">🌿</span><h3>Spa Services</h3><p>Services can include exfoliation and hair-removal techniques when permitted by state rules and training.</p></div>
+<div class="card"><span class="icon">🔎</span><h3>Know Your Scope</h3><p>An esthetician is not automatically a medical provider. State law determines which services each license may perform.</p></div>
+</div>
+<div class="callout"><strong>Professional habit:</strong> Never diagnose a medical skin condition outside your role. Refer clients appropriately when something needs medical evaluation.</div>
+</div></section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c2">💄</div>
+<div class="content">
+<div class="kicker">05 • More Beauty Careers</div><h2>There’s More Than One Path</h2>
+<div class="grid3">
+<div class="card"><span class="icon">💄</span><h3>Makeup Artist</h3><p>Beauty, events, photography, theater, film or retail artistry.</p></div>
+<div class="card"><span class="icon">🧔🏽</span><h3>Barber</h3><p>Haircuts, grooming and other barbering services within state licensing rules.</p></div>
+<div class="card"><span class="icon">🪮</span><h3>Natural Hair / Specialty Styling</h3><p>Braiding, textured-hair styling and specialty services; licensing requirements vary by service and state.</p></div>
+<div class="card"><span class="icon">🛍️</span><h3>Beauty Retail</h3><p>Product knowledge, sales, demonstrations and customer education.</p></div>
+<div class="card"><span class="icon">📸</span><h3>Beauty Content Creator</h3><p>Portfolio content, tutorials, brand work and social media—while following rules for any licensed services performed.</p></div>
+<div class="card"><span class="icon">👑</span><h3>Salon Owner / Manager</h3><p>Leadership, scheduling, inventory, marketing, finances and compliance.</p></div>
+</div></div></section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c1">🎓</div>
+<div class="content">
+<div class="kicker">06 • Education & Licensing</div><h2>From Student to Professional</h2>
+<div class="two"><div>
+<div class="steps">
+<div class="step"><div><b>Explore the career.</b> Compare cosmetology, barbering, nails and esthetics before choosing a program.</div></div>
+<div class="step"><div><b>Choose an approved school/program.</b> Ask about tuition, supplies, schedules, completion requirements and job placement support.</div></div>
+<div class="step"><div><b>Complete required training.</b> Requirements differ by license and state.</div></div>
+<div class="step"><div><b>Meet licensing requirements.</b> This may include applications, exams, fees and other state requirements.</div></div>
+<div class="step"><div><b>Keep learning.</b> Trends change, but sanitation, professionalism and client safety stay essential.</div></div>
+</div></div>
+<div class="beauty-board"><div class="big-number">TENNESSEE</div><p>Students should verify current requirements directly with the <b>Tennessee Board of Cosmetology and Barber Examiners</b> before enrolling or applying for a license.</p><p class="mini">Requirements can change; this presentation is career-exploration guidance, not a licensing application.</p></div>
+</div></div></section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c2">💬</div>
+<div class="content">
+<div class="kicker">07 • Workplace Readiness</div><h2>What Makes a Great Beauty Professional?</h2>
+<div class="grid">
+<div class="card"><span class="icon">⏰</span><h3>Reliability</h3><p>Arrive on time, manage appointments and communicate when plans change.</p></div>
+<div class="card"><span class="icon">🤝</span><h3>Customer Service</h3><p>Listen carefully, stay respectful and handle concerns professionally.</p></div>
+<div class="card"><span class="icon">🧼</span><h3>Cleanliness</h3><p>Follow sanitation procedures every time—even when the salon is busy.</p></div>
+<div class="card"><span class="icon">🗣️</span><h3>Communication</h3><p>Ask questions before beginning a service and explain aftercare clearly.</p></div>
+</div>
+<div class="callout"><strong>Think about it:</strong> In beauty careers, your technical skill may bring a client in—but professionalism helps bring the client back.</div>
+</div></section>
+
+<section class="slide"><div class="topbar"></div><div class="corner c1">💵</div>
+<div class="content">
+<div class="kicker">08 • The Business Side</div><h2>Your Talent + Business Skills</h2>
+<div class="grid3">
+<div class="card"><span class="icon">💵</span><h3>Income Can Vary</h3><p>Pay can depend on job type, location, experience, hours, clientele, tips, commission and self-employment expenses.</p></div>
+<div class="card"><span class="icon">📱</span><h3>Marketing</h3><p>A professional portfolio, referrals and responsible social media can help people discover your work.</p></div>
+<div class="card"><span class="icon">🧾</span><h3>Expenses</h3><p>Independent professionals may need to plan for products, tools, space, taxes, insurance and other business costs.</p></div>
+</div>
+<div class="callout"><strong>Career question:</strong> Would you rather work for an established salon, rent/work independently where permitted, or eventually own a business? Each path has different responsibilities.</div>
+</div></section>
+
+<section class="slide quiz"><div class="topbar"></div><div class="corner c1">✨</div><div class="corner c2">💄</div>
+<div class="content">
+<div class="kicker">09 • Career Check</div><h2>Which Beauty Path Sounds Like You?</h2>
+<p><b>Which career is most focused on professional skincare?</b></p>
+<button class="answer" onclick="answer(false,this)">A. Nail Technician</button>
+<button class="answer" onclick="answer(true,this)">B. Esthetician</button>
+<button class="answer" onclick="answer(false,this)">C. Salon Receptionist</button>
+<div class="result" id="result"></div>
+<div class="card" style="margin-top:18px"><h3>Your next step</h3><p>Choose one career from this presentation. Write down: <b>1)</b> what the professional does, <b>2)</b> what training/licensing you would need, and <b>3)</b> one workplace skill you would need to practice.</p></div>
+</div></section>
+
+<div class="footer">
+ <div class="counter"><span id="current">1</span> / 10</div>
+ <div class="controls">
+  <div class="music-wrap">
+   <button class="secondary" id="musicBtn" onclick="toggleMusic()">🎵 Play Music</button>
+   <span class="music-note">Music</span>
+   <input class="volume" id="musicVolume" type="range" min="0" max="1" step="0.05" value="0.42" aria-label="Music volume">
+  </div>
+  <button class="secondary" onclick="speakSlide()">🔊 Read Aloud</button>
+  <button class="secondary" onclick="move(-1)">← Back</button>
+  <button class="primary" onclick="move(1)">Next →</button>
+ </div>
+</div>
+</div>
+
+<script>
+let index=0;
+const slides=[...document.querySelectorAll('.slide')];
+const music=document.getElementById('bgMusic');
+const musicBtn=document.getElementById('musicBtn');
+const musicVolume=document.getElementById('musicVolume');
+let musicStarted=false;
+let volumeBeforeSpeech=.42;
+
+music.volume=Number(musicVolume.value);
+
+function show(i){
+ slides[index].classList.remove('active');
+ index=(i+slides.length)%slides.length;
+ slides[index].classList.add('active');
+ document.getElementById('current').textContent=index+1;
+ speechSynthesis.cancel();
+ if(musicStarted) music.volume=Number(musicVolume.value);
+}
+
+function move(n){show(index+n)}
+
+document.addEventListener('keydown',e=>{
+ if(e.key==='ArrowRight')move(1);
+ if(e.key==='ArrowLeft')move(-1);
+});
+
+musicVolume.addEventListener('input',()=>{
+ music.volume=Number(musicVolume.value);
+ volumeBeforeSpeech=music.volume;
+});
+
+async function toggleMusic(){
+ try{
+  if(music.paused){
+   await music.play();
+   musicStarted=true;
+   musicBtn.textContent='⏸ Pause Music';
+  }else{
+   music.pause();
+   musicBtn.textContent='🎵 Play Music';
+  }
+ }catch(err){
+  musicBtn.textContent='Tap Again to Play';
+ }
+}
+
+function speakSlide(){
+ speechSynthesis.cancel();
+ const text=slides[index].innerText.replace(/\s+/g,' ').trim();
+ const u=new SpeechSynthesisUtterance(text);
+ u.rate=.95;
+
+ if(!music.paused){
+  volumeBeforeSpeech=music.volume;
+  music.volume=Math.min(.10, volumeBeforeSpeech);
+ }
+
+ u.onend=()=>{
+  if(!music.paused) music.volume=Number(musicVolume.value);
+ };
+ u.onerror=()=>{
+  if(!music.paused) music.volume=Number(musicVolume.value);
+ };
+
+ speechSynthesis.speak(u);
+}
+
+function answer(ok,btn){
+ document.querySelectorAll('.answer').forEach(b=>b.style.borderColor='#e3c7d5');
+ btn.style.borderColor=ok?'#3c8c64':'#b73770';
+ document.getElementById('result').textContent=ok?'Correct! Estheticians focus on professional skincare services.':'Try again. Look for the career that focuses on skincare.';
+}
+</script>
+</body>
+</html>
