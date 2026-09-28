@@ -179,5 +179,5 @@ function summary(){const elapsed=sessionStartedAt?Math.max(0,Math.round((Date.no
 document.querySelectorAll('.story-card').forEach(card=>card.addEventListener('click',()=>openStory(card.dataset.story)));
 $('readBtn').addEventListener('click',readCurrent);$('backBtn').addEventListener('click',backOne);$('libraryBtn').addEventListener('click',showLibrary);$('replayBtn').addEventListener('click',replay);$('startBtn').addEventListener('click',toggleSession);$('summaryBtn').addEventListener('click',summary);$('closeSummary').addEventListener('click',()=>$('summaryModal').classList.remove('open'));$('summaryModal').addEventListener('click',e=>{if(e.target===$('summaryModal'))$('summaryModal').classList.remove('open')});
 </script>
-</body>
+<script src="session.js"></script>\n</body>
 </html>
