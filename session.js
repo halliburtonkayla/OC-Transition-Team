@@ -4,108 +4,41 @@
   'use strict';
   const KEY='oc_transition_active_session_v1';
   const LIMIT=30*60*1000;
-  const areas=[
-    'Job Exploration Counseling',
-    'Workplace Readiness Training',
-    'Instruction in Self-Advocacy',
-    'Counseling on Postsecondary Education Opportunities',
-    'Work-Based Learning Experiences'
-  ];
+  const areas=['Job Exploration Counseling','Workplace Readiness Training','Instruction in Self-Advocacy','Counseling on Postsecondary Education Opportunities','Work-Based Learning Experiences'];
   const $=id=>document.getElementById(id);
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}};
-  const save=s=>localStorage.setItem(KEY,JSON.stringify(s));
-  const clear=()=>localStorage.removeItem(KEY);
+  const save=s=>localStorage.setItem(KEY,JSON.stringify(s)); const clear=()=>localStorage.removeItem(KEY);
   const pageName=()=>document.title||location.pathname.split('/').pop()||'Website activity';
   const fmtClock=ms=>{let n=Math.max(0,Math.ceil(ms/1000));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0')};
   const fmtTime=t=>new Date(t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
-  function activeElapsed(s){
-    const end=s.stoppedAt||Date.now();
-    return Math.max(0,end-s.startedAt-(s.pausedTotal||0)-(s.pausedAt?Math.max(0,Date.now()-s.pausedAt):0));
-  }
+  function activeElapsed(s){const end=s.stoppedAt||Date.now();return Math.max(0,end-s.startedAt-(s.pausedTotal||0)-(s.pausedAt?Math.max(0,Date.now()-s.pausedAt):0));}
   function remaining(s){return Math.max(0,LIMIT-activeElapsed(s))}
-  function recordActivity(n){
-    let s=load(); if(!s)return;
-    s.activities=s.activities||[];
-    n=(n||pageName()).trim();
-    if(n&&!s.activities.includes(n))s.activities.push(n);
-    save(s);
-  }
-  function recordChoice(o){
-    let s=load();if(!s)return;
-    s.choices=s.choices||[];
-    s.choices.push({activity:o.activity||pageName(),scene:o.scene||'',choice:o.choice||'',quality:o.quality});
-    if(!s.activities.includes(o.activity||pageName()))s.activities.push(o.activity||pageName());
-    save(s);
+  function recordActivity(n){let s=load();if(!s)return;s.activities=s.activities||[];n=(n||pageName()).trim();if(n&&!s.activities.includes(n))s.activities.push(n);save(s)}
+  function recordChoice(o){let s=load();if(!s)return;s.choices=s.choices||[];s.choices.push({activity:o.activity||pageName(),scene:o.scene||'',choice:o.choice||'',quality:o.quality});if(!s.activities.includes(o.activity||pageName()))s.activities.push(o.activity||pageName());save(s)}
+  function addHomepageCDCButtons(){
+    if(!location.pathname.endsWith('/')&&!location.pathname.endsWith('/index.html'))return;
+    const cdc=document.querySelector('#cdc .hub-grid'); if(!cdc||document.getElementById('cdcNewActivities'))return;
+    const box=document.createElement('div'); box.id='cdcNewActivities'; box.className='hub-card cdc';
+    box.style.cssText='grid-column:1/-1;border-top:7px solid #7c3aed;background:linear-gradient(135deg,#f4f0ff,#ecfff8);text-align:center';
+    box.innerHTML='<h3>⭐ NEW CDC INTERACTIVE MATCHING</h3><p>Hands-on visual activities with large choices, colors, drag-and-drop, and tap-to-match.</p><a href="cdc-cooking-match.html" style="background:#e85d04">🍕 Make It! Cooking Match — 20 Foods</a><a href="cdc-job-match.html" style="background:#7c3aed">🎯 Jobs & Tools Match — 50 Jobs</a>';
+    cdc.insertBefore(box,cdc.firstChild);
   }
   function makeUI(){
     if($('ttSessionBar'))return;
-    const bar=document.createElement('div');
-    bar.id='ttSessionBar';
-    bar.style.cssText='position:sticky;top:0;z-index:99999;background:#102a5c;color:white;padding:8px 12px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font:700 14px Arial';
-    bar.innerHTML='<span id="ttWho">No active Pre-ETS session</span><strong id="ttTime" style="font-size:20px">30:00</strong><button id="ttStart" style="padding:8px 12px">Start Session</button><button id="ttView" style="padding:8px 12px">Session Summary</button>';
-    document.body.insertBefore(bar,document.body.firstChild);
-
-    const modal=document.createElement('div'); modal.id='ttModal';
-    modal.style.cssText='display:none;position:fixed;inset:0;background:#0008;z-index:100001;align-items:center;justify-content:center;padding:16px';
-    modal.innerHTML=`<div style="background:white;color:#18212b;max-width:560px;width:100%;padding:22px;border-radius:16px;font-family:Arial">
-      <h2>Start 30-Minute Pre-ETS Session</h2>
-      <label>Student name or initials</label><input id="ttStudent" style="width:100%;padding:10px;margin:5px 0 12px">
-      <label>Choose ONE Pre-ETS area</label><select id="ttArea" style="width:100%;padding:10px;margin:5px 0 12px">${areas.map(a=>`<option>${a}</option>`).join('')}</select>
-      <label>Session focus/activity</label><input id="ttFocus" style="width:100%;padding:10px;margin:5px 0 12px" placeholder="Optional">
-      <button id="ttBegin">Start 30 Minutes</button> <button id="ttCancel">Cancel</button></div>`;
-    document.body.appendChild(modal);
-
-    const summary=document.createElement('div'); summary.id='ttSummary';
-    summary.style.cssText='display:none;position:fixed;inset:3%;background:white;color:#18212b;z-index:100002;border-radius:16px;padding:22px;overflow:auto;font-family:Arial;box-shadow:0 10px 40px #0006';
-    summary.innerHTML=`<h2>Pre-ETS Session Summary</h2><div id="ttReport"></div>
-      <label>Participation / support</label><select id="ttSupport"><option>Independent</option><option>Minimal verbal prompts</option><option>Moderate verbal prompts</option><option>Visual prompts</option><option>Modeling / demonstration</option><option>Maximum support</option></select>
-      <br><br><label>Progress / student response</label><br><textarea id="ttProgress" rows="3" style="width:100%"></textarea>
-      <br><label>Next-session plan</label><br><textarea id="ttNext" rows="3" style="width:100%"></textarea>
-      <br><br><div style="background:#eef6ff;border:2px solid #b9d4fa;border-radius:12px;padding:14px"><b>Copy/Paste Data Sheet Note</b><p id="ttDataNote" style="white-space:pre-wrap;margin:8px 0"></p><button id="ttCopy">Copy Data Note</button></div><br><button id="ttPause">Pause</button> <button id="ttResume">Resume</button> <button id="ttPrint">Print / Save PDF</button> <button id="ttEnd">End & Clear Session</button> <button id="ttClose">Close</button>`;
-    document.body.appendChild(summary);
-
-    $('ttStart').onclick=()=>load()?openSummary():modal.style.display='flex';
-    $('ttView').onclick=openSummary;
-    $('ttCancel').onclick=()=>modal.style.display='none';
-    $('ttBegin').onclick=()=>{
-      const student=$('ttStudent').value.trim();
-      if(!student){alert('Enter the student name or initials first.');return}
-      save({student,area:$('ttArea').value,focus:$('ttFocus').value.trim(),startedAt:Date.now(),pausedAt:null,pausedTotal:0,stoppedAt:null,activities:[pageName()],choices:[],support:'Independent',progress:'',next:''});
-      modal.style.display='none'; tick();
-    };
-    $('ttClose').onclick=()=>summary.style.display='none';
-    $('ttPause').onclick=()=>{let s=load();if(s&&!s.pausedAt&&!s.stoppedAt){s.pausedAt=Date.now();save(s);tick()}};
-    $('ttResume').onclick=()=>{let s=load();if(s&&s.pausedAt&&!s.stoppedAt){s.pausedTotal=(s.pausedTotal||0)+(Date.now()-s.pausedAt);s.pausedAt=null;save(s);tick()}};
-    $('ttPrint').onclick=()=>{syncNotes();render();setTimeout(()=>window.print(),50)};
-    $('ttCopy').onclick=async()=>{syncNotes();render();const n=$('ttDataNote').textContent.trim();try{await navigator.clipboard.writeText(n);const b=$('ttCopy'),old=b.textContent;b.textContent='✓ COPIED';setTimeout(()=>b.textContent=old,1400)}catch(e){alert('Highlight the data note and copy it manually.')}};
-    $('ttEnd').onclick=()=>{let s=load();if(s){s.stoppedAt=Date.now();save(s);render();} if(confirm('Clear this session after reviewing/printing it?')){clear();summary.style.display='none';tick()}};
-    ['ttSupport','ttProgress','ttNext'].forEach(id=>$(id).addEventListener('input',syncNotes));
+    const bar=document.createElement('div');bar.id='ttSessionBar';bar.style.cssText='position:sticky;top:0;z-index:99999;background:#102a5c;color:white;padding:8px 12px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font:700 14px Arial';bar.innerHTML='<span id="ttWho">No active Pre-ETS session</span><strong id="ttTime" style="font-size:20px">30:00</strong><button id="ttStart" style="padding:8px 12px">Start Session</button><button id="ttView" style="padding:8px 12px">Session Summary</button>';document.body.insertBefore(bar,document.body.firstChild);
+    const modal=document.createElement('div');modal.id='ttModal';modal.style.cssText='display:none;position:fixed;inset:0;background:#0008;z-index:100001;align-items:center;justify-content:center;padding:16px';modal.innerHTML=`<div style="background:white;color:#18212b;max-width:560px;width:100%;padding:22px;border-radius:16px;font-family:Arial"><h2>Start 30-Minute Pre-ETS Session</h2><label>Student name or initials</label><input id="ttStudent" style="width:100%;padding:10px;margin:5px 0 12px"><label>Choose ONE Pre-ETS area</label><select id="ttArea" style="width:100%;padding:10px;margin:5px 0 12px">${areas.map(a=>`<option>${a}</option>`).join('')}</select><label>Session focus/activity</label><input id="ttFocus" style="width:100%;padding:10px;margin:5px 0 12px" placeholder="Optional"><button id="ttBegin">Start 30 Minutes</button> <button id="ttCancel">Cancel</button></div>`;document.body.appendChild(modal);
+    const summary=document.createElement('div');summary.id='ttSummary';summary.style.cssText='display:none;position:fixed;inset:3%;background:white;color:#18212b;z-index:100002;border-radius:16px;padding:22px;overflow:auto;font-family:Arial;box-shadow:0 10px 40px #0006';summary.innerHTML=`<h2>Pre-ETS Session Summary</h2><div id="ttReport"></div><label>Participation / support</label><select id="ttSupport"><option>Independent</option><option>Minimal verbal prompts</option><option>Moderate verbal prompts</option><option>Visual prompts</option><option>Modeling / demonstration</option><option>Maximum support</option></select><br><br><label>Progress / student response</label><br><textarea id="ttProgress" rows="3" style="width:100%"></textarea><br><label>Next-session plan</label><br><textarea id="ttNext" rows="3" style="width:100%"></textarea><br><br><div style="background:#eef6ff;border:2px solid #b9d4fa;border-radius:12px;padding:14px"><b>Copy/Paste Data Sheet Note</b><p id="ttDataNote" style="white-space:pre-wrap;margin:8px 0"></p><button id="ttCopy">Copy Data Note</button></div><br><button id="ttPause">Pause</button> <button id="ttResume">Resume</button> <button id="ttPrint">Print / Save PDF</button> <button id="ttEnd">End & Clear Session</button> <button id="ttClose">Close</button>`;document.body.appendChild(summary);
+    $('ttStart').onclick=()=>load()?openSummary():modal.style.display='flex';$('ttView').onclick=openSummary;$('ttCancel').onclick=()=>modal.style.display='none';
+    $('ttBegin').onclick=()=>{const student=$('ttStudent').value.trim();if(!student){alert('Enter the student name or initials first.');return}save({student,area:$('ttArea').value,focus:$('ttFocus').value.trim(),startedAt:Date.now(),pausedAt:null,pausedTotal:0,stoppedAt:null,activities:[pageName()],choices:[],support:'Independent',progress:'',next:''});modal.style.display='none';tick()};
+    $('ttClose').onclick=()=>summary.style.display='none';$('ttPause').onclick=()=>{let s=load();if(s&&!s.pausedAt&&!s.stoppedAt){s.pausedAt=Date.now();save(s);tick()}};$('ttResume').onclick=()=>{let s=load();if(s&&s.pausedAt&&!s.stoppedAt){s.pausedTotal=(s.pausedTotal||0)+(Date.now()-s.pausedAt);s.pausedAt=null;save(s);tick()}};
+    $('ttPrint').onclick=()=>{syncNotes();render();setTimeout(()=>window.print(),50)};$('ttCopy').onclick=async()=>{syncNotes();render();const n=$('ttDataNote').textContent.trim();try{await navigator.clipboard.writeText(n);const b=$('ttCopy'),old=b.textContent;b.textContent='✓ COPIED';setTimeout(()=>b.textContent=old,1400)}catch(e){alert('Highlight the data note and copy it manually.')}};
+    $('ttEnd').onclick=()=>{let s=load();if(s){s.stoppedAt=Date.now();save(s);render()}if(confirm('Clear this session after reviewing/printing it?')){clear();summary.style.display='none';tick()}};['ttSupport','ttProgress','ttNext'].forEach(id=>$(id).addEventListener('input',syncNotes));
   }
   function syncNotes(){let s=load();if(!s)return;s.support=$('ttSupport').value;s.progress=$('ttProgress').value.trim();s.next=$('ttNext').value.trim();save(s)}
-  function render(){
-    const s=load(); if(!s){$('ttReport').innerHTML='<p>No active session.</p>';return}
-    $('ttSupport').value=s.support||'Independent';$('ttProgress').value=s.progress||'';$('ttNext').value=s.next||'';
-    const mins=Math.max(1,Math.round(activeElapsed(s)/60000));
-    $('ttReport').innerHTML=`<p><b>Student:</b> ${esc(s.student)}</p><p><b>Date:</b> ${new Date(s.startedAt).toLocaleDateString()}</p>
-    <p><b>Start:</b> ${fmtTime(s.startedAt)}</p><p><b>Minutes completed:</b> ${mins}</p><p><b>Pre-ETS:</b> ${esc(s.area)}</p>
-    <p><b>Focus:</b> ${esc(s.focus||'Transition activity')}</p><p><b>Pages/activities visited:</b> ${esc((s.activities||[]).join(', '))}</p>`;
-    const focus=s.focus||((s.activities||[]).filter(Boolean).slice(-3).join(', '))||'transition activity';
-    let note=s.student+' participated in '+focus+' focused on '+s.area+'. Student completed the activity with '+(s.support||'Independent').toLowerCase()+'.';
-    if(s.progress) note+=' '+s.progress.replace(/\\s+/g,' ').trim();
-    if(s.next) note+=' Next session: '+s.next.replace(/\\s+/g,' ').trim();
-    $('ttDataNote').textContent=note;
-  }
+  function render(){const s=load();if(!s){$('ttReport').innerHTML='<p>No active session.</p>';return}$('ttSupport').value=s.support||'Independent';$('ttProgress').value=s.progress||'';$('ttNext').value=s.next||'';const mins=Math.max(1,Math.round(activeElapsed(s)/60000));$('ttReport').innerHTML=`<p><b>Student:</b> ${esc(s.student)}</p><p><b>Date:</b> ${new Date(s.startedAt).toLocaleDateString()}</p><p><b>Start:</b> ${fmtTime(s.startedAt)}</p><p><b>Minutes completed:</b> ${mins}</p><p><b>Pre-ETS:</b> ${esc(s.area)}</p><p><b>Focus:</b> ${esc(s.focus||'Transition activity')}</p><p><b>Pages/activities visited:</b> ${esc((s.activities||[]).join(', '))}</p>`;const focus=s.focus||((s.activities||[]).filter(Boolean).slice(-3).join(', '))||'transition activity';let note=s.student+' participated in '+focus+' focused on '+s.area+'. Student completed the activity with '+(s.support||'Independent').toLowerCase()+'.';if(s.progress)note+=' '+s.progress.replace(/\\s+/g,' ').trim();if(s.next)note+=' Next session: '+s.next.replace(/\\s+/g,' ').trim();$('ttDataNote').textContent=note}
   function openSummary(){makeUI();render();$('ttSummary').style.display='block'}
-  function tick(){
-    makeUI();let s=load();
-    if(!s){$('ttWho').textContent='No active Pre-ETS session';$('ttTime').textContent='30:00';$('ttStart').textContent='Start Session';return}
-    recordActivity(pageName());s=load();
-    $('ttWho').textContent=s.student+' • '+s.area+(s.pausedAt?' • PAUSED':'');
-    $('ttStart').textContent='Session Active';
-    const r=remaining(s);$('ttTime').textContent=r?fmtClock(r):'00:00 COMPLETE';
-  }
-  window.TTSession={recordActivity,recordChoice,openSummary,openStart:()=>{makeUI();load()?openSummary():$('ttModal').style.display='flex'},load};
-  window.TTPreETS=window.TTSession;
-  document.addEventListener('DOMContentLoaded',()=>{makeUI();tick();setInterval(tick,1000);document.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>recordActivity(a.textContent.trim().slice(0,80))))});
+  function tick(){makeUI();let s=load();if(!s){$('ttWho').textContent='No active Pre-ETS session';$('ttTime').textContent='30:00';$('ttStart').textContent='Start Session';return}recordActivity(pageName());s=load();$('ttWho').textContent=s.student+' • '+s.area+(s.pausedAt?' • PAUSED':'');$('ttStart').textContent='Session Active';const r=remaining(s);$('ttTime').textContent=r?fmtClock(r):'00:00 COMPLETE'}
+  window.TTSession={recordActivity,recordChoice,openSummary,openStart:()=>{makeUI();load()?openSummary():$('ttModal').style.display='flex'},load};window.TTPreETS=window.TTSession;
+  document.addEventListener('DOMContentLoaded',()=>{addHomepageCDCButtons();makeUI();tick();setInterval(tick,1000);document.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>recordActivity(a.textContent.trim().slice(0,80))))});
 })();
