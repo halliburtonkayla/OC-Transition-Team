@@ -31,4 +31,4 @@ let score=0,round=0;
 function newRound(){round++; const j=jobs[Math.floor(Math.random()*jobs.length)]; const pool=[...jobs].sort(()=>Math.random()-.5).slice(0,4); if(!pool.includes(j)) pool[0]=j; pool.sort(()=>Math.random()-.5); document.getElementById('prompt').innerHTML=`<b>Duty:</b> ${j.duties[Math.floor(Math.random()*j.duties.length)]}<br><b>Tool:</b> ${j.tools[Math.floor(Math.random()*j.tools.length)]}`; const choices=document.getElementById('choices'); choices.innerHTML=''; pool.forEach(x=>{let b=document.createElement('button');b.className='choice';b.textContent=x.job;b.onclick=()=>{if(x===j){score++;show('✅ Correct — '+j.job);}else show('Try again. Best match: '+j.job);document.getElementById('score').textContent=score+' / '+round;};choices.appendChild(b)});}
 function show(t){let f=document.getElementById('feedback');f.style.display='block';f.textContent=t;}
 newRound();
-</script></body></html>
+</script><script src="session.js"></script>\n</body></html>
