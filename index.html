@@ -348,161 +348,21 @@ box.addEventListener('input',()=>{const q=box.value.toLowerCase().trim();documen
 </script>
 <script>
 (function(){
-  let left = 1800;
-  let timerId = null;
-  let elapsed = 0;
-
-  const btn = document.getElementById('sessionBtn');
-  const stopBtn = document.getElementById('sessionDataBtn');
-  const resetBtn = document.getElementById('sessionResetBtn');
-  const timer = document.getElementById('timer');
-  const status = document.getElementById('sessionStatus');
-
-  const name = document.getElementById('studentName');
-  const grade = document.getElementById('studentGrade');
-  const area = document.getElementById('preetsArea');
-  const activity = document.getElementById('sessionActivity');
-  const support = document.getElementById('supportLevel');
-  const quick = document.getElementById('sessionQuickNote');
-
-  const dataBox = document.getElementById('dataSummaryBox');
-  const noteBox = document.getElementById('generatedDataNote');
-
-  function formatTime(sec){
-    const m = Math.floor(sec/60), s = sec%60;
-    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  }
-
-  function requiredReady(){
-    if(!name.value.trim()){
-      alert('Please type the student name before starting the session.');
-      name.focus();
-      return false;
-    }
-    if(!area.value){
-      alert('Please choose the Pre-ETS service area for this session.');
-      area.focus();
-      return false;
-    }
-    return true;
-  }
-
-  function stopTimer(){
-    if(timerId){
-      clearInterval(timerId);
-      timerId = null;
-    }
-  }
-
-  function startOrPause(){
-    if(timerId){
-      stopTimer();
-      btn.textContent = '▶ RESUME SESSION';
-      status.textContent = 'Session paused.';
-      return;
-    }
-
-    if(!requiredReady()) return;
-
-    timer.style.display = 'block';
-    btn.textContent = '⏸ PAUSE SESSION';
-    status.textContent = name.value.trim() + ' — ' + area.value + ' session in progress.';
-
-    timerId = setInterval(function(){
-      left--;
-      elapsed++;
-      timer.textContent = formatTime(left);
-
-      if(left <= 0){
-        stopTimer();
-        left = 0;
-        timer.textContent = '00:00';
-        btn.textContent = '✓ SESSION COMPLETE';
-        status.textContent = '30-minute session complete. Build the data note below.';
-      }
-    },1000);
-  }
-
-  function buildDataNote(){
-    if(!requiredReady()) return;
-    stopTimer();
-    btn.textContent = left > 0 ? '▶ RESUME SESSION' : '✓ SESSION COMPLETE';
-    status.textContent = 'Session stopped. Review the data note before copying or printing.';
-
-    const student = name.value.trim();
-    const gradeText = grade.value || 'Not entered';
-    const areaText = area.value;
-    const activityText = activity.value.trim() || 'transition activity';
-    const supportText = support.value || 'Independent';
-    const quickText = quick.value.trim();
-    const usedSeconds = elapsed > 0 ? elapsed : (1800 - left);
-    const minutes = Math.max(1, Math.round(usedSeconds / 60));
-
-    let note = student + ' participated in ' + activityText + ' focused on ' + areaText +
-      '. Student completed the session with ' + supportText.toLowerCase() + '.';
-
-    if(quickText){
-      note += ' ' + quickText.replace(/\s+/g,' ').trim();
-      if(!/[.!?]$/.test(note)) note += '.';
-    }
-
-    document.getElementById('summaryStudent').textContent = student;
-    document.getElementById('summaryGrade').textContent = gradeText;
-    document.getElementById('summaryPreets').textContent = areaText;
-    document.getElementById('summaryTime').textContent = minutes + ' minute' + (minutes === 1 ? '' : 's');
-    noteBox.textContent = note;
-    dataBox.style.display = 'block';
-    dataBox.scrollIntoView({behavior:'smooth',block:'center'});
-  }
-
-  function resetSession(){
-    stopTimer();
-    left = 1800;
-    elapsed = 0;
-    timer.textContent = '30:00';
-    timer.style.display = 'none';
-    btn.textContent = '▶ START 30-MINUTE SESSION';
-    status.textContent = 'Enter the student information, choose one Pre-ETS service area, then start the session.';
-    name.value = '';
-    grade.value = '';
-    area.value = '';
-    activity.value = '';
-    support.value = 'Independent';
-    quick.value = '';
-    dataBox.style.display = 'none';
-    noteBox.textContent = '';
-    name.focus();
-  }
-
-  async function copyNote(){
-    const text = noteBox.textContent.trim();
-    if(!text) return;
-    try{
-      await navigator.clipboard.writeText(text);
-      const b = document.getElementById('copyDataNoteBtn');
-      const old = b.textContent;
-      b.textContent = '✓ COPIED';
-      setTimeout(()=>b.textContent=old,1400);
-    }catch(e){
-      alert('Copy did not work in this browser. Highlight the data note and copy it manually.');
-    }
-  }
-
-  function printSummary(){
-    const student = document.getElementById('summaryStudent').textContent;
-    const gradeText = document.getElementById('summaryGrade').textContent;
-    const preets = document.getElementById('summaryPreets').textContent;
-    const time = document.getElementById('summaryTime').textContent;
-    const note = noteBox.textContent;
-    const w = window.open('', '_blank', 'width=800,height=700');
-    w.document.write('<!doctype html><html><head><title>Session Data Summary</title><style>body{font-family:Arial;padding:30px;line-height:1.5}h1{color:#102a5c}.box{border:2px solid #102a5c;border-radius:12px;padding:18px}</style></head><body>');
-    w.document.write('<h1>Session Data Summary</h1><div class="box">');
-    w.document.write('<p><strong>Student:</strong> '+student+'</p>');
-    w.document.write('<p><strong>Grade:</strong> '+gradeText+'</p>');
-    w.document.write('<p><strong>Pre-ETS:</strong> '+preets+'</p>');
-    w.document.write('<p><strong>Session Time:</strong> '+time+'</p>');
-    w.document.write('<p><strong>Data Note:</strong></p><p>'+note+'</p>');
-    w.document.write('</div><script src="session.js"></script>\n</body></html>');
+  const KEY='tt_session_v3', btn=document.getElementById('sessionBtn'), stopBtn=document.getElementById('sessionDataBtn'), resetBtn=document.getElementById('sessionResetBtn'), timer=document.getElementById('timer'), status=document.getElementById('sessionStatus');
+  const name=document.getElementById('studentName'),grade=document.getElementById('studentGrade'),area=document.getElementById('preetsArea'),activity=document.getElementById('sessionActivity'),support=document.getElementById('supportLevel'),quick=document.getElementById('sessionQuickNote'),dataBox=document.getElementById('dataSummaryBox'),noteBox=document.getElementById('generatedDataNote');
+  const get=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}, save=s=>localStorage.setItem(KEY,JSON.stringify(s)), fmt=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
+  function remaining(s){if(!s)return 1800;if(!s.running)return Math.max(0,s.remaining??1800);return Math.max(0,Math.ceil((s.endAt-Date.now())/1000))}
+  function fill(s){if(!s)return;name.value=s.student||'';grade.value=s.grade||'';area.value=s.area||'';activity.value=s.focus||'';support.value=s.support||'Independent';quick.value=s.progress||''}
+  function render(){let s=get();if(!s){timer.style.display='none';btn.textContent='▶ START 30-MINUTE SESSION';return}fill(s);let r=remaining(s);timer.style.display='block';timer.textContent=fmt(r);status.textContent=s.student+' — '+s.area+(s.running?' session in progress.':' session paused.');btn.textContent=r<=0?'✓ SESSION COMPLETE':(s.running?'⏸ PAUSE SESSION':'▶ RESUME SESSION');if(r<=0&&s.running){s.running=false;s.remaining=0;save(s)}}
+  function ready(){if(!name.value.trim()){alert('Please type the student name before starting the session.');return false}if(!area.value){alert('Please choose the Pre-ETS service area for this session.');return false}return true}
+  btn.onclick=()=>{if(!ready())return;let s=get();if(s&&s.running){s.remaining=remaining(s);s.running=false;save(s);render();return}let r=s?remaining(s):1800;s={student:name.value.trim(),grade:grade.value,area:area.value,focus:activity.value.trim(),support:support.value,progress:quick.value.trim(),remaining:r,running:true,endAt:Date.now()+r*1000,startedAt:s?.startedAt||Date.now(),activities:s?.activities||[]};save(s);render()};
+  stopBtn.onclick=()=>{let s=get();if(!s){if(!ready())return;s={student:name.value.trim(),grade:grade.value,area:area.value,focus:activity.value.trim(),support:support.value,progress:quick.value.trim(),remaining:1800,running:false,startedAt:Date.now(),activities:[]}}s.remaining=remaining(s);s.running=false;s.focus=activity.value.trim()||s.focus;s.progress=quick.value.trim();s.support=support.value;save(s);let used=Math.max(0,1800-s.remaining),mins=Math.max(1,Math.round(used/60)),act=s.focus||((s.activities||[]).slice(-3).join(', '))||'transition activity';let note=s.student+' participated in '+act+' focused on '+s.area+'. Student completed the activity with '+(s.support||'Independent').toLowerCase()+'.';if(s.progress)note+=' '+s.progress;document.getElementById('summaryStudent').textContent=s.student;document.getElementById('summaryGrade').textContent=s.grade||'Not entered';document.getElementById('summaryPreets').textContent=s.area;document.getElementById('summaryTime').textContent=mins+' minute'+(mins===1?'':'s');noteBox.textContent=note;dataBox.style.display='block';render()};
+  resetBtn.onclick=()=>{localStorage.removeItem(KEY);name.value='';grade.value='';area.value='';activity.value='';support.value='Independent';quick.value='';dataBox.style.display='none';status.textContent='Enter the student information, choose one Pre-ETS service area, then start the session.';render()};
+  document.getElementById('copyDataNoteBtn').onclick=async()=>{if(noteBox.textContent.trim())try{await navigator.clipboard.writeText(noteBox.textContent.trim())}catch(e){}};
+  document.getElementById('printDataNoteBtn').onclick=()=>window.print();
+  setInterval(render,500);render();
+})();
+</script>\n</body></html>');
     w.document.close();
     w.focus();
     w.print();
