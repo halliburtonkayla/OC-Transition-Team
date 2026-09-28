@@ -22,4 +22,4 @@ let budget=25,cart=[];
 function render(){let f=document.getElementById('foods');f.innerHTML='';foods.forEach(([n,p])=>{let b=document.createElement('button');b.className='choice';b.textContent=`${n} — $${p.toFixed(2)}`;b.onclick=()=>{cart.push([n,p]);renderCart()};f.appendChild(b)});renderCart()}
 function renderCart(){let total=cart.reduce((s,x)=>s+x[1],0);document.getElementById('cart').innerHTML=cart.map((x,i)=>`<div>${x[0]} — $${x[1].toFixed(2)} <button onclick="cart.splice(${i},1);renderCart()">remove</button></div>`).join('')||'<span class="muted">Cart is empty.</span>';document.getElementById('total').textContent=total.toFixed(2);document.getElementById('left').textContent=(budget-total).toFixed(2);document.getElementById('status').textContent=total<=budget?'✅ Within budget':'⚠️ Over budget';}
 render();
-</script></body></html>
+</script><script src="session.js"></script></body></html>
