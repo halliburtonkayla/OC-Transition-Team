@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CDC Hands-On Life & Work Skills</title>
+<style>
+:root{--blue:#123f73;--red:#b3262d;--light:#f4f7fb;--ink:#18212b;--gold:#f3c969}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:var(--light);color:var(--ink)}
+header{background:linear-gradient(135deg,var(--blue),#2567a5);color:#fff;padding:28px 18px;text-align:center}
+header h1{margin:0 0 8px;font-size:clamp(28px,5vw,46px)} header p{margin:auto;max-width:800px;font-size:17px}
+.toolbar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:16px}
+button,.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer;background:var(--blue);color:#fff}
+.btn.alt{background:var(--red)} .btn.print{background:#334155}
+main{max-width:1100px;margin:auto;padding:0 18px 40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px}
+.card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 14px #00000014;border-top:6px solid var(--blue)}
+.card h2{font-size:20px;margin:0 0 8px}.card p{min-height:66px}.tag{display:inline-block;background:#e8eef8;padding:5px 8px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:8px}
+.activity{display:none;background:#fff;border-radius:16px;padding:22px;margin-top:18px;box-shadow:0 4px 14px #00000014}
+.activity.active{display:block}.steps li{margin:8px 0}.level{background:#fff8dc;padding:10px;border-radius:8px;margin:8px 0}
+.printable{border:2px dashed #64748b;padding:14px;margin-top:14px;border-radius:10px}
+.bigcard{font-size:22px;font-weight:700;text-align:center;padding:22px;border:2px solid #222;margin:8px 0}
+.price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.price-grid div{border:1px solid #777;padding:12px;background:white}
+footer{text-align:center;padding:24px;color:#53606d}
+@media print{
+ header,.toolbar,.grid,.back,footer{display:none!important}
+ body{background:#fff}.activity{display:none!important;box-shadow:none}
+ .activity.active{display:block!important}
+ button{display:none!important}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>CDC Hands-On Life & Work Skills</h1>
+<p>Reusable 30-minute activities for practicing workplace readiness, job exploration, independent living, communication, and self-advocacy.</p>
+</header>
+<div class="toolbar">
+<button onclick="showHome()">All Activities</button>
+<button class="btn print" onclick="window.print()">Print Current Activity</button>
+</div>
+<main>
+<section id="home" class="grid"></section>
+<section id="activity" class="activity"></section>
+</main>
+<footer>No student information is stored by this page.</footer>
+<script>
+const activities=[
+["grocery","Classroom Grocery Store","Workplace Readiness","Shop from a visual list, find products, pay, bag items, and practice customer interaction.",
+["Set up empty food packages or classroom items with simple prices.","Give the student a shopping list.","Student finds each item and brings it to the cashier.","Practice paying, receiving items, and bagging.","Switch jobs: shopper, cashier, stocker, bagger."],
+`<h3>Printable Shopping List</h3><div class="printable"><div class="bigcard">SHOPPING LIST</div><p>☐ Bread</p><p>☐ Cereal</p><p>☐ Juice</p><p>☐ Toothpaste</p><p>☐ Snack</p><p>Name: __________________ Date: __________</p></div>`],
+["cafe","Classroom Café","Job Exploration","Practice restaurant jobs by taking orders, preparing pretend items, serving, and cleaning.",
+["Assign customer, server, cashier, and cleanup roles.","Customer chooses from the menu.","Server repeats the order.","Cashier totals or matches the price.","Rotate roles."],
+`<h3>Printable Café Menu</h3><div class="printable price-grid"><div>Sandwich — $4</div><div>Chips — $2</div><div>Fruit — $2</div><div>Water — $1</div><div>Juice — $2</div><div>Cookie — $1</div></div>`],
+["stock","Stock the Store","Job Exploration","Sort, match, label, and place products where they belong.",
+["Create 3–5 shelf categories.","Mix up safe classroom products or empty packages.","Student matches products to shelf labels.","Face labels forward and check the shelf.","Practice asking what to do when unsure."],
+`<div class="printable"><h3>Shelf Labels</h3><div class="bigcard">FOOD</div><div class="bigcard">DRINKS</div><div class="bigcard">CLEANING</div><div class="bigcard">PERSONAL CARE</div></div>`],
+["clean","Cleaning Crew","Workplace Readiness","Follow a visual work sequence to clean and reset a work area.",
+["Gather cloth, safe spray bottle, broom/dustpan, and trash bag.","Show the task sequence.","Student completes one step at a time.","Check finished work together.","Put supplies away."],
+`<div class="printable"><h3>Cleaning Checklist</h3><p>☐ Pick up trash</p><p>☐ Put items away</p><p>☐ Wipe table</p><p>☐ Sweep area</p><p>☐ Put supplies away</p><p>☐ Tell supervisor: “I’m finished.”</p></div>`],
+["laundry","Laundry Station","Workplace Readiness","Sort, match, fold, and organize clothing or towels.",
+["Place mixed towels, shirts, and socks in a basket.","Sort by type or color.","Match pairs of socks.","Fold towels or shirts.","Place finished items in the correct area."],
+`<div class="printable"><h3>Laundry Job Card</h3><p>1. SORT</p><p>2. MATCH</p><p>3. FOLD</p><p>4. STACK</p><p>5. PUT AWAY</p></div>`],
+["mail","Mail Room","Workplace Readiness","Sort and deliver envelopes using names, colors, numbers, or pictures.",
+["Label 3–5 bins.","Prepare envelopes that match the bins.","Student sorts each envelope.","Student delivers them to the correct location.","Check accuracy."],
+`<div class="printable"><h3>Mail Room Bins</h3><div class="bigcard">OFFICE</div><div class="bigcard">CAFÉ</div><div class="bigcard">STORE</div><div class="bigcard">CLEANING CREW</div></div>`],
+["ready","Get Ready for Work","Workplace Readiness","Choose appropriate clothing and items for different jobs.",
+["Choose a job card.","Lay out clothing/item choices or pictures.","Student selects what fits the job.","Discuss safety and appearance.","Have the student explain one choice."],
+`<div class="printable"><h3>Job Cards</h3><div class="bigcard">COOK</div><div class="bigcard">CUSTODIAN</div><div class="bigcard">OFFICE WORKER</div><div class="bigcard">CONSTRUCTION WORKER</div></div>`],
+["pack","Pack for Work","Workplace Readiness","Choose what belongs in a work bag and practice preparing for the day.",
+["Place useful and silly/unneeded objects on a table.","Name a pretend job.","Student chooses what to pack.","Student checks the bag before leaving.","Discuss what should stay home."],
+`<div class="printable"><h3>Work Bag Checklist</h3><p>☐ ID/name badge</p><p>☐ Lunch/water</p><p>☐ Needed work supplies</p><p>☐ Personal care item if needed</p><p>☐ Phone stored appropriately</p></div>`],
+["tools","Job & Tool Match","Job Exploration","Match common tools and supplies to the workers who use them.",
+["Cut apart the job and tool cards.","Place job cards on the table.","Student matches each tool to a job.","Ask what the worker might do with it.","Mix and repeat."],
+`<div class="printable"><h3>Cut-Apart Match Cards</h3><div class="price-grid"><div>COOK</div><div>Spatula</div><div>CUSTODIAN</div><div>Broom</div><div>MECHANIC</div><div>Wrench</div><div>NURSE</div><div>Stethoscope</div><div>TEACHER</div><div>Books</div><div>POLICE OFFICER</div><div>Radio</div></div></div>`],
+["boss","Follow the Boss","Workplace Readiness","Practice completing short workplace directions in order.",
+["Give one instruction first.","Move to a two-step instruction when ready.","Student repeats or points to the steps.","Student completes the task.","Praise completion and practice asking for repetition."],
+`<div class="printable"><h3>Direction Cards</h3><p>☐ Pick up the folder and place it on the desk.</p><p>☐ Get a cloth, wipe the table, then put the cloth away.</p><p>☐ Put three cans on the shelf and bring me the basket.</p><p>☐ Fold two towels, stack them, and tell me when you are finished.</p></div>`],
+["hygiene","Work-Ready Hygiene","Workplace Readiness","Sequence a simple hygiene routine connected to preparing for work.",
+["Lay out hygiene items or picture cards.","Student identifies each item.","Put the routine in order.","Discuss when each item is used.","Practice packing a small hygiene kit if appropriate."],
+`<div class="printable"><h3>Ready for Work Checklist</h3><p>☐ Wash/shower</p><p>☐ Brush teeth</p><p>☐ Use deodorant</p><p>☐ Comb/brush hair</p><p>☐ Put on clean clothes</p><p>☐ Check appearance</p></div>`],
+["help","I Need Help","Self-Advocacy","Practice asking for help, clarification, a break, or more time appropriately.",
+["Read or act out a situation.","Student chooses a helpful phrase.","Practice saying, pointing to, or using AAC for the phrase.","Role-play the supervisor response.","Repeat with another situation."],
+`<div class="printable"><h3>Communication Cards</h3><div class="bigcard">I NEED HELP.</div><div class="bigcard">PLEASE SHOW ME AGAIN.</div><div class="bigcard">I DON'T UNDERSTAND.</div><div class="bigcard">CAN I HAVE A SHORT BREAK?</div><div class="bigcard">I'M FINISHED. WHAT'S NEXT?</div><div class="bigcard">CAN YOU SAY THAT AGAIN?</div></div>`]
+];
+
+const home=document.getElementById("home"), area=document.getElementById("activity");
+activities.forEach(a=>{
+ const c=document.createElement("article"); c.className="card";
+ c.innerHTML=`<span class="tag">${a[2]}</span><h2>${a[1]}</h2><p>${a[3]}</p><button onclick="openActivity('${a[0]}')">Start Activity</button>`;
+ home.appendChild(c);
+});
+function openActivity(id){
+ const a=activities.find(x=>x[0]===id);
+ home.style.display="none"; area.classList.add("active");
+ area.innerHTML=`<button class="back" onclick="showHome()">← Back</button><h1>${a[1]}</h1><span class="tag">${a[2]}</span><p>${a[3]}</p>
+ <h2>Teacher Instructions</h2><ol class="steps">${a[4].map(x=>`<li>${x}</li>`).join("")}</ol>
+ <h2>Adjust the Difficulty</h2>
+ <div class="level"><b>Level 1:</b> Use pictures, matching, pointing, modeling, and one-step directions.</div>
+ <div class="level"><b>Level 2:</b> Use words/numbers, two-step directions, choices, and simple counting.</div>
+ <div class="level"><b>Level 3:</b> Add prices, problem-solving, independent sequencing, customer communication, or multi-step directions.</div>
+ ${a[5]}<p><button onclick="window.print()">Print This Activity</button></p>`;
+ window.scrollTo(0,0);
+}
+function showHome(){area.classList.remove("active");area.innerHTML="";home.style.display="grid";window.scrollTo(0,0)}
+</script>
+</body>
+</html>
