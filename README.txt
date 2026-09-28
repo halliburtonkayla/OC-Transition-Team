@@ -1,13 +1,9 @@
-CDC Hands-On Life & Work Skills - Transition Hub Add-On
+ADD THIS BUTTON TO YOUR EXISTING CDC CENTER PAGE
 
-FILES
-- cdc-hands-on.html : complete standalone page
+1. Open the HTML file that contains your CDC Center.
+2. Paste the contents of ADD-THIS-BUTTON.html where you want the button to appear.
+3. Make sure cdc-hands-on.html is in the same website folder.
+4. Save/publish your site.
+5. Click “CDC Hands-On Life & Work Skills.”
 
-HOW TO ADD IT TO YOUR HUB
-1. Upload cdc-hands-on.html into the same website folder as your other HTML pages.
-2. Add a navigation link to it:
-   <a href="cdc-hands-on.html">CDC Hands-On Skills</a>
-3. Publish/update the site.
-
-The page includes 12 activities, teacher directions, three difficulty levels, and print-ready materials.
-It stores no student information and requires no external libraries or internet connection after it is uploaded.
+The button links directly to: cdc-hands-on.html
