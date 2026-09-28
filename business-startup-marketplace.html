@@ -21,4 +21,4 @@ function update(){let total=cart.reduce((s,i)=>s+i.p*i.q,0),rem=BUDGET-total;doc
 function printProject(){let total=cart.reduce((s,i)=>s+i.p*i.q,0);if(!cart.length)return alert('Add at least one item first.');if(total>BUDGET)return alert('Your cart is over the $1,000 budget. Adjust your choices before printing.');let s=document.getElementById('student').value.trim(),b=document.getElementById('business').value.trim();if(!s||!b)return alert('Enter the Student/Team Name and Business Name first.');window.print()}
 function clearCart(){if(confirm('Clear the entire cart and start over?')){cart.splice(0);update()}}
 try{let saved=JSON.parse(localStorage.getItem('businessCart')||'[]');if(Array.isArray(saved))saved.forEach(x=>cart.push(x))}catch(e){} document.getElementById('date').value=new Date().toISOString().slice(0,10);render();update();
-</script></body></html>
+</script><script src="session.js"></script>\n</body></html>
