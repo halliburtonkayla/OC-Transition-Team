@@ -62,7 +62,7 @@
       <label>Participation / support</label><select id="ttSupport"><option>Independent</option><option>Minimal verbal prompts</option><option>Moderate verbal prompts</option><option>Visual prompts</option><option>Modeling / demonstration</option><option>Maximum support</option></select>
       <br><br><label>Progress / student response</label><br><textarea id="ttProgress" rows="3" style="width:100%"></textarea>
       <br><label>Next-session plan</label><br><textarea id="ttNext" rows="3" style="width:100%"></textarea>
-      <br><br><button id="ttPause">Pause</button> <button id="ttResume">Resume</button> <button id="ttPrint">Print / Save PDF</button> <button id="ttEnd">End & Clear Session</button> <button id="ttClose">Close</button>`;
+      <br><br><div style="background:#eef6ff;border:2px solid #b9d4fa;border-radius:12px;padding:14px"><b>Copy/Paste Data Sheet Note</b><p id="ttDataNote" style="white-space:pre-wrap;margin:8px 0"></p><button id="ttCopy">Copy Data Note</button></div><br><button id="ttPause">Pause</button> <button id="ttResume">Resume</button> <button id="ttPrint">Print / Save PDF</button> <button id="ttEnd">End & Clear Session</button> <button id="ttClose">Close</button>`;
     document.body.appendChild(summary);
 
     $('ttStart').onclick=()=>load()?openSummary():modal.style.display='flex';
@@ -78,6 +78,7 @@
     $('ttPause').onclick=()=>{let s=load();if(s&&!s.pausedAt&&!s.stoppedAt){s.pausedAt=Date.now();save(s);tick()}};
     $('ttResume').onclick=()=>{let s=load();if(s&&s.pausedAt&&!s.stoppedAt){s.pausedTotal=(s.pausedTotal||0)+(Date.now()-s.pausedAt);s.pausedAt=null;save(s);tick()}};
     $('ttPrint').onclick=()=>{syncNotes();render();setTimeout(()=>window.print(),50)};
+    $('ttCopy').onclick=async()=>{syncNotes();render();const n=$('ttDataNote').textContent.trim();try{await navigator.clipboard.writeText(n);const b=$('ttCopy'),old=b.textContent;b.textContent='✓ COPIED';setTimeout(()=>b.textContent=old,1400)}catch(e){alert('Highlight the data note and copy it manually.')}};
     $('ttEnd').onclick=()=>{let s=load();if(s){s.stoppedAt=Date.now();save(s);render();} if(confirm('Clear this session after reviewing/printing it?')){clear();summary.style.display='none';tick()}};
     ['ttSupport','ttProgress','ttNext'].forEach(id=>$(id).addEventListener('input',syncNotes));
   }
@@ -89,6 +90,11 @@
     $('ttReport').innerHTML=`<p><b>Student:</b> ${esc(s.student)}</p><p><b>Date:</b> ${new Date(s.startedAt).toLocaleDateString()}</p>
     <p><b>Start:</b> ${fmtTime(s.startedAt)}</p><p><b>Minutes completed:</b> ${mins}</p><p><b>Pre-ETS:</b> ${esc(s.area)}</p>
     <p><b>Focus:</b> ${esc(s.focus||'Transition activity')}</p><p><b>Pages/activities visited:</b> ${esc((s.activities||[]).join(', '))}</p>`;
+    const focus=s.focus||((s.activities||[]).filter(Boolean).slice(-3).join(', '))||'transition activity';
+    let note=s.student+' participated in '+focus+' focused on '+s.area+'. Student completed the activity with '+(s.support||'Independent').toLowerCase()+'.';
+    if(s.progress) note+=' '+s.progress.replace(/\\s+/g,' ').trim();
+    if(s.next) note+=' Next session: '+s.next.replace(/\\s+/g,' ').trim();
+    $('ttDataNote').textContent=note;
   }
   function openSummary(){makeUI();render();$('ttSummary').style.display='block'}
   function tick(){
@@ -97,7 +103,7 @@
     recordActivity(pageName());s=load();
     $('ttWho').textContent=s.student+' • '+s.area+(s.pausedAt?' • PAUSED':'');
     $('ttStart').textContent='Session Active';
-    const r=remaining(s);$('ttTime').textContent=r?fmtClock(r):'30:00 COMPLETE';
+    const r=remaining(s);$('ttTime').textContent=r?fmtClock(r):'00:00 COMPLETE';
   }
   window.TTSession={recordActivity,recordChoice,openSummary,openStart:()=>{makeUI();load()?openSummary():$('ttModal').style.display='flex'},load};
   window.TTPreETS=window.TTSession;
