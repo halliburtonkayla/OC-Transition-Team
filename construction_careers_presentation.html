@@ -64,4 +64,4 @@ function move(n){cur=Math.max(0,Math.min(slides.length-1,cur+n));show()}
 function speakSlide(){speechSynthesis.cancel();let x=data[cur];speechSynthesis.speak(new SpeechSynthesisUtterance(x.h+". "+x.p))}
 function toggleFull(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()}
 document.addEventListener('keydown',e=>{if(e.key==="ArrowRight")move(1);if(e.key==="ArrowLeft")move(-1)});show();
-</script></body></html>
+</script><script src="session.js"></script></body></html>
