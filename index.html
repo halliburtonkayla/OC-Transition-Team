@@ -502,7 +502,7 @@ box.addEventListener('input',()=>{const q=box.value.toLowerCase().trim();documen
     w.document.write('<p><strong>Pre-ETS:</strong> '+preets+'</p>');
     w.document.write('<p><strong>Session Time:</strong> '+time+'</p>');
     w.document.write('<p><strong>Data Note:</strong></p><p>'+note+'</p>');
-    w.document.write('</div></body></html>');
+    w.document.write('</div><script src="session.js"></script>\n</body></html>');
     w.document.close();
     w.focus();
     w.print();
