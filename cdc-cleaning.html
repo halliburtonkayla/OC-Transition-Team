@@ -89,4 +89,4 @@ h1{margin:0;font-size:clamp(1.8rem,4vw,2.6rem)}
 <script>
 function answer(btn,ok){const card=btn.closest('.card'),box=card.querySelector('.feedback');box.style.display='block';box.className='feedback '+(ok?'good':'try');box.textContent=ok?'✅ Yes! Good choice.':'↩️ Try another choice.';if(ok)speak('Yes. Good choice.');}
 function speak(t){if('speechSynthesis'in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t));}}
-</script></main></body></html>
+</script></main><script src="session.js"></script></body></html>
