@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jordan's First Day at Work | Transition Team</title>
+<style>
+:root{--navy:#102a5c;--blue:#0751bd;--red:#e1192f;--paper:#fffdf7;--ink:#172033}
+*{box-sizing:border-box}body{margin:0;background:#e9edf5;font-family:Arial,sans-serif;color:var(--ink)}
+nav{background:var(--navy);padding:14px 18px}nav a{color:#fff;text-decoration:none;font-weight:800}
+main{max-width:980px;margin:auto;padding:24px}.cover,.book{background:var(--paper);border-radius:22px;box-shadow:0 15px 45px #102a5c25;overflow:hidden}
+.cover{padding:52px 34px;text-align:center;background:linear-gradient(145deg,#fffdf7,#edf3ff)}h1,h2{font-family:Georgia,serif;color:var(--navy)}h1{font-size:clamp(2.4rem,7vw,4.5rem);margin:10px}.sub{font-size:1.15rem;line-height:1.6;max-width:680px;margin:15px auto}
+.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:25px}.btn{border:0;border-radius:12px;padding:13px 18px;font-weight:900;cursor:pointer;background:var(--navy);color:white}.btn.alt{background:#e7edf8;color:var(--navy)}
+.page{display:none;min-height:560px;padding:42px clamp(22px,6vw,70px);position:relative}.page.active{display:block}.chapter{font-weight:900;color:var(--red);text-transform:uppercase;letter-spacing:.1em;font-size:.8rem}.page h2{font-size:2.2rem}.page p{font-family:Georgia,serif;font-size:1.22rem;line-height:1.75}
+.dialogue{border-left:5px solid var(--blue);background:#f4f7fc;padding:18px 20px;margin:22px 0;border-radius:0 14px 14px 0}.dialogue b{font-family:Arial,sans-serif;color:var(--navy)}
+.lesson{background:#fff3d8;border:1px solid #e6c66c;padding:16px;border-radius:14px;margin:24px 0;font-weight:700;line-height:1.5}
+.choicebox{margin-top:28px;padding:22px;background:#eef4ff;border-radius:16px}.choicebox h3{margin-top:0;color:var(--navy)}.choice{display:block;width:100%;text-align:left;margin:9px 0;border:2px solid #c6d4ee;background:white;padding:13px;border-radius:10px;font-weight:700;cursor:pointer}.feedback{font-weight:800;margin-top:12px}
+.footer{display:flex;justify-content:space-between;gap:10px;padding:18px 24px;background:#f3f6fb}.counter{align-self:center;font-weight:800;color:#53627c}
+.voice-tag{display:inline-block;font-family:Arial,sans-serif;font-size:.75rem;border-radius:999px;padding:5px 9px;margin-bottom:8px;background:#dde8ff;color:#17376f;font-weight:900}
+@media(max-width:600px){main{padding:12px}.page{min-height:620px;padding:30px 20px}.footer{padding:14px}.page p{font-size:1.12rem}}
+</style></head><body>
+<nav><a href="stories.html">← Interactive Stories</a></nav><main>
+<section class="cover" id="cover"><div class="chapter">Workplace Readiness Story</div><h1>Jordan's First Day at Work</h1>
+<p class="sub">A young-adult interactive story about asking for help, clocking in correctly, and starting a first shift with confidence.</p>
+<div class="controls"><button class="btn" onclick="startBook(true)">🔊 Read to Me</button><button class="btn alt" onclick="startBook(false)">Read Myself</button></div>
+<p><b>Voices:</b> Narrator • Jordan • Ms. Carter</p></section>
+<section class="book" id="book" style="display:none">
+<div id="pages"></div><div class="footer"><button class="btn alt" onclick="prevPage()">← Previous</button><span class="counter" id="counter"></span><button class="btn" onclick="nextPage()">Next →</button></div></section>
+</main>
+<script>
+const pages=[
+{title:"The First Shift",parts:[["n","Jordan had been thinking about his first day all morning. He knew what time his shift started, but nobody had told him exactly where to report once he got inside the grocery store."],["n","He walked through the front doors, looked around, and realized he had a decision to make."]],lesson:"Workplace skill: When you are unsure, stop and get the information you need instead of guessing."},
+{title:"Ask Instead of Guess",parts:[["n","Jordan spotted a woman wearing a manager badge nearby."],["j","Hi, I'm Jordan. Today's my first day. I'm not really sure where I'm supposed to go."],["c","You're in the right place, Jordan. I'm Ms. Carter, the store manager. And don't worry—if you're ever unsure about something at work, it's always okay to ask."]],choice:true},
+{title:"Getting Started",parts:[["j","Okay, good. So what do I need to do first?"],["c","First, I'll show you how to clock in. Then we'll go over what you'll be doing today."],["j","Okay, sounds good. I'm ready. Let's do it."],["n","Ms. Carter led Jordan toward the employee area. He paid attention instead of pretending he already knew what to do."]],lesson:"Good employees ask questions, listen to instructions, and learn the workplace routine."},
+{title:"The Time Clock",parts:[["c","Okay, Jordan, this is our time clock. At the beginning of every shift, you need to clock in before you start working."],["j","So I clock in as soon as I get here, before I start doing anything?"],["c","Exactly. Enter your employee number, make sure your name appears, and press Clock In. Always check the screen to make sure it went through."]]},
+{title:"Jordan Tries It",parts:[["j","Okay, let me try it."],["n","Jordan entered his employee number, checked that his name appeared on the screen, and pressed Clock In. Before walking away, he looked at the screen one more time to make sure the system accepted it."],["c","Perfect. You're officially clocked in. Now you're ready to start your shift."]],lesson:"Workplace skill: Do not just press the button and walk away. Confirm that your time entry was accepted."},
+{title:"What Jordan Learned",parts:[["n","Jordan's first few minutes at work taught him something important. Being new does not mean you are expected to know everything."],["n","He asked for help when he needed it, listened to his supervisor, followed the clock-in procedure, and checked his work."],["n","Those small choices helped him start his first shift professionally."]],lesson:"Skills practiced: Asking for help • Following supervisor instructions • Clocking in • Checking your work"}
+];
+let page=0,auto=false,utterances=[];
+function voiceFor(kind){const vs=speechSynthesis.getVoices();let list=vs.filter(v=>/^en/i.test(v.lang));if(!list.length)list=vs;if(kind==='j')return list.find(v=>/male|david|daniel|alex|aaron/i.test(v.name))||list[0];if(kind==='c')return list.find(v=>/samantha|victoria|female|zira|ava/i.test(v.name))||list[list.length-1];return list.find(v=>/narrator|samantha|ava|allison/i.test(v.name))||list[0]}
+function label(k){return k==='j'?'Jordan':k==='c'?'Ms. Carter':'Narrator'}
+function render(){speechSynthesis.cancel();const box=document.getElementById('pages');box.innerHTML='';const p=pages[page],el=document.createElement('article');el.className='page active';let h='<div class="chapter">Jordan’s First Day at Work</div><h2>'+p.title+'</h2>';p.parts.forEach(x=>{h+=(x[0]==='n'?'<div>':'<div class="dialogue">')+'<span class="voice-tag">'+label(x[0])+'</span><p>'+x[1]+'</p></div>'});if(p.lesson)h+='<div class="lesson">'+p.lesson+'</div>';if(p.choice)h+='<div class="choicebox"><h3>What was Jordan’s best move?</h3><button class="choice" onclick="answer(this,true)">Ask the manager where he should report.</button><button class="choice" onclick="answer(this,false)">Walk around until someone notices him.</button><button class="choice" onclick="answer(this,false)">Pretend he knows what to do.</button><div class="feedback" id="feedback"></div></div>';el.innerHTML=h;box.appendChild(el);document.getElementById('counter').textContent='Page '+(page+1)+' of '+pages.length;if(auto)setTimeout(readPage,250)}
+function answer(btn,good){document.getElementById('feedback').textContent=good?'✓ Right. Asking an appropriate question prevents mistakes and shows responsibility.':'Try again. Guessing or waiting can create confusion. Asking the supervisor is the professional choice.'}
+function readPage(){speechSynthesis.cancel();const p=pages[page];let i=0;function speakNext(){if(i>=p.parts.length)return;const [k,t]=p.parts[i++],u=new SpeechSynthesisUtterance(t);u.voice=voiceFor(k);u.rate=k==='j'?1.02:.94;u.pitch=k==='j'?.9:k==='c'?1.02:1;u.onend=speakNext;speechSynthesis.speak(u)}speakNext()}
+function startBook(read){auto=read;document.getElementById('cover').style.display='none';document.getElementById('book').style.display='block';render()}
+function nextPage(){if(page<pages.length-1){page++;render()}else{speechSynthesis.cancel();location.href='stories.html'}}
+function prevPage(){if(page>0){page--;render()}}
+</script><script src="session.js"></script></body></html>
