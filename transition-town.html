@@ -96,4 +96,20 @@ function teacher(){let w=get();open('<div class=character><div class="face">MK</
 try{activeGroup=JSON.parse(localStorage.ttActiveGroup||'[]')}catch(e){activeGroup=[]}
 (function resetKaylaTestMoney(){if(localStorage.ttKaylaMoneyReset20261001)return;let w=get();let changed=false;Object.keys(w.residents).forEach(function(n){if(/^kayla( halliburton)?$/i.test(n.trim())||/^miss kayla$/i.test(n.trim())){w.residents[n].checking=10000;w.residents[n].savings=0;w.residents[n].history.push('Test money reset');changed=true}});if(changed)put(w);localStorage.ttKaylaMoneyReset20261001='1'})()
 function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.sessions++;if(r.sessions%2===0&&r.job!=='Needs a job'){r.checking+=500;r.history.push('Payday +$500');r.notifications.push('Payday deposited: $500')}put(w);let x=window.open('','_blank');x.document.write('<h1>Transition Town Session Report</h1><h2>'+current+'</h2><p>'+new Date().toLocaleString()+'</p><p>Career: '+r.career+'</p><p>Job: '+r.job+'</p><p>Home: '+r.home+'</p><p>Checking: $'+r.checking.toFixed(2)+'</p><p>Savings: $'+r.savings.toFixed(2)+'</p><p>Completed sessions: '+r.sessions+'</p><h3>Recent actions</h3><p>'+r.history.slice(-8).join('<br>')+'</p><hr><p>Pre-ETS / session note: __________________________________________</p><script>window.print()<\/script>')}updateBadge();if(current)status.textContent=current+' is in Transition Town. Choose a building on the map.';
+</script><script>
+(function(){
+  function forceTownArt(){
+    var map=document.querySelector('.townmap'), img=document.querySelector('.townMasterArt');
+    if(!map||!img)return;
+    map.style.setProperty('height','calc(100vh - 54px)','important');
+    map.style.setProperty('min-height','calc(100vh - 54px)','important');
+    map.style.setProperty('background','#9ed6f3','important');
+    img.style.cssText='position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;visibility:visible!important;opacity:1!important;z-index:1!important;';
+    img.onerror=function(){
+      map.style.setProperty('background','#9ed6f3 url("transition-town-map.png.png") center/cover no-repeat','important');
+      this.style.display='none';
+    };
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',forceTownArt);else forceTownArt();
+})();
 </script></body></html>
