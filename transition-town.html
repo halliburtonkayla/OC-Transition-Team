@@ -47,6 +47,19 @@ html,body,.sky,.town,.townmap{background:#050505!important}
 .ttKaylaInfo{position:fixed;z-index:85;right:10px;top:72px;width:190px;background:#111;border:1px solid #383838;border-radius:16px;padding:10px;box-shadow:0 8px 25px #0009;color:#fff;text-align:center}
 .ttKaylaInfo img{width:100%;border-radius:12px;display:block;margin-bottom:8px}.ttKaylaInfo h3{margin:4px 0 2px;font:900 18px Georgia}.ttKaylaInfo p{font-size:12px;margin:3px 0 9px;color:#ddd}.ttKaylaInfo button{width:100%;border:0;border-radius:10px;padding:10px;background:#5b439d;color:#fff;font-weight:900;cursor:pointer}.ttKaylaInfo button:hover{background:#7359bd}
 @media(max-width:760px){.ttKaylaInfo{right:5px;top:64px;width:145px;padding:7px}.ttKaylaInfo h3{font-size:15px}.ttKaylaInfo p{font-size:10px}}
+</style><style id="mobile-town-drawers">
+.ttDrawerTab{display:none}
+@media(max-width:760px){
+.ttTownMenu,.ttKaylaInfo{transition:transform .28s ease,box-shadow .28s ease;top:64px!important;max-height:calc(100vh - 80px)!important}
+.ttTownMenu{left:0!important;width:min(78vw,280px)!important;padding:10px!important;transform:translateX(calc(-100% - 8px));border-radius:0 18px 18px 0!important}
+.ttTownMenu.mobileOpen{transform:translateX(0)}
+.ttKaylaInfo{right:0!important;width:min(72vw,260px)!important;padding:10px!important;transform:translateX(calc(100% + 8px));border-radius:18px 0 0 18px!important}
+.ttKaylaInfo.mobileOpen{transform:translateX(0)}
+.ttDrawerTab{display:flex;position:fixed;z-index:87;top:48%;width:38px;height:64px;border:0;background:#111;color:#fff;align-items:center;justify-content:center;font-size:27px;font-weight:900;box-shadow:0 5px 18px #0008}
+.ttDrawerTab.left{left:0;border-radius:0 14px 14px 0}.ttDrawerTab.right{right:0;border-radius:14px 0 0 14px}
+.ttTownMenu h3{font-size:18px!important}.ttTownMenu button{font-size:14px!important;padding:10px!important}
+.ttKaylaInfo h3{font-size:18px!important}.ttKaylaInfo p{font-size:12px!important}
+}
 </style><style id="city-hall-interior">
 .cityhallscene{position:fixed;inset:54px 0 0;z-index:92;background:linear-gradient(135deg,#f7f2eb,#d8c4aa 42%,#fff 43%,#b99a78);overflow:auto;padding:24px;color:#3b2a1e}.cityhallinner{max-width:1180px;margin:auto;background:#fffdf9ed;border:4px solid #d7c2a8;border-radius:28px;padding:24px;box-shadow:0 18px 50px #3b281f55}.cityhallhead{background:linear-gradient(120deg,#4b3426,#7a5a42);color:#fff;border-radius:20px;padding:18px 22px;display:flex;justify-content:space-between;gap:14px;align-items:center}.cityhallhead h2{margin:0;font:900 30px Georgia}.cityhallwelcome{margin:18px 0;padding:18px;border-radius:18px;background:linear-gradient(145deg,#fff,#f5eee5);border:2px solid #d2b99c}.citydeptgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.citydept{border:2px solid #d5c0a7;background:#fffdf9;border-radius:18px;padding:18px;text-align:left;min-height:130px;cursor:pointer;color:#4a3425;box-shadow:0 7px 16px #1232}.citydept:hover{transform:translateY(-2px);border-color:#8b6548}.citydept b{display:block;font-size:18px;margin-bottom:7px}.cityhallcard{background:#fff;border:2px solid #d5c0a7;border-radius:18px;padding:18px;margin-top:16px}.cityhallcard input{width:100%;box-sizing:border-box}
 .cityhallgame{position:relative;min-height:calc(100vh - 102px);border-radius:24px;overflow:hidden;background:#3b2a1e center/cover no-repeat;box-shadow:0 18px 50px #24170f66}
@@ -74,7 +87,7 @@ html,body,.sky,.town,.townmap{background:#050505!important}
 <button onclick="meeting('The Main Attraction')">The Main Attraction</button>
 <button onclick="place('housing')">Neighborhood</button>
 <button onclick="place('shops')">Town Shops</button>
-</nav><aside class="ttKaylaInfo" aria-label="Miss Kayla Information Center"><img src="./miss-kayla-info-center.png" alt="Miss Kayla, Work-Based Specialist"><h3>Miss Kayla</h3><p>Work-Based Specialist<br>Information Center</p><button onclick="kaylaHelp()">Need Help?</button></aside><main class="town"><section class="welcome"><h1>Welcome to Town</h1><p id="status">Choose a resident and step into your life.</p></section><section class="road townmap" aria-label="Transition Town city map">
+</nav><button class="ttDrawerTab left" aria-label="Open Town Directory" onclick="toggleTownDrawer('menu')">›</button><button class="ttDrawerTab right" aria-label="Open Miss Kayla Information Center" onclick="toggleTownDrawer('kayla')">‹</button><aside class="ttKaylaInfo" aria-label="Miss Kayla Information Center"><img src="./miss-kayla-info-center.png" alt="Miss Kayla, Work-Based Specialist"><h3>Miss Kayla</h3><p>Work-Based Specialist<br>Information Center</p><button onclick="kaylaHelp()">Need Help?</button></aside><main class="town"><section class="welcome"><h1>Welcome to Town</h1><p id="status">Choose a resident and step into your life.</p></section><section class="road townmap" aria-label="Transition Town city map">
 <img class="townMasterArt" src="./transition-town-master.png?v=20261001-2" alt="Transition Town city map">
 <div class="maproad horizontal"></div><div class="maproad vertical"></div><div class="maproad cross"></div>
 <button class="lot maplot banklot" onclick="place('bank')"><div class="building bank"><span class="mapmark">BANK</span></div><b>Transition Town Bank</b></button>
@@ -93,6 +106,8 @@ html,body,.sky,.town,.townmap{background:#050505!important}
 <button class="bizbuilding salonmap" onclick="meeting('The Main Attraction')"><strong>THE MAIN ATTRACTION</strong><small>Hair • Makeup • Lashes • Nails</small></button>
 </div><button class="park" onclick="place('park')"><b>Transition Town Park</b></button></section><p class="maphelp">Tap a building on the town map to enter it. On a phone or tablet, swipe across the town to explore.</p></main></div><button class="phone" onclick="phone()">PHONE<span class="badge" id="badge">0</span></button><div class="sheet" id="sheet" onclick="if(event.target===this)closeSheet()"><div class="window"><button class="close" onclick="closeSheet()">×</button><div id="content"></div></div></div>
 <script>
+function toggleTownDrawer(which){let m=document.querySelector('.ttTownMenu'),k=document.querySelector('.ttKaylaInfo');if(which==='menu'){let opening=!m.classList.contains('mobileOpen');m.classList.toggle('mobileOpen',opening);k.classList.remove('mobileOpen')}else{let opening=!k.classList.contains('mobileOpen');k.classList.toggle('mobileOpen',opening);m.classList.remove('mobileOpen')}}
+document.addEventListener('click',function(e){if(innerWidth>760)return;let m=document.querySelector('.ttTownMenu'),k=document.querySelector('.ttKaylaInfo');if(!e.target.closest('.ttTownMenu')&&!e.target.closest('.ttKaylaInfo')&&!e.target.closest('.ttDrawerTab')){m?.classList.remove('mobileOpen');k?.classList.remove('mobileOpen')}})
 let current=localStorage.ttCurrent||'';let activeGroup=[];const get=()=>{let w;try{w=JSON.parse(localStorage.ttWorld||'null')}catch(e){w=null}if(!w||typeof w!=='object')w={residents:{},messages:[],businesses:{"Cool Vibes":{owners:["Olivia","Jocquan","Kaylee","Alyssa"],balance:5000,alerts:[]},"3K Tire Shop":{owners:["Allen","Nick"],balance:5000,alerts:[]}},events:[]};w.residents=w.residents||{};w.messages=w.messages||[];w.events=w.events||[];w.businesses=w.businesses||{};[
 ["Cool Vibes",["Olivia","Jocquan","Kaylee","Alyssa"],"Food & drinks"],
 ["3K Tire Shop",["Allen","Nick"],"Tire & auto service"],
