@@ -151,7 +151,7 @@ function cityDept(k){
  }[k];
  if(!data)return cityHallLobby();
  let html='';
- if(k==='mayor')html='<p>Meet with Mayor Kayla about town ideas, concerns, services and community decisions.</p>';
+ if(k==='mayor')html='<p>Mayor Kayla helps residents communicate with town leadership and get connected to the right department.</p><div class="cityhalldirectory"><button onclick="mayorForm(\'Complaint\')">Complaint Box</button><button onclick="mayorForm(\'Compliment\')">Compliment Box</button><button onclick="mayorForm(\'Suggestion\')">Suggestion Box</button><button onclick="mayorForm(\'Help Request\')">I Need Help</button><button onclick="mayorForm(\'Town Idea\')">Share a Town Idea</button><button onclick="mayorForm(\'Meeting Request\')">Request a Meeting</button></div><p class="tiny">Submissions are part of the Transition Town simulation and are visible to Miss Kayla.</p>';
  if(k==='electric'){let due=r.sessions-u.lastElectricPaid>=2&&u.electricOn;html='<p>Electric service: <b>'+(u.electricOn?'ON':'NOT STARTED')+'</b><br>Current bill: <b>'+(due?'$85 DUE':'No bill due')+'</b></p>'+(u.electricOn?'':'<button class="primary" onclick="utilityPay(\'electricDeposit\',200)">Pay $200 Deposit & Start Service</button>')+(due?'<button class="primary" onclick="utilityPay(\'electricBill\',85)">Pay $85 Electric Bill</button>':'')}
  if(k==='water'){let due=r.sessions-u.lastWaterPaid>=2&&u.waterOn;html='<p>Water service: <b>'+(u.waterOn?'ON':'NOT STARTED')+'</b><br>Current bill: <b>'+(due?'$45 DUE':'No bill due')+'</b></p>'+(u.waterOn?'':'<button class="primary" onclick="utilityPay(\'waterDeposit\',160)">Pay $160 Deposit & Start Service</button>')+(due?'<button class="primary" onclick="utilityPay(\'waterBill\',45)">Pay $45 Water Bill</button>':'')}
  if(k==='safety')html='<p>Police, fire, emergency planning and community safety services.</p><button class="primary" onclick="cityHallClose();place(\'safety\')">Explore Public Safety</button>';
@@ -160,6 +160,15 @@ function cityDept(k){
  if(k==='boe')html='<p>Transition Town High School, school programs, education services and community partnerships.</p>';
  let box=document.querySelector('#cityHallScene');
  box.innerHTML='<div class="cityhallgame" style="background-image:url(\'./'+data[1]+'?v=20261001\')">'+cityHallHud(true)+'<div class="cityhallpanel"><h2>'+data[0]+'</h2>'+html+'</div></div>';
+}
+function mayorForm(type){
+ if(!need())return;
+ let promptText={Complaint:'What happened, and what would you like the town to do?',Compliment:'Who or what would you like to recognize?',Suggestion:'What could make Transition Town better?', 'Help Request':'What do you need help with?', 'Town Idea':'Describe your idea for Transition Town.', 'Meeting Request':'What would you like to discuss with Mayor Kayla?'}[type]||'What would you like Mayor Kayla to know?';
+ let msg=prompt(type+'\n\n'+promptText);if(!msg||!msg.trim())return;
+ let w=get();w.mayorInbox=w.mayorInbox||[];w.mayorInbox.unshift({from:current,type:type,text:msg.trim(),date:new Date().toLocaleString()});
+ w.residents[current].history.push('Mayor’s Office: '+type+' submitted');
+ w.messages.push({from:'Mayor Kayla’s Office',to:current,text:'Your '+type.toLowerCase()+' was received. Thank you for communicating with City Hall.',date:new Date().toLocaleString()});
+ put(w);updateBadge();alert(type+' submitted to Mayor Kayla. A confirmation was sent to your Transition Town phone.');cityDept('mayor')
 }
 function utilityPay(kind,amount){if(!need())return;let w=get(),r=w.residents[current];r.utilities=r.utilities||{electricOn:false,waterOn:false,electricDeposit:false,waterDeposit:false,lastElectricPaid:0,lastWaterPaid:0};if(r.checking<amount)return alert('Not enough money in checking for this payment.');r.checking-=amount;let u=r.utilities;if(kind==='electricDeposit'){u.electricDeposit=true;u.electricOn=true;u.lastElectricPaid=r.sessions;r.history.push('Electric service deposit -$'+amount)}if(kind==='waterDeposit'){u.waterDeposit=true;u.waterOn=true;u.lastWaterPaid=r.sessions;r.history.push('Water service deposit -$'+amount)}if(kind==='electricBill'){u.lastElectricPaid=r.sessions;r.history.push('Electric bill -$'+amount);r.notifications=r.notifications.filter(n=>!n.startsWith('CITY HALL: Your electric bill'))}if(kind==='waterBill'){u.lastWaterPaid=r.sessions;r.history.push('Water bill -$'+amount);r.notifications=r.notifications.filter(n=>!n.startsWith('CITY HALL: Your water bill'))}put(w);alert('Payment recorded. $'+amount+' was paid from checking.');cityDept(kind.startsWith('electric')?'electric':'water')}
 function career(){if(!need())return;let goal=prompt('What career do you want to explore?');if(!goal)return;let w=get();w.residents[current].career=goal;w.residents[current].history.push('Career goal: '+goal);put(w);profile()}
