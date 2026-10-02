@@ -218,40 +218,49 @@ function playgroundGameStart(startAt){
 function chooseParkBuddy(i){parkGame.buddy=parkBuddies[i];parkGameRender(parkGame.activity)}
 function parkSceneInfo(a){
  const m={
-  swing:{img:'wide_bright_colorful_photorealistic_illustratio.png',title:'Swing Time!',goal:'Tap PUSH to keep the swing moving for 10 seconds.',sec:10,drain:16},
-  sandbox:{img:'wide_bright_colorful_high_detail_3d_cgi_style_p.png',title:'Sandbox!',goal:'Tap BUILD to help your buddy play in the sand for 15 seconds.',sec:15,drain:14},
-  slide:{img:'a_bright_colorful_ultra_detailed_photoreal_illu.png',title:'Slide!',goal:'Tap SLIDE AGAIN to keep your buddy playing.',sec:12,drain:17},
-  climb:{img:'wide_vibrant_photo_realistic_3d_rendered_style_s.png',title:'Climb & Play!',goal:'Tap CLIMB to help your buddy explore the play structure.',sec:12,drain:20},
-  snack:{img:'wide_vibrant_photoreal_illustration_like_scene_o.png',title:'Snack Break',goal:'Take a short break, have water and a snack, and clean up.',sec:8,drain:-5}
+  swing:{video:'https://videos.pexels.com/video-files/37397135/15838632_2160_3840_30fps.mp4',poster:'wide_bright_colorful_photorealistic_illustratio.png',title:'Swing Time!',goal:'Watch your buddy enjoy the swing. When the activity ends, energy goes down.',sec:8,drain:18,credit:'Pexels • RAHUL SINGH'},
+  sandbox:{video:'https://videos.pexels.com/video-files/4411099/4411099-hd_1920_1080_30fps.mp4',poster:'wide_bright_colorful_high_detail_3d_cgi_style_p.png',title:'Sandbox!',goal:'Watch some hands-on sand play. When the activity ends, energy goes down.',sec:10,drain:14,credit:'Pexels • Martina Tomšič'},
+  slide:{video:'https://videos.pexels.com/video-files/4786373/4786373-uhd_2560_1440_30fps.mp4',poster:'a_bright_colorful_ultra_detailed_photoreal_illu.png',title:'Slide!',goal:'Watch the playground slide activity. When the activity ends, energy goes down.',sec:10,drain:18,credit:'Pexels • Martina Tomšič'},
+  climb:{video:'https://videos.pexels.com/video-files/35014877/14833427_3840_2160_30fps.mp4',poster:'wide_vibrant_photo_realistic_3d_rendered_style_s.png',title:'Climb & Play!',goal:'Watch the climbing activity. This active play uses the most energy.',sec:10,drain:22,credit:'Pexels • Aamir Somewhere'},
+  snack:{video:null,poster:'wide_vibrant_photoreal_illustration_like_scene_o.png',title:'Snack + Water Break',goal:'Rest, drink water, have a snack, and clean up. A short break restores a little energy.',sec:7,drain:-6,credit:''}
  };return m[a]
 }
 function parkGameRender(a){
  clearInterval(parkGame.timer);parkGame.activity=a;parkGame.progress=0;
  let x=parkSceneInfo(a);if(!x)return parkLeaveCheck();
- parkGame.seconds=x.sec;parkGame.happy=Math.max(35,parkGame.happy-8);
- parkGameShell('<div class="pgTop"><button class="pgBack" onclick="parkGameExit()">Back to Playground</button><div class="pgMeters"><div class="pgMeter"><b>HAPPINESS <span id="pgHappyN"></span></b><div class="pgTrack"><div id="pgHappy" class="pgFill pgHappy"></div></div></div><div class="pgMeter"><b>ENERGY <span id="pgEnergyN"></span></b><div class="pgTrack"><div id="pgEnergy" class="pgFill pgEnergy"></div></div></div></div></div><div id="pgScene" class="pgScene" style="background-image:url(\''+x.img+'\')">'+(a==='swing'?'<div id="pgSwingRig" class="pgSwingRig"><div class="pgRope r1"></div><div class="pgRope r2"></div><div class="pgSeat"></div>'+parkBuddyHTML(parkGame.buddy)+'</div>':parkBuddyHTML(parkGame.buddy))+'<div class="pgPanel"><h2>'+x.title+'</h2><div id="pgClock"><b>'+x.sec+' seconds</b></div><p>'+x.goal+'</p><button class="pgBig" id="pgAction" onclick="parkTap()">'+(a==='swing'?'PUSH':a==='sandbox'?'BUILD':a==='slide'?'SLIDE AGAIN':a==='climb'?'CLIMB':'SNACK + WATER')+'</button></div></div>');
- let kid=document.querySelector('#parkGame .pgKid');if(a!=='swing'){kid.style.left=a==='sandbox'?'43%':a==='slide'?'49%':a==='climb'?'48%':'46%';kid.style.top=a==='sandbox'?'49%':a==='slide'?'35%':a==='climb'?'35%':'49%';}
+ parkGame.seconds=x.sec;parkGame.happy=Math.max(35,parkGame.happy-3);
+ let media=x.video
+  ? '<video id="pgActivityVideo" class="pgActivityVideo" src="'+x.video+'" poster="'+x.poster+'" playsinline muted autoplay preload="auto"></video>'
+  : '<div class="pgActivityStill" style="background-image:url(\''+x.poster+'\')"></div>';
+ parkGameShell('<div class="pgTop"><button class="pgBack" onclick="parkGameExit()">Back to Playground</button><div class="pgMeters"><div class="pgMeter"><b>HAPPINESS <span id="pgHappyN"></span></b><div class="pgTrack"><div id="pgHappy" class="pgFill pgHappy"></div></div></div><div class="pgMeter"><b>ENERGY <span id="pgEnergyN"></span></b><div class="pgTrack"><div id="pgEnergy" class="pgFill pgEnergy"></div></div></div></div></div><div id="pgScene" class="pgScene pgVideoScene">'+media+'<div class="pgBuddyBadge">'+parkBuddyHTML(parkGame.buddy)+'<b>'+parkGame.buddy.name+'</b></div><div class="pgPanel"><h2>'+x.title+'</h2><div id="pgClock"><b>'+x.sec+' seconds</b></div><p>'+x.goal+'</p><p class="pgWatching">Activity in progress…</p>'+(x.credit?'<small class="pgCredit">'+x.credit+'</small>':'')+'</div></div>');
+ let style=document.createElement('style');style.textContent='.pgVideoScene{background:#14222d!important}.pgActivityVideo,.pgActivityStill{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:center/cover no-repeat}.pgBuddyBadge{position:absolute;z-index:9;right:14px;top:78px;width:108px;background:#ffffffee;color:#26334c;border-radius:18px;padding:6px;text-align:center;box-shadow:0 6px 18px #0006}.pgBuddyBadge .pgKid{position:relative!important;left:auto!important;top:auto!important;width:96px!important;height:125px!important;filter:none!important}.pgBuddyBadge b{display:block}.pgCredit{display:block;opacity:.65;margin-top:4px}.pgWatching{font-weight:900;color:#5b439d}@media(max-width:760px){.pgBuddyBadge{width:74px;top:72px}.pgBuddyBadge .pgKid{width:62px!important;height:82px!important}.pgActivityVideo{object-fit:cover}}';document.querySelector('#parkGame').appendChild(style);
  updateParkMeters();
- parkGame.timer=setInterval(function(){if(parkGame.momentum>0)parkGame.momentum--;else parkGame.happy=Math.max(0,parkGame.happy-3);updateParkMeters()},700)
+ let remaining=x.sec,finished=false;
+ function finishActivity(){
+  if(finished)return;finished=true;clearInterval(parkGame.timer);
+  parkGame.energy=Math.max(0,Math.min(100,parkGame.energy-x.drain));
+  parkGame.happy=Math.min(100,parkGame.happy+(a==='snack'?5:12));
+  updateParkMeters();
+  let p=document.querySelector('#parkGame .pgWatching');if(p)p.textContent='Activity complete!';
+  setTimeout(parkActivityDone,650);
+ }
+ let v=document.querySelector('#pgActivityVideo');
+ if(v){
+  v.addEventListener('timeupdate',function(){let left=Math.max(0,Math.ceil(x.sec-Math.min(v.currentTime,x.sec)));let el=document.querySelector('#pgClock');if(el)el.innerHTML='<b>'+left+' seconds</b>';if(v.currentTime>=x.sec)finishActivity()});
+  v.addEventListener('ended',finishActivity);
+  v.addEventListener('error',function(){let el=document.querySelector('#pgClock');if(el)el.innerHTML='<b>Video unavailable — using activity timer</b>';parkGame.timer=setInterval(function(){remaining--;if(remaining<=0)finishActivity()},1000)});
+  let play=v.play();if(play&&play.catch)play.catch(function(){let p=document.querySelector('#parkGame .pgWatching');if(p)p.innerHTML='<button class="pgBig" onclick="document.querySelector(\'#pgActivityVideo\').play()">PLAY ACTIVITY</button>'});
+ }else{
+  parkGame.timer=setInterval(function(){remaining--;let el=document.querySelector('#pgClock');if(el)el.innerHTML='<b>'+Math.max(0,remaining)+' seconds</b>';if(remaining<=0)finishActivity()},1000)
+ }
 }
-function parkTap(){
- let a=parkGame.activity,x=parkSceneInfo(a),kid=document.querySelector('#parkGame .pgKid');
- parkGame.momentum=Math.min(8,parkGame.momentum+2);parkGame.progress++;
- parkGame.happy=Math.min(100,parkGame.happy+4);
- if(a==='swing'){let rig=document.querySelector('#pgSwingRig');rig.classList.remove('pgSwinging','pgSwingingFast');void rig.offsetWidth;rig.classList.add(parkGame.momentum>4?'pgSwingingFast':'pgSwinging')}
- if(a==='sandbox')kid.style.transform='translateY('+(parkGame.progress%2?'-7':'0')+'px)';
- if(a==='slide'){kid.style.top=(parkGame.progress%2?'56%':'35%');kid.style.left=(parkGame.progress%2?'58%':'49%')}
- if(a==='climb'){kid.style.top=(35-(parkGame.progress%3)*8)+'%';kid.style.left=(45+(parkGame.progress%3)*7)+'%'}
- let need=a==='snack'?6:Math.ceil(x.sec*1.4);
- document.querySelector('#pgClock').innerHTML='<b>'+Math.min(x.sec,Math.floor(parkGame.progress/1.4))+' / '+x.sec+' seconds</b>';
- if(parkGame.progress>=need){parkGame.energy=Math.max(0,Math.min(100,parkGame.energy-x.drain));parkGame.happy=Math.min(100,parkGame.happy+10);updateParkMeters();setTimeout(parkActivityDone,350)}
-}
+function parkTap(){/* Activity clips now run automatically. */}
 function parkActivityDone(){
  clearInterval(parkGame.timer);
  let next={swing:'sandbox',sandbox:'slide',slide:'climb',climb:'snack',snack:'leave'}[parkGame.activity];
  if(next==='leave')return parkLeaveCheck();
  let names={sandbox:'sandbox',slide:'slide',climb:'climbing structure',snack:'snack break'};
- document.querySelector('#parkGame .pgPanel').innerHTML='<h2>Nice job!</h2><p>'+parkGame.buddy.name+' is ready for the '+names[next]+'.</p><button class="pgBig" onclick="parkGameRender(\''+next+'\')">GO TO '+names[next].toUpperCase()+'</button><button class="pgChoice" onclick="parkLeaveCheck()">TRY TO LEAVE PARK</button>'
+ document.querySelector('#parkGame .pgPanel').innerHTML='<h2>Nice job!</h2><p>'+parkGame.buddy.name+' finished that activity.</p><p><b>Energy is now '+Math.round(parkGame.energy)+'%.</b></p><button class="pgBig" onclick="parkGameRender(\''+next+'\')">GO TO '+names[next].toUpperCase()+'</button><button class="pgChoice" onclick="parkLeaveCheck()">CHECK IF IT IS TIME TO LEAVE</button>'
 }
 function updateParkMeters(){
  let h=document.querySelector('#pgHappy'),e=document.querySelector('#pgEnergy');if(!h||!e)return;
