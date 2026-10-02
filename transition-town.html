@@ -204,56 +204,32 @@ function recreationSports(){rzSet('<h2>Sports & Outdoors</h2><div class="rzGames
 let rzBB=null,rzBBRAF=null,rzBBKeys={};
 function rzBasketball(){
  cancelAnimationFrame(rzBBRAF);rzBBKeys={};
- rzSet('<h2>Basketball — First to 5 Wins</h2><div class="coachTip"><b>Coach Kayla:</b> THIS one is a real game now! Blue uses W A S D. Red uses the arrow keys. Run into the ball to pick it up. Press F for Blue or / for Red to shoot. First to 5 wins!</div><div class="rzScore">BLUE <span id="rzS1">0</span> &nbsp; • &nbsp; RED <span id="rzS2">0</span></div><canvas id="rzBBCanvas" width="900" height="500" style="display:block;width:100%;max-width:900px;aspect-ratio:9/5;margin:12px auto;border:6px solid #fff;border-radius:20px;background:#c98243;box-shadow:0 8px 24px #0004"></canvas><p style="text-align:center"><b>Blue:</b> W A S D + F shoot &nbsp; | &nbsp; <b>Red:</b> Arrow Keys + / shoot<br><small>Grab the ball • move closer for an easier shot • rebound misses • first to 5</small></p><div style="text-align:center"><button class="rzA" onclick="rzBasketball()">Restart</button><button class="rzA" onclick="cancelAnimationFrame(rzBBRAF);rzBB=null;recreationSports()">Sports Menu</button></div>');
- const cv=document.querySelector('#rzBBCanvas');if(!cv)return;const ctx=cv.getContext('2d');
- rzBB={cv,ctx,last:performance.now(),over:false,p1:{x:210,y:250,vx:0,vy:0,s:0,r:25,has:false},p2:{x:690,y:250,vx:0,vy:0,s:0,r:25,has:false},ball:{x:450,y:250,vx:0,vy:0,r:12,owner:null,shotBy:null,cool:0},flash:'TIP OFF!',flashT:90};
+ rzSet('<h2>Basketball — First to 5</h2><div class="coachTip"><b>Coach Kayla:</b> Keep it simple: use the big arrows to move and SHOOT when you have the ball. Beat the computer to 5!</div><div class="rzScore">YOU <span id="rzS1">0</span> &nbsp; • &nbsp; CPU <span id="rzS2">0</span></div><canvas id="rzBBCanvas" width="900" height="500" style="display:block;width:100%;max-width:900px;aspect-ratio:9/5;margin:10px auto;border:6px solid #fff;border-radius:20px;background:#c98243;touch-action:none"></canvas><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:900px;margin:8px auto;flex-wrap:wrap"><div style="display:grid;grid-template-columns:64px 64px 64px;gap:6px"><span></span><button class="rzA" style="font-size:28px;margin:0" onpointerdown="rzBBPress(\'up\',1)" onpointerup="rzBBPress(\'up\',0)">▲</button><span></span><button class="rzA" style="font-size:28px;margin:0" onpointerdown="rzBBPress(\'left\',1)" onpointerup="rzBBPress(\'left\',0)">◀</button><button class="rzA" style="font-size:28px;margin:0" onpointerdown="rzBBPress(\'down\',1)" onpointerup="rzBBPress(\'down\',0)">▼</button><button class="rzA" style="font-size:28px;margin:0" onpointerdown="rzBBPress(\'right\',1)" onpointerup="rzBBPress(\'right\',0)">▶</button></div><button class="rzA" style="width:120px;height:120px;border-radius:50%;font-size:22px;background:#ef4444" onclick="rzBBShoot(\'p1\')">SHOOT</button></div><div style="text-align:center"><button class="rzA" onclick="rzBasketball()">Restart</button><button class="rzA" onclick="cancelAnimationFrame(rzBBRAF);rzBB=null;recreationSports()">Sports Menu</button></div>');
+ const cv=document.querySelector('#rzBBCanvas');if(!cv)return;
+ rzBB={cv,ctx:cv.getContext('2d'),last:performance.now(),over:false,p1:{x:250,y:320,s:0,r:28,has:false},p2:{x:650,y:320,s:0,r:28,has:false},ball:{x:450,y:310,vx:0,vy:0,r:12,owner:null,shotBy:null,cool:0},flash:'GO!',flashT:70,aiShot:0};
  rzBBRAF=requestAnimationFrame(rzBBLoop)
 }
-function rzBBReset(scoredBy){
- let g=rzBB;if(!g)return;g.p1.x=210;g.p1.y=250;g.p2.x=690;g.p2.y=250;g.p1.has=g.p2.has=false;
- g.ball={x:450,y:250,vx:0,vy:0,r:12,owner:null,shotBy:null,cool:20};
- if(scoredBy){g.flash=(scoredBy==='p1'?'BLUE':'RED')+' SCORES!';g.flashT=70}
-}
-function rzBBShoot(k){
- let g=rzBB;if(!g||g.over)return;let p=g[k],ball=g.ball;if(ball.owner!==k||ball.cool>0)return;
- let hoop=k==='p1'?{x:815,y:105}:{x:85,y:105};
- let dx=hoop.x-p.x,dy=hoop.y-p.y,dist=Math.hypot(dx,dy),speed=10.5;
- ball.owner=null;p.has=false;ball.shotBy=k;ball.cool=22;ball.x=p.x;ball.y=p.y-20;
- let accuracy=Math.max(.52,.94-dist/1200),jitter=(Math.random()-.5)*(1-accuracy)*8;
- ball.vx=dx/dist*speed+jitter;ball.vy=dy/dist*speed-4.8+Math.abs(jitter)*.2
-}
-function rzBBLoop(t){
- let g=rzBB;if(!g||!document.querySelector('#rzBBCanvas'))return;let dt=Math.min(2,(t-g.last)/16.67||1);g.last=t;
- const move=(p,left,right,up,down)=>{let ax=(rzBBKeys[right]?1:0)-(rzBBKeys[left]?1:0),ay=(rzBBKeys[down]?1:0)-(rzBBKeys[up]?1:0);let n=Math.hypot(ax,ay)||1;p.vx=ax/n*4.4;p.vy=ay/n*4.4;p.x=Math.max(38,Math.min(862,p.x+p.vx*dt));p.y=Math.max(145,Math.min(462,p.y+p.vy*dt))};
- move(g.p1,'a','d','w','s');move(g.p2,'arrowleft','arrowright','arrowup','arrowdown');
- let b=g.ball;if(b.cool>0)b.cool-=dt;
- if(b.owner){let p=g[b.owner];b.x=p.x+(b.owner==='p1'?20:-20);b.y=p.y+10}
- else{
-  b.vy+=.22*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.vx*=.997;
-  if(b.x<18){b.x=18;b.vx=Math.abs(b.vx)*.72}if(b.x>882){b.x=882;b.vx=-Math.abs(b.vx)*.72}
-  if(b.y>475){b.y=475;b.vy=-Math.abs(b.vy)*.68;b.vx*=.82}
-  if(b.y<35){b.y=35;b.vy=Math.abs(b.vy)*.7}
-  let hoops=[{x:85,y:105,score:'p2'},{x:815,y:105,score:'p1'}];
-  for(const h of hoops){if(Math.abs(b.x-h.x)<34&&b.y>92&&b.y<124&&b.vy>0&&b.shotBy===h.score){let p=g[h.score];p.s++;document.querySelector(h.score==='p1'?'#rzS1':'#rzS2').textContent=p.s;if(p.s>=5){g.over=true;g.flash=(h.score==='p1'?'BLUE':'RED')+' WINS!';g.flashT=9999}else rzBBReset(h.score);break}}
-  if(!g.over&&b.cool<=0){for(const k of ['p1','p2']){let p=g[k];if(Math.hypot(p.x-b.x,p.y-b.y)<p.r+b.r+8){b.owner=k;p.has=true;g[k==='p1'?'p2':'p1'].has=false;b.shotBy=null;b.cool=12;g.flash=(k==='p1'?'BLUE':'RED')+' HAS THE BALL';g.flashT=35;break}}}
- }
- rzBBDraw();if(!g.over)rzBBRAF=requestAnimationFrame(rzBBLoop)
-}
-function rzBBDraw(){
- let g=rzBB;if(!g)return,ctx=g.ctx;const c=g.ctx,w=900,h=500;
- c.clearRect(0,0,w,h);c.fillStyle='#c98243';c.fillRect(0,0,w,h);
- c.strokeStyle='#fff';c.lineWidth=5;c.strokeRect(18,18,864,464);c.beginPath();c.moveTo(450,18);c.lineTo(450,482);c.stroke();c.beginPath();c.arc(450,250,65,0,Math.PI*2);c.stroke();
- c.strokeRect(18,135,150,230);c.strokeRect(732,135,150,230);
- const hoop=(x,side)=>{c.fillStyle='#e5f3ff';c.fillRect(side==='l'?35:825,65,40,90);c.strokeStyle='#ef4444';c.lineWidth=7;c.beginPath();c.moveTo(x-30,110);c.lineTo(x+30,110);c.stroke();c.strokeStyle='#fff';c.lineWidth=2;for(let i=-24;i<=24;i+=12){c.beginPath();c.moveTo(x+i,113);c.lineTo(x+i*.55,150);c.stroke()}};
- hoop(85,'l');hoop(815,'r');
- const player=(p,col,label)=>{c.save();c.shadowColor='#0007';c.shadowBlur=8;c.fillStyle=col;c.beginPath();c.arc(p.x,p.y,p.r,0,Math.PI*2);c.fill();c.shadowBlur=0;c.strokeStyle='#fff';c.lineWidth=4;c.stroke();c.fillStyle='#fff';c.font='bold 16px Arial';c.textAlign='center';c.textBaseline='middle';c.fillText(label,p.x,p.y);c.restore()};
- player(g.p1,'#2563eb','P1');player(g.p2,'#ef4444','P2');
+function rzBBPress(k,v){if(v)rzBBKeys[k]=true;else delete rzBBKeys[k]}
+function rzBBReset(who){let g=rzBB;if(!g)return;g.p1.x=250;g.p1.y=320;g.p2.x=650;g.p2.y=320;g.p1.has=g.p2.has=false;g.ball={x:450,y:310,vx:0,vy:0,r:12,owner:null,shotBy:null,cool:20};g.flash=(who==='p1'?'YOU':'CPU')+' SCORED!';g.flashT=65}
+function rzBBShoot(k){let g=rzBB;if(!g||g.over||g.ball.owner!==k||g.ball.cool>0)return;let p=g[k],h=k==='p1'?{x:815,y:112}:{x:85,y:112},dx=h.x-p.x,dy=h.y-p.y,d=Math.hypot(dx,dy),sp=10.5,acc=Math.max(.58,.96-d/1350),j=(Math.random()-.5)*(1-acc)*7;g.ball.owner=null;p.has=false;g.ball.shotBy=k;g.ball.cool=24;g.ball.x=p.x;g.ball.y=p.y-32;g.ball.vx=dx/d*sp+j;g.ball.vy=dy/d*sp-5}
+function rzBBLoop(t){let g=rzBB;if(!g||!document.querySelector('#rzBBCanvas'))return;let dt=Math.min(2,(t-g.last)/16.67||1);g.last=t,p=g.p1,ai=g.p2,b=g.ball;
+ let ax=(rzBBKeys.right?1:0)-(rzBBKeys.left?1:0),ay=(rzBBKeys.down?1:0)-(rzBBKeys.up?1:0),n=Math.hypot(ax,ay)||1;p.x=Math.max(38,Math.min(862,p.x+ax/n*5*dt));p.y=Math.max(155,Math.min(462,p.y+ay/n*5*dt));
+ let tx,ty;if(b.owner==='p2'){tx=155;ty=260;if(ai.x<260&&Math.abs(ai.y-ty)<100){g.aiShot-=dt;if(g.aiShot<=0){rzBBShoot('p2');g.aiShot=80}}}else{tx=b.x;ty=b.y}let dx=tx-ai.x,dy=ty-ai.y,d=Math.hypot(dx,dy)||1;ai.x=Math.max(38,Math.min(862,ai.x+dx/d*3.25*dt));ai.y=Math.max(155,Math.min(462,ai.y+dy/d*3.25*dt));
+ if(b.owner){let q=g[b.owner];b.x=q.x+(b.owner==='p1'?24:-24);b.y=q.y+15}else{b.vy+=.22*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.vx*=.997;if(b.x<18||b.x>882)b.vx*=-.72;b.x=Math.max(18,Math.min(882,b.x));if(b.y>475){b.y=475;b.vy=-Math.abs(b.vy)*.68;b.vx*=.82}if(b.y<35){b.y=35;b.vy=Math.abs(b.vy)*.7}}
+ if(b.cool>0)b.cool-=dt;
+ if(!g.over&&b.cool<=0&&!b.owner){for(const k of ['p1','p2']){let q=g[k];if(Math.hypot(q.x-b.x,q.y-b.y)<q.r+b.r+10){b.owner=k;q.has=true;g[k==='p1'?'p2':'p1'].has=false;b.shotBy=null;b.cool=12;g.flash=(k==='p1'?'YOUR BALL':'CPU BALL');g.flashT=30;break}}}
+ for(const h of [{x:85,y:112,who:'p2'},{x:815,y:112,who:'p1'}])if(!g.over&&b.shotBy===h.who&&Math.abs(b.x-h.x)<34&&b.y>96&&b.y<128&&b.vy>0){let q=g[h.who];q.s++;document.querySelector(h.who==='p1'?'#rzS1':'#rzS2').textContent=q.s;if(q.s>=5){g.over=true;g.flash=(h.who==='p1'?'YOU WIN!':'CPU WINS');g.flashT=9999}else rzBBReset(h.who);break}
+ rzBBDraw();if(!g.over)rzBBRAF=requestAnimationFrame(rzBBLoop)}
+function rzBBDraw(){let g=rzBB;if(!g)return,c=g.ctx;c.clearRect(0,0,900,500);c.fillStyle='#c98243';c.fillRect(0,0,900,500);c.strokeStyle='#fff';c.lineWidth=5;c.strokeRect(18,18,864,464);c.beginPath();c.moveTo(450,18);c.lineTo(450,482);c.stroke();c.beginPath();c.arc(450,250,65,0,Math.PI*2);c.stroke();
+ function hoop(x){c.strokeStyle='#fff';c.lineWidth=5;c.strokeRect(x<450?35:825,55,40,95);c.strokeStyle='#ef4444';c.lineWidth=7;c.beginPath();c.moveTo(x-30,112);c.lineTo(x+30,112);c.stroke()}
+ hoop(85);hoop(815);
+ function person(p,shirt,shorts,skin,label,flip){c.save();c.translate(p.x,p.y);if(flip)c.scale(-1,1);c.fillStyle='#0003';c.beginPath();c.ellipse(0,31,27,9,0,0,Math.PI*2);c.fill();c.strokeStyle=skin;c.lineWidth=11;c.lineCap='round';c.beginPath();c.moveTo(-10,2);c.lineTo(-17,25);c.moveTo(10,2);c.lineTo(17,25);c.stroke();c.fillStyle=shorts;c.fillRect(-18,-2,36,20);c.strokeStyle=skin;c.lineWidth=9;c.beginPath();c.moveTo(-10,18);c.lineTo(-12,39);c.moveTo(10,18);c.lineTo(12,39);c.stroke();c.strokeStyle='#222';c.lineWidth=7;c.beginPath();c.moveTo(-12,39);c.lineTo(-22,39);c.moveTo(12,39);c.lineTo(22,39);c.stroke();c.fillStyle=shirt;c.beginPath();c.roundRect(-22,-45,44,45,12);c.fill();c.fillStyle=skin;c.beginPath();c.arc(0,-61,17,0,Math.PI*2);c.fill();c.fillStyle='#2b1a12';c.beginPath();c.arc(0,-66,17,Math.PI,Math.PI*2);c.fill();c.fillStyle='#fff';c.font='bold 13px Arial';c.textAlign='center';c.fillText(label,0,-18);c.restore()}
+ person(g.p1,'#2563eb','#172554','#8d5524','YOU',false);person(g.p2,'#ef4444','#7f1d1d','#c68642','CPU',true);
  let b=g.ball;c.fillStyle='#f97316';c.beginPath();c.arc(b.x,b.y,b.r,0,Math.PI*2);c.fill();c.strokeStyle='#4a2500';c.lineWidth=2;c.stroke();c.beginPath();c.moveTo(b.x-b.r,b.y);c.lineTo(b.x+b.r,b.y);c.moveTo(b.x,b.y-b.r);c.lineTo(b.x,b.y+b.r);c.stroke();
- if(g.flashT>0){g.flashT--;c.fillStyle='#ffffffee';c.fillRect(310,24,280,48);c.fillStyle='#26334c';c.font='bold 22px Arial';c.textAlign='center';c.fillText(g.flash,450,56)}
- if(g.over){c.fillStyle='#172554dd';c.fillRect(0,0,w,h);c.fillStyle='#fff';c.font='bold 54px Georgia';c.textAlign='center';c.fillText(g.flash,450,220);c.font='bold 24px Arial';c.fillText('FIRST TO 5 CHAMPION',450,270);c.fillText('Press Restart to run it back!',450,315)}
-}
-document.addEventListener('keydown',function(e){if(!document.querySelector('#recreationZone')||!rzBB)return;let k=e.key.toLowerCase();if(['w','a','s','d','f','arrowleft','arrowright','arrowup','arrowdown','/'].includes(k)){e.preventDefault();rzBBKeys[k]=true;if(k==='f')rzBBShoot('p1');if(k==='/')rzBBShoot('p2')}});
-document.addEventListener('keyup',function(e){rzBBKeys[e.key.toLowerCase()]=false});
+ if(g.flashT>0){g.flashT--;c.fillStyle='#ffffffed';c.fillRect(325,22,250,45);c.fillStyle='#26334c';c.font='bold 21px Arial';c.textAlign='center';c.fillText(g.flash,450,52)}
+ if(g.over){c.fillStyle='#172554dd';c.fillRect(0,0,900,500);c.fillStyle='#fff';c.font='bold 55px Georgia';c.textAlign='center';c.fillText(g.flash,450,235);c.font='bold 23px Arial';c.fillText('Press Restart to play again',450,285)}}
+document.addEventListener('keydown',function(e){if(!document.querySelector('#recreationZone')||!rzBB)return;let k=e.key.toLowerCase(),m={w:'up',a:'left',s:'down',d:'right'};if(m[k]){e.preventDefault();rzBBKeys[m[k]]=true}if(k===' '||k==='f'){e.preventDefault();rzBBShoot('p1')}});
+document.addEventListener('keyup',function(e){let m={w:'up',a:'left',s:'down',d:'right'};if(m[e.key.toLowerCase()])delete rzBBKeys[m[e.key.toLowerCase()]]});
 function rzTarget(name,icon){rzSet('<h2>'+icon+' '+name+'</h2><div class="coachTip"><b>Coach Kayla:</b> Watch that black marker. Hit GO when it reaches the green zone. Get 5 good ones!</div><p>Press GO when the black marker is inside the green target. Get 5!</p><div style="height:36px;background:#ddd;border-radius:20px;position:relative;overflow:hidden"><div style="position:absolute;left:42%;width:16%;height:100%;background:#38b000"></div><div id="rzMarker" style="position:absolute;left:0;width:9px;height:100%;background:#111"></div></div><p class="rzScore">Score: <span id="rzTS">0</span> / 5</p><div style="text-align:center"><button class="rzA" onclick="rzTargetHit()">GO!</button><button class="rzA" onclick="recreationSports()">Sports Menu</button></div>');window.rzT={x:0,d:1,s:0};clearInterval(window.rzTargetTimer);window.rzTargetTimer=setInterval(function(){let e=document.querySelector('#rzMarker');if(!e)return clearInterval(window.rzTargetTimer);rzT.x+=rzT.d*3;if(rzT.x>=98||rzT.x<=0)rzT.d*=-1;e.style.left=rzT.x+'%'},45)}
 function rzTargetHit(){if(!rzT)return;if(rzT.x>=40&&rzT.x<=60){rzT.s++;document.querySelector('#rzTS').textContent=rzT.s;if(rzT.s>=5){clearInterval(rzTargetTimer);alert('You got 5!')}}else alert('Miss — try again!')}
 function rzFishing(){window.rzFishScore=0;rzSet('<h2>🎣 Fishing Pond</h2><div class="coachTip"><b>Coach Kayla:</b> CAST your line, then tap that fish before it gets away. Catch 5 and you got it!</div><p>Tap CAST, then tap the fish before it swims away. Catch 5.</p><div class="rzPond" id="rzPond"></div><p class="rzScore">Caught: <span id="rzFS">0</span> / 5</p><div style="text-align:center"><button class="rzA" onclick="rzCast()">CAST</button><button class="rzA" onclick="recreationSports()">Sports Menu</button></div>')}
