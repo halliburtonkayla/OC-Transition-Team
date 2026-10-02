@@ -289,12 +289,9 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',forceTownArt);else forceTownArt();
 })();
 </script><style>/* mobile-landscape-fix-20261001 */
-#ttRotateNotice{display:none}
+#ttRotateNotice{display:none!important;pointer-events:none!important}
 @media (max-width:900px) and (orientation:portrait){
- #ttRotateNotice{display:flex;position:fixed;inset:0;z-index:20000;background:linear-gradient(160deg,#5b439d,#9b7ad8);color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px}
- #ttRotateNotice .rotateCard{max-width:420px;background:#ffffff18;border:2px solid #ffffff66;border-radius:28px;padding:28px;box-shadow:0 18px 50px #0005}
- #ttRotateNotice h2{font:900 30px Georgia;margin:0 0 12px}
- #ttRotateNotice p{font-size:18px;line-height:1.4;margin:8px 0}
+ #ttRotateNotice{display:none!important;pointer-events:none!important}
 }
 @media (max-width:1000px) and (orientation:landscape){
  body{overflow:hidden!important}
@@ -328,6 +325,15 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
  addEventListener('orientationchange',function(){setTimeout(fitTown,150)});
  addEventListener('resize',fitTown);
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fitTown);else fitTown();
+})();
+</script>
+<script id="tt-click-safety">
+(function(){
+ var n=document.getElementById('ttRotateNotice');if(n){n.style.display='none';n.style.pointerEvents='none'}
+ document.querySelectorAll('.townmap .maplot,.townmap .bizbuilding,.townmap .park,.ttTownMenu button,.topbtn,.phone').forEach(function(b){
+  b.style.pointerEvents='auto';
+  b.style.position=b.style.position||'relative';
+ });
 })();
 </script>
 </body></html>
