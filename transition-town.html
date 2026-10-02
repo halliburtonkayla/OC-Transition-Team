@@ -200,7 +200,7 @@ const parkBuddies=[
 let parkGame={buddy:null,energy:100,happy:55,activity:'swing',progress:0,seconds:10,timer:null,momentum:0};
 
 function parkBuddyHTML(b){
- return '<div class="pgKid"><img src="./'+b.img+'?v=20261002-3d" alt="'+b.name+'"></div>'
+ return '<div class="pgKid"><img src="./'+b.img+'?v=20261002-3d2" alt="'+b.name+'" onerror="this.onerror=null;this.src=\'https://raw.githubusercontent.com/halliburtonkayla/OC-Transition-Team/main/\'+b.img+\'?v=20261002-3d2\'"></div>'
 }
 function parkGameShell(inner){
  document.querySelector('#transitionPlaygroundScene')?.remove();
