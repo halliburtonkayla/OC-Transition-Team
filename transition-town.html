@@ -187,10 +187,52 @@ function transitionPlayground(){
  document.querySelector('#transitionParkScene')?.remove();
  document.querySelector('#transitionPlaygroundScene')?.remove();
  let s=document.createElement('section');s.id='transitionPlaygroundScene';
- s.innerHTML='<style>#transitionPlaygroundScene{position:fixed;inset:0;z-index:9600;background:#10151b;overflow:hidden}.playhero{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}.playstage{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;max-height:100vh}.playstage>img{width:100%;height:100%;object-fit:contain;display:block}.playhot{position:absolute;top:78%;height:18%;border:0;background:transparent;cursor:pointer;border-radius:20px}.playhot:focus-visible,.playhot:hover{outline:5px solid rgba(255,255,255,.9);background:rgba(255,255,255,.08)}.h1{left:2%;width:18%}.h2{left:20%;width:18%}.h3{left:38%;width:15%}.h4{left:53%;width:15%}.h5{left:68%;width:17%}.h6{left:85%;width:14%}</style><div class="playhero"><div class="playstage"><img src="./transition-town-playground.png?v=20261002" alt="Transition Town Playground"><button class="playhot h1" aria-label="Playground Explore and Play" onclick="playgroundGameStart()"></button><button class="playhot h2" aria-label="Daycare Visit" onclick="document.querySelector(\'#transitionPlaygroundScene\')?.remove();daycareParkStart()"></button><button class="playhot h3" aria-label="Games Recreation Zone" onclick="recreationZone()"></button><button class="playhot h4" aria-label="Sandbox" onclick="playgroundGameStart(\'sandbox\')"></button><button class="playhot h5" aria-label="Story Time" onclick="alert(\'Story Time is coming to the park.\')"></button><button class="playhot h6" aria-label="Back to Park" onclick="document.querySelector(\'#transitionPlaygroundScene\')?.remove();transitionPark()"></button></div></div>';
+ s.innerHTML='<style>#transitionPlaygroundScene{position:fixed;inset:0;z-index:9600;background:#10151b;overflow:hidden}.playhero{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}.playstage{position:relative;width:min(100vw,150vh);aspect-ratio:3/2;max-height:100vh}.playstage>img{width:100%;height:100%;object-fit:contain;display:block}.playhot{position:absolute;top:78%;height:18%;border:0;background:transparent;cursor:pointer;border-radius:20px}.playhot:focus-visible,.playhot:hover{outline:5px solid rgba(255,255,255,.9);background:rgba(255,255,255,.08)}.h1{left:2%;width:18%}.h2{left:20%;width:18%}.h3{left:38%;width:15%}.h4{left:53%;width:15%}.h5{left:68%;width:17%}.h6{left:85%;width:14%}</style><div class="playhero"><div class="playstage"><img src="./transition-town-playground.png?v=20261002" alt="Transition Town Playground"><button class="playhot h1" aria-label="Playground Explore and Play" onclick="playgroundGameStart()"></button><button class="playhot h2" aria-label="Daycare Visit" onclick="document.querySelector(\'#transitionPlaygroundScene\')?.remove();daycareParkStart()"></button><button class="playhot h3" aria-label="Games Recreation Zone" onclick="recreationZone()"></button><button class="playhot h4" aria-label="Sandbox" onclick="playgroundGameStart(\'sandbox\')"></button><button class="playhot h5" aria-label="Story Time" onclick="transitionStoryTime()"></button><button class="playhot h6" aria-label="Back to Park" onclick="document.querySelector(\'#transitionPlaygroundScene\')?.remove();transitionPark()"></button></div></div>';
  document.body.appendChild(s)
 }
 
+
+function transitionStoryTime(){
+ document.querySelector('#transitionStory')?.remove();
+ let s=document.createElement('section');s.id='transitionStory';
+ s.innerHTML='<style>#transitionStory{position:fixed;inset:0;z-index:9695;background:linear-gradient(#9edcff 0 42%,#6eb34f 42%);overflow:auto;padding:18px;font-family:Arial}.st{max-width:980px;margin:auto;background:#fff;border-radius:26px;padding:16px}.stPark{height:430px;position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(#8bd2ff 0 46%,#69ad4c 46%);border:5px solid #fff}.stTree{position:absolute;width:145px;height:145px;border-radius:50%;background:#39853c;top:55px}.stTree:after{content:"";position:absolute;width:22px;height:150px;background:#75452d;left:62px;top:88px}.stBlanket{position:absolute;left:14%;right:14%;bottom:-25px;height:130px;background:#f4bfd8;border-radius:50%}.stKids{position:absolute;left:3%;right:3%;bottom:20px;display:flex;justify-content:center;align-items:flex-end}.stKid{width:24%;text-align:center;font-weight:900;color:#27334a}.stKid img{width:100%;height:245px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 7px 5px #0005)}.stAudio{margin-top:12px;background:#342766;color:#fff;padding:15px;border-radius:18px}.stAudio audio{width:100%;margin-top:8px}@media(max-width:650px){.stPark{height:330px}.stKid img{height:175px}.stKid{font-size:12px}}</style><div class="st"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><h2 style="margin:0;color:#5b439d">Story Time: The Choices We Make</h2><b>3-minute school story • drama • good choices</b></div><button class="rzA" onclick="document.querySelector(\'#transitionStory\').remove();transitionPlayground()">Back</button></div><div class="stPark"><div class="stTree" style="left:2%"></div><div class="stTree" style="right:2%"></div><div class="stBlanket"></div><div class="stKids">'+parkBuddies.map(b=>'<div class="stKid"><img src="./'+b.img+'" alt="'+b.name+'"><span>'+b.name+'</span></div>').join('')+'</div></div><div class="stAudio"><b>Ms. Kayla Story Audio • 1.25×</b><div style="margin-top:5px">Ava, Marcus, Sofia, and Eli are sitting around listening.</div><div id="storyAudioPending" style="margin-top:8px;background:#ffffff20;padding:10px;border-radius:10px">Audio narration: Kayla Bible Tea voice.</div><audio id="storyAudio" controls preload="metadata" style="display:none"></audio></div></div>';
+ document.body.appendChild(s)
+}
+const transitionGoodChoicesStory=`Okay, y'all, gather around. Ava, Marcus, Sofia, and Eli are already sitting down, because today's story has a little school drama in it. And if you are one of my students, you might hear something that sounds very familiar.
+
+It was another school morning, and everybody had somewhere they would rather be. Jaden and Clark were getting settled. Noah was ready for his routine. Olivia, Kaylee, Jocquan, and Alyssa were in class. Gia and Jacob were working. Jasmine, Aubrey, Chevi, Cameron, Dalton, Aiden, Allen, Nicholas, Bradley, Haley, and the rest of the crew were handling their own school day.
+
+Then somebody looked toward the classroom door and whispered, “Oh no. Here they come.”
+
+Because standing at the door was Ms. Kayla. And depending on the day, Ms. Mindy or Ms. Autumn might not be far behind.
+
+Now listen. These students did not hate us. But were they tired of getting pulled from their favorite classes sometimes? Absolutely.
+
+One student sighed, “Why do y'all always come when I'm actually doing something fun?” Another said, “Can I just stay today?” And somebody in the back was probably thinking, “If I don't make eye contact, maybe she won't see me.” Nice try.
+
+But that day, the group came anyway. And the lesson was about choices. Not perfect choices. Real choices.
+
+They talked about what happens when a friend wants you to skip something important. What happens when somebody posts something messy online and everybody wants you to jump into the comments. What happens when you are angry at school, tired, embarrassed, or just completely over everybody.
+
+Jocquan said one choice can turn a small problem into a huge one. Olivia pointed out that sometimes walking away keeps you from saying something you cannot take back. Kaylee said asking for help is not the same as being weak. Gia and Jacob talked about thinking before reacting. Dalton and Aiden talked about how choices at school can follow you into a job.
+
+And yes, there was drama. Somebody was irritated. Somebody thought somebody else was talking about them. Somebody wanted to prove a point. Somebody was ready to send a text they definitely should not send.
+
+Ms. Kayla said, “Before you do it, ask yourself three things. What could happen next? Is this helping me get where I want to go? And will tomorrow-me be glad I did this?”
+
+The room got quiet.
+
+Because good choices are not always the fun choice in the moment. Sometimes the good choice is going to the session when you would rather stay in class. Sometimes it is finishing the assignment. Sometimes it is apologizing first. Sometimes it is leaving the group chat alone. Sometimes it is telling the truth when the truth is uncomfortable. And sometimes it is letting Ms. Kayla, Ms. Mindy, or Ms. Autumn pull you out of your favorite class one more time.
+
+By the end of the day, everybody went back to class. Nobody magically loved being pulled. Let's not get carried away.
+
+But later, when they had to make a decision on their own, something from those annoying little sessions showed up in their heads. Pause. Think. Look at what happens next. Choose the thing that helps future-you.
+
+And that was when they realized the point was never to make school less fun. The point was to practice making decisions while there were adults around to help, so when real life showed up, they could handle it themselves.
+
+So yes, they were tired of seeing us at the classroom door. But at the end of the day? It was worth it.
+
+Now enjoy the rest of the park before Ms. Kayla finds another worksheet.`;
 
 function recreationZone(){
  document.querySelector('#transitionPlaygroundScene')?.remove();document.querySelector('#recreationZone')?.remove();
