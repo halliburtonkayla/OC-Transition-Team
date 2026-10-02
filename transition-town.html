@@ -204,41 +204,79 @@ function transitionStorySpeak(){if(!('speechSynthesis' in window)){document.quer
 function transitionStoryPause(){if(!('speechSynthesis' in window))return;let st=document.querySelector('#storyVoiceStatus');if(speechSynthesis.paused){speechSynthesis.resume();transitionStoryPaused=false;if(st)st.textContent='Story resumed at 1.25×'}else if(speechSynthesis.speaking){speechSynthesis.pause();transitionStoryPaused=true;if(st)st.textContent='Story paused.'}}
 function transitionStoryStop(){if('speechSynthesis' in window)speechSynthesis.cancel();transitionStoryPaused=false;let st=document.querySelector('#storyVoiceStatus');if(st)st.textContent='Story stopped. Tap Play Story to start again.'}
 
-const transitionGoodChoicesStory=`Okay, y'all, gather around. Ava, Marcus, Sofia, and Eli are already sitting down, because today's story has a little school drama in it. And if you are one of my students, you might hear something that sounds very familiar.
+const transitionGoodChoicesStory=`Okay, y'all, gather around. Ava, Marcus, Sofia, and Eli are already sitting down, because today's story is about the students of Transition Town — and yes, there is school drama.
 
-It was another school morning, and everybody had somewhere they would rather be. Jaden and Clark were getting settled. Noah was ready for his routine. Olivia, Kaylee, Jocquan, and Alyssa were in class. Gia and Jacob were working. Jasmine, Aubrey, Chevi, Cameron, Dalton, Aiden, Allen, Nicholas, Bradley, Haley, and the rest of the crew were handling their own school day.
+It was another school morning. Jaden Cole and Clark Taylor were getting settled. Noah Webb was ready for his routine. Olivia Waycaster, Jocquan Eaton, Kaylee Johnson, and Alyssa Lilacker were in class. Gia and Jacob Batts were working. Jasmine Cruz, Aubrey, Chevi, Cameron Long, Dalton Lewis, Aiden Rushin, Allen Abel, Nicholas Burks, Bradley — better known as Max — and Haley were all trying to enjoy their school day.
 
-Then somebody looked toward the classroom door and whispered, “Oh no. Here they come.”
+Then somebody spotted a familiar face at the classroom door.
 
-Because standing at the door was Ms. Kayla. And depending on the day, Ms. Mindy or Ms. Autumn might not be far behind.
+Jocquan leaned over and said, “Oh no. Ms. Kayla is here again. I actually LIKE this class!”
 
-Now listen. These students did not hate us. But were they tired of getting pulled from their favorite classes sometimes? Absolutely.
+Olivia laughed. “Don't make eye contact. Maybe she won't see us.”
 
-One student sighed, “Why do y'all always come when I'm actually doing something fun?” Another said, “Can I just stay today?” And somebody in the back was probably thinking, “If I don't make eye contact, maybe she won't see me.” Nice try.
+Kaylee said, “Girl, she already saw us.”
 
-But that day, the group came anyway. And the lesson was about choices. Not perfect choices. Real choices.
+And just when everybody thought they were safe, somebody else whispered, “Wait — is that Ms. Mindy coming down the hall?”
 
-They talked about what happens when a friend wants you to skip something important. What happens when somebody posts something messy online and everybody wants you to jump into the comments. What happens when you are angry at school, tired, embarrassed, or just completely over everybody.
+Alyssa said, “And Ms. Autumn is behind her! We are DONE.”
 
-Jocquan said one choice can turn a small problem into a huge one. Olivia pointed out that sometimes walking away keeps you from saying something you cannot take back. Kaylee said asking for help is not the same as being weak. Gia and Jacob talked about thinking before reacting. Dalton and Aiden talked about how choices at school can follow you into a job.
+Across the hall, Max saw them coming and said, “Why do y'all always find me when I'm doing something I actually want to do?”
 
-And yes, there was drama. Somebody was irritated. Somebody thought somebody else was talking about them. Somebody wanted to prove a point. Somebody was ready to send a text they definitely should not send.
+Haley laughed and said, “Max, just go. She's not leaving.”
 
-Ms. Kayla said, “Before you do it, ask yourself three things. What could happen next? Is this helping me get where I want to go? And will tomorrow-me be glad I did this?”
+Meanwhile, Gia was trying to finish what she was doing before getting pulled. She gathered her things, looked at Jacob, and said, “Come on. If we go now, maybe we'll get back before class is over.”
 
-The room got quiet.
+Jacob said, “That's what y'all said last time.”
 
-Because good choices are not always the fun choice in the moment. Sometimes the good choice is going to the session when you would rather stay in class. Sometimes it is finishing the assignment. Sometimes it is apologizing first. Sometimes it is leaving the group chat alone. Sometimes it is telling the truth when the truth is uncomfortable. And sometimes it is letting Ms. Kayla, Ms. Mindy, or Ms. Autumn pull you out of your favorite class one more time.
+Jaden tried the classic strategy: suddenly looking extremely busy. Clark started laughing because everybody knew exactly what he was doing.
 
-By the end of the day, everybody went back to class. Nobody magically loved being pulled. Let's not get carried away.
+Noah just looked at the group like, “Are we going or not?”
 
-But later, when they had to make a decision on their own, something from those annoying little sessions showed up in their heads. Pause. Think. Look at what happens next. Choose the thing that helps future-you.
+Cameron, Dalton, Aiden, Allen, Nicholas, Jasmine, Aubrey, and Chevi had all heard some version of the same complaint: Why today? Why this class? Can we do it later?
 
-And that was when they realized the point was never to make school less fun. The point was to practice making decisions while there were adults around to help, so when real life showed up, they could handle it themselves.
+But that day's session was about making good choices — especially when you're mad, embarrassed, tired, pressured by friends, or just completely over everybody.
 
-So yes, they were tired of seeing us at the classroom door. But at the end of the day? It was worth it.
+Ms. Kayla gave them a situation: Somebody posts something messy about you online. Everybody is tagging you. Your friends are telling you to clap back immediately. What do you do?
 
-Now enjoy the rest of the park before Ms. Kayla finds another worksheet.`;
+Jocquan said, “I'm not gonna lie. My first thought is probably to say something back.”
+
+Gia said, “But then everybody screenshots it, and now the problem is bigger.”
+
+Max shook his head and said, “Just don't put me in the group chat in the first place.”
+
+Everybody laughed.
+
+Olivia said she might type the response but wait before sending it. Kaylee said sometimes you need to ask somebody you trust before reacting. Alyssa pointed out that walking away doesn't mean you're scared. Jacob said if you know something will get you in trouble, proving a point might not be worth it.
+
+Dalton and Aiden connected it to work. If you blow up at a coworker or supervisor, you can't always undo it afterward. Jasmine and Aubrey talked about how tone can change a whole conversation. Cameron said sometimes the smartest choice is just staying out of drama that has nothing to do with you.
+
+Then Ms. Kayla gave them three questions: What could happen next? Is this helping me get where I want to go? And will tomorrow-me be glad I did this?
+
+That got everybody quiet.
+
+Because good choices aren't always the fun choices. Sometimes the good choice is going to a session when you'd rather stay in your favorite class. Sometimes it's finishing what you started. Sometimes it's apologizing first. Sometimes it's leaving the group chat alone. Sometimes it's telling the truth when the truth is uncomfortable.
+
+And sometimes it's seeing Ms. Kayla, Ms. Mindy, or Ms. Autumn standing at the classroom door and thinking, “Not AGAIN,” but getting up and going anyway.
+
+At the end of the day, everybody went back to class. Nobody suddenly started cheering when they got pulled. Let's not get carried away.
+
+But later, Jocquan had a moment when he wanted to react fast — and he remembered to pause. Gia had to make a decision and thought about what would happen next. Max was dealing with something irritating and, even though he had something to say, decided every thought did not need to become an argument.
+
+Olivia, Kaylee, Alyssa, Jacob, Jaden, Clark, Noah, Jasmine, Aubrey, Chevi, Cameron, Dalton, Aiden, Allen, Nicholas, Haley, and the rest of the crew started noticing the same thing. Those sessions they complained about were showing up when they actually needed them.
+
+That was the whole point.
+
+Ms. Kayla, Ms. Mindy, and Ms. Autumn weren't trying to ruin their favorite classes. They were helping them practice decisions while adults were around to help — so when real life showed up, they could handle things themselves.
+
+Were they still going to sigh the next time somebody appeared at the classroom door? Absolutely.
+
+Was somebody still going to say, “Can you come back next period?” Probably.
+
+But at the end of the day, they knew something they didn't always want to admit.
+
+It was worth it.
+
+Now enjoy the rest of the park before Ms. Kayla comes back with another worksheet.`
 
 function recreationZone(){
  document.querySelector('#transitionPlaygroundScene')?.remove();document.querySelector('#recreationZone')?.remove();
