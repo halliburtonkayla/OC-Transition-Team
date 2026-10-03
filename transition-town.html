@@ -206,7 +206,7 @@ function transitionStoryTime(){
 let transitionStoryAudio=null;
 function transitionStoryGetAudio(){
  if(!transitionStoryAudio){
-  transitionStoryAudio=new Audio('./NoteGPT_Multi_Voice_1790991393519.mp3');
+  transitionStoryAudio=new Audio('https://raw.githubusercontent.com/halliburtonkayla/OC-Transition-Team/main/NoteGPT_Multi_Voice_1790991393519.mp3');
   transitionStoryAudio.preload='auto';
   transitionStoryAudio.addEventListener('ended',()=>{let st=document.querySelector('#storyVoiceStatus');if(st)st.textContent='Story finished. Good choices matter!'});
  }
@@ -214,7 +214,7 @@ function transitionStoryGetAudio(){
 }
 function transitionStorySpeak(){
  let a=transitionStoryGetAudio(),st=document.querySelector('#storyVoiceStatus');
- a.play().then(()=>{if(st)st.textContent='Playing: The Text That Almost Ruined Friday'}).catch(()=>{if(st)st.textContent='Story audio file needs to be added to the site.'})
+ a.play().then(()=>{if(st)st.textContent='Playing: The Text That Almost Ruined Friday'}).catch((err)=>{if(st)st.textContent='Audio could not start. Tap Play Story again.';console.error('Story audio error',err)})
 }
 function transitionStoryPause(){
  let a=transitionStoryGetAudio(),st=document.querySelector('#storyVoiceStatus');
