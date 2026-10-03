@@ -21,4 +21,7 @@ function getSaved(){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch
 function render(){const yes=getSaved().includes(id);btn.setAttribute('aria-pressed',yes?'true':'false');btn.title=yes?'Remove Saved House':'Save This House';}
 btn.addEventListener('click',()=>{let s=getSaved(); if(s.includes(id)){s=s.filter(x=>x!==id);status.textContent=title+' removed from saved houses.'}else{s.push(id);status.textContent=title+' saved.'} localStorage.setItem(key,JSON.stringify(s));render();});
 render();
-</script></body></html>
+</script>
+<audio id="housingTheme" src="Transition-Town-Housing-Audio.mp3" preload="auto" loop></audio>
+<script>(function(){const a=document.getElementById('housingTheme');if(!a)return;const play=()=>a.play().catch(()=>{});play();document.addEventListener('click',play,{once:true});document.addEventListener('touchstart',play,{once:true,passive:true});})();</script>
+</body></html>
