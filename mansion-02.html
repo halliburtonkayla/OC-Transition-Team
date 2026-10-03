@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mansion 2 — Oak Valley Manor</title><link rel="stylesheet" href="styles.css"></head>
+<body><main class="wrap">
+<div class="card" id="listingCard">
+<img class="listing" src="images/mansion-02.png" alt="Mansion 2 — Oak Valley Manor">
+<a class="hotspot back" href="index.html" aria-label="Back to Housing Office" title="Back to Housing Office"></a>
+<a class="hotspot town" href="index.html" aria-label="Transition Town" title="Transition Town"></a>
+<a class="hotspot bank" href="bank.html?property=mansion-02" aria-label="Talk to the Bank" title="Talk to the Bank"></a>
+<a class="hotspot offer" href="offer.html?property=mansion-02" aria-label="Make an Offer" title="Make an Offer"></a>
+<button class="hotspot save" type="button" aria-label="Save This House" title="Save This House"></button>
+</div>
+<p class="note" id="status">Interior Photos is intentionally not clickable because the photos are already shown on the listing.</p>
+</main>
+<script>
+const key='ttSavedHomes';
+const btn=document.querySelector('.save');
+const status=document.getElementById('status');
+const id="mansion-02";
+const title="Mansion 2 \u2014 Oak Valley Manor";
+function getSaved(){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch(e){return []}}
+function render(){const yes=getSaved().includes(id);btn.setAttribute('aria-pressed',yes?'true':'false');btn.title=yes?'Remove Saved House':'Save This House';}
+btn.addEventListener('click',()=>{let s=getSaved(); if(s.includes(id)){s=s.filter(x=>x!==id);status.textContent=title+' removed from saved houses.'}else{s.push(id);status.textContent=title+' saved.'} localStorage.setItem(key,JSON.stringify(s));render();});
+render();
+</script></body></html>

@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transition Town Bank</title><link rel="stylesheet" href="styles.css"></head><body>
+<main class="form"><h1>Talk to the Bank</h1><p id="prop"></p>
+<label>Monthly income <input id="income" type="number" min="0" step="1"></label>
+<label>Monthly debt payments <input id="debt" type="number" min="0" step="1"></label>
+<label>Down payment available <input id="down" type="number" min="0" step="1"></label>
+<button class="action" id="check" type="button">Review My Numbers</button>
+<p id="result" aria-live="polite"></p><a class="action" href="index.html">Back to Housing Office</a></main>
+<script>
+const p=new URLSearchParams(location.search).get('property')||'selected property';
+document.getElementById('prop').textContent='Property: '+p.replaceAll('-',' ');
+document.getElementById('check').addEventListener('click',()=>{const i=Math.max(0,+document.getElementById('income').value||0),d=Math.max(0,+document.getElementById('debt').value||0),dp=Math.max(0,+document.getElementById('down').value||0);document.getElementById('result').textContent=`Practice review: monthly income $${i.toLocaleString()}, existing monthly debts $${d.toLocaleString()}, down payment $${dp.toLocaleString()}. In Transition Town, the next step is to compare these numbers with the property's full monthly housing cost before deciding what you can afford.`});
+</script></body></html>

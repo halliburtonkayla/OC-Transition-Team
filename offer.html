@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Make an Offer</title><link rel="stylesheet" href="styles.css"></head><body>
+<main class="form"><h1>Practice Purchase Offer</h1><p id="prop"></p>
+<form id="offerForm"><label>Your name <input required name="name"></label>
+<label>Offer amount <input required name="amount" type="number" min="1" step="1"></label>
+<label>Down payment <input required name="down" type="number" min="0" step="1"></label>
+<label>Financing <select name="financing"><option>Mortgage financing</option><option>Cash purchase</option><option>Need to talk to bank first</option></select></label>
+<label>Notes / conditions <textarea name="notes" rows="4" placeholder="Example: Offer depends on inspection and financing approval."></textarea></label>
+<button class="action" type="submit">Submit Practice Offer</button></form>
+<p id="result" aria-live="polite"></p><a class="action" href="index.html">Back to Housing Office</a></main>
+<script>
+const p=new URLSearchParams(location.search).get('property')||'selected property';
+document.getElementById('prop').textContent='Property: '+p.replaceAll('-',' ');
+document.getElementById('offerForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget);document.getElementById('result').textContent=`Practice offer recorded for $${Number(f.get('amount')).toLocaleString()}. This is a Transition Town learning activity, not a real estate contract.`;});
+</script></body></html>
