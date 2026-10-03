@@ -158,7 +158,57 @@ function saveMockApplication(job){let g=id=>document.getElementById(id)?.value.t
 function printMockApplication(job){let w=get(),r=w.residents[current],a=(r.applications||[]).filter(x=>x.job===job&&x.availability).slice(-1)[0];if(!a)return alert('No completed mock application found.');let rows=[['Applicant',a.name],['Position',a.job],['Transition Town Phone',a.phone||''],['Availability',a.availability],['Education / Training',a.education],['Work / Volunteer Experience',a.experience],['Skills',a.skills],['Why I am a good fit',a.why],['Reference',a.reference||''],['Completed',a.date]];let p=window.open('','_blank');p.document.write('<html><head><title>Mock Application</title><style>body{font-family:Arial;padding:35px;line-height:1.45}h1{border-bottom:3px solid #222}.row{margin:16px 0}.ans{border:1px solid #999;padding:10px;min-height:28px}</style></head><body><h1>MOCK JOB APPLICATION</h1><p>Transition Town • Classroom Practice Only</p>'+rows.map(x=>'<div class="row"><b>'+x[0]+'</b><div class="ans">'+x[1]+'</div></div>').join('')+'<script>window.onload=()=>window.print()<\/script>
 
 
-</body></html>');p.document.close()}
+<style id="tt-controls-repair-20261003">
+/* Keep the two drawer arrows available on phones in portrait AND landscape. */
+@media(max-width:1100px){
+ .ttDrawerTab{display:flex!important;position:fixed!important;top:48%!important;width:42px!important;height:68px!important;z-index:20000!important;background:#111!important;color:#fff!important;border:2px solid #fff!important;align-items:center!important;justify-content:center!important;font-size:30px!important;box-shadow:0 5px 18px #0008!important}
+ .ttDrawerTab.left{left:0!important;border-radius:0 14px 14px 0!important}
+ .ttDrawerTab.right{right:0!important;border-radius:14px 0 0 14px!important}
+ .ttTownMenu,.ttKaylaInfo{z-index:19999!important;transition:transform .25s ease!important;top:54px!important;max-height:calc(100dvh - 60px)!important;overflow:auto!important}
+ .ttTownMenu{left:0!important;width:min(78vw,290px)!important;transform:translateX(calc(-100% - 12px))!important}
+ .ttTownMenu.mobileOpen{transform:translateX(0)!important}
+ .ttKaylaInfo{right:0!important;width:min(74vw,275px)!important;transform:translateX(calc(100% + 12px))!important}
+ .ttKaylaInfo.mobileOpen{transform:translateX(0)!important}
+}
+/* Real clickable map zones sit over the illustrated map. */
+.ttMapHit{position:absolute!important;display:block!important;z-index:15000!important;border:0!important;background:transparent!important;color:transparent!important;padding:0!important;margin:0!important;cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(255,255,255,.18)!important}
+</style>
+<script id="tt-controls-repair-js-20261003">
+(function(){
+ function setup(){
+   var menu=document.querySelector('.ttTownMenu'), info=document.querySelector('.ttKaylaInfo');
+   window.toggleTownDrawer=function(which){
+     if(!menu||!info)return;
+     if(which==='menu'){menu.classList.toggle('mobileOpen');info.classList.remove('mobileOpen')}
+     else{info.classList.toggle('mobileOpen');menu.classList.remove('mobileOpen')}
+   };
+   var map=document.querySelector('.townmap');
+   if(!map||map.querySelector('.ttMapHit'))return;
+   var zones=[
+    ['Bank',5,6,18,27,function(){place('bank')}],
+    ['City Hall',25,4,18,27,function(){place('city')}],
+    ['Medical Center',47,5,19,26,function(){place('medical')}],
+    ['Career & Job Center',69,5,25,27,function(){place('jobs')}],
+    ['Cool Vibes',4,35,17,20,function(){meeting('Cool Vibes')}],
+    ['3K Tire Shop',23,35,17,20,function(){meeting('3K Tire Shop')}],
+    ['The Zoo',42,35,17,20,function(){meeting('The Zoo')}],
+    ['Guardian Angel',61,35,17,20,function(){meeting('Guardian Angel')}],
+    ['The Main Attraction',80,35,17,20,function(){meeting('The Main Attraction')}],
+    ['Police & Fire',4,65,19,25,function(){place('safety')}],
+    ['Training & College',25,64,20,25,function(){place('school')}],
+    ['Neighborhood',55,61,21,31,function(){location.href='housing-office.html'}],
+    ['Town Shops',78,61,18,30,function(){place('shops')}]
+   ];
+   zones.forEach(function(z){
+     var b=document.createElement('button');b.type='button';b.className='ttMapHit';b.setAttribute('aria-label',z[0]);
+     b.style.left=z[1]+'%';b.style.top=z[2]+'%';b.style.width=z[3]+'%';b.style.height=z[4]+'%';
+     b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();z[5]()});
+     map.appendChild(b);
+   });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+})();
+</script></body></html>');p.document.close()}
 
 function careerHelp(){careerPanel('Career Help','<div class="roomgrid"><div class="roomcard"><h3>Mock Job Applications</h3><p>Practice filling out realistic applications without using real private information.</p><button onclick="mockApplications()">Open Mock Applications</button></div><div class="roomcard"><h3>Resume Practice</h3><p>Practice the information that belongs on a basic student resume.</p><button onclick="mockResume()">Build a Mock Resume</button></div><div class="roomcard"><h3>Practice Interviews</h3><p>Answer common interview questions and practice professional responses.</p><button onclick="mockInterview()">Practice Interview</button></div><div class="roomcard"><h3>Work Schedules & Soft Skills</h3><p>Practice communication, teamwork, attendance and reading a work schedule.</p><a href="workplace-readiness.html" style="display:block;text-align:center;padding:12px;border-radius:12px;background:#5b21b6;color:white;font-weight:800;text-decoration:none">Open Workplace Readiness</a></div></div>')}
 function mockApplications(){let jobs=['Fast Food Crew Member','Retail / Grocery Associate','Bank Teller','Child Care Assistant','Office / City Hall Assistant','Medical Front Desk','Warehouse / Manufacturing','Public Safety Trainee'];careerPanel('Mock Job Applications','<p>Choose a practice application. <b>Do not enter real SSN, bank information, passwords, or other private information.</b></p><div class="roomgrid">'+jobs.map(x=>'<div class="roomcard"><h3>'+x+'</h3><p>Realistic classroom application practice.</p><button onclick="mockApplicationForm(\''+x.replace(/'/g,"\\'")+'\')">Start Mock Application</button></div>').join('')+'</div>')}
