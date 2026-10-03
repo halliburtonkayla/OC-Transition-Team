@@ -88,6 +88,29 @@ html,body,.sky,.town,.townmap{background:#050505!important}
  .townmap .bizdistrict{pointer-events:none!important;z-index:90!important}
  .townmap .bizdistrict .bizbuilding{pointer-events:auto!important}
 }
+</style><style id="tt-map-hotspot-alignment-20261003">
+/* Clickable transparent zones aligned to transition-town-master.png. */
+.townmap{position:relative!important}
+.townmap .maplot{
+ position:absolute!important;
+ opacity:0!important;
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+ z-index:500!important;
+ pointer-events:auto!important;
+ touch-action:manipulation!important;
+}
+.townmap .banklot{left:5%!important;top:6%!important;width:18%!important;height:27%!important}
+.townmap .citylot{left:25%!important;top:4%!important;width:18%!important;height:27%!important}
+.townmap .medicallot{left:47%!important;right:auto!important;top:5%!important;width:19%!important;height:26%!important}
+.townmap .joblot{left:69%!important;right:auto!important;top:5%!important;width:25%!important;height:27%!important}
+.townmap .safetylot{left:4%!important;top:65%!important;bottom:auto!important;width:19%!important;height:25%!important}
+.townmap .schoollot{left:25%!important;top:64%!important;bottom:auto!important;width:20%!important;height:25%!important}
+.townmap .homelot{left:55%!important;right:auto!important;top:61%!important;bottom:auto!important;width:21%!important;height:31%!important}
+.townmap .shoplot{left:78%!important;right:auto!important;top:61%!important;bottom:auto!important;width:18%!important;height:30%!important}
+.townmap .bizdistrict{pointer-events:none!important}
+.townmap .bizbuilding{pointer-events:auto!important;z-index:510!important;touch-action:manipulation!important}
 </style></head><body><div class="sky"><div class="cloud c1"></div><div class="cloud c2"></div><header><div class="logo">Transition Town</div><div><button class="topbtn" onclick="studentView()">Student View</button><button class="topbtn" onclick="teacherView()">Miss Kayla View</button><button class="topbtn" onclick="tutorial()">Tutorial</button><button class="topbtn" onclick="location.href='index.html'">Hub</button></div></header><nav class="ttTownMenu" aria-label="Town Directory"><h3>Town Directory</h3>
 <button onclick="place('bank')">Bank</button>
 <button onclick="place('city')">City Hall</button>
