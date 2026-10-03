@@ -92,7 +92,7 @@ html,body,.sky,.town,.townmap{background:#050505!important}
 <button onclick="meeting('The Main Attraction')">The Main Attraction</button>
 <button onclick="place('housing')">Neighborhood</button>
 <button onclick="place('shops')">Town Shops</button>
-</nav><button class="ttDrawerTab left" aria-label="Open Town Directory" onclick="toggleTownDrawer('menu')">›</button><button class="ttDrawerTab right" aria-label="Open Miss Kayla Information Center" onclick="toggleTownDrawer('kayla')">‹</button><aside class="ttKaylaInfo" aria-label="Miss Kayla Information Center"><img src="./miss-kayla-info-center.png" alt="Miss Kayla, Work-Based Specialist"><h3>Miss Kayla</h3><p>Work-Based Specialist<br>Information Center</p><button onclick="kaylaHelp()">Need Help?</button><div class="ttThemeSong" aria-label="Transition Town theme music"><button id="ttSoundToggle" class="ttSoundToggle" type="button" onclick="toggleTownTheme()"><span class="ttSoundIcon">♪</span><span id="ttSoundLabel">Sound On</span></button><audio id="ttThemeAudio" preload="auto" loop><source src="./Transition-Town-Theme-Song.mp3?v=20261002" type="audio/mpeg"></audio></div></aside><main class="town"><section class="welcome"><h1>Welcome to Town</h1><p id="status">Choose a resident and step into your life.</p></section><section class="road townmap" aria-label="Transition Town city map">
+</nav><button class="ttDrawerTab left" aria-label="Open Town Directory" onclick="toggleTownDrawer('menu')">›</button><button class="ttDrawerTab right" aria-label="Open Miss Kayla Information Center" onclick="toggleTownDrawer('kayla')">‹</button><aside class="ttKaylaInfo" aria-label="Miss Kayla Information Center"><img src="./miss-kayla-info-center.png" alt="Miss Kayla, Work-Based Specialist"><h3>Miss Kayla</h3><p>Work-Based Specialist<br>Information Center</p><button onclick="kaylaHelp()">Need Help?</button><div class="ttThemeSong" aria-label="Transition Town theme music"><button id="ttSoundToggle" class="ttSoundToggle" type="button" onclick="toggleTownTheme()"><span class="ttSoundIcon">♪</span><span id="ttSoundLabel">Sound On</span></button><audio id="ttThemeAudio" src="./Transition-Town-Theme-Song.mp3" preload="auto" autoplay loop playsinline></audio></div></aside><main class="town"><section class="welcome"><h1>Welcome to Town</h1><p id="status">Choose a resident and step into your life.</p></section><section class="road townmap" aria-label="Transition Town city map">
 <img class="townMasterArt" src="./transition-town-master.png?v=20261001-2" alt="Transition Town city map">
 <div class="maproad horizontal"></div><div class="maproad vertical"></div><div class="maproad cross"></div>
 <button class="lot maplot banklot" onclick="place('bank')"><div class="building bank"><span class="mapmark">BANK</span></div><b>Transition Town Bank</b></button>
@@ -600,19 +600,22 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
  function setLabel(t){if(label)label.textContent=t}
  function playTheme(){
    a.muted=false;
-   var p=a.play();
-   if(p&&p.then)p.then(function(){setLabel('Sound Off')}).catch(function(){setLabel('Tap for Sound')});
+   a.play().then(function(){setLabel('Sound Off')}).catch(function(){setLabel('Tap for Sound')});
  }
  window.toggleTownTheme=function(){
    if(a.paused){localStorage.ttThemeSound='on';playTheme()}
    else{a.pause();localStorage.ttThemeSound='off';setLabel('Sound On')}
  };
- if(localStorage.ttThemeSound!=='off')playTheme();
+ // Start immediately when allowed, then retry on EVERY genuine user interaction until it succeeds.
+ if(localStorage.ttThemeSound!=='off')playTheme(); else setLabel('Sound On');
  function unlock(){
-   if(localStorage.ttThemeSound!=='off'&&a.paused)playTheme();
+   if(localStorage.ttThemeSound==='off'||!a.paused)return;
+   playTheme();
  }
- ['pointerdown','touchstart','click','keydown'].forEach(function(ev){
-   document.addEventListener(ev,unlock,{capture:true,once:true});
- });
+ document.addEventListener('pointerdown',unlock,true);
+ document.addEventListener('touchend',unlock,true);
+ document.addEventListener('click',unlock,true);
+ document.addEventListener('keydown',unlock,true);
+ window.addEventListener('pageshow',function(){if(localStorage.ttThemeSound!=='off'&&a.paused)playTheme()});
 })();
 </script></body></html>
