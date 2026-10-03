@@ -188,50 +188,6 @@ function printMockApplication(job){let w=get(),r=w.residents[current],a=(r.appli
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startTheme);else startTheme();
 })();
-</script><script id="tt-nav-controller">
-(function(){
-  function showPanel(html){
-    var content=document.getElementById('content'), sheet=document.getElementById('sheet');
-    if(content&&sheet){content.innerHTML=html;sheet.classList.add('show');return true}
-    return false;
-  }
-  function run(name,arg){
-    try{
-      var fn=window[name];
-      if(typeof fn==='function'){ fn(arg); return true; }
-    }catch(err){ console.error('Transition Town navigation:',name,err); }
-    return false;
-  }
-  var routes={
-    'Bank':function(){return run('bankLobby')||run('place','bank')},
-    'City Hall':function(){return run('cityHallLobby')||run('place','city')},
-    'Medical Center':function(){return run('medicalCenter')||run('place','medical')},
-    'Career & Job Center':function(){return run('careerJobCenter')||run('place','jobs')},
-    'Training & College':function(){return run('trainingCollege')||run('place','school')},
-    'Transition Park':function(){return run('transitionPark')||run('place','park')},
-    'Police & Fire':function(){return run('place','safety')},
-    'Cool Vibes':function(){return run('meeting','Cool Vibes')},
-    'Guardian Angel Childcare':function(){return run('meeting','Guardian Angel')},
-    'The Zoo Pet Sitting':function(){return run('meeting','The Zoo')},
-    '3K Tire Shop':function(){return run('meeting','3K Tire Shop')},
-    'The Main Attraction':function(){return run('meeting','The Main Attraction')},
-    'Neighborhood':function(){return run('place','housing')},
-    'Town Shops':function(){return run('place','shops')}
-  };
-  function bind(){
-    document.querySelectorAll('.ttTownMenu button').forEach(function(btn){
-      btn.onclick=null;
-      btn.addEventListener('click',function(ev){
-        ev.preventDefault(); ev.stopPropagation();
-        var label=(btn.textContent||'').replace(/\s+/g,' ').trim();
-        var route=routes[label];
-        if(route && route()!==false) return;
-        showPanel('<h2>'+label+'</h2><p>This area is temporarily unavailable while Transition Town finishes loading. Please return to the Town Map and try again.</p>');
-      });
-    });
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
-})();
 </script></body></html>');p.document.close()}
 
 function careerHelp(){careerPanel('Career Help','<div class="roomgrid"><div class="roomcard"><h3>Mock Job Applications</h3><p>Practice filling out realistic applications without using real private information.</p><button onclick="mockApplications()">Open Mock Applications</button></div><div class="roomcard"><h3>Resume Practice</h3><p>Practice the information that belongs on a basic student resume.</p><button onclick="mockResume()">Build a Mock Resume</button></div><div class="roomcard"><h3>Practice Interviews</h3><p>Answer common interview questions and practice professional responses.</p><button onclick="mockInterview()">Practice Interview</button></div><div class="roomcard"><h3>Work Schedules & Soft Skills</h3><p>Practice communication, teamwork, attendance and reading a work schedule.</p><a href="workplace-readiness.html" style="display:block;text-align:center;padding:12px;border-radius:12px;background:#5b21b6;color:white;font-weight:800;text-decoration:none">Open Workplace Readiness</a></div></div>')}
