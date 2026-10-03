@@ -77,6 +77,13 @@ html,body,.sky,.town,.townmap{background:#050505!important}
 .ttSoundToggle{width:100%;border:0;border-radius:999px;padding:9px 10px;background:linear-gradient(135deg,#f6c6df,#d9c8f7);color:#4d3568;font-weight:900;box-shadow:0 5px 14px #0002;cursor:pointer}
 .ttSoundToggle:hover{transform:translateY(-1px)}
 .ttSoundToggle .ttSoundIcon{display:inline-block;margin-right:5px}
+</style><style id="tt-map-hotspot-final-fix">
+/* Keep the map artwork visual-only so it can never block the clickable hotspots. */
+.townMasterArt{pointer-events:none!important;z-index:1!important}
+.townmap .maplot{z-index:20!important;pointer-events:auto!important}
+.townmap .bizdistrict{z-index:21!important}
+.townmap .bizbuilding{z-index:22!important;pointer-events:auto!important}
+.townmap .park{z-index:22!important;pointer-events:auto!important}
 </style></head><body><div class="sky"><div class="cloud c1"></div><div class="cloud c2"></div><header><div class="logo">Transition Town</div><div><button class="topbtn" onclick="studentView()">Student View</button><button class="topbtn" onclick="teacherView()">Miss Kayla View</button><button class="topbtn" onclick="tutorial()">Tutorial</button><button class="topbtn" onclick="location.href='index.html'">Hub</button></div></header><nav class="ttTownMenu" aria-label="Town Directory"><h3>Town Directory</h3>
 <button onclick="place('bank')">Bank</button>
 <button onclick="place('city')">City Hall</button>
