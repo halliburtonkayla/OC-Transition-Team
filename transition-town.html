@@ -77,6 +77,17 @@ html,body,.sky,.town,.townmap{background:#050505!important}
 .ttSoundToggle{width:100%;border:0;border-radius:999px;padding:9px 10px;background:linear-gradient(135deg,#f6c6df,#d9c8f7);color:#4d3568;font-weight:900;box-shadow:0 5px 14px #0002;cursor:pointer}
 .ttSoundToggle:hover{transform:translateY(-1px)}
 .ttSoundToggle .ttSoundIcon{display:inline-block;margin-right:5px}
+</style><style id="tt-arrows-map-css-only-20261003">
+@media(max-width:1100px){
+ .ttDrawerTab{display:flex!important;position:fixed!important;top:48%!important;width:42px!important;height:68px!important;z-index:20000!important;background:#111!important;color:#fff!important;border:2px solid #fff!important;align-items:center!important;justify-content:center!important;font-size:30px!important;pointer-events:auto!important;touch-action:manipulation!important}
+ .ttDrawerTab.left{left:0!important;border-radius:0 14px 14px 0!important}
+ .ttDrawerTab.right{right:0!important;border-radius:14px 0 0 14px!important}
+ .ttTownMenu,.ttKaylaInfo{z-index:19999!important}
+ .townMasterArt{pointer-events:none!important;z-index:1!important}
+ .townmap .maplot,.townmap .bizbuilding{display:block!important;visibility:visible!important;pointer-events:auto!important;touch-action:manipulation!important;z-index:100!important}
+ .townmap .bizdistrict{pointer-events:none!important;z-index:90!important}
+ .townmap .bizdistrict .bizbuilding{pointer-events:auto!important}
+}
 </style></head><body><div class="sky"><div class="cloud c1"></div><div class="cloud c2"></div><header><div class="logo">Transition Town</div><div><button class="topbtn" onclick="studentView()">Student View</button><button class="topbtn" onclick="teacherView()">Miss Kayla View</button><button class="topbtn" onclick="tutorial()">Tutorial</button><button class="topbtn" onclick="location.href='index.html'">Hub</button></div></header><nav class="ttTownMenu" aria-label="Town Directory"><h3>Town Directory</h3>
 <button onclick="place('bank')">Bank</button>
 <button onclick="place('city')">City Hall</button>
