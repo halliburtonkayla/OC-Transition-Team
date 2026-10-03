@@ -158,6 +158,32 @@ function saveMockApplication(job){let g=id=>document.getElementById(id)?.value.t
 function printMockApplication(job){let w=get(),r=w.residents[current],a=(r.applications||[]).filter(x=>x.job===job&&x.availability).slice(-1)[0];if(!a)return alert('No completed mock application found.');let rows=[['Applicant',a.name],['Position',a.job],['Transition Town Phone',a.phone||''],['Availability',a.availability],['Education / Training',a.education],['Work / Volunteer Experience',a.experience],['Skills',a.skills],['Why I am a good fit',a.why],['Reference',a.reference||''],['Completed',a.date]];let p=window.open('','_blank');p.document.write('<html><head><title>Mock Application</title><style>body{font-family:Arial;padding:35px;line-height:1.45}h1{border-bottom:3px solid #222}.row{margin:16px 0}.ans{border:1px solid #999;padding:10px;min-height:28px}</style></head><body><h1>MOCK JOB APPLICATION</h1><p>Transition Town • Classroom Practice Only</p>'+rows.map(x=>'<div class="row"><b>'+x[0]+'</b><div class="ans">'+x[1]+'</div></div>').join('')+'<script>window.onload=()=>window.print()<\/script>
 <audio id="housingTheme" src="Transition-Town-Housing-Audio.mp3" preload="auto" loop></audio>
 <script>(function(){const a=document.getElementById('housingTheme');if(!a)return;const play=()=>a.play().catch(()=>{});play();document.addEventListener('click',play,{once:true});document.addEventListener('touchstart',play,{once:true,passive:true});})();</script>
+
+<style id="tt-mobile-tap-repair">
+.townMasterArt{pointer-events:none!important}
+.townmap .maplot,.townmap .bizbuilding,.townmap .park{pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(91,67,157,.18)}
+@media(max-width:1000px){.townmap .maplot,.townmap .bizbuilding,.townmap .park{z-index:20!important}}
+</style>
+<script id="tt-mobile-tap-repair-js">
+(function(){
+ function activate(el){
+   if(!el)return;
+   var code=el.getAttribute('onclick');
+   if(!code)return;
+   try{ Function(code).call(el); }catch(e){
+     try{ el.click(); }catch(ignore){}
+   }
+ }
+ var root=document.querySelector('.townmap');
+ if(!root)return;
+ root.addEventListener('touchend',function(e){
+   var el=e.target.closest('.maplot,.bizbuilding,.park');
+   if(!el)return;
+   e.preventDefault();
+   activate(el);
+ },{passive:false});
+})();
+</script>
 </body></html>');p.document.close()}
 
 function careerHelp(){careerPanel('Career Help','<div class="roomgrid"><div class="roomcard"><h3>Mock Job Applications</h3><p>Practice filling out realistic applications without using real private information.</p><button onclick="mockApplications()">Open Mock Applications</button></div><div class="roomcard"><h3>Resume Practice</h3><p>Practice the information that belongs on a basic student resume.</p><button onclick="mockResume()">Build a Mock Resume</button></div><div class="roomcard"><h3>Practice Interviews</h3><p>Answer common interview questions and practice professional responses.</p><button onclick="mockInterview()">Practice Interview</button></div><div class="roomcard"><h3>Work Schedules & Soft Skills</h3><p>Practice communication, teamwork, attendance and reading a work schedule.</p><a href="workplace-readiness.html" style="display:block;text-align:center;padding:12px;border-radius:12px;background:#5b21b6;color:white;font-weight:800;text-decoration:none">Open Workplace Readiness</a></div></div>')}
