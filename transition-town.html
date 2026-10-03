@@ -188,6 +188,26 @@ function printMockApplication(job){let w=get(),r=w.residents[current],a=(r.appli
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startTheme);else startTheme();
 })();
+</script><script id="tt-emergency-nav">
+(function(){
+ function go(k){
+  try{
+   if(k==='bank'&&typeof bankLobby==='function')return bankLobby();
+   if(k==='city'&&typeof cityHallLobby==='function')return cityHallLobby();
+   if(k==='medical'&&typeof medicalCenter==='function')return medicalCenter();
+   if(k==='jobs'&&typeof careerJobCenter==='function')return careerJobCenter();
+   if(k==='school'&&typeof trainingCollege==='function')return trainingCollege();
+   if(k==='park'&&typeof transitionPark==='function')return transitionPark();
+   if(typeof place==='function')return place(k);
+  }catch(e){alert('Transition Town could not open this area: '+e.message)}
+ }
+ document.addEventListener('click',function(e){
+  var b=e.target.closest('.ttTownMenu button'); if(!b)return;
+  var t=(b.textContent||'').trim();
+  var map={'Bank':'bank','City Hall':'city','Medical Center':'medical','Career & Job Center':'jobs','Training & College':'school','Transition Park':'park','Police & Fire':'safety','Neighborhood':'housing','Town Shops':'shops'};
+  if(map[t]){e.preventDefault();e.stopImmediatePropagation();go(map[t])}
+ },true);
+})();
 </script></body></html>');p.document.close()}
 
 function careerHelp(){careerPanel('Career Help','<div class="roomgrid"><div class="roomcard"><h3>Mock Job Applications</h3><p>Practice filling out realistic applications without using real private information.</p><button onclick="mockApplications()">Open Mock Applications</button></div><div class="roomcard"><h3>Resume Practice</h3><p>Practice the information that belongs on a basic student resume.</p><button onclick="mockResume()">Build a Mock Resume</button></div><div class="roomcard"><h3>Practice Interviews</h3><p>Answer common interview questions and practice professional responses.</p><button onclick="mockInterview()">Practice Interview</button></div><div class="roomcard"><h3>Work Schedules & Soft Skills</h3><p>Practice communication, teamwork, attendance and reading a work schedule.</p><a href="workplace-readiness.html" style="display:block;text-align:center;padding:12px;border-radius:12px;background:#5b21b6;color:white;font-weight:800;text-decoration:none">Open Workplace Readiness</a></div></div>')}
