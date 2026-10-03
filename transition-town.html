@@ -751,4 +751,15 @@ function ttShowWho(n){var w=document.getElementById("ttProfileWho");if(w){w.inne
 function ttEnterProfile(){var s=document.getElementById("ttProfileSelect"),v=s?s.value:"",e=document.getElementById("ttProfileError");if(!v){if(e)e.textContent="Choose a profile first.";return}ttHideProfileGate();if(v==="__kayla"){localStorage.ttProfile="Miss Kayla";sessionStorage.ttProfile="Miss Kayla";ttShowWho("Miss Kayla");document.body.classList.add("teacher-mode");teacher();return}document.body.classList.remove("teacher-mode");ensure(v);current=v;localStorage.ttCurrent=v;localStorage.ttProfile=v;sessionStorage.ttProfile=v;ttShowWho(v);status.textContent=v+" is exploring Transition Town. Choose a place on the city map.";closeSheet()}
 function ttProfileSignOut(){sessionStorage.removeItem("ttProfile");localStorage.removeItem("ttProfile");localStorage.removeItem("ttCurrent");current="";ttClearOverlays();closeSheet();ttShowProfileGate()}
 window.addEventListener("load",function(){var p=localStorage.ttProfile||sessionStorage.ttProfile;if(p){sessionStorage.ttProfile=p;ttHideProfileGate();if(p==="Miss Kayla"){ttShowWho(p)}else{current=p;localStorage.ttCurrent=p;ttShowWho(p)}}else{current="";localStorage.removeItem("ttCurrent");ttShowProfileGate()}});
+</script>
+<script id="tt-side-nav-repair">
+(function(){
+ function activate(){
+  document.querySelectorAll('.ttTownMenu button,.ttDrawerTab,.ttKaylaInfo button,.phone').forEach(function(b){b.style.pointerEvents='auto';b.style.cursor='pointer'});
+  var menu=document.querySelector('.ttTownMenu'),kayla=document.querySelector('.ttKaylaInfo');
+  if(menu)menu.style.zIndex='10020'; if(kayla)kayla.style.zIndex='10020';
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',activate);else activate();
+ window.addEventListener('pageshow',activate);
+})();
 </script></body></html>
