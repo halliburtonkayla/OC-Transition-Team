@@ -156,144 +156,8 @@ function townJobs(){let jobs=[['Community Bank','Bank Teller','$14–$17/hr','He
 function townJobApplicationFor(job){if(!need())return;careerPanel('Mock Job Application • '+job,'<p><b>Practice only.</b> Use fictional Transition Town information. Do not enter a real Social Security number, bank information, passwords, or other private information.</p><div class="roomcard" style="max-width:850px;margin:18px auto"><label><b>Applicant Name</b></label><input id="maName" value="'+current+'" style="width:100%;padding:11px;margin:6px 0 14px"><label><b>Position Applying For</b></label><input id="maJob" value="'+job+'" readonly style="width:100%;padding:11px;margin:6px 0 14px"><label><b>Transition Town Phone</b></label><input id="maPhone" placeholder="555-0100" style="width:100%;padding:11px;margin:6px 0 14px"><label><b>Availability</b></label><input id="maAvail" placeholder="Example: After school, weekends" style="width:100%;padding:11px;margin:6px 0 14px"><label><b>Education / Training</b></label><textarea id="maEdu" rows="2" placeholder="School, classes, certificates, or training" style="width:100%;padding:11px;margin:6px 0 14px"></textarea><label><b>Work or Volunteer Experience</b></label><textarea id="maExp" rows="3" placeholder="Jobs, school activities, volunteering, helping family, clubs, etc." style="width:100%;padding:11px;margin:6px 0 14px"></textarea><label><b>Skills</b></label><textarea id="maSkills" rows="2" placeholder="Communication, teamwork, computer skills, customer service, cooking, etc." style="width:100%;padding:11px;margin:6px 0 14px"></textarea><label><b>Why would you be a good fit for this job?</b></label><textarea id="maWhy" rows="3" style="width:100%;padding:11px;margin:6px 0 14px"></textarea><label><b>Reference</b></label><input id="maRef" placeholder="Fictional practice reference or teacher/job coach" style="width:100%;padding:11px;margin:6px 0 14px"><label style="display:block;margin:12px 0"><input id="maAgree" type="checkbox"> I understand this is a mock application for classroom practice.</label><button id="maSubmit">Submit Mock Application</button></div>');setTimeout(()=>{let b=document.getElementById('maSubmit');if(b)b.onclick=()=>saveMockApplication(job)},0)}
 function saveMockApplication(job){let g=id=>document.getElementById(id)?.value.trim()||'';if(!document.getElementById('maAgree')?.checked)return alert('Please check the practice application box.');let required=['maName','maAvail','maEdu','maExp','maSkills','maWhy'];if(required.some(id=>!g(id)))return alert('Please complete the main application questions before submitting.');let w=get(),r=w.residents[current],a={job:job,name:g('maName'),phone:g('maPhone'),availability:g('maAvail'),education:g('maEdu'),experience:g('maExp'),skills:g('maSkills'),why:g('maWhy'),reference:g('maRef'),status:'Ready for Miss Kayla review',date:new Date().toLocaleString()};r.applications=r.applications||[];r.applications.push(a);r.history.push('Completed mock application: '+job);w.messages=w.messages||[];w.messages.push({from:'Career & Job Center',to:current,text:'Mock application completed for '+job+'. Tell Miss Kayla so she can review or print it.',date:new Date().toLocaleString()});put(w);careerPanel('Mock Application Complete','<div class="roomcard" style="max-width:700px;margin:20px auto;text-align:center"><h3>'+job+'</h3><p>Your mock application has been saved.</p><p><b>Tell Miss Kayla you finished your application.</b></p><button onclick="printMockApplication(\''+job.replace(/'/g,"\\'")+'\')">Print Mock Application</button><button onclick="townJobs()">Back to Town Employers</button></div>')}
 function printMockApplication(job){let w=get(),r=w.residents[current],a=(r.applications||[]).filter(x=>x.job===job&&x.availability).slice(-1)[0];if(!a)return alert('No completed mock application found.');let rows=[['Applicant',a.name],['Position',a.job],['Transition Town Phone',a.phone||''],['Availability',a.availability],['Education / Training',a.education],['Work / Volunteer Experience',a.experience],['Skills',a.skills],['Why I am a good fit',a.why],['Reference',a.reference||''],['Completed',a.date]];let p=window.open('','_blank');p.document.write('<html><head><title>Mock Application</title><style>body{font-family:Arial;padding:35px;line-height:1.45}h1{border-bottom:3px solid #222}.row{margin:16px 0}.ans{border:1px solid #999;padding:10px;min-height:28px}</style></head><body><h1>MOCK JOB APPLICATION</h1><p>Transition Town • Classroom Practice Only</p>'+rows.map(x=>'<div class="row"><b>'+x[0]+'</b><div class="ans">'+x[1]+'</div></div>').join('')+'<script>window.onload=()=>window.print()<\/script>
-<audio id="housingTheme" src="Transition-Town-Housing-Audio.mp3" preload="auto" loop></audio>
-<script>(function(){const a=document.getElementById('housingTheme');if(!a)return;const play=()=>a.play().catch(()=>{});play();document.addEventListener('click',play,{once:true});document.addEventListener('touchstart',play,{once:true,passive:true});})();</script>
 
-<style id="tt-mobile-tap-repair">
-.townMasterArt{pointer-events:none!important}
-.townmap .maplot,.townmap .bizbuilding,.townmap .park{pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(91,67,157,.18)}
-@media(max-width:1000px){.townmap .maplot,.townmap .bizbuilding,.townmap .park{z-index:20!important}}
-</style>
-<script id="tt-mobile-tap-repair-js">
-(function(){
- function activate(el){
-   if(!el)return;
-   var code=el.getAttribute('onclick');
-   if(!code)return;
-   try{ Function(code).call(el); }catch(e){
-     try{ el.click(); }catch(ignore){}
-   }
- }
- var root=document.querySelector('.townmap');
- if(!root)return;
- root.addEventListener('touchend',function(e){
-   var el=e.target.closest('.maplot,.bizbuilding,.park');
-   if(!el)return;
-   e.preventDefault();
-   activate(el);
- },{passive:false});
-})();
-</script>
 
-<style id="tt-phone-functional-fix">
-@media(max-width:900px){
- body{overflow:auto!important}
- header{position:sticky!important;top:0!important;z-index:9000!important;padding:6px 8px!important;min-height:52px!important;height:auto!important}
- header>div:last-child{display:flex!important;gap:3px!important;flex-wrap:wrap!important;justify-content:flex-end!important}
- .topbtn{font-size:10px!important;padding:7px 6px!important;margin:0!important}
- .logo{font-size:18px!important}
- .town{height:auto!important;min-height:calc(100dvh - 52px)!important;padding:4px!important}
- .welcome{display:block!important;padding:7px!important;margin:3px auto 6px!important}
- .welcome h1{font-size:22px!important}.welcome p{font-size:12px!important}
- .mapviewport{width:100%!important;height:auto!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
- .townmap{width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:16/9!important;border:3px solid #fff!important;border-radius:12px!important;overflow:hidden!important}
- .townMasterArt{width:100%!important;height:100%!important;object-fit:contain!important;pointer-events:none!important}
- .ttTownMenu,.ttKaylaInfo{position:fixed!important;top:52px!important;bottom:0!important;max-height:calc(100dvh - 52px)!important;overflow:auto!important;z-index:9500!important}
- .sheet{z-index:12000!important;align-items:stretch!important;padding-top:52px!important}
- .window{width:100%!important;max-height:calc(100dvh - 52px)!important;border-radius:18px 18px 0 0!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
- #cityHallScene,#bankScene,#centerScene{z-index:11000!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
- .cityhallgame{min-height:100dvh!important;height:auto!important;background-size:cover!important;background-position:center!important;padding-bottom:30px!important}
- .cityhallpanel{max-height:none!important;overflow:visible!important}
- .townmap .maplot,.townmap .bizbuilding,.townmap .park{z-index:50!important;pointer-events:auto!important;touch-action:manipulation!important}
-}
-</style>
-<script id="tt-phone-functional-fix-js">
-(function(){
- function goHousing(){
-   try{var a=document.getElementById('housingTheme');if(a){a.currentTime=0;a.play().catch(function(){})}}catch(e){}
-   location.href='housing-office.html';
- }
- window.openHousingOffice=goHousing;
- var oldPlace=window.place;
- window.place=function(k){
-   if(k==='housing'){goHousing();return;}
-   return oldPlace.apply(this,arguments);
- };
- function wire(){
-   document.querySelectorAll('.townmap button,.ttTownMenu button,.ttDrawerTab,.ttKaylaInfo button,.topbtn').forEach(function(el){
-     el.style.pointerEvents='auto';el.style.touchAction='manipulation';
-   });
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();
-})();
-</script>
-
-<style id="tt-landscape-emergency-fix">
-@media (max-width:1100px) and (orientation:landscape){
- html,body{height:auto!important;min-height:100%!important;overflow-x:auto!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
- body{position:static!important}
- .sky{height:auto!important;min-height:100dvh!important;overflow:visible!important}
- header{position:relative!important;top:auto!important}
- .town{height:auto!important;min-height:0!important;overflow:visible!important}
- .mapviewport{height:auto!important;min-height:0!important;width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
- .townmap{width:1000px!important;max-width:none!important;height:562.5px!important;min-height:562.5px!important;aspect-ratio:auto!important;overflow:hidden!important}
- .welcome,.maphelp{display:block!important}
- .townMasterArt{pointer-events:none!important}
- .townmap button.maplot,.townmap button.bizbuilding{display:block!important;visibility:visible!important;pointer-events:auto!important;touch-action:manipulation!important;z-index:500!important}
- .phone{position:fixed!important;z-index:10000!important}
-}
-</style>
-<script id="tt-landscape-direct-taps">
-(function(){
- function runTap(el){
-   if(!el)return;
-   var code=el.getAttribute('onclick');
-   if(!code)return;
-   try{
-     var m=code.match(/^place\(['"]([^'"]+)['"]\)/);
-     if(m){ window.place(m[1]); return; }
-     var b=code.match(/^meeting\(['"]([^'"]+)['"]\)/);
-     if(b){ window.meeting(b[1]); return; }
-     (new Function(code)).call(el);
-   }catch(err){ console.error('Transition Town tap failed',err); }
- }
- var map=document.querySelector('.townmap');
- if(map){
-   map.addEventListener('pointerup',function(e){
-     var el=e.target.closest('button.maplot,button.bizbuilding');
-     if(!el)return;
-     e.preventDefault();e.stopPropagation();runTap(el);
-   },true);
- }
-})();
-</script>
-
-<style id="tt-mobile-clean-20261003">
-@media(max-width:1100px){
- html,body,.sky{overflow:auto!important;height:auto!important;min-height:100%!important}
- body{background:#9bd9f4!important}
- header{position:relative!important;z-index:1000!important}
- .town{height:auto!important;min-height:0!important;overflow:visible!important;padding:6px!important}
- .mapviewport{overflow:auto!important;width:100%!important;height:auto!important;-webkit-overflow-scrolling:touch!important}
- .townmap{position:relative!important;width:1000px!important;height:562.5px!important;min-height:562.5px!important;max-width:none!important;overflow:hidden!important}
- .townMasterArt{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important;pointer-events:none!important;z-index:1!important}
- .ttMobileHit{display:block!important;position:absolute!important;z-index:999!important;background:transparent!important;border:0!important;padding:0!important;touch-action:manipulation!important}
-}
-@media(min-width:1101px){.ttMobileHit{display:none!important}}
-</style>
-<script id="tt-mobile-clean-js-20261003">
-(function(){
- function addHits(){
-  var m=document.querySelector('.townmap'); if(!m||m.querySelector('.ttMobileHit'))return;
-  var hits=[
-   ['bank',5,5,18,26],['city',25,4,18,27],['medical',47,5,19,26],['jobs',69,5,25,27],
-   ['safety',4,65,19,25],['school',25,64,20,25],['housing',55,61,21,31],['shops',78,61,18,30]
-  ];
-  hits.forEach(function(h){var b=document.createElement('button');b.className='ttMobileHit';b.setAttribute('aria-label',h[0]);b.style.left=h[1]+'%';b.style.top=h[2]+'%';b.style.width=h[3]+'%';b.style.height=h[4]+'%';b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();if(h[0]==='housing')location.href='housing-office.html';else place(h[0]);});m.appendChild(b)});
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addHits);else addHits();
-})();
-</script>
 </body></html>');p.document.close()}
 
 function careerHelp(){careerPanel('Career Help','<div class="roomgrid"><div class="roomcard"><h3>Mock Job Applications</h3><p>Practice filling out realistic applications without using real private information.</p><button onclick="mockApplications()">Open Mock Applications</button></div><div class="roomcard"><h3>Resume Practice</h3><p>Practice the information that belongs on a basic student resume.</p><button onclick="mockResume()">Build a Mock Resume</button></div><div class="roomcard"><h3>Practice Interviews</h3><p>Answer common interview questions and practice professional responses.</p><button onclick="mockInterview()">Practice Interview</button></div><div class="roomcard"><h3>Work Schedules & Soft Skills</h3><p>Practice communication, teamwork, attendance and reading a work schedule.</p><a href="workplace-readiness.html" style="display:block;text-align:center;padding:12px;border-radius:12px;background:#5b21b6;color:white;font-weight:800;text-decoration:none">Open Workplace Readiness</a></div></div>')}
@@ -666,61 +530,20 @@ function teacher(){let w=get();open('<div class=character><div class="face">MK</
 try{activeGroup=JSON.parse(localStorage.ttActiveGroup||'[]')}catch(e){activeGroup=[]}
 (function resetKaylaTestMoney(){if(localStorage.ttKaylaMoneyReset20261001)return;let w=get();let changed=false;Object.keys(w.residents).forEach(function(n){if(/^kayla( halliburton)?$/i.test(n.trim())||/^miss kayla$/i.test(n.trim())){w.residents[n].checking=10000;w.residents[n].savings=0;w.residents[n].history.push('Test money reset');changed=true}});if(changed)put(w);localStorage.ttKaylaMoneyReset20261001='1'})()
 function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.sessions++;r.utilities=r.utilities||{electricOn:false,waterOn:false,electricDeposit:false,waterDeposit:false,lastElectricPaid:0,lastWaterPaid:0};if(r.sessions%2===0&&r.job!=='Needs a job'){r.checking+=500;r.history.push('Payday +$500');r.notifications.push('Payday deposited: $500')}if(r.utilities.electricOn&&r.sessions-r.utilities.lastElectricPaid>=2&&!r.notifications.includes('CITY HALL: Your electric bill of $85 is due. Visit the Electricity Department to pay it.')){r.notifications.push('CITY HALL: Your electric bill of $85 is due. Visit the Electricity Department to pay it.');w.messages.push({from:'City Hall - Electricity Department',to:current,text:'Your electric bill of $85 is due. Visit the Electricity Department to pay it.',date:new Date().toLocaleString()})}if(r.utilities.waterOn&&r.sessions-r.utilities.lastWaterPaid>=2&&!r.notifications.includes('CITY HALL: Your water bill of $45 is due. Visit the Water Department to pay it.')){r.notifications.push('CITY HALL: Your water bill of $45 is due. Visit the Water Department to pay it.');w.messages.push({from:'City Hall - Water Department',to:current,text:'Your water bill of $45 is due. Visit the Water Department to pay it.',date:new Date().toLocaleString()})}put(w);let x=window.open('','_blank');x.document.write('<h1>Transition Town Session Report</h1><h2>'+current+'</h2><p>'+new Date().toLocaleString()+'</p><p>Career: '+r.career+'</p><p>Job: '+r.job+'</p><p>Home: '+r.home+'</p><p>Checking: $'+r.checking.toFixed(2)+'</p><p>Savings: $'+r.savings.toFixed(2)+'</p><p>Completed sessions: '+r.sessions+'</p><h3>Recent actions</h3><p>'+r.history.slice(-8).join('<br>')+'</p><hr><p>Pre-ETS / session note: __________________________________________</p><script>window.print()<\/script>')}updateBadge();if(current)status.textContent=current+' is in Transition Town. Choose a building on the map.';
-</script><script>
-(function(){
-  function forceTownArt(){
-    var map=document.querySelector('.townmap'), img=document.querySelector('.townMasterArt');
-    if(!map||!img)return;
-    map.style.setProperty('height','calc(100vh - 54px)','important');
-    map.style.setProperty('min-height','calc(100vh - 54px)','important');
-    map.style.setProperty('background','#9ed6f3','important');
-    img.style.cssText='position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center top!important;display:block!important;visibility:visible!important;opacity:1!important;z-index:1!important;';
-    img.onerror=function(){
-      map.style.setProperty('background','#9ed6f3 url("transition-town-map.png.png") center/cover no-repeat','important');
-      this.style.display='none';
-    };
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',forceTownArt);else forceTownArt();
-})();
-</script><style>/* mobile-landscape-fix-20261001 */
-#ttRotateNotice{display:none!important;pointer-events:none!important}
-@media (max-width:900px) and (orientation:portrait){
- #ttRotateNotice{display:none!important;pointer-events:none!important}
-}
-@media (max-width:1000px) and (orientation:landscape){
- body{overflow:hidden!important}
- header{height:54px!important;min-height:54px!important;padding:5px 10px!important;flex-wrap:nowrap!important}
- .logo{font-size:20px!important;white-space:nowrap}
- header .topbtn{padding:7px 8px!important;font-size:11px!important}
- .town{max-width:none!important;padding:0!important;margin:0!important;height:calc(100dvh - 54px)!important}
- .welcome,.maphelp{display:none!important}
- .mapviewport{height:100%!important;width:100%!important;overflow:hidden!important;border-radius:0!important}
- .townmap{width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;aspect-ratio:auto!important;border:0!important;border-radius:0!important;background-size:contain!important;background-position:center!important}
- .townMasterArt{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important}
- .phone{right:10px!important;bottom:10px!important}
- .bankscene{background-size:contain!important;background-position:center!important}
- .bankscene .bankbar{position:fixed!important;top:8px!important;left:8px!important;right:auto!important;z-index:100!important}
- .bankscene .bankbar .banknav:first-child{display:block!important;background:#fff!important;color:#241d36!important;border:3px solid #5b439d!important;font-size:14px!important;padding:10px 14px!important}
+</script><style id="tt-stable-mobile">
+@media(max-width:1100px){
+ html,body,.sky{height:auto!important;min-height:100%!important;overflow:auto!important}
+ header{position:relative!important;height:auto!important;min-height:54px!important}
+ .town{height:auto!important;min-height:0!important;padding:6px!important;overflow:visible!important}
+ .mapviewport{width:100%!important;height:auto!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important}
+ .townmap{width:1000px!important;max-width:none!important;height:562.5px!important;min-height:562.5px!important;aspect-ratio:auto!important}
+ .townMasterArt{width:100%!important;height:100%!important;object-fit:contain!important;pointer-events:none!important}
+ .townmap .maplot,.townmap .bizbuilding{pointer-events:auto!important;touch-action:manipulation!important;z-index:50!important}
+ .sheet{overflow:auto!important}.window{max-height:90dvh!important;overflow:auto!important}
 }
 </style>
 <div id="ttRotateNotice" aria-live="polite"><div class="rotateCard"><h2>Turn Your Device Sideways</h2><p>Transition Town works best in landscape mode.</p><p>Rotate your phone or iPad to see the whole town and start exploring.</p></div></div>
-<script>
-(function(){
- function fitTown(){
-  var map=document.querySelector('.townmap'),img=document.querySelector('.townMasterArt');
-  if(!map)return;
-  if(matchMedia('(max-width:1000px) and (orientation:landscape)').matches){
-   map.style.setProperty('height','100%','important');
-   map.style.setProperty('min-height','0','important');
-   map.style.setProperty('width','100%','important');
-   if(img){img.style.setProperty('height','100%','important');img.style.setProperty('width','100%','important');img.style.setProperty('object-fit','contain','important');img.style.setProperty('object-position','center','important');}
-  }
- }
- addEventListener('orientationchange',function(){setTimeout(fitTown,150)});
- addEventListener('resize',fitTown);
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fitTown);else fitTown();
-})();
-</script>
+
 <script id="tt-click-safety">
 (function(){
  var n=document.getElementById('ttRotateNotice');if(n){n.style.display='none';n.style.pointerEvents='none'}
