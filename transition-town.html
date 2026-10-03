@@ -165,12 +165,26 @@ function printMockApplication(job){let w=get(),r=w.residents[current],a=(r.appli
    else{a.pause();if(label)label.textContent='Sound On';localStorage.ttThemeSound='off'}
  };
  function startTheme(){
-   if(localStorage.ttThemeSound==='off'){if(label)label.textContent='Sound On';return}
-   a.play().then(function(){if(label)label.textContent='Sound Off'}).catch(function(){
-     if(label)label.textContent='Tap for Sound';
-     var unlock=function(){a.play().then(function(){if(label)label.textContent='Sound Off'}).catch(function(){});document.removeEventListener('pointerdown',unlock)};
-     document.addEventListener('pointerdown',unlock,{once:true});
-   });
+   // Always request autoplay on a fresh page load. Browsers may still require one user gesture.
+   localStorage.ttThemeSound='on';
+   a.autoplay=true;
+   a.muted=false;
+   a.load();
+   var tryPlay=function(){
+     a.play().then(function(){if(label)label.textContent='Sound Off'}).catch(function(){
+       if(label)label.textContent='Tap for Sound';
+     });
+   };
+   tryPlay();
+   var unlock=function(){
+     if(a.paused)tryPlay();
+     document.removeEventListener('pointerdown',unlock,true);
+     document.removeEventListener('touchstart',unlock,true);
+     document.removeEventListener('keydown',unlock,true);
+   };
+   document.addEventListener('pointerdown',unlock,true);
+   document.addEventListener('touchstart',unlock,true);
+   document.addEventListener('keydown',unlock,true);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startTheme);else startTheme();
 })();
