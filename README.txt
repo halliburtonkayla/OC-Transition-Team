@@ -1,17 +1,19 @@
-Transition Town Medical Center scene assets
+TRANSITION TOWN PARK STORY LIBRARY
+12 storybooks, 10 pages each.
 
-Six separate scene images:
-1. medical-check-in.png
-2. medical-triage.png
-3. medical-waiting-room.png
-4. medical-exam-room.png
-5. medical-discharge.png
-6. medical-billing.png
+Upload the whole transition-story-library folder to the root of the OC-Transition-Team GitHub repository.
+Open transition-story-library/index.html to browse the books.
 
-medical-center-approved-reference.png is included only as the visual reference.
-
-IMPORTANT WEBSITE UI:
-The Transition Town ID / Account should NOT be baked into any room image.
-It should be a live side button/panel so it always shows the active resident's
-fictional Transition Town ID, fictional address, phone, insurance, checking,
-and savings information.
+Books included:
+1. Alyssa's First Day at the Bakery
+2. Jasmine & Gia's Daycare Disaster
+3. Haley's Very Busy Vet Clinic
+4. Chevi Becomes an Art Teacher
+5. Nick Has NO Idea What He Wants to Be
+6. I Can't Wait Till I'm Grown!
+7. The Text That Almost Ruined Friday
+8. Dalton's First Coding Job
+9. Olivia's First Day in Sonography
+10. Kaylee Takes Charge
+11. Jayden & Clark Get a Job
+12. The Group Project Nobody Wanted
