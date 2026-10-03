@@ -206,7 +206,7 @@ function transitionStoryTime(){
 let transitionStoryAudio=null;
 function transitionStoryGetAudio(){
  if(!transitionStoryAudio){
-  transitionStoryAudio=new Audio('./Transition-Town-Park-Story.mp3');
+  transitionStoryAudio=new Audio('./NoteGPT_Multi_Voice_1790991393519.mp3');
   transitionStoryAudio.preload='auto';
   transitionStoryAudio.addEventListener('ended',()=>{let st=document.querySelector('#storyVoiceStatus');if(st)st.textContent='Story finished. Good choices matter!'});
  }
