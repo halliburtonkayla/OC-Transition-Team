@@ -241,7 +241,7 @@ function verifyPickup(id){
 }
 function handoffPickup(id,chosen){
  if(Number(id)!==Number(chosen)){shift.mistakes++;app.innerHTML='<section class="card"><div class="notice"><h2>Stop — wrong order number.</h2><p>Recheck the receipt and food before handing it out.</p></div><button class="btn green" onclick="renderPickup()">RECHECK ORDER</button></section>';return}
- let o=PS.getOrder(id);if(!o)return;o.pickup={status:'HANDED OUT',employee:PS.residentName(),at:Date.now()};PS.patchOrder(id,{pickup:o.pickup});shift.completed++;shift.correct++;shift.service++;renderPickup();
+ let o=PS.getOrder(id);if(!o)return;o.pickup={status:'HANDED OUT',employee:PS.residentName(),at:Date.now()};let patch={pickup:o.pickup};if(o.source!=='customer-counter'){patch.completed=true;patch.status='COMPLETED';patch.completedAt=Date.now()}PS.patchOrder(id,patch);shift.completed++;shift.correct++;shift.service++;renderPickup();
 }
 const CLEAN_STEPS=['SCRAPE FOOD','WASH WITH SOAP','RINSE','SANITIZE','AIR DRY','STORE CLEAN ITEMS'];
 let cleanRound=null;
@@ -260,4 +260,14 @@ function cleanAction(i){
 function finishCleanRack(){
  if(cleanRound.step<CLEAN_STEPS.length||cleanRound.spill){shift.mistakes++;renderCleanup(false);return}
  shift.completed++;shift.cleanliness++;shift.correct++;newCleanRound();
+}
+
+function clockOut(){
+ let input=document.getElementById('pin');if(!input||input.value!==empPin()){let m=document.getElementById('pinmsg');if(m)m.innerHTML='<span class="notice">Incorrect PIN.</span>';return}
+ let preview=isKayla(),w=PS.world(),e=employment(w),wage=Number(e&&e.wage||12),gross=Math.round(wage*WORK_HOURS*100)/100;
+ let report={business:'Transition Town Pizza Shop',employee:PS.residentName(),position:shift.role,clockIn:'8:00 AM',clockOut:'4:00 PM',hours:8,ordersCompleted:shift.completed,correctSteps:shift.correct,corrections:shift.mistakes,customerService:shift.service||0,foodSafety:shift.safety||0,cleanliness:shift.cleanliness||0,gross,preview,date:new Date().toISOString()};
+ w.employeeShiftReports=w.employeeShiftReports||[];w.employeeShiftReports.push(report);
+ if(!preview){let r=resident(w);if(r){r.checking=Math.round((Number(r.checking||0)+gross)*100)/100;r.employment=r.employment||{};r.employment.pizza=r.employment.pizza||e||{};r.employment.pizza.shifts=r.employment.pizza.shifts||[];r.employment.pizza.shifts.push(report)}}
+ PS.saveWorld(w);
+ app.innerHTML='<section class="card"><div class="good"><h1>Clocked Out at 4:00 PM</h1><p>Timecard: 8:00 AM–4:00 PM • 8.0 simulated hours</p></div><div class="statgrid"><div><b>'+shift.completed+'</b><br>Completed</div><div><b>'+shift.correct+'</b><br>Correct</div><div><b>'+shift.mistakes+'</b><br>Corrections</div></div><p><b>Gross pay:</b> $'+gross.toFixed(2)+(preview?' — Manager/Test Mode, not deposited.':' — added to Transition Town checking.')+'</p><button class="btn green" onclick="landing()">EMPLOYEE CENTER</button></section>';
 }
