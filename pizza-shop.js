@@ -19,24 +19,17 @@ function storefront(){
  syncEmploymentAction();window.scrollTo(0,0);
 }
 
+function approvedScene(file,alt,fallback){
+ return '<div class="approvedPizzaScene"><img class="approvedPizzaImg" src="'+file+'" alt="'+alt+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"><div class="approvedFallback" style="display:none">'+fallback+'</div></div>';
+}
 function counterScene(){
- return `<section class="counterScene" aria-label="First person view at pizza counter">
- <div class="counterMenu"><span>PIZZA<br><small>Sizes • Crusts</small></span><span>WINGS & SIDES<br><small>Breadsticks • Sauces</small></span><span>DRINKS<br><small>Fountain • Water</small></span><span>PICKUP<br><small>Order Numbers</small></span></div>
- <div class="oven"><b>STONE OVENS</b><i></i><i></i></div>
- <div class="prep"><b>MAKE LINE</b><div class="pan"></div><div class="pan"></div></div>
- <div class="kitchenCrew"><i></i><i></i></div>
- <div class="cashier"><div class="cashierHead"></div><div class="cashierBody"></div><span>Cashier</span></div>
- <div class="pos"></div><div class="pickupSign">PICKUP →</div><div class="frontCounter"></div>
- </section>`;
+ return approvedScene('01_Customer_Counter_POV.png','Transition Town Pizza Shop customer counter',
+  '<div class="counterScene"><div class="menuBoards"><span>TRANSITION TOWN PIZZA</span><span>PIZZAS • SIDES • DRINKS</span><span>ORDER HERE</span></div><div class="counterPeople"><div class="cashierAvatar"><div class="head"></div><div class="shirt">PIZZA<br>SHOP</div></div><div class="register">POS</div><div class="ovenGlow">HOT<br>KITCHEN</div></div></div>');
 }
-function enterRestaurant(){resetBuilder();renderOrder('size')}
-
-function resetBuilder(){builder={size:'Medium',crust:'Hand Tossed',pizza:'Pepperoni',mods:{},sauce:'Regular',items:[],drink:null};applyPreset()}
-function applyPreset(){builder.mods={};let p=M.pizzas[builder.pizza]||M.pizzas.Pepperoni;(p.toppings||[]).forEach(t=>builder.mods[title(t)]='Regular');builder.sauce='Regular'}
-function optionButtons(arr,current,fn){
- return `<div class="optionGrid">${arr.map(x=>{let name=Array.isArray(x)?x[0]:x,price=Array.isArray(x)?x[1]:null;return `<button class="option ${name===current?'selected':''}" onclick="${fn}(${JSON.stringify(name).replace(/"/g,'&quot;')})"><b>${esc(name)}</b>${price!=null?`<br><small>${money(price)}</small>`:''}</button>`}).join('')}</div>`;
+function waitingScene(){
+ return approvedScene('03_Customer_Table_POV.png','Transition Town Pizza Shop customer table',
+  '<div class="tableScene"><div class="tv">TRANSITION TOWN SPORTS</div><div class="tables"><div class="table"><div class="phone">PHONE</div></div></div></div>');
 }
-function stepNav(step){let labels=['SIZE','CRUST','PIZZA','CUSTOMIZE','SIDES','DRINK','REVIEW'];return `<div class="orderSteps">${labels.map((x,i)=>`<span class="${labels.indexOf(step)>=i?'done':''} ${x===step?'current':''}">${i+1}. ${x}</span>`).join('')}</div>`}
 function renderOrder(step){
  let body='';
  if(step==='size')body=`<h2>1. Choose Pizza Size</h2>${optionButtons(M.sizes,builder.size,'chooseSize')}`;
