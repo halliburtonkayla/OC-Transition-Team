@@ -164,6 +164,7 @@ function renderKitchen(scroll=true){
 }
 function selectKitchenItem(id,index){
   let o=PS.getOrder(id),item=o&&o.items[index];if(!item)return;
+  PS.patchOrder(id,{kitchenClaimed:true,status:'PREPARING'});
   if(item.type==='pizza')shift.current={id,itemIndex:index,step:'dough',pizza:item,chosen:{}};
   else shift.current={id,itemIndex:index,step:'startSide',side:item,chosen:{}};
   renderKitchen();
