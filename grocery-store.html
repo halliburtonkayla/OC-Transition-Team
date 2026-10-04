@@ -46,6 +46,29 @@ catalog['13'].push(['Paper Towels','2 double rolls',3.98],['Paper Towels','6 dou
 catalog['14'].push(['Value Shampoo','22 fl oz',2.48],['Name Brand Shampoo','12 fl oz',5.97],['Body Wash','18 fl oz',4.97],['Toothpaste','5.7 oz',3.97],['Value Toothpaste','6 oz',1.24],['Deodorant','2.6 oz',4.97],['Hand Soap','11.25 fl oz',1.24],['Lotion','20 fl oz',5.97]);
 catalog['15'].push(['Rotisserie Chicken','whole',5.97],['Deli Turkey','1 lb',8.97],['Deli Ham','1 lb',7.97],['Deli American Cheese','1 lb',5.97],['Potato Salad','1 lb',3.47],['Prepared Sub Sandwich','14 oz',6.47],['Garden Salad Bowl','single',4.97],['Family Fried Chicken','8 pc',8.97]);
 
+
+// Extra mission-ready inventory for future cooking, home, party, lunch, and emergency assignments.
+const missionInventory={
+'02':[['Refrigerated Biscuits','8 ct',2.48],['Cornbread Mix','6.5 oz',0.67],['Pizza Crust Mix','6.5 oz',1.24],['Ready-to-Bake Pizza Crust','13.8 oz',3.48],['Dinner Rolls','12 ct',3.24],['Hot Dog Buns','8 ct',1.48],['Hamburger Buns','8 ct',1.48],['Sub Rolls','6 ct',3.48],['Taco Size Flour Tortillas','10 ct',2.18]],
+'03':[['Ground Beef 80/20','1 lb',5.47],['Ground Beef 80/20','3 lb family pack',14.94],['Ground Turkey','1 lb',4.48],['Chicken Breasts','3 lb family pack',10.47],['Chicken Drumsticks','5 lb family pack',7.94],['Hot Dogs','8 ct',1.98],['Premium Hot Dogs','8 ct',4.48],['Breakfast Sausage','1 lb',3.98],['Italian Sausage','19 oz',4.97],['Pepperoni','6 oz',3.48]],
+'04':[['Whole Milk','half gallon',1.98],['Whole Milk','1 gallon',3.28],['2% Milk','1 gallon',3.18],['Large Eggs','12 ct',2.48],['Large Eggs','18 ct',3.67],['Salted Butter','4 sticks',4.48],['Unsalted Butter','4 sticks',4.68],['Shredded Cheddar Cheese','8 oz',2.24],['Shredded Mozzarella','8 oz',2.24],['Mexican Blend Cheese','8 oz',2.24],['Sour Cream','16 oz',2.18],['Cream Cheese','8 oz',2.18],['Whipped Topping','8 oz',1.98]],
+'05':[['Peanut Butter','18 oz',2.18],['Grape Jelly','18 oz',2.48],['Strawberry Jam','18 oz',2.98],['Pancake Mix','32 oz',2.48],['Pancake Syrup','24 oz',2.28],['Instant Grits','12 packets',3.48],['Breakfast Cereal','family size',4.98],['Granola Bars','12 ct',3.98],['Toaster Pastries','12 ct',3.48],['Instant Oatmeal','12 packets',3.28]],
+'06':[['Hamburger Helper Cheeseburger Macaroni','6.6 oz box',1.98],['Hamburger Helper Beef Pasta','5.9 oz box',1.98],['Hamburger Helper Stroganoff','6.4 oz box',1.98],['Chicken Helper Alfredo','box',1.98],['Taco Dinner Kit','12 shells + seasoning',2.98],['Soft Taco Dinner Kit','10 ct',3.28],['Fajita Dinner Kit','kit',3.48],['Boxed Mac & Cheese','7.25 oz',0.98],['Deluxe Mac & Cheese','14 oz',2.98],['Shells & Cheese','12 oz',2.98],['Rice Side - Chicken','5.6 oz',1.48],['Rice Side - Broccoli Cheddar','5.7 oz',1.48],['Pasta Side - Alfredo','4.4 oz',1.48],['Instant Mashed Potatoes','4 oz pouch',1.24],['Scalloped Potatoes','4.7 oz box',1.98],['Stuffing Mix','6 oz box',1.98],['Pizza Sauce','14 oz',1.48],['White Rice','5 lb',3.98],['Ramen Noodles','12 pack',3.48]],
+'07':[['Cream of Mushroom Soup','10.5 oz',1.28],['Cream of Chicken Soup','10.5 oz',1.28],['Beef Broth','32 oz',1.98],['Chicken Broth','32 oz',1.98],['Sloppy Joe Sauce','15 oz',1.48],['Chili Beans','15 oz',1.18],['Tomato Sauce','15 oz',0.88],['Canned Chicken','12.5 oz',3.24]],
+'08':[['Yellow Cake Mix','15.25 oz',1.38],['Chocolate Cake Mix','15.25 oz',1.38],['Funfetti Cake Mix','15.25 oz',1.68],['Brownie Mix','18.3 oz',1.48],['Chocolate Chip Cookie Mix','17.5 oz',2.28],['Blueberry Muffin Mix','6.5 oz',0.98],['Vanilla Frosting','16 oz',1.68],['Chocolate Frosting','16 oz',1.68],['Cream Cheese Frosting','16 oz',1.88],['Rainbow Sprinkles','3 oz',2.48],['Cupcake Liners','100 ct',2.48],['Foil Cupcake Liners','32 ct',2.98],['Disposable Muffin Pan','12 cup',3.48],['Muffin / Cupcake Pan','12 cup',8.98],['Round Cake Pan','9 inch',6.98],['Rectangular Cake Pan','9 x 13 inch',7.98],['Baking Sheet','13 x 18 inch',8.98],['Mixing Bowl Set','3 pc',7.98],['Measuring Cup Set','4 pc',3.98],['Measuring Spoon Set','6 pc',2.98],['Rubber Spatula','1 ct',1.98],['Whisk','1 ct',2.98],['Can Opener','1 ct',4.98]],
+'09':[['Salsa','16 oz',2.48],['Cheese Dip','15 oz',2.98],['Movie Night Snack Variety Pack','18 ct',9.98],['Chocolate Candy','share size',4.48],['Marshmallows','10 oz',1.48],['Graham Crackers','14 oz',2.48],['Chocolate Bars','6 pack',5.48]],
+'10':[['Lemonade','1 gallon',2.98],['Sweet Tea','1 gallon',2.98],['Fruit Punch','1 gallon',2.78],['Cola','2 liter',1.98],['Lemon-Lime Soda','2 liter',1.98],['Hot Cocoa','10 packets',2.98]],
+'11':[['Frozen Cheese Pizza','large',4.48],['Frozen Lasagna','family size',12.98],['Frozen Chicken Pot Pie','single',1.48],['Garlic Bread','16 oz',2.98],['Ice Cream Sandwiches','12 ct',4.98]],
+'12':[['Kitchen Towels','4 pack',5.98],['Oven Mitt','1 ct',3.98],['Food Storage Container Set','20 pc',9.98],['Reusable Food Containers','5 pack',5.98]],
+'13':[['Paper Bowls','50 ct',4.98],['Plastic Spoons','48 ct',3.48],['Plastic Utensil Combo','96 ct',5.98],['Parchment Paper','45 sq ft',3.98],['Gallon Storage Bags','40 ct',4.98],['Disposable Tablecloth','1 ct',2.48]],
+'14':[['Hand Sanitizer','8 oz',2.98],['Pain Reliever','24 ct',3.98]],
+'15':[['Party Sandwich Tray','serves 8-10',24.98],['Deli Party Tray','serves 8-10',29.98],['Birthday Cupcakes','12 ct',9.98],['Sheet Cake','serves 20',19.98]]
+};
+Object.keys(missionInventory).forEach(function(id){
+ const existing=new Set((catalog[id]||[]).map(function(p){return (p[0]+'|'+p[1]).toLowerCase()}));
+ missionInventory[id].forEach(function(p){const k=(p[0]+'|'+p[1]).toLowerCase();if(!existing.has(k)){catalog[id].push(p);existing.add(k)}});
+});
+
 function loadCart(){
  const raw=localStorage.ttGroceryCart;if(!raw)return [];
  try{const saved=JSON.parse(raw);if(!Array.isArray(saved))throw Error('Cart must be a list');if(saved.some(x=>!x||typeof x.name!=='string'||!Number.isFinite(x.price)||x.price<0||!Number.isInteger(x.qty)||x.qty<1))throw Error('Invalid cart items');return saved}
