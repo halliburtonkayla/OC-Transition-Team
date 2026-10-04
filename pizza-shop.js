@@ -95,12 +95,16 @@ function reviewPanel(){
 }
 function submitOrder(){
  if(!builder.items.length)return;
- let order={resident:PS.residentName(),items:builder.items,total:Math.round(builder.items.reduce((a,x)=>a+Number(x.price||0),0)*100)/100,paymentStatus:'UNPAID',source:'customer-counter',queue:'kitchen',kitchen:{tickets:builder.items.filter(x=>x.type==='pizza').map((x,i)=>({ticket:i+1,orderItem:x,status:'QUEUED'}))}};
+ let order={resident:PS.residentName(),items:builder.items,total:Math.round(builder.items.reduce((a,x)=>a+Number(x.price||0),0)*100)/100,paymentStatus:'UNPAID',source:'customer-counter',queue:'kitchen',kitchen:{tickets:builder.items.filter(x=>x.type==='pizza'||x.type==='side').map((x,i)=>({ticket:i+1,orderItem:x,status:'QUEUED'}))}};
  let saved=PS.addOrder(order);currentOrderId=saved.id;localStorage.ttPizzaActiveOrder=String(saved.id);waitingRoom();
 }
 const statuses=['ORDER RECEIVED','PREPARING','IN THE OVEN','FINISHING YOUR ORDER','READY FOR PICKUP'];
 function gameStatus(o){
- if(o.completed)return 'COMPLETED';let e=(Date.now()-Number(o.createdAt||Date.now()))/1000;
+ if(o.completed)return 'COMPLETED';
+ if(o.kitchenClaimed)return o.status||'PREPARING';
+ let tickets=o.kitchen&&o.kitchen.tickets||[];
+ if(tickets.some(t=>t.status&&t.status!=='QUEUED'))return o.status||'PREPARING';
+ let e=(Date.now()-Number(o.createdAt||Date.now()))/1000;
  if(e>=20)return 'READY FOR PICKUP';if(e>=15)return 'FINISHING YOUR ORDER';if(e>=9)return 'IN THE OVEN';if(e>=3)return 'PREPARING';return 'ORDER RECEIVED';
 }
 function syncGameStatus(){
