@@ -190,3 +190,73 @@ function matchOrder(n){
   if(n!==shift.current.id){shift.mistakes++;renderKitchen();return}
   markKitchenItemReady(shift.current.id,shift.current.itemIndex);shift.completed++;shift.correct++;shift.current=null;ensureRush();renderKitchen();
 }
+
+/* Final employee-center completion: shared PIN, pickup, cleanup, and accurate manager labels. */
+function managerHome(){
+ return '<p>Choose any Pizza Shop station to test. Manager/Test shifts never deposit wages or overwrite student employment.</p><div class="grid">'+
+ ['Cashier / Order Taker','Pizza Maker / Kitchen','Dishwasher / Cleanup','Order Pickup / Counter'].map(role=>'<div class="job"><h2>'+role+'</h2><p>Training → Clock In → Work Shift → Clock Out → Shift Report</p><button class="btn green" onclick="training(\''+role+'\')">TRAINING / CLOCK IN</button></div>').join('')+
+ '</div><p><button class="btn green" onclick="orderBoard()">LIVE RESTAURANT ORDER BOARD</button> <button class="btn white" onclick="applicationList()">PIZZA APPLICATIONS</button></p><div class="arch"><b>Shared restaurant system:</b><p>Customer and cashier orders use the same pizzaOrders records that feed kitchen and pickup.</p><p><b>Shift clock:</b> 5 real minutes = 8 simulated hours.</p></div>';
+}
+function empPin(){
+ let w=PS.world(),r=resident(w),e=employment(w);if(isKayla())return '6437';
+ if(r&&r.employeePin){if(e)e.pin=String(r.employeePin);PS.saveWorld(w);return String(r.employeePin)}
+ if(r&&r.groceryPin){r.employeePin=String(r.groceryPin);if(e)e.pin=r.employeePin;PS.saveWorld(w);return r.employeePin}
+ if(e&&e.pin){if(r)r.employeePin=String(e.pin);PS.saveWorld(w);return String(e.pin)}
+ let n=PS.residentName(),sum=0;for(let i=0;i<n.length;i++)sum+=n.charCodeAt(i)*(i+3);let pin=String(1000+(sum%9000));
+ if(r){r.employeePin=pin;r.groceryPin=r.groceryPin||pin}if(e)e.pin=pin;PS.saveWorld(w);return pin;
+}
+function timeClock(role){
+ let pin=empPin();
+ app.innerHTML='<section class="card"><span class="badge">EMPLOYEE TIME CLOCK</span><h1>Clock In</h1><p>Shift: <b>8:00 AM–4:00 PM</b> • 5 real minutes</p>'+
+ (isKayla()?'<div class="notice">Manager/Test Mode. Enter the manager PIN.</div>':'<div class="good">Your Transition Town employee PIN: <b>'+esc(pin)+'</b></div>')+
+ '<label>Enter PIN<input id="pin" class="field" inputmode="numeric" maxlength="4" type="password"></label><p id="pinmsg"></p><button class="btn green" onclick="clockIn(\''+esc(role).replace(/'/g,"\\'")+'\')">CLOCK IN</button> <button class="btn white" onclick="landing()">Cancel</button></section>';
+}
+function training(role){
+ stopTimers();let k=roleKey(role),lesson=
+ k==='kitchen'?'Read every ticket before starting. Build the exact pizza, manage hot sides and oven timing, cut, box, and match the order number.' :
+ k==='cashier'?'Listen to the spoken order, enter it exactly in the POS, read it back, total it, make correct change when needed, and send that exact order to the kitchen.' :
+ k==='dishwasher'?'Keep dirty and clean items separate. Scrape, wash, rinse, sanitize, air dry, and store in the correct order. Handle spills and handwashing safely.' :
+ 'Check the order number and verify every pizza, side, sauce, dessert and drink before handing the order to the customer.';
+ app.innerHTML='<section class="card"><span class="badge">'+esc(role)+' TRAINING</span><h1>Before You Clock In</h1><div class="good">'+esc(lesson)+'</div><p><button class="btn white" onclick="PS.speak(\''+lesson.replace(/'/g,"\\'")+'\',.9)">🔊 AUDIO INSTRUCTIONS</button></p><p><button class="btn green" onclick="timeClock(\''+esc(role).replace(/'/g,"\\'")+'\')">GO TO TIME CLOCK</button> <button class="btn white" onclick="landing()">Back</button></p></section>';
+}
+function clockIn(role){
+ let v=document.getElementById('pin').value;if(v!==empPin()){document.getElementById('pinmsg').innerHTML='<span class="notice">Incorrect PIN. Try again.</span>';return}
+ let now=Date.now();shift={role,start:now,end:now+REAL_SHIFT*1000,completed:0,correct:0,mistakes:0,oven:null,current:null,service:0,safety:0,cleanliness:0};
+ let k=roleKey(role);if(k==='kitchen')startKitchen();else if(k==='cashier')startCashier();else if(k==='dishwasher')startCleanup();else startPickup();
+}
+function pickupOrders(){
+ let w=PS.world();return (w.pizzaOrders||[]).filter(o=>!o.completed&&o.status==='READY FOR PICKUP'&&(!o.pickup||o.pickup.status!=='HANDED OUT')).slice(0,6);
+}
+function startPickup(){renderPickup();if(shiftTimer)clearInterval(shiftTimer);shiftTimer=setInterval(()=>{if(shiftClock().left<=0)clockOutPrompt();else renderPickup(false)},900)}
+function renderPickup(scroll=true){
+ let t=shiftClock(),orders=pickupOrders(),cards=orders.map(o=>'<div class="pickupTicket"><b>ORDER #'+o.id+'</b><div class="pickupItems">'+(o.items||[]).map(x=>'<span>'+esc(x.name)+'</span>').join('')+'</div><button class="btn green" onclick="verifyPickup('+o.id+')">VERIFY ORDER</button></div>').join('');
+ app.innerHTML='<section class="card"><span class="badge">ORDER PICKUP • CLOCKED IN</span><div class="clock">'+t.time+'</div><div class="shiftbar"><i style="width:'+t.pct+'%"></i></div><div class="statgrid"><div><b>'+shift.completed+'</b><br>Handed Out</div><div><b>'+shift.correct+'</b><br>Correct</div><div><b>'+shift.mistakes+'</b><br>Corrections</div></div></section><section class="card"><h2>Pickup Counter</h2><p>Match the customer/order number to every item before handoff.</p>'+(cards||'<div class="notice">No completed kitchen orders are waiting right now.</div>')+'</section>';
+ if(scroll)window.scrollTo(0,0);
+}
+function verifyPickup(id){
+ let o=PS.getOrder(id);if(!o)return;
+ let items=(o.items||[]).map((x,i)=>({x,i}));let correct=Math.random()<.78?id:(pickupOrders().find(x=>x.id!==id)||{id:id+1}).id;
+ app.innerHTML='<section class="card"><span class="badge">ORDER CHECK</span><h1>Bag / Box #'+id+'</h1><p>Items in this order:</p><div class="pickupItems">'+items.map(a=>'<span>'+esc(a.x.name)+'</span>').join('')+'</div><h3>Which customer/order gets this food?</h3><div class="makegrid">'+[id,correct,id+2].filter((v,i,a)=>a.indexOf(v)===i).sort(()=>Math.random()-.5).map(n=>'<button class="btn white" onclick="handoffPickup('+id+','+n+')">ORDER #'+n+'</button>').join('')+'</div></section>';
+}
+function handoffPickup(id,chosen){
+ if(Number(id)!==Number(chosen)){shift.mistakes++;app.innerHTML='<section class="card"><div class="notice"><h2>Stop — wrong order number.</h2><p>Recheck the receipt and food before handing it out.</p></div><button class="btn green" onclick="renderPickup()">RECHECK ORDER</button></section>';return}
+ let o=PS.getOrder(id);if(!o)return;o.pickup={status:'HANDED OUT',employee:PS.residentName(),at:Date.now()};PS.patchOrder(id,{pickup:o.pickup});shift.completed++;shift.correct++;shift.service++;renderPickup();
+}
+const CLEAN_STEPS=['SCRAPE FOOD','WASH WITH SOAP','RINSE','SANITIZE','AIR DRY','STORE CLEAN ITEMS'];
+let cleanRound=null;
+function startCleanup(){newCleanRound();if(shiftTimer)clearInterval(shiftTimer);shiftTimer=setInterval(()=>{if(shiftClock().left<=0)clockOutPrompt();else renderCleanup(false)},900)}
+function newCleanRound(){cleanRound={step:0,spill:Math.random()<.25,washedHands:false};renderCleanup()}
+function renderCleanup(scroll=true){
+ let t=shiftClock(),s=cleanRound.step;
+ app.innerHTML='<section class="card"><span class="badge">DISHWASHER / CLEANUP • CLOCKED IN</span><div class="clock">'+t.time+'</div><div class="shiftbar"><i style="width:'+t.pct+'%"></i></div><div class="statgrid"><div><b>'+shift.completed+'</b><br>Racks</div><div><b>'+shift.safety+'</b><br>Safety</div><div><b>'+shift.mistakes+'</b><br>Corrections</div></div></section><section class="card cleanupGame"><h2>Dirty Dish Rack</h2>'+(cleanRound.spill?'<div class="spillAlert">⚠️ A drink spilled near the work area.</div><button class="btn red" onclick="cleanSpill()">CLEAN & MARK WET FLOOR</button>':'')+'<p>Complete sanitation in the correct order.</p><div class="cleanSteps">'+CLEAN_STEPS.map((x,i)=>'<button class="btn '+(i<s?'green':'white')+'" onclick="cleanAction('+i+')">'+(i<s?'✓ ':'')+x+'</button>').join('')+'</div>'+(s>=CLEAN_STEPS.length?'<button class="btn green" onclick="finishCleanRack()">FINISH RACK</button>':'')+'</section>';
+ if(scroll)window.scrollTo(0,0);
+}
+function cleanSpill(){cleanRound.spill=false;shift.safety++;shift.correct++;renderCleanup(false)}
+function cleanAction(i){
+ if(i!==cleanRound.step){shift.mistakes++;renderCleanup(false);return}
+ cleanRound.step++;shift.correct++;if(i===3)shift.safety++;renderCleanup(false);
+}
+function finishCleanRack(){
+ if(cleanRound.step<CLEAN_STEPS.length||cleanRound.spill){shift.mistakes++;renderCleanup(false);return}
+ shift.completed++;shift.cleanliness++;shift.correct++;newCleanRound();
+}
