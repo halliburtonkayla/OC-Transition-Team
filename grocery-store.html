@@ -55,7 +55,7 @@ let cart=loadCart(),mode=localStorage.ttGroceryMode||'',budget=Number(localStora
 const view=document.getElementById('view'),modal=document.getElementById('modal'),modalContent=document.getElementById('modalContent'),musicBtn=document.getElementById('musicBtn');
 const radio=document.getElementById('radio');radio.volume=.24;
 function residentName(){try{let w=JSON.parse(localStorage.ttWorld||'{}');let names=Object.keys(w.residents||{});return localStorage.ttCurrent||sessionStorage.ttCurrent||(names.length===1?names[0]:'Guest')}catch(e){return localStorage.ttCurrent||sessionStorage.ttCurrent||'Guest'}}
-function showEmployeeEntrance(){let n=residentName(),w=world(),r=w.residents&&w.residents[n],hired=!!(r&&r.employment&&r.employment.grocery&&r.employment.grocery.active!==false),teacher=/kayla/i.test(n),b=document.getElementById('employeeBtn');if(b&&(teacher||hired))b.style.display='inline-block'}
+function showEmployeeEntrance(){let n=residentName(),b=document.getElementById('employeeBtn');if(!b)return;let teacher=/kayla/i.test(n),hired=false;try{let w=JSON.parse(localStorage.ttWorld||'{}')||{},r=w.residents&&w.residents[n];hired=!!(r&&r.employment&&r.employment.grocery&&r.employment.grocery.active!==false)}catch(e){}if(teacher||hired)b.style.display='inline-block'}
 function returnToTown(){let n=residentName();if(n&&n!=='Guest'){localStorage.ttCurrent=n;sessionStorage.ttCurrent=n;location.href='transition-town.html?return=1&resident='+encodeURIComponent(n)}else{history.back()}}
 function world(){try{return JSON.parse(localStorage.ttWorld||'{}')||{}}catch(e){return {}}}
 function saveWorld(w){localStorage.ttWorld=JSON.stringify(w)}
