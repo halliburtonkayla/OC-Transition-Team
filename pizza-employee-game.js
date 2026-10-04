@@ -23,8 +23,9 @@ function generateCustomerOrder(){
   let sauce=level>=2?pick(['Light','Regular','Extra']):'Regular';
   let mods={}, phrases=[];
   let pool=['Pepperoni','Sausage','Ham','Bacon','Chicken','Mushrooms','Onions','Green Peppers','Black Olives','Jalapeños','Pineapple','Tomatoes','Extra Cheese'];
+  let base=(PS.menu.pizzas[pizza]&&PS.menu.pizzas[pizza].toppings||[]).map(x=>x.replace(/\\b\\w/g,m=>m.toUpperCase()));
   let count=level===1?0:level===2?1:level===3?2:3;
-  for(let i=0;i<count;i++){let t=pick(pool.filter(x=>!mods[x]));let m=pick(['No','Light','Extra','Add']);mods[t]=m;phrases.push(m.toLowerCase()+' '+t.toLowerCase())}
+  for(let i=0;i<count;i++){let existing=base.filter(x=>!mods[x]),adding=pool.filter(x=>!base.includes(x)&&!mods[x]),useExisting=existing.length&&Math.random()<.55,t=pick(useExisting?existing:adding),m=useExisting?pick(['No','Light','Extra']):'Add';mods[t]=m;phrases.push(m.toLowerCase()+' '+t.toLowerCase())}
   let side=null,drink=null,dessert=null,sauceDip=null;
   if(level>=1&&Math.random()<.7) side=pick(['Breadsticks','Cheese Sticks','6 Wings','12 Wings']);
   if(level>=1&&Math.random()<.85) drink={name:pick(['Cola','Diet Cola','Lemon-Lime','Root Beer','Fruit Punch','Iced Tea']),size:pick(['Small','Medium','Large'])};
@@ -60,7 +61,7 @@ function cashierScene(){
 }
 function renderCashier(){
   let t=shiftClock(),e=cashierGame.entry;
-  app.innerHTML=`<section class="card"><span class="badge">CASHIER • CLOCKED IN</span><div id="cashClock" class="clock">${t.time}</div><div class="shiftbar"><i id="cashBar" style="width:${t.pct}%"></i></div><div class="statgrid"><div><b>${shift.completed}</b><br>Customers</div><div><b>${shift.correct}</b><br>Correct</div><div><b>${shift.mistakes}</b><br>Corrections</div></div></section>${cashierScene()}<section class="card"><h2>Listen to the Customer</h2><p>The complete order is not written on the screen. Listen, then enter it into the POS.</p><button class="btn green" onclick="replayCustomer()">🔊 REPLAY CUSTOMER AUDIO</button><div id="customerReply"></div></section><section class="card pos"><h2>POS Register</h2>${posGroup('SIZE',['Personal','Small','Medium','Large','Extra Large'],'size',e.size)}${posGroup('CRUST',['Hand Tossed','Thin Crust','Pan','Stuffed Crust'],'crust',e.crust)}${posGroup('PIZZA',['Cheese','Pepperoni','Sausage','Meat Lovers','Supreme','Veggie','Hawaiian','BBQ Chicken','Buffalo Chicken'],'pizza',e.pizza)}${posGroup('SAUCE',['Light','Regular','Extra'],'sauce',e.sauce)}<h3>TOPPINGS / MODIFIERS</h3><div class="posMods">${['Pepperoni','Sausage','Ham','Bacon','Chicken','Mushrooms','Onions','Green Peppers','Black Olives','Jalapeños','Pineapple','Tomatoes','Extra Cheese'].map(x=>`<label>${x}<select onchange="cashMod('${x}',this.value)"><option>Regular</option><option>No</option><option>Light</option><option>Extra</option><option>Add</option></select></label>`).join('')}</div>${posGroup('SIDE',['None','Breadsticks','Cheese Sticks','6 Wings','12 Wings'],'side',e.side||'None')}${posGroup('DIPPING SAUCE',['None','Ranch','Garlic Butter','Marinara','Buffalo','BBQ'],'sauceDip',e.sauceDip||'None')}${posGroup('DRINK',['None','Cola','Diet Cola','Lemon-Lime','Root Beer','Fruit Punch','Iced Tea'],'drinkName',e.drink&&e.drink.name||'None')}${posGroup('DRINK SIZE',['Small','Medium','Large'],'drinkSize',e.drink&&e.drink.size||'Medium')}${posGroup('DESSERT',['None','Cinnamon Bites','Chocolate Brownie'],'dessert',e.dessert||'None')}<div class="bigbuttons"><button class="btn green" onclick="readBackOrder()">READ BACK ORDER</button><button class="btn white" onclick="replayCustomer()">REPLAY AUDIO</button></div></section>`;
+  app.innerHTML=`<section class="card"><span class="badge">CASHIER • CLOCKED IN</span><div id="cashClock" class="clock">${t.time}</div><div class="shiftbar"><i id="cashBar" style="width:${t.pct}%"></i></div><div class="statgrid"><div><b>${shift.completed}</b><br>Customers</div><div><b>${shift.correct}</b><br>Correct</div><div><b>${shift.mistakes}</b><br>Corrections</div></div></section>${cashierScene()}<section class="card"><h2>Listen to the Customer</h2><p>The complete order is not written on the screen. Listen, then enter it into the POS.</p><button class="btn green" onclick="replayCustomer()">🔊 REPLAY CUSTOMER AUDIO</button><div id="customerReply"></div></section><section class="card pos"><h2>POS Register</h2>${posGroup('SIZE',['Personal','Small','Medium','Large','Extra Large'],'size',e.size)}${posGroup('CRUST',['Hand Tossed','Thin Crust','Pan','Stuffed Crust'],'crust',e.crust)}${posGroup('PIZZA',['Cheese','Pepperoni','Sausage','Meat Lovers','Supreme','Veggie','Hawaiian','BBQ Chicken','Buffalo Chicken'],'pizza',e.pizza)}${posGroup('SAUCE',['Light','Regular','Extra'],'sauce',e.sauce)}<h3>TOPPINGS / MODIFIERS</h3><div class="posMods">${['Pepperoni','Sausage','Ham','Bacon','Chicken','Mushrooms','Onions','Green Peppers','Black Olives','Jalapeños','Pineapple','Tomatoes','Extra Cheese'].map(x=>{let cv=e.mods[x]||'Regular';return `<label>${x}<select onchange="cashMod('${x}',this.value)">${['Regular','No','Light','Extra','Add'].map(v=>`<option ${v===cv?'selected':''}>${v}</option>`).join('')}</select></label>`}).join('')}</div>${posGroup('SIDE',['None','Breadsticks','Cheese Sticks','6 Wings','12 Wings'],'side',e.side||'None')}${posGroup('DIPPING SAUCE',['None','Ranch','Garlic Butter','Marinara','Buffalo','BBQ'],'sauceDip',e.sauceDip||'None')}${posGroup('DRINK',['None','Cola','Diet Cola','Lemon-Lime','Root Beer','Fruit Punch','Iced Tea'],'drinkName',e.drink&&e.drink.name||'None')}${posGroup('DRINK SIZE',['Small','Medium','Large'],'drinkSize',e.drink&&e.drink.size||'Medium')}${posGroup('DESSERT',['None','Cinnamon Bites','Chocolate Brownie'],'dessert',e.dessert||'None')}<div class="bigbuttons"><button class="btn green" onclick="readBackOrder()">READ BACK ORDER</button><button class="btn white" onclick="replayCustomer()">REPLAY AUDIO</button></div></section>`;
 }
 function posGroup(label,vals,key,current){return `<h3>${label}</h3><div class="posBtns">${vals.map(v=>`<button class="btn ${v===current?'green':'white'}" onclick="cashSet('${key}','${v.replace(/'/g,"\\'")}')">${v}</button>`).join('')}</div>`}
 function cashSet(key,v){
@@ -151,3 +152,41 @@ function cutEnd(e){let t=e.changedTouches[0];if(Math.hypot(t.clientX-cutX,t.clie
 function cutPointer(e){cutX=e.clientX;cutY=e.clientY}
 function cutPointerEnd(e){if(Math.hypot(e.clientX-cutX,e.clientY-cutY)>35)makeCut()}
 function makeCut(){shift.current.chosen.cuts=Math.min(4,(shift.current.chosen.cuts||0)+1);renderKitchen(false)}
+
+/* Kitchen side/fryer queue: pizza and hot sides share the same order tickets. */
+function activeKitchenOrders(){let w=PS.world();return (w.pizzaOrders||[]).filter(o=>!o.completed&&(o.kitchen&&o.kitchen.tickets||[]).some(t=>t.status!=='READY FOR PICKUP')).slice(0,4)}
+function kitchenWorkItems(o){return (o.items||[]).map((item,index)=>({item,index})).filter(x=>x.item.type==='pizza'||x.item.type==='side')}
+function renderKitchen(scroll=true){
+  let t=shiftClock(),orders=ensureRush(),cards='';
+  orders.forEach(o=>{cards+=`<div class="order"><b>ORDER #${o.id}</b>`;kitchenWorkItems(o).forEach(({item,index})=>{let tk=(o.kitchen&&o.kitchen.tickets||[]).find(q=>q.orderItem&&q.orderItem.name===item.name),done=tk&&tk.status==='READY FOR PICKUP';cards+=`<div class="ticket">${esc(item.name)}<br>STATUS: <b>${done?'READY':shift.current&&shift.current.id===o.id&&shift.current.itemIndex===index?'WORKING':'WAITING'}</b><br>${done?'':`<button class="btn green" onclick="selectKitchenItem(${o.id},${index})">START ITEM</button>`}</div>`});cards+='</div>'});
+  let work=shift.current?(shift.current.pizza?makeStation(shift.current):sideStation(shift.current)):'<div class="notice">Choose a waiting item. Keep an eye on anything already cooking.</div>';
+  app.innerHTML=`<section class="card"><span class="badge">KITCHEN • CLOCKED IN</span><div class="clock">${t.time}</div><div class="shiftbar"><i style="width:${t.pct}%"></i></div><p>${Math.floor(t.left/60)}:${String(t.left%60).padStart(2,'0')} real time remaining</p><div class="statgrid"><div><b>${shift.completed}</b><br>Items</div><div><b>${shift.correct}</b><br>Correct Steps</div><div><b>${shift.mistakes}</b><br>Corrections</div></div></section><section class="card"><h2>Kitchen Tickets</h2>${cards||'<div class="notice">No tickets yet.</div>'}</section><section class="card">${work}</section>`;if(scroll)window.scrollTo(0,0)
+}
+function selectKitchenItem(id,index){
+  let o=PS.getOrder(id),item=o&&o.items[index];if(!item)return;
+  if(item.type==='pizza')shift.current={id,itemIndex:index,step:'dough',pizza:item,chosen:{}};
+  else shift.current={id,itemIndex:index,step:'startSide',side:item,chosen:{}};
+  renderKitchen();
+}
+function sideStation(x){
+  let n=x.side.name;
+  if(!/Wings/i.test(n))return `<h2>Order #${x.id} — ${esc(n)}</h2><p>Place the side in the accelerated oven.</p>${x.sideCook?sideCookView(x,8,12):'<button class="btn green" onclick="startSideCook()">START COOKING</button>'}`;
+  return `<h2>Order #${x.id} — ${esc(n)}</h2><p>Drop the wings in the fryer. Work efficiently, but do not serve undercooked chicken.</p>${x.sideCook?sideCookView(x,10,15):'<button class="btn green" onclick="startSideCook()">DROP CHICKEN</button>'}`;
+}
+function startSideCook(){shift.current.sideCook={start:Date.now()};renderKitchen(false)}
+function sideCookView(x,min,max){
+  let sec=(Date.now()-x.sideCook.start)/1000,label=sec<min?'COOKING — TOO EARLY':sec<=max?'READY WINDOW':'OVERCOOKING';
+  return `<div class="ovenbar"><i style="width:${Math.min(100,sec/(max+5)*100)}%"></i></div><p><b>${label}</b> • ${sec.toFixed(1)} sec</p><button class="btn red" onclick="finishSideCook(${min},${max})">REMOVE ${/Wings/i.test(x.side.name)?'FROM FRYER':'FROM OVEN'}</button>`;
+}
+function finishSideCook(min,max){
+  let sec=(Date.now()-shift.current.sideCook.start)/1000;if(sec<min||sec>max){shift.mistakes++;shift.current.sideCook=null;renderKitchen();return}
+  shift.correct++;markKitchenItemReady(shift.current.id,shift.current.itemIndex);shift.completed++;shift.current=null;renderKitchen();
+}
+function markKitchenItemReady(id,index){
+  let o=PS.getOrder(id);if(!o)return;let item=o.items[index],k=o.kitchen||{tickets:[]},tk=(k.tickets||[]).find(q=>q.orderItem&&q.orderItem.name===item.name);if(tk)tk.status='READY FOR PICKUP';
+  let all=k.tickets&&k.tickets.length&&k.tickets.every(q=>q.status==='READY FOR PICKUP');PS.patchOrder(id,{kitchen:k,status:all?'READY FOR PICKUP':'PREPARING',readyAt:all?Date.now():o.readyAt});
+}
+function matchOrder(n){
+  if(n!==shift.current.id){shift.mistakes++;renderKitchen();return}
+  markKitchenItemReady(shift.current.id,shift.current.itemIndex);shift.completed++;shift.correct++;shift.current=null;ensureRush();renderKitchen();
+}
