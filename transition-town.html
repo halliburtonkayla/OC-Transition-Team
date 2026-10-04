@@ -700,7 +700,15 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
   for(const [name,r] of Object.entries(w.residents))if(/^(?:miss )?kayla(?: halliburton)?$/i.test(name.trim())){r.checking=10000;r.history=r.history||[];r.history.push('Miss Kayla checking reset to $10,000 as requested');}
   put(w);localStorage.setItem(flag,'done');
  }
- document.body.classList.add('login-required');resident();
+ const returning=localStorage.ttCurrent||'';
+ if(returning&&townLoginProfiles.includes(returning)){
+  current=returning;
+  ensure(current);
+  if(/^(?:miss|ms\.) kayla$/i.test(current))teacherView();else studentView();
+ }else{
+  document.body.classList.add('login-required');
+  resident();
+ }
 })();
 </script>
 
