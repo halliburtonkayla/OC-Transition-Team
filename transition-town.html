@@ -134,7 +134,7 @@ document.addEventListener('click',function(e){
  if(e.target.closest('.ttTownMenu button')||!e.target.closest('.ttTownMenu,.ttKaylaInfo'))setTownDrawer(null);
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape')setTownDrawer(null)});
-matchMedia('(max-width:1100px)').addEventListener('change',()=>setTownDrawer(null));
+const townMedia=matchMedia('(max-width:1100px)');if(townMedia.addEventListener)townMedia.addEventListener('change',()=>setTownDrawer(null));else if(townMedia.addListener)townMedia.addListener(()=>setTownDrawer(null));
 setTownDrawer(null);
 let current='';let activeGroup=[];const get=()=>{let w;try{w=JSON.parse(localStorage.ttWorld||'null')}catch(e){w=null}if(!w||typeof w!=='object')w={residents:{},messages:[],businesses:{"Cool Vibes":{owners:["Olivia","Jocquan","Kaylee","Alyssa"],balance:5000,alerts:[]},"3K Tire Shop":{owners:["Allen","Nick"],balance:5000,alerts:[]}},events:[]};w.residents=w.residents||{};w.messages=w.messages||[];w.events=w.events||[];w.businesses=w.businesses||{};[
 ["Cool Vibes",["Olivia","Jocquan","Kaylee","Alyssa"],"Food & drinks"],
