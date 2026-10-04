@@ -95,7 +95,7 @@ function groceryEmployment(){
  return null;
 }
 function employeeEntrancePanel(){
- let n=residentName(),isKayla=/^(?:miss|ms\.) kayla$/i.test(n),e=groceryEmployment();
+ let n=residentName(),isKayla=/kayla/i.test(n),e=groceryEmployment();
  if(isKayla)return '<div class="employeeBar"><div class="panel"><span class="shiftbadge">MANAGER / TEST MODE</span><h2>Miss Kayla — Grocery Employee Preview</h2><p>Preview and test either employee job without hiring yourself.</p><button class="action primary" onclick="kaylaEmployeePreview(\'Cashier\')">Test Cashier Mode</button> <button class="action primary" onclick="kaylaEmployeePreview(\'Stocker\')">Test Stocker Mode</button></div></div>';
  if(!e||e.active===false)return '';
  return '<div class="employeeBar"><div class="panel"><span class="shiftbadge">EMPLOYEE</span><h2>'+n+' — '+e.position+'</h2><p><b>
