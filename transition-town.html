@@ -608,7 +608,15 @@ function teacherCentralHub(){
  '<div class=card><h3>👩‍🏫 To Miss Kayla</h3><p>'+x.direct.length+' direct message(s)</p><button class=action onclick="teacherHubInbox(\'kayla\')">Open Messages to Miss Kayla</button></div>'+
  '<div class=card><h3>🏛️ City Hall Requests</h3><p>'+(x.may.length+x.city.length)+' request(s)</p><button class=action onclick="teacherHubInbox(\'city\')">Open City Hall Inbox</button></div>'+
  '<div class=card><h3>🏠 Housing</h3><p>'+x.housing.length+' housing application/review(s)</p><button class=action onclick="teacherHubInbox(\'housing\')">Open Housing</button></div>'+
+ '<div class=card><h3>🕒 Employee Shift Reports</h3><p>'+((x.w.employeeShiftReports||[]).length)+' completed shift(s)</p><button class=action onclick="teacherShiftReports()">Open Shift Reports</button></div>'+
  '</div>');
+}
+
+function teacherShiftReports(){
+ let w=get(),reports=w.employeeShiftReports||[],html='<h2>🕒 Employee Shift Reports</h2><button class=action onclick="teacherCentralHub()">← Central Hub</button>';
+ if(!reports.length)html+='<div class=notice>No completed employee shifts yet.</div>';
+ else html+='<div class=cards>'+reports.map(function(r){return '<div class=card><h3>'+applicationEsc(r.employee)+' — '+applicationEsc(r.position)+'</h3><p><b>'+applicationEsc(r.employer)+'</b></p><p>'+r.hours+' hours • $'+Number(r.wage||0).toFixed(2)+'/hr • Gross $'+Number(r.gross||0).toFixed(2)+'</p><p>Workplace readiness: <b>'+Number(r.score||0)+'%</b></p><small>'+applicationEsc(r.date||'')+'</small></div>'}).join('')+'</div>';
+ openSheet(html);
 }
 function teacherHubInbox(kind){
  let x=kaylaHubCounts(),items=[],title='';
@@ -670,7 +678,14 @@ function setJobApplicationStatus(ref,status){
  found.a.status=status;localStorage.ttWorld=JSON.stringify(found.w);
  if(status==='Approved / Hired'){
   let applicant=found.a.resident||found.a.name||found.ref.resident||'',job=found.a.position||found.a.job||'New Job';
-  if(applicant&&found.w.residents&&found.w.residents[applicant]){found.w.residents[applicant].job=job;found.w.residents[applicant].notifications=found.w.residents[applicant].notifications||[];found.w.residents[applicant].notifications.push('JOB UPDATE: You were hired for '+job+'.');localStorage.ttWorld=JSON.stringify(found.w)}
+  if(applicant&&found.w.residents&&found.w.residents[applicant]){
+   let rr=found.w.residents[applicant];rr.job=job;rr.notifications=rr.notifications||[];
+   if(found.ref.key==='grocery'){
+    rr.employment=rr.employment||{};rr.employment.grocery={employer:'Transition Town Grocery',position:/stocker/i.test(job)?'Stocker':'Cashier',wage:12,schedule:'Schedule pending — see Miss Kayla',active:true,shifts:[]};
+    rr.job='Transition Town Grocery — '+rr.employment.grocery.position;
+   }
+   rr.notifications.push('JOB UPDATE: You were hired for '+rr.job+'.');localStorage.ttWorld=JSON.stringify(found.w)
+  }
  }
  alert('Application status updated to: '+status);teacherApplications();
 }
