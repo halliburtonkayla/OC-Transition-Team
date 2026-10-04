@@ -101,7 +101,7 @@ function submitOrder(){
 const statuses=['ORDER RECEIVED','PREPARING','IN THE OVEN','FINISHING YOUR ORDER','READY FOR PICKUP'];
 function gameStatus(o){
  if(o.completed)return 'COMPLETED';
- if(o.kitchenClaimed)return o.status||'PREPARING';
+ if(o.kitchenClaimed||Number(localStorage.ttPizzaKitchenUntil||0)>Date.now())return o.status||'ORDER RECEIVED';
  let tickets=o.kitchen&&o.kitchen.tickets||[];
  if(tickets.some(t=>t.status&&t.status!=='QUEUED'))return o.status||'PREPARING';
  let e=(Date.now()-Number(o.createdAt||Date.now()))/1000;
