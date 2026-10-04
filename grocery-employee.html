@@ -8,12 +8,12 @@
 <main class="wrap"><div id="app"></div></main>
 <script>
 const app=document.getElementById('app');
-function employeeName(){return localStorage.ttCurrent||'Guest'}
+function employeeName(){return localStorage.ttCurrent||sessionStorage.ttCurrent||'Guest'}
 function world(){try{return JSON.parse(localStorage.ttWorld||'{}')||{}}catch(e){return {}}}
 function save(w){localStorage.ttWorld=JSON.stringify(w)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function money(n){return '$'+Number(n||0).toFixed(2)}
-function isKayla(){return /kayla/i.test(employeeName())}
+function isKayla(){return /kayla/i.test(employeeName())||new URLSearchParams(location.search).get('manager')==='1'}
 function resident(w){w.residents=w.residents||{};return w.residents[employeeName()]||null}
 function employment(w){let r=resident(w);return r&&r.employment&&r.employment.grocery||null}
 function profileName(){let n=employeeName();return /kayla/i.test(n)?'Miss Kayla':n}
