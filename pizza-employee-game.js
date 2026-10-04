@@ -282,3 +282,25 @@ function startKitchen(){
  if(shiftTimer)clearInterval(shiftTimer);
  shiftTimer=setInterval(()=>{let t=shiftClock();if(t.left<=0)return clockOutPrompt();renderKitchen(false)},700);
 }
+
+/* Approved Pizza Shop visual scenes. These switch on automatically when the approved PNG files are present in the repo. */
+function pizzaApprovedScene(file,alt,fallbackClass){
+ return '<div class="pizzaApprovedScene '+(fallbackClass||'')+'"><img src="'+file+'" alt="'+alt+'" onerror="this.style.display=\'none\';this.parentElement.classList.add(\'assetFallback\')"></div>';
+}
+function cashierScene(){
+ return pizzaApprovedScene('02_Cashier_Employee_POV.png','Transition Town Pizza Shop cashier employee point of view','cashierPOVApproved');
+}
+const _renderKitchenGameplay=renderKitchen;
+renderKitchen=function(scroll=true){
+ _renderKitchenGameplay(scroll);
+ let cards=app.querySelectorAll('.card'),target=cards.length>1?cards[1]:cards[0];
+ if(target&&!document.getElementById('approvedKitchenScene')){
+   let wrap=document.createElement('div');wrap.id='approvedKitchenScene';wrap.innerHTML=pizzaApprovedScene('04_Pizza_Maker_Kitchen.png','Transition Town Pizza Shop pizza maker kitchen','kitchenApproved');
+   target.parentNode.insertBefore(wrap,target);
+ }
+};
+function ovenStation(x){
+ if(!shift.oven)return pizzaApprovedScene('05_Pizza_Coming_Out_Of_Oven.png','Transition Town Pizza Shop oven station','ovenApproved')+'<h2>Oven</h2><p>Put Order #'+x.id+' into the accelerated oven. Correct cook time is about <b>12–18 seconds</b>.</p><button class="btn green" onclick="putInOven()">PUT PIZZA IN OVEN</button>';
+ let sec=(Date.now()-shift.oven.inAt)/1000,level=Math.min(100,sec/22*100),label=sec<12?'UNDERCOOKED':sec<=18?'READY WINDOW':'BURNING';
+ return pizzaApprovedScene('05_Pizza_Coming_Out_Of_Oven.png','Transition Town Pizza Shop pizza coming out of oven','ovenApproved')+'<h2>Order #'+x.id+' — IN OVEN</h2><div class="ovenbar"><i style="width:'+level+'%"></i></div><p><b>'+label+'</b> • '+sec.toFixed(1)+' sec</p><button class="btn red" onclick="removeOven()">REMOVE FROM OVEN</button>';
+}
