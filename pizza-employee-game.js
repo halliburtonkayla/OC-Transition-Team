@@ -275,3 +275,10 @@ function clockOut(){
 function application(){
  app.innerHTML='<section class="card"><span class="badge">NOW HIRING</span><h1>Pizza Shop Employment Application</h1><p>Practice application. Do not enter real private financial information.</p><form onsubmit="submitApplication(event)"><div class="appgrid"><label>Name<input class="field" name="name" required value="'+esc(PS.residentName())+'"></label><label>Position<select class="field" name="position"><option>Cashier / Order Taker</option><option>Pizza Maker / Kitchen</option><option>Dishwasher / Cleanup</option><option>Order Pickup / Counter</option><option>Restaurant Crew - Any Station</option></select></label><label>Desired Hours<input class="field" name="hours" type="number" min="1" max="40"></label><label>Can you arrive on time?<select class="field" name="attendance"><option>Yes</option><option>No</option></select></label></div><label>Why would you be a good Pizza Shop employee?<textarea class="field" name="why" rows="3" required></textarea></label><label>A restaurant gets busy and several orders arrive at once. What should you do?<textarea class="field" name="busy" rows="3" required></textarea></label><label>What should you do before handling food or clean dishes?<textarea class="field" name="sanitation" rows="3" required></textarea></label><button class="btn red" type="submit">SUBMIT TO MISS KAYLA</button> <button class="btn white" type="button" onclick="landing()">Back</button></form></section>';
 }
+
+function startKitchen(){
+ localStorage.ttPizzaKitchenUntil=String(Date.now()+REAL_SHIFT*1000);
+ ensureRush();renderKitchen();
+ if(shiftTimer)clearInterval(shiftTimer);
+ shiftTimer=setInterval(()=>{let t=shiftClock();if(t.left<=0)return clockOutPrompt();renderKitchen(false)},700);
+}
