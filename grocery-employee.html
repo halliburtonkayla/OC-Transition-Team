@@ -134,7 +134,7 @@ function startLegacyShift(){shift=stockerAssignment();renderStocker()}
 function renderStocker(){
  let t=shift.tasks[shift.index];if(!t)return endStockerShift();
  let a=t.aisle,slow=shift.pace==='supported';
- app.innerHTML='<section class="card '+(slow?'slowmode':'')+'"><span class="badge">'+(slow?'SUPPORTED-PACE STOCKER':'STOCKER SHIFT')+'</span><h1>Aisle '+a.n+': '+esc(a.name)+'</h1>'+clocks()+'<img class="aisleimg" src="'+a.img+'" alt="'+esc(a.name)+'"><div class="note"><h2>Stock this product: '+esc(t.product)+'</h2><p>Choose the correct aisle for this product.</p></div><div class="shelfgrid">'+aisleJobs.map(function(x){return '<button class="shelfbtn '+(x.n===a.n?'assigned':'')+'" onclick="stockChoice('+x.n+')">Aisle '+x.n+'<br>'+esc(x.name)+'</button>'}).join('')+'</div><p class="muted">Assignment '+(shift.index+1)+' of '+shift.tasks.length+' • Each new shift changes the stocking route and products.</p></section>';
+ app.innerHTML='<section class="card '+(slow?'slowmode':'')+'"><span class="badge">'+(slow?'SUPPORTED-PACE STOCKER':'STOCKER SHIFT')+'</span><h1>Stocking Assignment</h1>'+clocks()+'<div class="note"><h2>Stock this product: '+esc(t.product)+'</h2><p>Choose the correct aisle for this product. The answer is not highlighted.</p></div><div class="shelfgrid">'+aisleJobs.map(function(x){return '<button class="shelfbtn" onclick="stockChoice('+x.n+')">Aisle '+x.n+'<br>'+esc(x.name)+'</button>'}).join('')+'</div><p class="muted">Assignment '+(shift.index+1)+' of '+shift.tasks.length+' • Each new shift changes the stocking route and products.</p></section>';
  if(!timerId){timerId=setInterval(tickStocker,1000)}
 }
 function stockChoice(n){
