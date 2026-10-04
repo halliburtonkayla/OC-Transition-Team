@@ -98,7 +98,16 @@ function employeeEntrancePanel(){
  let n=residentName(),isKayla=/kayla/i.test(n),e=groceryEmployment();
  if(isKayla)return '<div class="employeeBar"><div class="panel"><span class="shiftbadge">MANAGER / TEST MODE</span><h2>Miss Kayla — Grocery Employee Preview</h2><p>Preview and test either employee job without hiring yourself.</p><button class="action primary" onclick="kaylaEmployeePreview(\'Cashier\')">Test Cashier Mode</button> <button class="action primary" onclick="kaylaEmployeePreview(\'Stocker\')">Test Stocker Mode</button></div></div>';
  if(!e||e.active===false)return '';
- return '<div class="employeeBar"><div class="panel"><span class="shiftbadge">EMPLOYEE</span><h2>'+n+' — '+e.position+'</h2><p><b>
+ return '<div class="employeeBar"><div class="panel"><span class="shiftbadge">EMPLOYEE</span><h2>'+n+' — '+e.position+'</h2><p><b>$'+Number(e.wage||12).toFixed(2)+'/hour</b> • '+(e.schedule||'Schedule pending')+'</p><button class="action primary" onclick="employeeCenter()">Clock In / Employee Center</button></div></div>';
+}
+function kaylaEmployeePreview(role){
+ let w=world(),n=residentName(),r=w.residents&&w.residents[n];
+ if(!r){w.residents=w.residents||{};r=w.residents[n]={checking:10000,savings:0,history:[],notifications:[]}}
+ r.employment=r.employment||{};
+ let old=r.employment.grocery||{};
+ r.employment.grocery={employer:'Transition Town Grocery',position:role,wage:12,schedule:'Manager preview — test shift',active:true,shifts:old.shifts||[],preview:true};
+ saveWorld(w);employeeCenter();
+}
 function employeeCenter(){
  let e=groceryEmployment();if(!e)return alert('You are not currently hired at Transition Town Grocery.');
  let w=world(),r=w.residents[residentName()],shift=r.activeGroceryShift;
