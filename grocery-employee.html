@@ -8,17 +8,17 @@
 <main class="wrap"><div id="app"></div></main>
 <script>
 const app=document.getElementById('app');
-function name(){return localStorage.ttCurrent||'Guest'}
+function employeeName(){return localStorage.ttCurrent||'Guest'}
 function world(){try{return JSON.parse(localStorage.ttWorld||'{}')||{}}catch(e){return {}}}
 function save(w){localStorage.ttWorld=JSON.stringify(w)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function money(n){return '$'+Number(n||0).toFixed(2)}
-function isKayla(){return /kayla/i.test(name())}
-function resident(w){w.residents=w.residents||{};return w.residents[name()]||null}
+function isKayla(){return /kayla/i.test(employeeName())}
+function resident(w){w.residents=w.residents||{};return w.residents[employeeName()]||null}
 function employment(w){let r=resident(w);return r&&r.employment&&r.employment.grocery||null}
-function profileName(){let n=name();return /kayla/i.test(n)?'Miss Kayla':n}
+function profileName(){let n=employeeName();return /kayla/i.test(n)?'Miss Kayla':n}
 function pinFor(n){let w=world(),r=resident(w);if(r&&r.groceryPin)return String(r.groceryPin);let base=0;for(let i=0;i<n.length;i++)base=(base+n.charCodeAt(i)*(i+7))%9000;return String(1000+base).slice(-4)}
-function ensurePin(){let w=world(),r=resident(w);if(!r)return pinFor(name());r.groceryPin=r.groceryPin||pinFor(name());save(w);return String(r.groceryPin)}
+function ensurePin(){let w=world(),r=resident(w);if(!r)return pinFor(employeeName());r.groceryPin=r.groceryPin||pinFor(employeeName());save(w);return String(r.groceryPin)}
 function landing(){
  let w=world(),e=employment(w),teacher=isKayla(),access=teacher||e&&e.active!==false;
  app.innerHTML='<div class="hero"><img src="00-grocery-store-entrance-now-hiring.png" alt="Transition Town Grocery"></div><section class="card"><span class="badge">'+(teacher?'MANAGER / TEST MODE':access?'EMPLOYEE':'EMPLOYEE CENTER')+'</span><h1>Welcome, '+esc(profileName())+'</h1>'+
@@ -103,7 +103,7 @@ function giveChange(due){let ok=Math.abs(shift.selectedCash-due)<.001;if(ok)shif
 function completeCustomer(ok){shift.served++;shift.customerIndex++;shift.scanIndex=0;shift.phase='scan';shift.selectedCash=0;app.innerHTML='<section class="card"><h1>'+(ok?'Transaction Complete':'Change Error Recorded')+'</h1><div class="'+(ok?'good':'note')+'">'+(ok?'Customer served successfully.':'The change amount did not match. The transaction is recorded for coaching.')+'</div><p>Waiting for next customer…</p></section>';setTimeout(function(){if(shift&&timing().left>0)renderRegister()},1800)}
 function tickCashier(){if(!shift)return;let t=timing(),r=document.getElementById('realClock'),w=document.getElementById('workClock');if(r)r.textContent=Math.floor(t.left/60)+':'+String(t.left%60).padStart(2,'0');if(w)w.textContent=t.work;if(t.left<=0)endCashierShift()}
 function endCashierShift(){if(timerId){clearInterval(timerId);timerId=null}let accuracy=shift.cashTotal?Math.round(shift.cashCorrect/shift.cashTotal*100):100,w=world(),e=employment(w),wage=Number(e&&e.wage||12),gross=8*wage;app.innerHTML='<section class="card"><span class="badge">SHIFT COMPLETE</span><h1>Cashier Shift Report</h1><div class="grid"><div class="job"><div class="score">'+shift.served+'</div><p>Customers served</p></div><div class="job"><div class="score">'+shift.itemsScanned+'</div><p>Items scanned</p></div><div class="job"><div class="score">'+accuracy+'%</div><p>Cash-change accuracy</p></div><div class="job"><div class="score">8</div><p>Work hours</p></div></div><p><b>Gross pay:</b> '+money(gross)+'</p><button class="btn green" onclick="submitCashierShift('+accuracy+')">'+(shift.preview?'Finish Test Shift':'Clock Out & Submit Shift')+'</button></section>'}
-function submitCashierShift(accuracy){let w=world(),r=resident(w),e=employment(w),wage=Number(e&&e.wage||12),gross=8*wage,report={employee:name(),employer:'Transition Town Grocery',position:'Cashier',hours:8,realMinutes:5,wage:wage,gross:gross,customers:shift.served,itemsScanned:shift.itemsScanned,cashAccuracy:accuracy,date:new Date().toLocaleString(),preview:shift.preview};w.employeeShiftReports=w.employeeShiftReports||[];w.employeeShiftReports.unshift(report);if(!shift.preview&&r){r.checking=Math.round((Number(r.checking||0)+gross)*100)/100;r.history=r.history||[];r.history.push('Completed 8-hour Grocery cashier shift +'+money(gross));if(e){e.shifts=e.shifts||[];e.shifts.unshift(report)}}save(w);let wasPreview=shift.preview;shift=null;app.innerHTML='<section class="card"><h1>Clocked Out</h1><div class="good">'+(wasPreview?'Test shift saved. No money was deposited.':'Shift report sent to Miss Kayla. '+money(gross)+' was deposited into your checking account.')+'</div><button class="btn green" onclick="landing()">Employee Center</button></section>'}
+function submitCashierShift(accuracy){let w=world(),r=resident(w),e=employment(w),wage=Number(e&&e.wage||12),gross=8*wage,report={employee:employeeName(),employer:'Transition Town Grocery',position:'Cashier',hours:8,realMinutes:5,wage:wage,gross:gross,customers:shift.served,itemsScanned:shift.itemsScanned,cashAccuracy:accuracy,date:new Date().toLocaleString(),preview:shift.preview};w.employeeShiftReports=w.employeeShiftReports||[];w.employeeShiftReports.unshift(report);if(!shift.preview&&r){r.checking=Math.round((Number(r.checking||0)+gross)*100)/100;r.history=r.history||[];r.history.push('Completed 8-hour Grocery cashier shift +'+money(gross));if(e){e.shifts=e.shifts||[];e.shifts.unshift(report)}}save(w);let wasPreview=shift.preview;shift=null;app.innerHTML='<section class="card"><h1>Clocked Out</h1><div class="good">'+(wasPreview?'Test shift saved. No money was deposited.':'Shift report sent to Miss Kayla. '+money(gross)+' was deposited into your checking account.')+'</div><button class="btn green" onclick="landing()">Employee Center</button></section>'}
 function startLegacyShift(){app.innerHTML='<section class="card"><h1>Stocker Hands-On Shift</h1><div class="note">The stocker job is the next hands-on work station. The existing stocker training is preserved.</div><button class="btn white" onclick="landing()">Employee Center</button></section>'}
 landing();
 </script></body></html>
