@@ -3,6 +3,8 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f0e7;color:#172018}button,input,select,textarea{font:inherit}button{cursor:pointer;min-height:44px}.top{position:sticky;top:0;z-index:20;background:#173b2b;color:#fff;padding:9px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.top b{font-size:19px;margin-right:auto}.top button,.pill{border:0;border-radius:12px;padding:9px 12px;font-weight:800}.music{background:#fff;color:#173b2b}.back{background:#f2c14e;color:#172018}.cartbtn{background:#e6f3ea;color:#173b2b}.layout{min-height:calc(100vh - 60px)}.main{padding:14px;min-width:0}.hero{position:relative;max-width:1400px;margin:auto}.heroHot{position:absolute;top:82.3%;height:13.2%;min-height:0;padding:0;border:0;background:transparent;color:transparent;border-radius:12px;z-index:3;touch-action:manipulation}.heroHot:focus-visible,.artDirHot:focus-visible{outline:4px solid #fff;background:#ffffff22}.artDirHot{position:absolute;min-height:0;padding:0;border:0;background:transparent;color:transparent;z-index:4;border-radius:5px;touch-action:manipulation}.aisleWrap{position:relative;max-width:1400px;margin:auto}.heroApply{left:16.6%;width:25%}.heroShop{left:43.3%;width:23.2%}.heroBudget{left:68.4%;width:26.4%}.hero img,.aisleimg{display:block;width:100%;height:auto;border-radius:18px}.action{border:0;border-radius:13px;padding:12px 16px;font-weight:900;box-shadow:0 3px 10px #0003}.panel{max-width:1050px;margin:14px auto;background:#fff;border-radius:18px;padding:16px;box-shadow:0 5px 20px #0001}.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.product{border:1px solid #dce2dc;border-radius:14px;padding:12px;background:#fff}.product h4{margin:0 0 5px}.product button{width:100%;border:0;background:#1f6b45;color:#fff;border-radius:10px;font-weight:800}.muted{color:#667;font-size:13px}.hidden{display:none!important}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.formgrid label,.full{font-weight:700}.formgrid input,.formgrid select,.formgrid textarea,.full input,.full textarea{width:100%;padding:10px;border:1px solid #aeb8ae;border-radius:9px;margin-top:4px}.wide{grid-column:1/-1}.days{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.receipt{font-family:ui-monospace,monospace;background:#fffdf4;border:1px dashed #888;padding:15px;max-width:480px;margin:12px auto}.scanrow{display:flex;justify-content:space-between;border-bottom:1px dotted #bbb;padding:6px 0}.total{font-size:26px;font-weight:900}.notice{padding:11px;border-radius:10px;background:#fff4c9}.success{background:#e5f5e9}.danger{background:#ffe4e4}.checkoutActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.checkoutActions button{border:0;border-radius:12px;padding:12px 16px;font-weight:900}.primary{background:#1f6b45;color:#fff}.secondary{background:#e8ece9}.red{background:#a92c2c;color:#fff}.badge{display:inline-block;background:#b12626;color:#fff;border-radius:999px;padding:2px 7px;font-size:12px}.modal{position:fixed;inset:0;background:#0009;z-index:50;overflow:auto;padding:18px}.modalbox{max-width:900px;margin:auto;background:#fff;border-radius:18px;padding:18px}.closex{float:right;border:0;background:#eee;border-radius:10px;font-weight:900}.checkoutScene{max-width:1100px;margin:auto}.checkoutScene img{width:100%;border-radius:18px;display:block}
 @media(max-width:760px){.layout{display:block}.main{padding:6px}.formgrid{grid-template-columns:1fr}.days{grid-template-columns:1fr 1fr}.hero img,.aisleimg{border-radius:12px}.hero{max-width:none}.top{position:sticky;top:0}.panel{padding:12px}}
+
+.employeeBar{max-width:1180px;margin:14px auto;padding:0 14px}.employeeBar .panel{border:2px solid #c79a35}.workgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.workcard{background:#fff;border:1px solid #ddd;border-radius:14px;padding:14px}.taskbtn{width:100%;text-align:left;margin:6px 0}.shiftbadge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eef7ed;font-weight:800}.managerNote{background:#fff8dc;border:1px solid #e6c45d;border-radius:12px;padding:12px}
 </style></head><body>
 <header class="top"><b>Transition Town Grocery</b><button class="back" onclick="location.href='transition-town.html'">← Town Map</button><button class="music" id="musicBtn">♪ Music On</button><button class="cartbtn" onclick="showCart()">Cart <span class="badge" id="cartCount">0</span></button></header>
 <audio id="radio" loop preload="none"><source src="Transition-Town-Grocery-Radio.mp3" type="audio/mpeg"></audio>
@@ -82,7 +84,67 @@ function world(){try{return JSON.parse(localStorage.ttWorld||'{}')||{}}catch(e){
 function saveWorld(w){localStorage.ttWorld=JSON.stringify(w)}
 function money(n){return '$'+Number(n||0).toFixed(2)}
 function saveCart(){localStorage.ttGroceryCart=JSON.stringify(cart);document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0)}
-function entrance(){view.innerHTML='<div class="hero"><img src="00-grocery-store-entrance-now-hiring.png" alt="Transition Town Grocery entrance with Now Hiring sign"><button class="heroHot heroApply" aria-label="Apply for a Grocery Store job" onclick="application()">Apply for a Job</button><button class="heroHot heroShop" aria-label="Start shopping" onclick="startFree()">Start Shopping</button><button class="heroHot heroBudget" aria-label="Make a grocery budget first" onclick="chooseBudget()">Make a Budget First</button>'+artworkDirectoryHotspots()+'</div><div class="panel"><h2>Welcome, '+residentName()+'!</h2><p>Choose how you want to shop. You can make a grocery budget first or shop freely. Your cart will show your items, but <b>it will not show a running total</b>. You will find out your total after every item is scanned at checkout.</p><p class="muted">Music is intentionally kept at a low background level. Use the Music button at the top anytime.</p></div>';wireArtworkDirectory();tryStartRadio()}
+function entrance(){view.innerHTML='<div class="hero"><img src="00-grocery-store-entrance-now-hiring.png" alt="Transition Town Grocery entrance with Now Hiring sign"><button class="heroHot heroApply" aria-label="Apply for a Grocery Store job" onclick="application()">Apply for a Job</button><button class="heroHot heroShop" aria-label="Start shopping" onclick="startFree()">Start Shopping</button><button class="heroHot heroBudget" aria-label="Make a grocery budget first" onclick="chooseBudget()">Make a Budget First</button>'+artworkDirectoryHotspots()+'</div>'+employeeEntrancePanel()+'<div class="panel"><h2>Welcome, '+residentName()+'!</h2><p>Choose how you want to shop. You can make a grocery budget first or shop freely. Your cart will show your items, but <b>it will not show a running total</b>. You will find out your total after every item is scanned at checkout.</p><p class="muted">Music is intentionally kept at a low background level. Use the Music button at the top anytime.</p></div>';wireArtworkDirectory();tryStartRadio()}
+
+function groceryEmployment(){
+ let w=world(),n=residentName(),r=w.residents&&w.residents[n];if(!r)return null;
+ let e=r.employment&&r.employment.grocery;
+ if(e)return e;
+ let job=String(r.job||'');
+ if(/cashier|stocker/i.test(job)){r.employment=r.employment||{};e=r.employment.grocery={employer:'Transition Town Grocery',position:/stocker/i.test(job)?'Stocker':'Cashier',wage:12,schedule:'Assigned by Miss Kayla',active:true,shifts:[]};saveWorld(w);return e}
+ return null;
+}
+function employeeEntrancePanel(){
+ let e=groceryEmployment();if(!e||e.active===false)return '';
+ return '<div class="employeeBar"><div class="panel"><span class="shiftbadge">EMPLOYEE</span><h2>'+residentName()+' — '+e.position+'</h2><p><b>$'+Number(e.wage||12).toFixed(2)+'/hour</b> • '+(e.schedule||'Schedule pending')+'</p><button class="action primary" onclick="employeeCenter()">Clock In / Employee Center</button></div></div>';
+}
+function employeeCenter(){
+ let e=groceryEmployment();if(!e)return alert('You are not currently hired at Transition Town Grocery.');
+ let w=world(),r=w.residents[residentName()],shift=r.activeGroceryShift;
+ if(shift)return renderShift();
+ view.innerHTML='<div class="panel"><h2>Transition Town Grocery Employee Center</h2><p><span class="shiftbadge">'+e.position+'</span></p><div class="workgrid"><div class="workcard"><h3>My Schedule</h3><p>'+(e.schedule||'Miss Kayla has not assigned a schedule yet.')+'</p><p>Wage: <b>$'+Number(e.wage||12).toFixed(2)+'/hour</b></p></div><div class="workcard"><h3>Start a Practice Shift</h3><p>One Transition Town work session represents a scheduled shift. Complete workplace tasks and situations before clocking out.</p><button class="action primary" onclick="clockInGrocery()">Clock In</button></div></div><button class="action secondary" onclick="entrance()">Back to Store</button></div>';tryStartRadio();scrollTo({top:0,behavior:'smooth'});
+}
+function clockInGrocery(){
+ let w=world(),r=w.residents&&w.residents[residentName()],e=groceryEmployment();if(!r||!e)return;
+ let role=/stocker/i.test(e.position)?'Stocker':'Cashier';
+ let tasks=role==='Cashier'?[
+  {q:'A customer has 4 items. What should you do first?',a:['Scan one item at a time and watch the register','Guess the total','Put everything in one bag first'],ok:0},
+  {q:'An item scans twice by mistake. What should you do?',a:['Ignore it','Correct the duplicate before payment','Ask the customer to pay twice'],ok:1},
+  {q:'A customer says the shelf price was lower. What is the best response?',a:['Argue','Politely verify the price or ask a supervisor','Tell them to leave'],ok:1},
+  {q:'A customer pays $20 for a $13.25 purchase. What change is due?',a:['$6.75','$7.75','$5.75'],ok:0},
+  {q:'Your replacement has not arrived and your shift is ending. What should you do?',a:['Leave the register unattended','Tell the supervisor before leaving','Clock out without saying anything'],ok:1}
+ ]:[
+  {q:'You are told to stock cereal. Where should you go?',a:['Breakfast aisle','Personal Care','Deli'],ok:0},
+  {q:'You find milk past its expiration date. What should you do?',a:['Move it to the front','Remove it and report it','Sell it quickly'],ok:1},
+  {q:'You see broken glass in an aisle. What should you do?',a:['Walk away','Secure the area and report/clean it using store procedure','Kick it under a shelf'],ok:1},
+  {q:'A frozen pizza was left in the snack aisle. What should you do?',a:['Leave it','Follow store procedure and tell a supervisor because temperature safety matters','Put it on any shelf'],ok:1},
+  {q:'A customer asks where pasta sauce is. What is the best response?',a:['Point randomly','Direct them to Pasta & Sauces and help if needed','Say you do not know and walk away'],ok:1}
+ ];
+ r.activeGroceryShift={role:role,started:new Date().toISOString(),hours:4,index:0,correct:0,tasks:tasks,notes:[]};saveWorld(w);renderShift();
+}
+function renderShift(){
+ let w=world(),r=w.residents&&w.residents[residentName()],s=r&&r.activeGroceryShift;if(!s)return employeeCenter();
+ if(s.index>=s.tasks.length)return finishShiftScreen();
+ let t=s.tasks[s.index];
+ view.innerHTML='<div class="panel"><h2>'+s.role+' Shift</h2><p>Task '+(s.index+1)+' of '+s.tasks.length+'</p><div class="managerNote"><b>Workplace Situation</b><h3>'+t.q+'</h3></div><div class="workgrid">'+t.a.map(function(a,i){return '<button class="action taskbtn" onclick="answerWorkTask('+i+')">'+a+'</button>'}).join('')+'</div><p class="muted">Your choices become part of your shift report for Miss Kayla.</p></div>';tryStartRadio();scrollTo({top:0,behavior:'smooth'});
+}
+function answerWorkTask(i){
+ let w=world(),r=w.residents[residentName()],s=r.activeGroceryShift,t=s.tasks[s.index],good=i===t.ok;
+ if(good)s.correct++;s.notes.push((good?'Completed correctly: ':'Needs coaching: ')+t.q);s.index++;saveWorld(w);renderShift();
+}
+function finishShiftScreen(){
+ let w=world(),r=w.residents[residentName()],s=r.activeGroceryShift,e=groceryEmployment(),score=Math.round(s.correct/s.tasks.length*100),gross=Math.round(s.hours*Number(e.wage||12)*100)/100;
+ view.innerHTML='<div class="panel"><h2>Shift Complete</h2><div class="workgrid"><div class="workcard"><h3>'+s.role+'</h3><p>Workplace readiness: <b>'+score+'%</b></p><p>Simulated hours: <b>'+s.hours+'</b></p><p>Gross pay earned: <b>'+money(gross)+'</b></p></div><div class="workcard"><h3>Clock Out</h3><p>Clocking out saves your shift report for Miss Kayla and deposits this practice shift pay into your Transition Town checking account.</p><button class="action primary" onclick="clockOutGrocery()">Clock Out & Submit Shift</button></div></div></div>';
+}
+function clockOutGrocery(){
+ let w=world(),n=residentName(),r=w.residents[n],s=r.activeGroceryShift,e=groceryEmployment();if(!s||!e)return;
+ let score=Math.round(s.correct/s.tasks.length*100),gross=Math.round(s.hours*Number(e.wage||12)*100)/100;
+ r.checking=Math.round((Number(r.checking||0)+gross)*100)/100;r.history=r.history||[];r.notifications=r.notifications||[];e.shifts=e.shifts||[];
+ let report={employee:n,employer:'Transition Town Grocery',position:s.role,hours:s.hours,wage:Number(e.wage||12),gross:gross,score:score,notes:s.notes,date:new Date().toLocaleString()};
+ e.shifts.unshift(report);r.history.push('Worked '+s.hours+' hours at Transition Town Grocery +'+money(gross));r.notifications.push('PAYDAY: Transition Town Grocery deposited '+money(gross)+' for your completed shift.');
+ w.employeeShiftReports=w.employeeShiftReports||[];w.employeeShiftReports.unshift(report);delete r.activeGroceryShift;saveWorld(w);
+ view.innerHTML='<div class="panel"><h2>Clocked Out</h2><p class="success notice">Your shift report was sent to Miss Kayla.</p><p><b>'+money(gross)+'</b> was deposited into your Transition Town checking account.</p><p>New checking balance: <b>'+money(r.checking)+'</b></p><button class="action primary" onclick="entrance()">Return to Store</button></div>';
+}
 function tryStartRadio(){if(localStorage.ttGroceryMusic==='off')return;radio.play().then(()=>musicBtn.textContent='♪ Music Off').catch(()=>musicBtn.textContent='♪ Tap for Music')}
 musicBtn.onclick=()=>{if(radio.paused){radio.volume=.24;radio.play().then(()=>{musicBtn.textContent='♪ Music Off';localStorage.ttGroceryMusic='on'}).catch(()=>{musicBtn.textContent='♪ Tap to Retry Music'})}else{radio.pause();musicBtn.textContent='♪ Music On';localStorage.ttGroceryMusic='off'}}
 function chooseBudget(){modal.classList.remove('hidden');modalContent.innerHTML='<h2>Make Your Grocery Budget</h2><p>Decide how much you plan to spend <b>before</b> you start shopping.</p><label class="full">My grocery budget ($)<input id="budgetInput" type="number" min="1" step=".01" value="'+(budget||'')+'" inputmode="decimal"></label><p class="muted">You still will not see a running cart total while shopping.</p><button class="action primary" onclick="saveBudget()">Save Budget & Start Shopping</button>'}
