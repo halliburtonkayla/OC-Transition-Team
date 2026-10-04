@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Transition Town Grocery Employee Center</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f0e6;color:#17251d;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.top{position:sticky;top:0;z-index:10;background:#124c36;color:#fff;padding:14px max(14px,env(safe-area-inset-right)) 14px max(14px,env(safe-area-inset-left));display:flex;gap:10px;align-items:center;flex-wrap:wrap}.top b{font-size:22px;margin-right:auto}.btn{border:0;border-radius:13px;padding:12px 16px;font-size:16px;font-weight:800;cursor:pointer}.gold{background:#f6c64f}.green{background:#187b4c;color:#fff}.white{background:#fff;color:#173d2c}.red{background:#a52d2d;color:#fff}.wrap{max-width:1100px;margin:auto;padding:16px}.hero{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px #0002}.hero img{display:block;width:100%}.card{background:#fff;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 18px #0001}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.job{border:2px solid #d8d1c1;border-radius:16px;padding:16px}.badge{display:inline-block;background:#e7f2e9;border-radius:999px;padding:6px 10px;font-weight:900}.task{width:100%;text-align:left;margin:7px 0;background:#fff;border:2px solid #d8d1c1;border-radius:13px;padding:14px;font-size:16px}.note{background:#fff5cd;border:1px solid #e5c451;border-radius:14px;padding:14px}.good{background:#e8f7eb;border:1px solid #85bd8f;border-radius:14px;padding:14px}.muted{color:#66736c}.score{font-size:34px;font-weight:900}.hidden{display:none}@media(max-width:600px){.wrap{padding:9px}.top b{width:100%;font-size:20px}.btn{padding:11px 13px}.card{padding:14px}}
+</style></head><body>
+<header class="top"><b>Grocery Employee Center</b><button class="btn gold" onclick="location.href='grocery-store.html'">← Grocery Store</button><button class="btn white" onclick="location.href='transition-town.html'">Town Map</button></header>
+<main class="wrap"><div id="app"></div></main>
+<script>
+const app=document.getElementById('app');
+function name(){return localStorage.ttCurrent||'Guest'}
+function world(){try{return JSON.parse(localStorage.ttWorld||'{}')||{}}catch(e){return {}}}
+function save(w){localStorage.ttWorld=JSON.stringify(w)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function money(n){return '$'+Number(n||0).toFixed(2)}
+function isKayla(){return /kayla/i.test(name())}
+function resident(w){w.residents=w.residents||{};return w.residents[name()]||null}
+function employment(w){let r=resident(w);return r&&r.employment&&r.employment.grocery||null}
+function landing(){
+ let w=world(),e=employment(w),teacher=isKayla();
+ let access=teacher||e&&e.active!==false;
+ app.innerHTML='<div class="hero"><img src="00-grocery-store-entrance-now-hiring.png" alt="Transition Town Grocery"></div>'+
+ '<section class="card"><span class="badge">'+(teacher?'MANAGER / TEST MODE':access?'EMPLOYEE':'EMPLOYEE CENTER')+'</span><h1>Welcome, '+esc(name())+'</h1>'+
+ (teacher?'<p>Choose either Grocery job to preview it exactly like an employee shift. Test shifts do not pay Miss Kayla.</p><div class="grid"><div class="job"><h2>Cashier</h2><p>Register accuracy, customer service, payment and workplace situations.</p><button class="btn green" onclick="start(\'Cashier\',true)">Test Cashier Shift</button></div><div class="job"><h2>Stocker</h2><p>Aisle knowledge, stocking, food safety, customer help and workplace situations.</p><button class="btn green" onclick="start(\'Stocker\',true)">Test Stocker Shift</button></div></div>':
+ access?'<h2>'+esc(e.position||'Grocery Employee')+'</h2><p><b>Wage:</b> '+money(e.wage||12)+'/hour</p><p><b>Schedule:</b> '+esc(e.schedule||'See Miss Kayla for your schedule')+'</p><button class="btn green" onclick="start(\''+(/stocker/i.test(e.position||'')?'Stocker':'Cashier')+'\',false)">Clock In</button>':
+ '<div class="note"><b>Employee Mode is locked.</b><p>You must apply at Transition Town Grocery and be hired by Miss Kayla before you can clock in.</p></div><button class="btn green" onclick="location.href=\'grocery-store.html\'">Go to Grocery Store</button>')+
+ '</section>';window.scrollTo(0,0)
+}
+const tasks={
+Cashier:[
+['A customer brings items to your register. What should you do first?',['Scan one item at a time and watch the register','Guess the total','Bag everything before scanning'],0],
+['An item scans twice by mistake. What should you do?',['Ignore it','Correct the duplicate before payment','Charge the customer twice'],1],
+['A customer says the shelf price was lower. What is the best response?',['Argue with them','Politely verify the price or ask a supervisor','Tell them to leave'],1],
+['The total is $13.25 and the customer gives you $20. What change is due?',['$6.75','$7.75','$5.75'],0],
+['A customer card is declined. What should you do?',['Announce it loudly','Stay discreet and ask for another payment method','Take the groceries away immediately'],1],
+['Your replacement has not arrived and your shift is ending. What should you do?',['Leave the register unattended','Tell the supervisor before leaving','Clock out without saying anything'],1]
+],
+Stocker:[
+['You are told to stock cereal. Where should you go?',['Breakfast aisle','Personal Care','Deli'],0],
+['You find milk past its expiration date. What should you do?',['Move it to the front','Remove it and report it','Sell it quickly'],1],
+['You see broken glass in an aisle. What should you do?',['Walk away','Secure the area and follow store cleanup procedure','Kick it under a shelf'],1],
+['A frozen pizza was left in the snack aisle. What should you do?',['Leave it','Follow food-safety procedure and tell a supervisor','Put it on any shelf'],1],
+['A customer asks where pasta sauce is. What is the best response?',['Point randomly','Direct them to Pasta & Sauces and help if needed','Say you do not know and walk away'],1],
+['A shelf has newer cereal in front of older cereal. What should you do?',['Leave it','Rotate older product forward and newer product behind','Throw all of it away'],1]
+]};
+let shift=null;
+function start(role,preview){shift={role:role,preview:preview,index:0,correct:0,answers:[],started:new Date().toISOString(),hours:4};renderTask()}
+function renderTask(){let t=tasks[shift.role][shift.index];if(!t)return finish();app.innerHTML='<section class="card"><span class="badge">'+esc(shift.role)+' SHIFT</span><h1>Work Task '+(shift.index+1)+' of '+tasks[shift.role].length+'</h1><div class="note"><h2>'+esc(t[0])+'</h2></div>'+t[1].map(function(a,i){return '<button class="task" onclick="answer('+i+')">'+esc(a)+'</button>'}).join('')+'<p class="muted">Your choices are included in the shift report.</p></section>';window.scrollTo(0,0)}
+function answer(i){let t=tasks[shift.role][shift.index],ok=i===t[2];if(ok)shift.correct++;shift.answers.push({task:t[0],answer:t[1][i],correct:ok});shift.index++;renderTask()}
+function finish(){let total=tasks[shift.role].length,score=Math.round(shift.correct/total*100),w=world(),e=employment(w),wage=Number(e&&e.wage||12),gross=Math.round(shift.hours*wage*100)/100;app.innerHTML='<section class="card"><span class="badge">SHIFT COMPLETE</span><h1>'+esc(shift.role)+' Shift Report</h1><div class="grid"><div class="job"><div class="score">'+score+'%</div><p>Workplace readiness</p></div><div class="job"><div class="score">'+shift.hours+'</div><p>Simulated hours</p></div><div class="job"><div class="score">'+money(gross)+'</div><p>'+(shift.preview?'Practice gross pay':'Gross pay earned')+'</p></div></div>'+(shift.preview?'<div class="note">Miss Kayla test mode: this shift will be saved as a preview only and will not change your checking balance.</div>':'<div class="good">Clock out to submit this report to Miss Kayla and deposit your earned pay.</div>')+'<p><button class="btn green" onclick="clockOut()">'+(shift.preview?'Finish Test Shift':'Clock Out & Submit Shift')+'</button> <button class="btn white" onclick="landing()">Cancel</button></p></section>';window.scrollTo(0,0)}
+function clockOut(){let w=world(),r=resident(w),e=employment(w),score=Math.round(shift.correct/tasks[shift.role].length*100),wage=Number(e&&e.wage||12),gross=Math.round(shift.hours*wage*100)/100,report={employee:name(),employer:'Transition Town Grocery',position:shift.role,hours:shift.hours,wage:wage,gross:gross,score:score,answers:shift.answers,date:new Date().toLocaleString(),preview:shift.preview};
+ w.employeeShiftReports=w.employeeShiftReports||[];w.employeeShiftReports.unshift(report);
+ if(!shift.preview&&r){r.checking=Math.round((Number(r.checking||0)+gross)*100)/100;r.history=r.history||[];r.notifications=r.notifications||[];r.history.push('Worked '+shift.hours+' hours at Transition Town Grocery +'+money(gross));r.notifications.push('PAYDAY: Transition Town Grocery deposited '+money(gross)+' for your completed shift.');if(e){e.shifts=e.shifts||[];e.shifts.unshift(report)}}
+ save(w);app.innerHTML='<section class="card"><h1>Clocked Out</h1><div class="good">'+(shift.preview?'Test shift complete. The preview report was saved for Miss Kayla.':'Your shift report was sent to Miss Kayla and '+money(gross)+' was deposited into your Transition Town checking account.')+'</div><p><button class="btn green" onclick="landing()">Employee Center</button> <button class="btn white" onclick="location.href=\'grocery-store.html\'">Grocery Store</button></p></section>';shift=null}
+landing();
+</script></body></html>
