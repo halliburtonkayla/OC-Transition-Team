@@ -106,26 +106,4 @@ function endCashierShift(){if(timerId){clearInterval(timerId);timerId=null}let a
 function submitCashierShift(accuracy){let w=world(),r=resident(w),e=employment(w),wage=Number(e&&e.wage||12),gross=8*wage,report={employee:name(),employer:'Transition Town Grocery',position:'Cashier',hours:8,realMinutes:5,wage:wage,gross:gross,customers:shift.served,itemsScanned:shift.itemsScanned,cashAccuracy:accuracy,date:new Date().toLocaleString(),preview:shift.preview};w.employeeShiftReports=w.employeeShiftReports||[];w.employeeShiftReports.unshift(report);if(!shift.preview&&r){r.checking=Math.round((Number(r.checking||0)+gross)*100)/100;r.history=r.history||[];r.history.push('Completed 8-hour Grocery cashier shift +'+money(gross));if(e){e.shifts=e.shifts||[];e.shifts.unshift(report)}}save(w);let wasPreview=shift.preview;shift=null;app.innerHTML='<section class="card"><h1>Clocked Out</h1><div class="good">'+(wasPreview?'Test shift saved. No money was deposited.':'Shift report sent to Miss Kayla. '+money(gross)+' was deposited into your checking account.')+'</div><button class="btn green" onclick="landing()">Employee Center</button></section>'}
 function startLegacyShift(){app.innerHTML='<section class="card"><h1>Stocker Hands-On Shift</h1><div class="note">The stocker job is the next hands-on work station. The existing stocker training is preserved.</div><button class="btn white" onclick="landing()">Employee Center</button></section>'}
 landing();
- let t=tasks[shift.role][shift.index%tasks[shift.role].length];
- app.innerHTML='<section class="card"><span class="badge">'+esc(shift.role)+' SHIFT</span><h1>Five-Minute Work Shift</h1>'+clockMarkup()+'<div class="note"><h2>'+esc(t[0])+'</h2></div>'+t[1].map(function(a,i){return '<button class="task" onclick="answer('+i+')">'+esc(a)+'</button>'}).join('')+'<p class="muted">Keep working until the real timer reaches 0:00. The work clock represents a full eight-hour day.</p></section>';window.scrollTo(0,0)
-}
-function answer(i){
- if(!shift||shiftTiming().left<=0)return;
- let list=tasks[shift.role],t=list[shift.index%list.length],ok=i===t[2];if(ok)shift.correct++;
- shift.answers.push({task:t[0],answer:t[1][i],correct:ok});shift.index++;renderTask()
-}
-function finish(){
- if(!shift)return;
- if(timerId){clearInterval(timerId);timerId=null}
- let total=shift.answers.length,score=total?Math.round(shift.correct/total*100):0,w=world(),e=employment(w),wage=Number(e&&e.wage||12),gross=Math.round(WORK_SHIFT_HOURS*wage*100)/100;
- app.innerHTML='<section class="card"><span class="badge">8-HOUR SHIFT COMPLETE</span><h1>'+esc(shift.role)+' Shift Report</h1><div class="grid"><div class="job"><div class="score">'+score+'%</div><p>Workplace readiness</p></div><div class="job"><div class="score">'+total+'</div><p>Tasks/transactions completed</p></div><div class="job"><div class="score">8</div><p>Transition Town work hours</p></div><div class="job"><div class="score">'+money(gross)+'</div><p>'+(shift.preview?'Practice gross pay':'Gross pay earned')+'</p></div></div>'+(shift.preview?'<div class="note">Miss Kayla test mode: '+money(gross)+' is practice earnings only. No deposit will be made.</div>':'<div class="good">Your five real minutes represented a full 8-hour workday. Clock out to submit the report and deposit your earned pay.</div>')+'<p><button class="btn green" onclick="clockOut()">'+(shift.preview?'Finish Test Shift':'Clock Out & Submit Shift')+'</button> <button class="btn white" onclick="landing()">Cancel</button></p></section>';window.scrollTo(0,0)
-}
-function clockOut(){
- if(!shift)return;
- let w=world(),r=resident(w),e=employment(w),total=shift.answers.length,score=total?Math.round(shift.correct/total*100):0,wage=Number(e&&e.wage||12),gross=Math.round(WORK_SHIFT_HOURS*wage*100)/100,report={employee:name(),employer:'Transition Town Grocery',position:shift.role,realMinutes:5,hours:WORK_SHIFT_HOURS,wage:wage,gross:gross,score:score,transactions:total,answers:shift.answers,date:new Date().toLocaleString(),preview:shift.preview};
- w.employeeShiftReports=w.employeeShiftReports||[];w.employeeShiftReports.unshift(report);
- if(!shift.preview&&r){r.checking=Math.round((Number(r.checking||0)+gross)*100)/100;r.history=r.history||[];r.notifications=r.notifications||[];r.history.push('Completed an 8-hour Transition Town Grocery shift +'+money(gross));r.notifications.push('PAYDAY: Transition Town Grocery deposited '+money(gross)+' for your 8-hour shift.');if(e){e.shifts=e.shifts||[];e.shifts.unshift(report)}}
- save(w);app.innerHTML='<section class="card"><h1>Clocked Out</h1><div class="good">'+(shift.preview?'Test shift complete. '+money(gross)+' was practice earnings only; no money was deposited.':'Your 5-minute simulation counted as 8 work hours. Your shift report was sent to Miss Kayla and '+money(gross)+' was deposited into your Transition Town checking account.')+'</div><p><button class="btn green" onclick="landing()">Employee Center</button> <button class="btn white" onclick="location.href=\'grocery-store.html\'">Grocery Store</button></p></section>';shift=null
-}
-landing();
 </script></body></html>
