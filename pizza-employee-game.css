@@ -14,3 +14,5 @@
 
 .customerOrderCard{border:3px solid #d6402b}.writtenOrder{font-size:clamp(1.05rem,3.7vw,1.45rem);line-height:1.5;font-weight:850;background:#fff7e8;border:2px solid #e7c58e;border-radius:14px;padding:16px;margin:12px 0;letter-spacing:.01em}.customerOrderCard .badge{margin-bottom:4px}
 @media(max-width:600px){.writtenOrder{padding:14px;font-size:1.08rem}}
+
+.pizzaApprovedScene{position:relative;width:100%;overflow:hidden;border-radius:18px;background:#211815;min-height:220px;margin:10px 0;box-shadow:0 8px 22px #0003}.pizzaApprovedScene img{display:block;width:100%;height:auto;max-height:62vh;object-fit:cover}.pizzaApprovedScene.assetFallback{min-height:0;background:transparent;box-shadow:none;margin:0}.cashierPOVApproved.assetFallback{display:none}.kitchenApproved.assetFallback,.ovenApproved.assetFallback{display:none}@media(max-width:600px){.pizzaApprovedScene img{max-height:48vh;object-position:center}.cashierPOVApproved{min-height:180px}}@media(orientation:landscape) and (max-height:520px){.pizzaApprovedScene img{max-height:70vh}}
