@@ -1,1 +1,50 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Transition Town Fire Department</title><link rel="stylesheet" href="fire-department.css?v=20261005-1"></head><body><header><b>🚒 Transition Town Fire Department</b><div><button onclick="FireGame.toggleMute()" id="muteBtn">🔊 Sound On</button><button onclick="FireDept.returnTown()">Town Map</button></div></header><main id="app"></main><script src="fire-department-data.js?v=20261005-1"></script><script src="fire-department.js?v=20261005-1"></script></body></html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Transition Town Fire Department</title>
+<link rel="stylesheet" href="fire-department.css?v=20261005-2">
+</head>
+<body>
+<header>
+  <b>🚒 Transition Town Fire Department</b>
+  <div>
+    <button type="button" onclick="toggleFireTheme()" id="fireThemeBtn">▶️ Fire Crew Theme</button>
+    <button type="button" onclick="toggleFireMute()" id="muteBtn">🔊 Sound On</button>
+    <button type="button" onclick="FireDept.returnTown()">Town Map</button>
+  </div>
+</header>
+<audio id="fireThemeAudio" preload="metadata" loop>
+  <source src="./Transition-Town-Fire-Station-Theme.mp3?v=20261005" type="audio/mpeg">
+</audio>
+<main id="app"></main>
+<script src="fire-department-data.js?v=20261005-1"></script>
+<script>
+(function(){
+  const audio=document.getElementById('fireThemeAudio');
+  const themeBtn=document.getElementById('fireThemeBtn');
+  const muteBtn=document.getElementById('muteBtn');
+  audio.volume=.45;
+  window.toggleFireTheme=function(){
+    if(audio.paused){
+      audio.play().then(()=>{themeBtn.textContent='⏸️ Pause Theme';localStorage.ttFireTheme='on'}).catch(()=>{themeBtn.textContent='▶️ Tap to Play Theme'});
+    }else{
+      audio.pause();themeBtn.textContent='▶️ Fire Crew Theme';localStorage.ttFireTheme='off';
+    }
+  };
+  window.toggleFireMute=function(){
+    audio.muted=!audio.muted;
+    muteBtn.textContent=audio.muted?'🔇 Sound Off':'🔊 Sound On';
+    localStorage.ttFireMute=audio.muted?'on':'off';
+  };
+  if(localStorage.ttFireMute==='on'){audio.muted=true;muteBtn.textContent='🔇 Sound Off'}
+  document.addEventListener('pointerdown',function firstTouch(){
+    if(localStorage.ttFireTheme==='on'&&audio.paused)audio.play().then(()=>themeBtn.textContent='⏸️ Pause Theme').catch(()=>{});
+    document.removeEventListener('pointerdown',firstTouch);
+  },{passive:true});
+})();
+</script>
+<script src="fire-department.js?v=20261005-1"></script>
+</body>
+</html>
