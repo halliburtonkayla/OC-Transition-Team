@@ -1,7 +1,7 @@
 'use strict';
 const C=CoffeeShop,M=C.menu,app=document.getElementById('app');
 let build={drink:null,size:null,temp:null,milk:'Whole',flavors:{},shots:2,sweetener:'None',ice:'Regular Ice',toppings:[],food:'None',extras:[]},activeId=Number(localStorage.ttCoffeeActiveOrder||0),sip=100,foodLeft=4,problem=null;
-const IMG={counter:'01_Customer_Counter_POV.png',waiting:'03_Customer_Waiting_Empty_Table.png'};
+const IMG={counter:'coffee-01-customer-counter.png',waiting:'coffee-03-customer-waiting-table.png'};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function scene(file,alt,overlay=''){return `<div class="scene"><img src="${file}" alt="${alt}" onerror="this.hidden=true;this.parentElement.classList.add('missing')"><div class="assetMissing"><b>Approved Coffee Shop scene asset</b><small>This page is wired for ${esc(file)}.</small></div>${overlay}</div>`}
 function isKayla(){return /kayla/i.test(C.name())}
