@@ -93,7 +93,7 @@ header>div{flex-shrink:0}.logo{font-size:25px}.topbtn{white-space:nowrap}
 <button onclick="meeting('3K Tire Shop')">3K Tire Shop</button>
 <button onclick="meeting('The Main Attraction')">The Main Attraction</button>
 <button onclick="place('housing')">Neighborhood</button>
-<button onclick="location.href='pizza-shop.html'">Pizza Shop</button><button onclick="location.href='coffee-shop.html'">Coffee Shop</button>
+<button onclick="location.href='pizza-shop.html'">Pizza Shop</button><button onclick="location.href='coffee-shop.html'">Coffee Shop</button><button onclick="location.href='fire-department.html'">Fire Department</button>
 <button onclick="place('shops')">Town Shops</button>
 </nav><button class="ttDrawerTab left" aria-label="Open Town Directory" aria-controls="townDirectory" aria-expanded="false" onclick="toggleTownDrawer('menu')">›</button><button class="ttDrawerTab right" aria-label="Open Miss Kayla Information Center" aria-controls="kaylaInformation" aria-expanded="false" onclick="toggleTownDrawer('kayla')">‹</button><aside id="kaylaInformation" class="ttKaylaInfo" aria-label="Resident Dashboard"><div id="residentDashboard"><img src="./miss-kayla-info-center.png" alt="Miss Kayla, Work-Based Specialist"><h3>Transition Town</h3><p>Log in to see your dashboard.</p></div><div class="ttThemeSong" aria-label="Transition Town theme music"><button id="ttSoundToggle" class="ttSoundToggle" type="button" onclick="toggleTownTheme()"><span class="ttSoundIcon">♪</span><span id="ttSoundLabel">Sound On</span></button><audio id="ttThemeAudio" preload="auto" loop><source src="./Transition-Town-Theme-Song.mp3?v=20261002" type="audio/mpeg"></audio></div></aside><main class="town"><section class="welcome"><h1>Welcome to Town</h1><p id="status">Choose a resident and step into your life.</p></section><div class="mapviewport"><section class="townmap" aria-label="Transition Town city map">
 <img class="townMasterArt" src="./transition-town-master.png?v=20261001-2" alt="Transition Town city map">
@@ -638,6 +638,7 @@ function allJobApplications(){
  let w=get(),out=[];
  (w.groceryApplications||[]).forEach(function(a,i){out.push({source:'Transition Town Grocery',job:a.position||'Grocery Position',applicant:a.resident||a.name||'Unknown',status:a.status||'Pending',date:a.submitted||a.date||'',data:a,key:'grocery',index:i})});
  (w.pizzaApplications||[]).forEach(function(a,i){out.push({source:'Transition Town Pizza Shop',job:a.position||'Pizza Shop Position',applicant:a.resident||a.name||'Unknown',status:a.status||'Pending',date:a.submitted||a.date||'',data:a,key:'pizza',index:i})});
+ (w.fireApplications||[]).forEach(function(a,i){out.push({source:'Transition Town Fire Department',job:a.position||'Firefighter Recruit',applicant:a.resident||a.name||'Unknown',status:a.status||'Pending',date:a.submitted||a.date||'',data:a,key:'fire',index:i})});
  Object.entries(w.residents||{}).forEach(function(entry){
   let n=entry[0],r=entry[1];
   (r.applications||[]).forEach(function(a,i){out.push({source:a.employer||a.business||a.company||'Career & Job Center',job:a.job||a.position||'Job Application',applicant:n,status:a.status||'Pending',date:a.date||a.submitted||'',data:a,key:'resident',resident:n,index:i})});
@@ -666,13 +667,14 @@ function findJobApplication(ref){
  let w=get(),a=null;
  if(x.key==='grocery')a=(w.groceryApplications||[])[x.index];
  else if(x.key==='pizza')a=(w.pizzaApplications||[])[x.index];
+ else if(x.key==='fire')a=(w.fireApplications||[])[x.index];
  else if(x.key==='resident'&&w.residents[x.resident])a=(w.residents[x.resident].applications||[])[x.index];
  return a?{ref:x,a:a,w:w}:null;
 }
 function viewJobApplication(ref){
  let found=findJobApplication(ref);if(!found)return teacherApplications();
  let a=found.a,ignore={status:1,submitted:1},fields=Object.keys(a).filter(function(k){return !ignore[k]&&a[k]!==''&&a[k]!=null});
- let title=a.position||a.job||'Job Application',employer=a.employer||a.business||a.company||(found.ref.key==='grocery'?'Transition Town Grocery':found.ref.key==='pizza'?'Transition Town Pizza Shop':'Career & Job Center');
+ let title=a.position||a.job||'Job Application',employer=a.employer||a.business||a.company||(found.ref.key==='grocery'?'Transition Town Grocery':found.ref.key==='pizza'?'Transition Town Pizza Shop':found.ref.key==='fire'?'Transition Town Fire Department':'Career & Job Center');
  let html='<h2>📄 '+applicationEsc(title)+'</h2><p><b>Employer:</b> '+applicationEsc(employer)+'</p><p><b>Status:</b> '+applicationEsc(a.status||'Pending')+'</p><div class=card>';
  fields.forEach(function(k){let label=k.replace(/^avail_/,'Availability - ').replace(/_/g,' ');label=label.charAt(0).toUpperCase()+label.slice(1);html+='<p><b>'+applicationEsc(label)+':</b> '+applicationEsc(a[k])+'</p>'});
  html+='</div><div class=actions><button class=action data-ref="'+ref+'" data-status="Approved / Hired" onclick="setJobApplicationStatus(this.dataset.ref,this.dataset.status)">✅ Approve / Hire</button><button class=action data-ref="'+ref+'" data-status="Interview Requested" onclick="setJobApplicationStatus(this.dataset.ref,this.dataset.status)">🗓️ Interview</button><button class=action data-ref="'+ref+'" data-status="Pending Ms. Kayla Review" onclick="setJobApplicationStatus(this.dataset.ref,this.dataset.status)">⏳ Pending</button><button class=action data-ref="'+ref+'" data-status="Declined" onclick="setJobApplicationStatus(this.dataset.ref,this.dataset.status)">❌ Decline</button><button class=action onclick="teacherApplications()">← All Applications</button></div>';
@@ -692,6 +694,10 @@ function setJobApplicationStatus(ref,status){
    if(found.ref.key==='pizza'){
     rr.employment=rr.employment||{};rr.employment.pizza={employer:'Transition Town Pizza Shop',position:job,wage:12,schedule:'Schedule pending — see Miss Kayla',active:true,training:{},pin:null,shifts:[]};
     rr.job='Transition Town Pizza Shop — '+job;
+   }
+   if(found.ref.key==='fire'){
+    rr.employment=rr.employment||{};rr.employment.fire={employer:'Transition Town Fire Department',position:job||'Firefighter Recruit',wage:15,schedule:'8:00 AM–4:00 PM simulation shift',active:true,training:{},shifts:[],rank:'Firefighter Recruit'};
+    rr.job='Transition Town Fire Department — '+(job||'Firefighter Recruit');
    }
    rr.notifications.push('JOB UPDATE: You were hired for '+rr.job+'.');localStorage.ttWorld=JSON.stringify(found.w)
   }
