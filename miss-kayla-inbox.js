@@ -1,5 +1,6 @@
+import { createClient } from './assets/vendor/supabase-2.117.2.js';
 (function(){'use strict';
-const c=supabase.createClient(TTNotifications.url,TTNotifications.key),$=id=>document.getElementById(id);let rows=[],loading=false;
+const c=createClient(TTNotifications.url,TTNotifications.key),$=id=>document.getElementById(id);let rows=[],loading=false;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function status(s){$('status').textContent=s}
 function render(){const f=$('filter').value,a=rows.filter(r=>f==='all'||(f==='unread'?!r.read_at:r.kind===f));$('count').textContent=rows.filter(r=>!r.read_at).length+' unread notification(s)';$('list').innerHTML=a.length?a.map(r=>'<article class="card '+(!r.read_at?'unread':'')+'"><span class="badge">'+esc(r.kind==='application'?'Application':'Message')+'</span><h3>'+esc(r.applicant)+' — '+esc(r.title)+'</h3><p><b>'+esc(r.employer)+'</b></p><p class="body">'+esc(r.body)+'</p><p class="muted">'+esc(new Date(r.created_at).toLocaleString())+'</p>'+(!r.read_at?'<button data-id="'+esc(r.id)+'">Mark Read</button>':'<p class="muted">Reviewed</p>')+'</article>').join(''):'<div class="card">No '+(f==='all'?'notifications':esc(f)+' notifications')+' yet.</div>';
