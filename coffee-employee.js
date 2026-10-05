@@ -1,6 +1,6 @@
 'use strict';
 const C=CoffeeShop,M=C.menu,app=document.getElementById('app'),REAL_SHIFT=300;let shift=null,timer=null,pinEntry='',cash=null,bar=null,activeBarId=null;
-const IMG={cashier:'02_Cashier_Employee_POV.png',barista:'04_Barista_Workstation_Blank.png',orderup:'05_Order_Up_Finished_Drink_Template.png'};
+const IMG={cashier:'coffee-02-cashier-employee.png',barista:'coffee-04-barista-workstation.png',orderup:'coffee-05-order-up-template.png'};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function scene(file,alt,overlay=''){return `<div class="scene"><img src="${file}" alt="${alt}" onerror="this.hidden=true;this.parentElement.classList.add('missing')"><div class="assetMissing"><b>Approved Coffee Shop scene asset</b><small>${esc(file)}</small></div>${overlay}</div>`}
 function isKayla(){return /kayla/i.test(C.name())||new URLSearchParams(location.search).get('manager')==='1'}
