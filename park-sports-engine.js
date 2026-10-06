@@ -11,7 +11,7 @@ function chase(p,target,speed,dt){const d=dist(p,target);if(d>1){p.x+=(target.x-
 export function createGame(sport){
  if(!SPORTS.includes(sport))throw Error('Unknown sport');
  const g={sport,time:0,scores:[0,0],message:'',finished:false,cpu:true};
- if(sport==='basketball')g.basket={players:[point(300,300),point(610,280)],owner:0,shot:null,loose:null,cool:0,reset:0,ai:2.5};
+ if(sport==='basketball')g.basket={players:[point(300,300),point(610,280)],owner:0,shot:null,loose:null,cool:0,reset:0,ai:2.5,clock:24,jumps:[0,0],stealCooldown:[0,0],motion:[0,0]};
  if(sport==='football'){g.football={offense:0,down:1,line:210,target:350,carrier:0,playTime:0,delay:0,drives:0,flight:null};footballSetup(g)}
  if(sport==='softball')g.softball={inning:1,batting:0,outs:0,strikes:0,balls:0,bases:[false,false,false],phase:'ready',clock:0,pitch:null,hit:null,aim:0,fielders:fielders(),runners:[],swing:0};
  g.message=sport==='basketball'?'Player 1 has the ball. Shoot at the RIGHT hoop.':sport==='football'?'Player 1 has possession. Run or pass toward the RIGHT end zone.':'Top of inning 1. Player 1 bats; Player 2 pitches.';
@@ -23,13 +23,24 @@ export function action(g,side,name){
  if(name==='restart')return createGame(g.sport);
  if(g.sport==='basketball'){
   const b=g.basket,p=b.players[side];
+  if(b.reset>0)return g;
   if(name==='primary'&&b.owner===side&&!b.shot&&b.cool<=0){
-   const hoop=point(side===0?885:75,270),d=dist(p,hoop),spread=Math.max(0,d-280)*.08;
-   const blocked=dist(p,b.players[1-side])<40;
-   b.shot={from:{...p},to:{x:hoop.x,y:hoop.y+(Math.random()-.5)*spread*2+(blocked?65:0)},t:0,duration:1.0,side};b.owner=null;b.cool=.4;
-   g.message=blocked?'Contested shot!':'Shot in the air!';
+   const hoop=point(side===0?840:120,270),d=dist(p,hoop),def=b.players[1-side];
+   const contested=dist(p,def)<85, blocked=dist(p,def)<65&&b.jumps[1-side]>0;
+   const quality=clamp(1-d/850-(contested?.25:0),.12,.95);
+   const made=!blocked&&Math.random()<quality;
+   b.jumps[side]=.48;
+   b.shot={from:{...p},to:{x:hoop.x,y:hoop.y+(made?0:(Math.random()<.5?-1:1)*(38+Math.random()*35))},t:0,duration:clamp(d/430,.55,1.35),side,points:d>245?3:2,made,blocked};
+   b.owner=null;b.cool=.4;g.message=blocked?'Blocked! Chase the loose ball.':contested?'Contested shot!':'Shot in the air!';
+  }else if(name==='primary'&&b.owner!==side&&b.jumps[side]<=0){
+   b.jumps[side]=.65;
+   if(b.shot&&b.shot.side!==side&&b.shot.t<.3&&dist(p,b.shot.from)<75){b.shot.made=false;b.shot.blocked=true;b.shot.to={x:p.x,y:p.y+55};g.message='Blocked! Chase the rebound.';}
   }
-  if(name==='secondary'&&b.owner===1-side){if(dist(p,b.players[1-side])<70&&b.cool<=0){b.owner=side;b.cool=.7;g.message=`Player ${side+1} steals the ball!`}else g.message='Move closer to the ball handler, then STEAL.'}
+  if(name==='secondary'&&b.owner===1-side&&b.stealCooldown[side]<=0){
+   b.stealCooldown[side]=.85;
+   if(dist(p,b.players[1-side])<65&&b.cool<=0){b.owner=side;b.cool=.7;b.clock=24;g.message=`Player ${side+1} steals the ball!`;}
+   else g.message='Move closer before trying to steal.';
+  }
  }
  if(g.sport==='football'){
   const f=g.football;if(f.delay>0)return g;
@@ -69,13 +80,28 @@ export function updateGame(g,inputs,dt){
 }
 function updateBasket(g,inputs,dt){
  const b=g.basket;b.cool=Math.max(0,b.cool-dt);
+ b.jumps=b.jumps.map(v=>Math.max(0,v-dt));b.stealCooldown=b.stealCooldown.map(v=>Math.max(0,v-dt));
  if(b.reset>0){b.reset-=dt;return}
- move(b.players[0],inputs[0],215,dt,[130,830,115,430]);
- if(g.cpu){const target=b.owner===1?point(335,240):b.owner===0?b.players[0]:b.loose||point(520,300);chase(b.players[1],target,b.owner===1?125:145,dt);b.ai-=dt;if(b.owner===1&&b.ai<=0){action(g,1,'primary');b.ai=3.5}if(b.owner===0&&dist(b.players[0],b.players[1])<38&&b.cool<=0){b.owner=1;b.cool=1;b.ai=1.5;g.message='Computer steal!'}}else move(b.players[1],inputs[1],215,dt,[130,830,115,430]);
- if(b.shot){b.shot.t+=dt;const shot=b.shot;if(shot.t>=shot.duration){const hoopY=270;if(Math.abs(shot.to.y-hoopY)<35){g.scores[shot.side]+=2;g.message=`Basket! Player ${shot.side+1} +2`;if(g.scores[shot.side]>=10){g.finished=true;g.message=`Player ${shot.side+1} wins!`}
- b.owner=1-shot.side;b.players=[point(300,300),point(610,280)];b.reset=1.2;b.cool=.8;b.ai=2.7;
- }else{b.loose={...shot.to,x:clamp(shot.to.x,140,820)};g.message='Off the rim! Chase the rebound.'}b.shot=null;}}
- if(b.loose&&!b.shot){for(let side=0;side<2;side++){if(dist(b.players[side],b.loose)<42){b.owner=side;b.loose=null;b.cool=.4;g.message=`Player ${side+1} rebounds!`;break}}}
+ const previous=b.players.map(p=>({...p}));
+ move(b.players[0],inputs[0],215,dt,[110,850,110,430]);
+ if(g.cpu){
+  const target=b.owner===1?point(290,270):b.owner===0?point(b.players[0].x+35,b.players[0].y):b.loose||point(520,300);
+  chase(b.players[1],target,b.owner===1?150:165,dt);b.ai-=dt;
+  if(b.owner===1&&b.ai<=0){action(g,1,'primary');b.ai=2.7;}
+  if(b.owner===0&&dist(b.players[0],b.players[1])<55&&b.ai<=0){action(g,1,'secondary');b.ai=1.4;}
+  if(b.shot?.side===0&&b.shot.t<.15&&dist(b.players[1],b.shot.from)<65)action(g,1,'primary');
+ }else move(b.players[1],inputs[1],215,dt,[110,850,110,430]);
+ const d=dist(...b.players);if(d<31){const dx=(b.players[1].x-b.players[0].x)/(d||1),dy=(b.players[1].y-b.players[0].y)/(d||1);b.players[0].x-=dx*(31-d)/2;b.players[0].y-=dy*(31-d)/2;b.players[1].x+=dx*(31-d)/2;b.players[1].y+=dy*(31-d)/2;}
+ b.players.forEach((p,i)=>{p.x=clamp(p.x,110,850);p.y=clamp(p.y,110,430);b.motion[i]=dist(p,previous[i])>0.1?1:0;});
+ if(b.owner!==null){b.clock-=dt;if(b.clock<=0){b.owner=1-b.owner;b.clock=24;b.cool=1;g.message='Shot clock! Possession changes.';}}
+ if(b.shot){b.shot.t+=dt;const shot=b.shot;if(shot.t>=shot.duration){
+  if(shot.made){g.scores[shot.side]+=shot.points;g.message=`Basket! Player ${shot.side+1} +${shot.points}`;
+   if(g.scores[shot.side]>=11){g.finished=true;g.message=`Player ${shot.side+1} wins!`;}
+   b.owner=1-shot.side;b.players=[point(300,300),point(610,280)];b.reset=1.2;b.cool=.8;b.ai=2.7;b.clock=24;
+  }else{b.loose={x:clamp(shot.to.x+(shot.side===0?-65:65),130,830),y:clamp(shot.to.y,125,420)};g.message=shot.blocked?'Blocked! Grab the ball.':'Off the rim! Chase the rebound.';}
+  b.shot=null;
+ }}
+ if(b.loose&&!b.shot){for(let side=0;side<2;side++){if(dist(b.players[side],b.loose)<42){b.owner=side;b.loose=null;b.cool=.4;b.clock=24;g.message=`Player ${side+1} rebounds!`;break;}}}
 }
 function footballSetup(g){
  const f=g.football,d=f.offense===0?1:-1;
@@ -130,3 +156,4 @@ function updateSoftball(g,inputs,dt){
   s.phase='ready';s.clock=0;s.pitch=null;s.hit=null;s.runners=[];s.fielders=fielders();
  }
 }
+
