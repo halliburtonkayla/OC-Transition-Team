@@ -53,6 +53,13 @@ header>div{flex-shrink:0}.logo{font-size:25px}.topbtn{white-space:nowrap}
 .shoplot{left:25%;top:45%;width:20%;height:14%}
 .homelot{left:1%;top:82%;width:98%;height:15%}
 .townmap .park{left:32%;top:64%;width:41%;height:16%}
+/* Home & Beyond is a real storefront on the town map, not a page card below it. */
+.homeBeyondMap{left:23%;top:80%;width:18%;height:16%;z-index:6!important;overflow:visible!important;background:linear-gradient(180deg,#f8efe7 0 18%,#d8a46f 18% 72%,#7b563d 72%)!important;border:3px solid #fff!important;border-radius:10px 10px 4px 4px!important;box-shadow:0 6px 12px #0007!important}
+.homeBeyondMap:before{content:"HOME & BEYOND";position:absolute;left:5%;right:5%;top:8%;padding:4px 2px;background:#fff8e8;color:#493425;border:2px solid #7b563d;border-radius:5px;font:900 clamp(8px,1.1vw,15px) Georgia;text-align:center;letter-spacing:.02em}
+.homeBeyondMap:after{content:"";position:absolute;left:38%;bottom:0;width:24%;height:43%;background:linear-gradient(90deg,#8bd0e3 0 45%,#563c2c 45% 55%,#8bd0e3 55%);border:2px solid #fff;border-bottom:0}
+.homeBeyondAwning{position:absolute;left:7%;right:7%;top:38%;height:14%;background:repeating-linear-gradient(90deg,#fff 0 14%,#d06f72 14% 28%);border-radius:3px;box-shadow:0 3px 3px #0003}
+.homeBeyondHiring{position:absolute;right:5%;bottom:8%;background:#fff;color:#b32635;border:2px solid #b32635;border-radius:3px;padding:2px 3px;font:900 clamp(6px,.72vw,10px) Arial;transform:rotate(-3deg)}
+@media(max-width:1100px){.homeBeyondMap:before{font-size:10px}.homeBeyondHiring{font-size:7px}}
 .maphelp{margin:10px;text-align:center;color:#fff;font-weight:800}
 .ttTownMenu,.ttKaylaInfo{position:fixed;z-index:40;top:72px;width:190px;max-height:calc(100vh - 88px);max-height:calc(100dvh - 88px);overflow:auto;-webkit-overflow-scrolling:touch;background:#111;border:1px solid #383838;border-radius:16px;padding:10px;box-shadow:0 8px 25px #0009;color:#fff}
 .ttTownMenu{left:10px}.ttKaylaInfo{right:10px;text-align:center}
@@ -109,7 +116,8 @@ header>div{flex-shrink:0}.logo{font-size:25px}.topbtn{white-space:nowrap}
 <button class="lot maplot schoollot" aria-label="Training & College" onclick="place('school')"><div class="building school"><span class="mapmark">TRAINING</span></div><b>Training & College</b></button>
 <button class="lot maplot homelot" aria-label="Neighborhood and Housing" onclick="place('housing')"><div class="building home"><span class="mapmark">HOMES</span></div><b>Neighborhood</b></button>
 <button class="lot maplot shoplot" aria-label="Town Shops" onclick="place('shops')"><div class="building shop"><span class="mapmark">SHOPS</span></div><b>Town Shops</b></button>
-<button class="maplot" style="left:30%;top:25%;width:26%;height:16%" aria-label="Transition Town High School" onclick="place('school')"></button><button class="maplot" style="left:59%;top:28%;width:15%;height:13%" aria-label="School Stadium" onclick="place('park')"></button><div class="bizdistrict"><span class="districttitle">STUDENT BUSINESS DISTRICT</span>
+<button class="maplot" style="left:30%;top:25%;width:26%;height:16%" aria-label="Transition Town High School" onclick="place('school')"></button><button class="maplot" style="left:59%;top:28%;width:15%;height:13%" aria-label="School Stadium" onclick="place('park')"></button><button class="maplot homeBeyondMap" aria-label="Home & Beyond Home Goods Store" onclick="location.href='home-beyond.html'"><span class="homeBeyondAwning" aria-hidden="true"></span><span class="homeBeyondHiring" aria-hidden="true">NOW HIRING</span></button>
+<div class="bizdistrict"><span class="districttitle">STUDENT BUSINESS DISTRICT</span>
 <button class="bizbuilding coolmap" aria-label="Cool Vibes" onclick="meeting('Cool Vibes')"><strong>COOL VIBES</strong><small>Café</small></button>
 <button class="bizbuilding tiremap" aria-label="3K Tire Shop" onclick="meeting('3K Tire Shop')"><strong>3K TIRE SHOP</strong><small>Best Tires to Roll on All Streets</small></button>
 <button class="bizbuilding zoomap" aria-label="The Zoo Pet Sitting" onclick="meeting('The Zoo')"><strong>THE ZOO</strong><small>Pet Sitting • Your Pet, Our Pack</small></button>
