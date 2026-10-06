@@ -156,10 +156,11 @@ function resident(){
  openSheet('<h2>Log in to Transition Town</h2><p>Choose your profile to enter town.</p><label style="display:block;font-weight:800;margin:14px 0 7px">Who are you?</label><select class="field" id="loginProfile"><option value="">Select your name…</option>'+options+'</select><button class="primary" style="margin-top:14px;width:100%" onclick="login()">Enter Transition Town</button><p class="tiny">Student progress is saved on this device. Guest is available for visitors and practice.</p>')
 }
 function logoutTown(){if(window.TTRoom)TTRoom.leaveStudent(current);sessionStorage.removeItem('ttTownTeacherCode');localStorage.removeItem('ttCurrent');current='';activeGroup=[];localStorage.removeItem('ttActiveGroup');document.body.classList.remove('teacher-mode');document.body.classList.add('login-required');resident();renderResidentDashboard();}
-function switchResident(encoded){let n=decodeURIComponent(encoded);ensure(n);current=n;localStorage.ttCurrent=n;status.textContent=n+" is in Transition Town.";studentView()}
+function switchResident(encoded){let n=decodeURIComponent(encoded);if(window.TTRoom&&current&&current!==n)TTRoom.leaveStudent(current);ensure(n);current=n;localStorage.ttCurrent=n;status.textContent=n+" is in Transition Town.";studentView()}
 function login(){
  let n=document.querySelector('#loginProfile')?.value||'';
  if(!n)return alert('Choose a profile first.');
+ if(window.TTRoom&&current&&current!==n)TTRoom.leaveStudent(current);
  if(/^(?:miss|ms\.) kayla$/i.test(n)){current=n;ensure(n);localStorage.ttCurrent=n;teacherView();return}
  ensure(n);current=n;localStorage.ttCurrent=n;status.textContent=n+' is in Transition Town.';studentView()
 }
