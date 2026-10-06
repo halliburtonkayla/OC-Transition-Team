@@ -155,7 +155,7 @@ function resident(){
  const options=townLoginProfiles.map(n=>'<option value="'+n.replace(/"/g,'&quot;')+'">'+n+'</option>').join('');
  openSheet('<h2>Log in to Transition Town</h2><p>Choose your profile to enter town.</p><label style="display:block;font-weight:800;margin:14px 0 7px">Who are you?</label><select class="field" id="loginProfile"><option value="">Select your name…</option>'+options+'</select><button class="primary" style="margin-top:14px;width:100%" onclick="login()">Enter Transition Town</button><p class="tiny">Student progress is saved on this device. Guest is available for visitors and practice.</p>')
 }
-function logoutTown(){localStorage.removeItem('ttCurrent');current='';activeGroup=[];localStorage.removeItem('ttActiveGroup');document.body.classList.remove('teacher-mode');document.body.classList.add('login-required');resident();renderResidentDashboard();}
+function logoutTown(){if(window.TTRoom)TTRoom.leaveStudent(current);sessionStorage.removeItem('ttTownTeacherCode');localStorage.removeItem('ttCurrent');current='';activeGroup=[];localStorage.removeItem('ttActiveGroup');document.body.classList.remove('teacher-mode');document.body.classList.add('login-required');resident();renderResidentDashboard();}
 function switchResident(encoded){let n=decodeURIComponent(encoded);ensure(n);current=n;localStorage.ttCurrent=n;status.textContent=n+" is in Transition Town.";studentView()}
 function login(){
  let n=document.querySelector('#loginProfile')?.value||'';
@@ -731,5 +731,5 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
 
 
 
-<script src="tt-notifications.js?v=20261005-all2"></script><script src="tt-room.js?v=20261006"></script>
+<script src="tt-notifications.js?v=20261005-all2"></script><script src="tt-room.js?v=20261006-contacts"></script>
 </body></html>
