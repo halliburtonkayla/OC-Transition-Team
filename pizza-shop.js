@@ -5,7 +5,7 @@ let statusTimer=null,currentOrderId=null,builder=null,meal=null;
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 function pizzaEmployment(){let n=PS.residentName(),w=PS.world(),r=w.residents&&w.residents[n],e=r&&r.employment&&r.employment.pizza;return e&&e.active!==false?e:null}
 function canUseEmployeeEntrance(){return /kayla/i.test(PS.residentName())||!!pizzaEmployment()}
-function syncEmploymentAction(){let b=document.getElementById('employmentAction');if(!b)return;let hired=canUseEmployeeEntrance();b.textContent=hired?'Employee Entrance':'Apply Now';b.className=hired?'employee':'employee apply'}
+function syncEmploymentAction(){let b=document.getElementById('employmentAction');if(!b)return;let hired=canUseEmployeeEntrance();b.textContent=hired?'Employee Entrance':'Apply Now';b.className=hired?'employee':'employee apply';b.hidden=!!document.querySelector('.storefront')}
 function openEmployee(){let n=PS.residentName();if(n&&n!=='Guest'){localStorage.ttCurrent=n;sessionStorage.ttCurrent=n}location.href='pizza-employee.html'+(/kayla/i.test(n)?'?manager=1':'')}
 function applyNow(){let n=PS.residentName();if(n&&n!=='Guest'){localStorage.ttCurrent=n;sessionStorage.ttCurrent=n}location.href='pizza-employee.html#apply'}
 function employmentAction(){canUseEmployeeEntrance()?openEmployee():applyNow()}
@@ -15,9 +15,23 @@ function money(v){return PS.money(v)}
 
 function storefront(){
  clearTimers();let hired=canUseEmployeeEntrance();
- app.innerHTML=`<section class="storefront" aria-label="Transition Town Pizza Shop storefront"><div class="skyglow"></div><div class="buildingShell"></div><div class="sign"><strong>TRANSITION TOWN PIZZA CO.</strong><small>TRANSITION TOWN • HOT • FRESH • FAST</small></div><div class="awning"></div><div class="windowrow"><div class="window"></div><div class="door">CUSTOMER<br>ENTRANCE</div><div class="window"></div></div><button class="hiring" onclick="applyNow()">NOW HIRING<br><small>Cashier • Pizza Maker • Dishwasher</small></button><div class="menuBoard">PIZZA • WINGS • BREADSTICKS</div><div class="sidewalk"></div><div class="storeActions"><button class="customerBtn" onclick="enterRestaurant()">ENTER AS CUSTOMER</button><button class="employeeBtn" onclick="employmentAction()">${hired?'EMPLOYEE ENTRANCE':'APPLY NOW'}</button></div></section><section class="card"><span class="badge">Transition Town Business</span><h1>Welcome, ${esc(PS.residentName())}!</h1><p>${hired?'Enter as a customer or use your employee entrance.':'Walk up to the counter to order. Interested in working here? Tap Apply Now.'}</p></section>`;
+ app.innerHTML=`<section class="storefront" aria-label="Transition Town Pizza Shop storefront"><div class="skyglow"></div><div class="buildingShell"></div><div class="sign"><strong>TRANSITION TOWN PIZZA CO.</strong><small>TRANSITION TOWN • HOT • FRESH • FAST</small></div><div class="awning"></div><div class="windowrow"><div class="window"></div><div class="door">CUSTOMER<br>ENTRANCE</div><div class="window"></div></div><button class="hiring" onclick="applyNow()">NOW HIRING<br><small>Cashier • Pizza Maker • Dishwasher</small></button><div class="menuBoard">PIZZA • WINGS • BREADSTICKS</div><div class="sidewalk"></div></section><div class="storeActions"><button class="customerBtn" onclick="enterRestaurant()">ENTER AS CUSTOMER</button><button class="employeeBtn" onclick="employmentAction()">${hired?'EMPLOYEE ENTRANCE':'APPLY NOW'}</button></div><section class="card"><span class="badge">Transition Town Business</span><h1>Welcome, ${esc(PS.residentName())}!</h1><p>${hired?'Enter as a customer or use your employee entrance.':'Walk up to the counter to order. Interested in working here? Tap Apply Now.'}</p></section>`;
  syncEmploymentAction();window.scrollTo(0,0);
 }
+
+function enterRestaurant(){
+ const b=document.getElementById('employmentAction');if(b)b.hidden=false;
+ builder={size:'Medium',crust:'Hand Tossed',pizza:'Cheese',sauce:'Regular',mods:{},items:[],drink:null};
+ renderOrder('size');
+}
+function optionButtons(options,selected,handler){
+ return '<div class="optionGrid compact">'+options.map(item=>{const value=Array.isArray(item)?item[0]:item;const label=esc(value);const price=Array.isArray(item)?' • '+money(item[1]):'';return '<button class="option '+(selected===value?'selected':'')+'" onclick="'+handler+'(\''+String(value).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">'+label+price+'</button>'}).join('')+'</div>';
+}
+function stepNav(step){
+ const steps=[['size','Size'],['crust','Crust'],['pizza','Pizza'],['customize','Toppings'],['sides','Sides'],['drink','Drink'],['review','Review']];
+ return '<div class="orderSteps" aria-label="Order progress">'+steps.map(([key,label],i)=>'<span class="'+(key===step?'current':steps.findIndex(s=>s[0]===step)>i?'done':'')+'">'+(i+1)+'. '+label+'</span>').join('')+'</div>';
+}
+function applyPreset(){builder.mods={};builder.sauce=M.pizzas[builder.pizza].sauce||'Regular'}
 
 function approvedScene(file,alt,fallback){
  return '<div class="approvedPizzaScene"><img class="approvedPizzaImg" src="'+file+'" alt="'+alt+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"><div class="approvedFallback" style="display:none">'+fallback+'</div></div>';
@@ -60,7 +74,7 @@ function pizzaPrice(){
  return Math.round((size+crust+p.base+extra)*100)/100;
 }
 function pizzaDescription(){
- let mods=Object.entries(builder.mods).filter(([k,v])=>v!=='Regular').map(([k,v])=>v+' '+k);if(builder.sauce!=='Regular')mods.push(builder.sauce+' Sauce');
+ let mods=Object.entries(builder.mods).filter(([k,v])=>v!=='Regular').map(([k,v])=>v+' '+k);if(builder.sauce!=='Regular')mods.push(/sauce$/i.test(builder.sauce)?builder.sauce:builder.sauce+' Sauce');
  return `${builder.size} ${builder.crust} ${builder.pizza==='Custom Pizza'?'Build Your Own':builder.pizza}${mods.length?' • '+mods.join(', '):''}`;
 }
 function commitPizza(){
