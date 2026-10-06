@@ -17,3 +17,21 @@
 @media(orientation:landscape) and (max-height:520px){.counterScene{min-height:390px}.waitingScene{min-height:290px}.counterMenu{height:20%}.cashier{transform:translateX(-50%) scale(.78);top:35%}.orderPanel{margin-top:5px}}
 
 .approvedPizzaScene{position:relative;width:100%;border-radius:20px;overflow:hidden;background:#1d1714;box-shadow:0 12px 28px #0003}.approvedPizzaImg{display:block;width:100%;height:auto;max-height:66vh;object-fit:cover}.approvedFallback{width:100%}@media(max-width:600px){.approvedPizzaImg{max-height:52vh;object-position:center}}@media(orientation:landscape) and (max-height:520px){.approvedPizzaImg{max-height:72vh}}
+
+/* Keep the storefront readable and both entrances accessible on phones. */
+.top button[hidden]{display:none}
+.storefront{min-height:510px}
+.storeActions{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 16px}
+.storeActions button{min-height:60px}
+@media(max-width:700px){
+ .storefront{min-height:400px}
+ .sign{left:8%;right:8%;top:19%;height:20%;padding:4px}
+ .sign strong{font-size:clamp(17px,5.3vw,24px);line-height:1.04;letter-spacing:0}
+ .sign small{font-size:9px;letter-spacing:.03em;line-height:1.2}
+ .hiring,.menuBoard{display:none}
+ .windowrow{top:49%;height:27%}
+ .door{font-size:clamp(10px,2.8vw,14px);line-height:1.15}
+ .window:after{font-size:8px;letter-spacing:0}
+ .storeActions{grid-template-columns:1fr;gap:9px}
+ .storeActions button{min-height:54px}
+}
