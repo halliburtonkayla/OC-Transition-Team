@@ -150,9 +150,9 @@ function cashTender(v){
 function checkChange(tender,change){let ans=Number(document.getElementById('changeAnswer').value),m=document.getElementById('changeMsg');if(Math.abs(ans-change)>.009){m.className='notice';m.textContent='Try again. Subtract the total from the cash you gave the cashier.';return}m.className='good';m.textContent='Correct! Change: '+money(change);setTimeout(()=>completePayment('Cash',{tender,change}),650)}
 function cardPayment(){app.innerHTML=`<section class="card"><span class="badge">CARD TERMINAL</span><h1>Debit / Card</h1><p>Tap the practice terminal to pay.</p><button class="primary" onclick="completePayment('Debit / Card',{})">TAP / INSERT CARD</button> <button class="secondary" onclick="pickupCounter()">Back</button></section>`}
 function completePayment(method,details){
- let o=PS.getOrder(currentOrderId),w=PS.world(),r=w.residents&&w.residents[o.resident];
- if(method==='Debit / Card'&&r&&Number(r.checking||0)<o.total){app.innerHTML='<section class="card"><div class="notice"><b>Card declined.</b> There is not enough money in Transition Town checking.</div><button class="primary" onclick="pickupCounter()">Choose Another Payment</button></section>';return}
- if(method==='Debit / Card'&&r){r.checking=Math.round((Number(r.checking||0)-o.total)*100)/100;r.history=r.history||[];r.history.push('Pizza Shop purchase -'+money(o.total)+' — Order #'+o.id);PS.saveWorld(w)}
+ let o=PS.getOrder(currentOrderId);if(!o||o.resident!==PS.residentName())return alert('Open your own order first.');if(o.paymentStatus==='PAID')return orderReadyActions(o);let w=PS.world(),r=w.residents&&w.residents[o.resident];let lifePayment=!!r?.life;
+ if((method==='Debit / Card'||lifePayment)&&r&&Number(r.checking||0)<o.total){app.innerHTML='<section class="card"><div class="notice"><b>Card declined.</b> There is not enough money in Transition Town checking.</div><button class="primary" onclick="pickupCounter()">Choose Another Payment</button></section>';return}
+ if((method==='Debit / Card'||lifePayment)&&r){r.checking=Math.round((Number(r.checking||0)-o.total)*100)/100;r.history=r.history||[];r.history.push('Pizza Shop purchase -'+money(o.total)+' — Order #'+o.id);if(r.life){r.life.meals.push({id:'pizza-'+o.id,name:'Pizza Shop order #'+o.id,hunger:45});r.life.actions.push({receipt:'pizza-'+o.id,type:'restaurant'});}Object.assign(w.pizzaOrders.find(x=>x.id===o.id),{paymentStatus:'PAID',paymentMethod:method,paymentDetails:details,paidAt:Date.now()});PS.saveWorld(w)}
  o=PS.patchOrder(currentOrderId,{paymentStatus:'PAID',paymentMethod:method,paymentDetails:details,paidAt:Date.now()});orderReadyActions(o);
 }
 function orderReadyActions(o){
@@ -176,7 +176,7 @@ function chooseProblem(){
  if(Math.random()>.28)return null;let available=problems.filter(p=>{let o=PS.getOrder(currentOrderId);if(p.type==='missingSide')return o.items.some(x=>x.type==='side'||x.type==='sauce');if(p.type==='wrongDrink')return o.items.some(x=>x.type==='drink');return o.items.some(x=>x.type==='pizza')});return available.length?available[Math.floor(Math.random()*available.length)]:null;
 }
 function takeOrder(){
- let o=PS.getOrder(currentOrderId);meal={problem:chooseProblem(),problemFixed:false,slices:8,drink:o.items.some(x=>x.type==='drink')?5:0,sauce:o.items.some(x=>x.type==='sauce'),napkin:false};inspectFood();
+ let o=PS.getOrder(currentOrderId);if(!o||o.resident!==PS.residentName())return alert('Open your own order first.');meal={problem:chooseProblem(),problemFixed:false,slices:8,drink:o.items.some(x=>x.type==='drink')?5:0,sauce:o.items.some(x=>x.type==='sauce'),napkin:false};inspectFood();
 }
 function inspectFood(){
  let p=meal.problem;
@@ -210,7 +210,8 @@ function takeDrink(){if(meal.drink<=0){document.getElementById('mealAction').tex
 function useNapkin(){meal.napkin=true;document.getElementById('mealAction').textContent='You used a napkin.'}
 function dipSauce(){document.getElementById('mealAction').textContent='You dipped your pizza in the sauce you ordered.'}
 function finishMeal(){
+ const lifeWorld=PS.world(),lifeOrder=PS.getOrder(currentOrderId),lifeResident=lifeWorld.residents?.[PS.residentName()];if(lifeOrder?.resident===PS.residentName()&&lifeResident?.life?.meals.some(m=>m.id==='pizza-'+currentOrderId)){TTLifeCore.eat(lifeResident,'pizza-'+currentOrderId,true);PS.saveWorld(lifeWorld);}
  let o=PS.patchOrder(currentOrderId,{completed:true,status:'COMPLETED',completedAt:Date.now()});localStorage.removeItem('ttPizzaActiveOrder');
  app.innerHTML=`<section class="card"><div class="good"><h1>Meal finished! 🍕</h1><p>Order #${o.id} is complete.</p></div><div class="bigchoice"><button class="primary" onclick="storefront()">RETURN TO PIZZA SHOP</button><button class="secondary" onclick="PizzaShop.returnToTown()">RETURN TO TRANSITION TOWN</button></div></section>`;
 }
-(function resume(){let id=Number(localStorage.ttPizzaActiveOrder||0),o=id&&PS.getOrder(id);if(o&&!o.completed){currentOrderId=id;if(o.paymentStatus==='PAID')orderReadyActions(o);else waitingRoom()}else storefront()})();
+(function resume(){let id=Number(localStorage.ttPizzaActiveOrder||0),o=id&&PS.getOrder(id);if(o&&o.resident===PS.residentName()&&!o.completed){currentOrderId=id;if(o.paymentStatus==='PAID')orderReadyActions(o);else waitingRoom()}else storefront()})();
