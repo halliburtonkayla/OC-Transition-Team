@@ -1,4 +1,4 @@
-import {createGame,tick,act} from './core.js';
+import {createGame,tick,act} from './core.js?v=3';
 import {SoftballScene} from './scene.js';
 import {SoftballRoom,roomCode} from './network.js';
 const $=id=>document.getElementById(id);
@@ -72,15 +72,15 @@ function ui(){
  const hint=!ready?'Share the room code. The game starts when both players connect.':paused?'The game is paused. Tap Resume when both players are ready.':batting?live?'Runners advance one base. Try for an extra base, or hold at the next bag.':'Aim left/right before the pitch. Watch the yellow ball reach home plate, then SWING.':live?game.holder!==null?'Ball secured. Tap 1st, 2nd, 3rd, or Home to throw.':'Drag the pad toward the gold ring. Catch or pick up the ball, then throw.':'Aim with the pad. Choose a pitch type, then tap PITCH. The white box is the strike zone.';
  setText('instruction',hint);
  for(const b of document.querySelectorAll('[data-action]')){const a=b.dataset.action;let enabled=true;
-  if(a==='swing')enabled=game.phase==='pitch'&&!game.pitch?.swung;
+  if(a==='swing')enabled=game.phase==='pitch'&&!game.pitch?.swung&&visiblePitchT<=game.pitch.windup+game.pitch.duration+.2;
   if(a==='pitch'||a==='style'||a.startsWith('kind'))enabled=game.phase==='ready';
   if(a.startsWith('throw'))enabled=game.phase==='live'&&game.holder!==null;
   if(a==='switch')enabled=game.phase==='live'&&game.holder===null;
   if(a==='advance'||a==='hold')enabled=['live','throw'].includes(game.phase);
   b.disabled=!active||!ready||paused||game.finished||!enabled;b.classList.toggle('selected',a==='kind-'+game.pitchKind);
  }
- $('pitchCue').hidden=!active||!batting||game.phase!=='pitch';
- if(game.pitch){const p=game.pitch,u=Math.max(0,Math.min(1,(visiblePitchT-p.windup)/(p.duration+.2)));$('pitchProgress').style.left=u*100+'%';}
+ $('pitchCue').hidden=!active||!batting||game.phase!=='pitch'||visiblePitchT>game.pitch.windup+game.pitch.duration+.2;
+ if(game.pitch){const p=game.pitch,u=Math.max(0,Math.min(1,(visiblePitchT-p.windup)/p.duration));$('pitchProgress').style.left=`calc(${u*100}% - ${u*4}px)`;}
  if(game.finished&&!endShown){endShown=true;setText('winner',game.message);setText('finalScore','Player 1 '+game.scores[0]+' — '+game.scores[1]+' '+(game.cpu?'Computer':'Player 2'));$('end').showModal();}
  if(!game.finished&&endShown){endShown=false;$('end').close();}
 }
@@ -92,8 +92,8 @@ function frame(now){
  let visual=game;visiblePitchT=game.pitch?.t||0;
  // Extrapolate only the visible pitch, never remote scores or collision decisions.
  if(room&&!room.host&&!paused&&ready&&game.phase==='pitch'){
-  const p=game.pitch,t=p.t+Math.min(.15,(now-received)/1000),u=Math.max(0,Math.min(1.3,(t-p.windup)/p.duration));visiblePitchT=t;
-  visual={...game,pitch:{...p,t},ball:{x:p.x*u,y:Math.max(.1,.7+(p.y-.7)*u+Math.sin(Math.min(1,u)*Math.PI)*(.45+(p.kind==='drop'?.5:0))),z:13.1*(1-u)}};
+  const p=game.pitch,t=p.t+Math.min(.15,(now-received)/1000),u=Math.max(0,Math.min(1,(t-p.windup)/p.duration));visiblePitchT=t;
+  visual={...game,pitch:{...p,t},ball:t>p.windup+p.duration?{x:p.x,y:Math.max(.5,p.y),z:-.45}:{x:p.x*u,y:Math.max(.1,.7+(p.y-.7)*u+Math.sin(u*Math.PI)*(.45+(p.kind==='drop'?.5:0))),z:13.1*(1-u)}};
  }
  scene?.draw(visual,side,dt||1/60);ui();sound();requestAnimationFrame(frame);
 }

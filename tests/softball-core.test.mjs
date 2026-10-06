@@ -4,6 +4,9 @@ const step=(g,n)=>{for(let i=0;i<Math.ceil(n*60);i++)tick(g,[{},{}],1/60);};
 const pitchTo=(g,t)=>{act(g,1-g.batting,'pitch');step(g,g.pitch.windup+g.pitch.duration+t);};
 // Only the pitcher can pitch and only the batter can swing. Human games never auto-pitch.
 let g=createGame({cpu:false});step(g,12);assert.equal(g.phase,'ready');act(g,0,'pitch');assert.equal(g.phase,'ready');act(g,1,'pitch');assert.equal(g.phase,'pitch');act(g,1,'swing');assert.equal(g.pitch.swung,false);
+// The catcher looks out toward the pitcher, who looks in toward home.
+assert.equal(g.fielders[1].heading,0);assert.equal(g.fielders[0].heading,Math.PI);
+step(g,g.pitch.windup+g.pitch.duration+.22);assert.equal(g.phase,'pitch');assert.ok(g.ball.z>=-.45);
 // Three called strikes, not a timed score award, make an out.
 g=createGame({cpu:false});for(let i=0;i<3;i++){pitchTo(g,.4);assert.equal(g.phase,'result');step(g,2.4);}assert.equal(g.outs,1);assert.equal(g.strikes,0);
 // Walk advances only forced runners; a runner on second does not automatically take third.

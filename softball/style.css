@@ -15,3 +15,4 @@ body.playing .field .pitchCue{bottom:140px;pointer-events:none}
 @media(orientation:landscape) and (max-height:550px){body.playing .field .actions{max-width:310px}body.playing .field .pitchCue{bottom:18px;max-width:210px}.field .pitchTypes{width:auto}.field .actions small{display:none}body.playing .field .controlRow{left:18px;right:18px}}
 body.playing .field .pitchCue{top:12px;bottom:auto}
 @media(max-width:700px) and (orientation:portrait){body.playing .field .pitchCue{top:49px;padding:7px 12px}}
+body.playing .field .pitchCue b{left:80%;width:20%}

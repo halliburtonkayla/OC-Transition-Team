@@ -4,7 +4,7 @@ export const FENCE = 64;
 export const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 const homes=[[0,13.1],[0,-1.4],[14.1,14.1],[8,25],[-8,25],[-14,14],[-28,41],[0,49],[28,41]];
-const fielders=()=>homes.map(([x,z])=>({x,z,y:0,heading:Math.PI,moving:false}));
+const fielders=()=>homes.map(([x,z],i)=>({x,z,y:0,heading:i===1?0:Math.PI,moving:false}));
 const number=v=>typeof v==='number'&&Number.isFinite(v);
 export function createGame({innings=3,cpu=true}={}) {
  return {version:2,time:0,innings:[1,3,7].includes(innings)?innings:3,cpu,inning:1,batting:0,
@@ -156,9 +156,13 @@ export function tick(g,inputs,dt){
   g.pitchAim.y=clamp(g.pitchAim.y+((def.up?1:0)-(def.down?1:0))*dt,.2,1.9);
   if(g.cpu&&g.batting===0&&g.clock>2.4){g.pitchKind=['fast','change','drop'][g.pitchId%3];g.pitchAim={x:Math.sin(g.pitchId*2.7)*.48,y:.9+Math.sin(g.pitchId)*.4};pitch(g);}
  } else if(g.phase==='pitch'){
-  const p=g.pitch;p.t+=dt;const u=clamp((p.t-p.windup)/p.duration,0,1.3);
+  const p=g.pitch;p.t+=dt;const u=clamp((p.t-p.windup)/p.duration,0,1);
   const curve=p.kind==='drop'?Math.sin(Math.min(1,u)*Math.PI)*.5:0;
-  g.ball={x:p.x*u,y:Math.max(.1,.7+(p.y-.7)*u+Math.sin(Math.min(1,u)*Math.PI)*.45+curve),z:13.1*(1-u)};
+  // The ball reaches home plate at u=1. After that, the catcher secures it;
+  // never let it fly toward the camera and inflate on a phone screen.
+  g.ball=p.t>p.windup+p.duration
+   ?{x:p.x,y:Math.max(.5,p.y),z:-.45}
+   :{x:p.x*u,y:Math.max(.1,.7+(p.y-.7)*u+Math.sin(u*Math.PI)*.45+curve),z:13.1*(1-u)};
   if(g.cpu&&g.batting===1&&!p.swung&&p.t>=p.windup+p.duration-.07+Math.sin(g.pitchId*1.8)*.1){g.aim=Math.sin(g.pitchId*1.7)*.9;g.batStyle=g.pitchId%3===0?'power':'contact';act(g,1,'swing');}
   if(g.phase==='pitch'&&p.t>p.windup+p.duration+.32){
    if(Math.abs(p.x)<=.3&&p.y>=.5&&p.y<=1.5)strike(g,'Called strike.');

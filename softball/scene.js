@@ -109,7 +109,7 @@ export class SoftballScene {
   const cycle=Math.sin(t*14),stride=run?.7:0;p.body.position.y=run?Math.abs(cycle)*.055:Math.sin(t*2)*.008;
   p.body.rotation.set(0,0,0);p.legs[0].rotation.x=cycle*stride;p.legs[1].rotation.x=-cycle*stride;
   p.arms[0].rotation.set(-cycle*stride*.8,0,.09);p.arms[1].rotation.set(cycle*stride*.8,0,-.09);
-  if(batter){p.root.rotation.y=Math.PI/2;p.legs[0].rotation.x=.12;p.legs[1].rotation.x=-.15;
+  if(batter){p.root.rotation.y=.22;p.legs[0].rotation.x=.12;p.legs[1].rotation.x=-.15;
    const u=swing>0?1-swing/.38:0;p.body.rotation.y=swing>0?-.9+u*2.2:-.6;
    p.arms[0].rotation.set(-1.4,0,-.5);p.arms[1].rotation.set(-2.1+u*1.2,0,.3+u*1.8);p.bat.rotation.z=-.3;
   }
