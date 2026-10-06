@@ -4,7 +4,7 @@
   'use strict';
   const meta = window.TTStoryCatalog;
   const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const supportsSpeech = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+  const supportsSpeech = !!window.speechSynthesis && typeof window.SpeechSynthesisUtterance === 'function';
   const state = {root:null, book:0, page:0, view:'shelf', sound:false, follow:true, source:'speech', speaking:false, paused:false, sentence:0, token:0, utterance:null, choices:{}, hidden:[], themeWasPlaying:false, direction:1};
   let audio = null, context = null, startTouch = null, opener = null, saveFailed = false;
   const book = () => ttStoryBooks[state.book];
@@ -90,7 +90,7 @@
     render('<div class="stShelfIntro"><p class="stEyebrow">THE PARK STORY LIBRARY</p><h1 tabindex="-1" data-st-heading>Find your next little adventure.</h1><p>Big feelings, first jobs, and everyday discoveries. Pick a cover and step inside.</p></div><div class="stShelf">'+ttStoryBooks.map((b,i)=>{
       const m=meta[i], p=progress(m.id), wordCount=b.pages.join(' ').split(/\s+/).length;
       const minutes=Math.max(3,Math.ceil(wordCount/80));
-      return '<button type="button" class="stBook" data-st-action="book" data-index="'+i+'" aria-label="Open '+escape(b.t)+'"><div class="stCoverArt">'+image(asset(m,'cover'),m.coverAlt,'',i>3)+'<span class="stSpine"></span></div><div class="stBookInfo"><span class="stTopic">'+escape(m.skill)+'</span><h2>'+escape(b.t)+'</h2><p>'+escape(m.description)+'</p><span class="stBookMeta">10 pages · About '+minutes+' minutes</span><span class="stProgress">'+(p.finished?'Read again anytime':Number.isInteger(p.page)?'Continue from page '+(p.page+1):'Open this book →')+'</span></div></button>';
+      return '<button type="button" class="stBook" data-st-action="book" data-index="'+i+'" aria-label="Open '+escape(b.t)+'"><div class="stCoverArt">'+image(asset(m,'cover-thumb'),m.coverAlt,'',i>3)+'<span class="stSpine"></span></div><div class="stBookInfo"><span class="stTopic">'+escape(m.skill)+'</span><h2>'+escape(b.t)+'</h2><p>'+escape(m.description)+'</p><span class="stBookMeta">10 pages · About '+minutes+' minutes</span><span class="stProgress">'+(p.finished?'Read again anytime':Number.isInteger(p.page)?'Continue from page '+(p.page+1):'Open this book →')+'</span></div></button>';
     }).join('')+'</div><div class="stShelfBottom">'+button('playground','← Back to Playground')+'</div>', '12 illustrated stories. Choose a book.');
   }
   function openBook(index) {

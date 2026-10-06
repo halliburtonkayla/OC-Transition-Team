@@ -27,7 +27,7 @@ const fixture={residents:{Guest:{checking:1234.56,savings:4321,sessions:7,career
     await page.locator('.townmap .park').click();await page.locator('.parkplay').click();await page.locator('[aria-label="Story Time"]').click();
     await page.waitForSelector('#transitionStory .stBook');assert.equal(await page.locator('.stBook').count(),12);
     assert.equal(await page.locator('[data-st-action="sound"]').getAttribute('aria-pressed'),'false');
-    assert.ok(requests.every(r=>r.endsWith('/cover.webp')),'Shelf must request covers only');
+    assert.ok(requests.every(r=>r.endsWith('/cover-thumb.webp')),'Shelf must request covers only');
     assert.ok(await page.evaluate(()=>{const r=document.getElementById('transitionStory');return r.scrollWidth<=r.clientWidth}),'No horizontal reader overflow');
     await page.screenshot({path:'/workspace/scratch/1e04116ffe06/storytime-shelf-'+viewport.width+'.png'});
     const titles=await page.evaluate(()=>ttStoryBooks.map(b=>b.t));
