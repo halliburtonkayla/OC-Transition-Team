@@ -40,6 +40,5 @@ function sync(){
  }while(rerun);return ok})().finally(()=>{pending=null});return pending;
 }
 window.TTNotifications={sync,items,url:URL,key:KEY};
-function addLink(){if(document.getElementById('ttSharedInbox')||location.pathname.endsWith('miss-kayla-inbox.html'))return;const header=document.querySelector('header');if(!header)return;const a=document.createElement('a');a.id='ttSharedInbox';a.href='miss-kayla-inbox.html';a.textContent='Miss Kayla Central Hub';a.style.cssText='display:inline-block;padding:9px 12px;border-radius:12px;background:#5b439d;color:white;text-decoration:none;font:bold 13px Arial;white-space:nowrap;margin:4px';header.appendChild(a);}
-addLink();sync();setInterval(()=>{if(!document.hidden)sync()},5000);window.addEventListener('online',sync);window.addEventListener('pagehide',sync);document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
+sync();setInterval(()=>{if(!document.hidden)sync()},5000);window.addEventListener('online',sync);window.addEventListener('pagehide',sync);document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
 })();
