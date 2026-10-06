@@ -5,7 +5,7 @@
 <label>Monthly debt payments <input id="debt" type="number" min="0" step="1"></label>
 <label>Down payment available <input id="down" type="number" min="0" step="1"></label>
 <button class="action" id="check" type="button">Review My Numbers</button>
-<p id="result" aria-live="polite"></p><a class="action" href="index.html">Back to Housing Office</a></main>
+<p id="result" aria-live="polite"></p><a class="action" href="housing-office.html">Back to Housing Office</a></main>
 <script>
 const p=new URLSearchParams(location.search).get('property')||'selected property';
 document.getElementById('prop').textContent='Property: '+p.replaceAll('-',' ');
