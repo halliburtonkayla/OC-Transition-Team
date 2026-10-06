@@ -33,3 +33,9 @@ Actual iPhone Safari/iPad and school computer performance remain device checks. 
 ## Restore
 
 Original default-branch head: `1a00eab9cb0b3648945e9d7284eb26f31e6d7b9b`. Initial backup branch: `backup/before-driving-phase1-20261006`. Publication includes the newer Pizza Shop restoration at `0da2f07939aff7305b84aea4a46890c93c5ce236`; the backup immediately before publication is `backup/before-driving-publish-20261006`. Reverting the driving addition commit removes only the new feature and the single directory link. Avoid resetting main across later unrelated changes.
+
+## Getting started and instruction support
+
+The opening screen displays a phone/iPad quick-start guide. Practice with hints gives context-specific guidance for preparation, backing, the stop/crosswalk, turning and parking. Drive without hints preserves independent driving. How to drive is available before and during play and from Pause; it freezes the simulation and returns to the prior screen/state when closed. Hints can be hidden or enabled from Pause. Holding brake while tapping Start/R/D requires two fingers on touch devices; the guide explains this, light accelerator position, steering, gear meanings, keyboard controls, and parking alignment. Reports retain whether guided hints were used.
+
+Instruction regression: `DRIVING_BROWSER=/path/to/chromium node tests/driving-help.test.cjs` checks the opening guide, contextual hints, pause/resume while reading, optional hints, and keeping portrait driving controls accessible.
