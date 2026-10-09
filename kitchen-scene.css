@@ -1,0 +1,35 @@
+/* Scoped kitchen lesson layout and real-time 3D presentation. */
+.kitchen-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 20px;font-size:13px;color:#55685e}
+.kitchen-caption strong{color:#215449}
+.kitchen-step-label{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#477766}
+.kitchen-progress{height:7px;border-radius:8px;background:#e2e8dd;margin:15px 0;overflow:hidden}
+.kitchen-progress span{display:block;height:100%;background:#367764;transition:width .3s}
+.kitchen-lesson{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,1fr);gap:28px;align-items:start}
+.kitchen-lesson .choice{border-color:#d7ded4;color:#26493e;background:#fffdf6;padding:14px 16px;font-size:15px}
+.kitchen-lesson .choice:hover{border-color:#548572;background:#edf4ec}
+.kitchen-lesson .choice:focus-visible{outline:3px solid #bb862d;outline-offset:3px}
+.kitchen-lesson .feedback{background:#eaf1e5;color:#254f3d;line-height:1.5}
+.kitchen-recipe-art{margin-bottom:20px}
+.cook-zone.kitchen-cook-zone{height:auto;background:none;border-radius:18px;margin:16px 0;touch-action:none;overflow:visible}
+.cook-zone.kitchen-cook-zone:after{content:none}
+.kitchen-cook-zone:focus-visible{outline:3px solid #cd8e24;outline-offset:4px}
+.kitchen-instruction{padding:12px 16px;background:#e8f0e5;border-radius:12px;line-height:1.5}
+.kitchen-complete{background:#e6f0df;border:1px solid #aec4a6;padding:17px;border-radius:14px}
+.kitchen-complete h3{margin:0 0 6px}
+.kitchen-scene3d{border:1px solid #d9dfd2;border-radius:17px;background:#f4f4ed;overflow:hidden;box-shadow:0 12px 32px #24483a14}
+.kitchen-viewport{position:relative;aspect-ratio:1/.69;min-height:220px;overflow:hidden;background:#dfdbcd}
+.kitchen-canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}
+.kitchen-canvas:active{cursor:grabbing}
+.kitchen-model-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.kitchen-model-fallback[hidden],.kitchen-render-state[hidden]{display:none}
+.kitchen-render-state{position:absolute;left:12px;right:12px;bottom:12px;padding:9px 12px;background:#fffcf0ee;border-radius:9px;font-size:12px;color:#28483b}
+.kitchen-view-controls{display:flex;gap:7px;padding:10px 12px;flex-wrap:wrap}
+.kitchen-view-controls button{font:700 12px Arial;min-height:44px;min-width:60px;padding:9px 12px;border:1px solid #cbd3c7;border-radius:9px;background:#fffdf5;color:#244d3d;cursor:pointer}
+.kitchen-view-controls button[aria-pressed=true]{background:#315f4d;border-color:#315f4d;color:white}
+.kitchen-view-controls button:focus-visible{outline:3px solid #c88f35;outline-offset:2px}
+.kitchen-object-hint{font-size:12px;line-height:1.5;margin:0;padding:0 13px 13px;color:#526759;min-height:45px}
+.kitchen-stir-signal{display:none}
+.kitchen-cook-zone .kitchen-canvas{touch-action:none}
+@media(max-width:740px){.kitchen-lesson{grid-template-columns:1fr;gap:8px}.kitchen-caption{font-size:12px}.kitchen-scene3d{border-radius:12px}}
+@media(prefers-reduced-motion:reduce){.kitchen-progress span{transition:none}}
+@media print{.kitchen-scene3d,.kitchen-caption,.kitchen-progress{display:none!important}.kitchen-lesson{display:block}}
