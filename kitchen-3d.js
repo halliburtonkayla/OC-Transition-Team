@@ -30,7 +30,7 @@ async function mount(host){
  signalObserver=new MutationObserver(()=>{food.rotation.z=(parseFloat(signal.style.rotate)||0)*Math.PI/180;draw();});signalObserver.observe(signal,{attributes:true,attributeFilter:['style']});
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();fallback.hidden=false;status.hidden=false;status.textContent='3D rendering paused. Cooking controls still work.';});
  chooseView(host.dataset.interactive==='true'?'stove':'room');resize();fallback.hidden=true;status.hidden=true;host.dataset.rendered='true';
- }catch(error){if(!disposed){status.textContent='3D is unavailable here. Cooking controls still work.';canvas.hidden=true;fallback.hidden=false;host.dataset.rendered='fallback';}}
+ }catch(error){if(!disposed){status.textContent='3D is unavailable here. Cooking controls still work.';canvas.hidden=true;fallback.hidden=false;host.dataset.rendered='fallback';host.querySelector('.kitchen-object-hint').textContent='Static 3D model preview. Use the cooking steps to continue.';}}
 }
 function reconcile(){for(const [host,viewer]of viewers)if(!host.isConnected){viewer.dispose();viewers.delete(host);}for(const host of document.querySelectorAll('.kitchen-scene3d'))if(!viewers.has(host))mount(host);}
 new MutationObserver(reconcile).observe(document.documentElement,{childList:true,subtree:true});reconcile();

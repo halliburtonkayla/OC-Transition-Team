@@ -33,3 +33,5 @@
 @media(max-width:740px){.kitchen-lesson{grid-template-columns:1fr;gap:8px}.kitchen-caption{font-size:12px}.kitchen-scene3d{border-radius:12px}}
 @media(prefers-reduced-motion:reduce){.kitchen-progress span{transition:none}}
 @media print{.kitchen-scene3d,.kitchen-caption,.kitchen-progress{display:none!important}.kitchen-lesson{display:block}}
+
+.kitchen-canvas[hidden],.kitchen-scene3d[data-rendered="fallback"] .kitchen-view-controls{display:none}
