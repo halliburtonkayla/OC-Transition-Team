@@ -14,7 +14,7 @@
   const el=$('decision-delivery');if(!el)return;
   const all=entries(),pending=all.filter(e=>!e.sent);
   el.textContent=!storageOK?'Keep this page open: delivery cannot be saved on this browser.':pending.length?(working?'Sending decisions to Miss Kayla…':error||'Saved here · waiting to send to Miss Kayla.'):all.length?'✓ Decisions sent to Miss Kayla.':'Your hire, hold, or decline decisions will be sent to Miss Kayla.';
-  if($('retry-decisions')){$('retry-decisions').hidden=!pending.length;$('retry-decisions').disabled=working;}
+  if($('retry-decisions')){$('retry-decisions').hidden=!pending.length;$('retry-decisions').style.display=pending.length?'':'none';$('retry-decisions').disabled=working;}
  }
  function mount(shop){activeShop=shop;paint();}
  function capture(meta,record){
