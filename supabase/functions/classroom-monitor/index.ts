@@ -17,7 +17,8 @@ const add=(t:string,b:unknown)=>api('tt_monitor_'+t,'POST',b);
 async function settings(){return (await get('settings','id=eq.true'))[0]}
 async function teacher(req:Request){
  const bearer=req.headers.get('authorization')||'';
- if(!/^Bearer .+/.test(bearer))fail(401,'Sign in with your approved teacher email.');
+ if(!/^Bearer .+/.test(bearer))fail(401,'Unlock the teacher dashboard with your passcode or teacher email.');
+ if(/^Bearer tt-pin-[a-f0-9]{64}$/.test(bearer)){const token=bearer.slice(7);const row=(await get('teacher_sessions','token_hash=eq.'+await hash(token)+'&revoked_at=is.null&expires_at=gt.'+enc(iso())+'&limit=1'))[0];if(!row)fail(401,'Teacher passcode session expired. Enter your passcode again.');const found=await api('tt_monitor_pin_settings?id=eq.true&teacher_id=eq.'+row.teacher_id+'&select=teacher_id');if(!found.length)fail(403,'Teacher passcode access is unavailable.');return {id:row.teacher_id,pin_session:true};}
  const r=await fetch(BASE+'/auth/v1/user',{headers:{apikey:KEY,Authorization:bearer}});
  if(!r.ok)fail(401,'Teacher sign-in expired. Sign in again.');const u=await r.json();
  if(!u.id||!u.email_confirmed_at||u.is_anonymous)fail(403,'Verified teacher sign-in required.');
@@ -87,6 +88,7 @@ Deno.serve(async(req:Request)=>{
  try{
   if(Number(req.headers.get('content-length')||0)>100000)fail(413,'Request too large.');const raw=await req.text();if(raw.length>100000)fail(413,'Request too large.');const b=JSON.parse(raw),action=String(b.action||'');
   const cfg=await settings();
+  if(action==='teacher_pin'){if(!/^[0-9]{4}$/.test(String(b.pin||'')))fail(400,'Enter your four-digit teacher passcode.');const ip=req.headers.get('cf-connecting-ip')||req.headers.get('x-forwarded-for')?.split(',')[0]||'teacher-login';const check=await api('rpc/tt_monitor_check_pin','POST',{p_fingerprint:await hash('tt-pin-attempt:'+ip),p_hash:await hash('tt-teacher-pin-v1:'+b.pin)});if(check.blocked)fail(429,'Too many incorrect passcodes. Wait 15 minutes before trying again.');if(!check.teacher_id)fail(401,'That teacher passcode did not match.');const token='tt-pin-'+[...crypto.getRandomValues(new Uint8Array(32))].map(x=>x.toString(16).padStart(2,'0')).join('');const expires=new Date(Date.now()+3600000).toISOString();await add('teacher_sessions',{token_hash:await hash(token),teacher_id:check.teacher_id,expires_at:expires});await api('tt_monitor_teacher_sessions?expires_at=lt.'+enc(iso()),'DELETE');return out({token,expires_at:expires,user:{id:check.teacher_id,pin_session:true}});}
   if(action==='public_config')return out({enabled:cfg.enabled,retention_days:cfg.retention_days});
   if(action==='join'){
    if(!cfg.enabled||!cfg.retention_days)fail(403,'Miss Kayla has not turned on classroom activity recording yet.');
@@ -100,10 +102,11 @@ Deno.serve(async(req:Request)=>{
    const row=(await add('devices',{student:name,token_hash:await hash('tt-monitor-v1:'+token),pair_code:pair}))[0];
    return out({token,device_id:row.id,pair_code:pair,approved:false,phone_verified:!!legacy,expires_at:row.expires_at});
   }
-  const teacherAction=['overview','configure','approve_device','revoke_device','start_group','end_group','history','reports','save_report','signal_teacher','signals_teacher','revoke_view','report_session','add_observation','view_snapshot'].includes(action);
+  const teacherAction=['teacher_logout','overview','configure','approve_device','revoke_device','start_group','end_group','history','reports','save_report','signal_teacher','signals_teacher','revoke_view','report_session','add_observation','view_snapshot'].includes(action);
   let u:any=null,d:any=null;
   if(teacherAction)u=await teacher(req);else d=await student(b.token);
   if(u){
+   if(action==='teacher_logout'){if(u.pin_session)await patch('teacher_sessions','token_hash=eq.'+await hash((req.headers.get('authorization')||'').slice(7)),{revoked_at:iso()});return out({ok:true});}
    if(action==='configure'){
     const days=Number(b.retention_days);if(!Number.isInteger(days)||days<1||days>365)fail(400,'Choose how many days to keep activity records (1–365).');
     const rows=await patch('settings','id=eq.true',{enabled:!!b.enabled,retention_days:days||cfg.retention_days,allow_snapshot_fallback:!!b.allow_snapshot_fallback,updated_by:u.id,updated_at:iso()});
@@ -191,6 +194,7 @@ Deno.serve(async(req:Request)=>{
   if(action==='device_status')return out({approved:!!d.approved_at,student:d.student,school:d.school,enabled:cfg.enabled});
   if(action==='logout'){await patch('devices','id=eq.'+d.id,{revoked_at:iso()});for(const active of await get('sessions','device_id=eq.'+d.id+'&ended_at=is.null'))await endSession(active,iso());return out({ok:true});}
   if(!cfg.enabled)fail(403,'Classroom recording is currently off.');if(!d.approved_at||!d.school)fail(403,'Waiting for Miss Kayla to verify this student device and school.');
+  if(action==='work_pay_ack'){await api('rpc/tt_work_pay_ack','POST',{p_student:d.student});return out({ok:true});}
   if(action==='begin'){
    await finalize();let s=(await get('sessions','device_id=eq.'+d.id+'&ended_at=is.null'))[0];
    if(!s){const groups=await get('groups','ended_at=is.null');const g=groups.find((g:any)=>g.members.includes(d.student));s=(await add('sessions',{device_id:d.id,student:d.student,school:g?.school||d.school,group_id:g?.id||null}))[0];}
@@ -198,6 +202,7 @@ Deno.serve(async(req:Request)=>{
   }
   if(!C.uid(b.session_id))fail(400,'Invalid session.');const s=(await get('sessions','id=eq.'+b.session_id+'&device_id=eq.'+d.id))[0];if(!s)fail(403,'This is not your student session.');
   if(s.ended_at)return out({ended:true,session:s});
+  if(action==='work_pay'){if(s.status!=='active')return out({paused:true});const pay=await api('rpc/tt_work_pay_pulse','POST',{p_student:d.student,p_device:d.id,p_session:s.id,p_working:!!b.working});return out({pay});}
   if(action==='heartbeat'){
    if(!b.mirror_allowed)await api('tt_monitor_frames?session_id=eq.'+s.id,'DELETE');
    await finalize();const rows=await patch('sessions','id=eq.'+s.id+'&ended_at=is.null',{last_seen:iso(),page:C.text(b.page,100),business:C.text(b.business,80),activity:C.text(b.activity,160),mirror_allowed:s.status==='active'&&!!b.mirror_allowed});return out({session:rows[0]||null,ended:!rows.length});
