@@ -6,7 +6,7 @@
  let rows=[],busy=false,generation=0,expanded=new Set();
  const date=s=>{const d=new Date(s);return Number.isNaN(+d)?'Date unavailable':d.toLocaleString();};
  function selected(){
-  const shop=$('interview-shop').value,choice=$('interview-choice').value,search=$('interview-search').value.trim().toLowerCase();
+  let shop=$('interview-shop').value,choice=$('interview-choice').value;if(!['all',...SHOPS.map(s=>s[0])].includes(shop))$('interview-shop').value=shop='all';if(!['all','Hired','On hold','Declined'].includes(choice))$('interview-choice').value=choice='all';const search=$('interview-search').value.trim().toLowerCase();
   return rows.filter(r=>(shop==='all'||r.shop_id===shop)&&(choice==='all'||r.decision===choice)&&(!search||[r.owner_name,r.applicant_name,r.details?.position,r.details?.reason].join(' ').toLowerCase().includes(search)));
  }
  function card(r){
@@ -40,6 +40,7 @@
   finally{busy=false;}
  }
  function clear(){generation++;rows=[];expanded.clear();render();$('interview-status').textContent='Enter your private teacher code to see decisions.';}
+ const initialShop=$('interview-shop').value;$('interview-shop').innerHTML='<option value="all">All five shops</option>'+SHOPS.map(([id,name])=>'<option value="'+id+'">'+esc(name)+'</option>').join('');$('interview-shop').value=['all',...SHOPS.map(s=>s[0])].includes(initialShop)?initialShop:'all';
  ['interview-shop','interview-choice'].forEach(id=>$(id).addEventListener('change',render));
  $('interview-search').addEventListener('input',render);
  $('interview-refresh').addEventListener('click',refresh);
