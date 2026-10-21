@@ -7,7 +7,7 @@ function clockIn(role){
   let v=document.getElementById('pin').value;
   if(v!==empPin()){document.getElementById('pinmsg').innerHTML='<span class="notice">Incorrect PIN. Try again.</span>';return}
   let now=Date.now();
-  shift={role,start:now,end:now+REAL_SHIFT*1000,completed:0,correct:0,mistakes:0,oven:null,current:null};
+  window.TTMonitor?.record('completed','Clocked in at Pizza Shop',{action:'employee-clock-in',role});shift={role,start:now,end:now+REAL_SHIFT*1000,completed:0,correct:0,mistakes:0,oven:null,current:null};
   let k=roleKey(role);
   if(k==='kitchen') startKitchen();
   else if(k==='cashier') startCashier();
@@ -91,8 +91,8 @@ function entryItems(){
 }
 function readBackOrder(){
   let e=cashierGame.entry;if(!e.size||!e.crust||!e.pizza){document.getElementById('customerReply').innerHTML='<div class="notice">Finish the pizza size, crust, and pizza type first.</div>';return}
-  let ok=cashierMatches();if(!ok){shift.mistakes++;document.getElementById('customerReply').innerHTML='<div class="notice"><b>Customer:</b> “Something in that read-back isn’t what I ordered. Please check my order again.”</div>';return}
-  shift.correct++;cashierPayment();
+  let ok=cashierMatches();if(!ok){(shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));document.getElementById('customerReply').innerHTML='<div class="notice"><b>Customer:</b> “Something in that read-back isn’t what I ordered. Please check my order again.”</div>';return}
+  (shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));cashierPayment();
 }
 function cashierPayment(){
   let items=entryItems(),total=Math.round(items.reduce((a,x)=>a+x.price,0)*100)/100;
@@ -102,13 +102,13 @@ function cashierPayment(){
 }
 function checkCashierChange(){
   let p=cashierGame.payment,due=Math.round((p.tender-p.total)*100)/100,ans=Number(document.getElementById('cashChange').value);
-  if(Math.abs(ans-due)>.009){shift.mistakes++;document.getElementById('cashMsg').innerHTML='<span class="notice">That change is not correct. Count it again.</span>';return}
-  shift.correct++;finishCashierPayment();
+  if(Math.abs(ans-due)>.009){(shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));document.getElementById('cashMsg').innerHTML='<span class="notice">That change is not correct. Count it again.</span>';return}
+  (shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));finishCashierPayment();
 }
 function finishCashierPayment(){
   let items=entryItems(),p=cashierGame.payment,total=p.total;
   let order=PS.addOrder({resident:'Restaurant Customer',items,total,paymentStatus:'PAID',paymentMethod:p.type,source:'cashier-pos',queue:'kitchen',cashier:PS.residentName(),kitchen:{tickets:items.filter(x=>x.type==='pizza'||x.type==='side').map((x,i)=>({ticket:i+1,orderItem:x,status:'QUEUED'}))}});
-  shift.completed++;shift.correct++;
+  shift.completed++;(shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));
   app.innerHTML=`<section class="card"><div class="good"><h1>Order #${order.id} sent to kitchen!</h1><p>The exact POS order you entered is now a shared kitchen ticket.</p></div><button class="btn green" onclick="nextCashierCustomer()">NEXT CUSTOMER</button></section>`;
 }
 
@@ -129,7 +129,7 @@ function expectedTopCounts(){
 function checkToppingCounts(){
   let need=expectedTopCounts(),got=shift.current.chosen.counts||{},keys=new Set([...Object.keys(need),...Object.keys(got)]),ok=true;
   keys.forEach(k=>{if((need[k]||0)!==(got[k]||0))ok=false});
-  if(ok){shift.correct++;shift.current.step='oven'}else shift.mistakes++;renderKitchen();
+  if(ok){(shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));shift.current.step='oven'}else (shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));renderKitchen();
 }
 function makeStation(x){
   let d=x.pizza.details||{},step=x.step;
@@ -180,16 +180,16 @@ function sideCookView(x,min,max){
   return `<div class="ovenbar"><i style="width:${Math.min(100,sec/(max+5)*100)}%"></i></div><p><b>${label}</b> • ${sec.toFixed(1)} sec</p><button class="btn red" onclick="finishSideCook(${min},${max})">REMOVE ${/Wings/i.test(x.side.name)?'FROM FRYER':'FROM OVEN'}</button>`;
 }
 function finishSideCook(min,max){
-  let sec=(Date.now()-shift.current.sideCook.start)/1000;if(sec<min||sec>max){shift.mistakes++;shift.current.sideCook=null;renderKitchen();return}
-  shift.correct++;markKitchenItemReady(shift.current.id,shift.current.itemIndex);shift.completed++;shift.current=null;renderKitchen();
+  let sec=(Date.now()-shift.current.sideCook.start)/1000;if(sec<min||sec>max){(shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));shift.current.sideCook=null;renderKitchen();return}
+  (shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));markKitchenItemReady(shift.current.id,shift.current.itemIndex);shift.completed++;shift.current=null;renderKitchen();
 }
 function markKitchenItemReady(id,index){
   let o=PS.getOrder(id);if(!o)return;let item=o.items[index],k=o.kitchen||{tickets:[]},tk=(k.tickets||[]).find(q=>q.orderItem&&q.orderItem.name===item.name);if(tk)tk.status='READY FOR PICKUP';
   let all=k.tickets&&k.tickets.length&&k.tickets.every(q=>q.status==='READY FOR PICKUP');PS.patchOrder(id,{kitchen:k,status:all?'READY FOR PICKUP':'PREPARING',readyAt:all?Date.now():o.readyAt});
 }
 function matchOrder(n){
-  if(n!==shift.current.id){shift.mistakes++;renderKitchen();return}
-  markKitchenItemReady(shift.current.id,shift.current.itemIndex);shift.completed++;shift.correct++;shift.current=null;ensureRush();renderKitchen();
+  if(n!==shift.current.id){(shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));renderKitchen();return}
+  markKitchenItemReady(shift.current.id,shift.current.itemIndex);shift.completed++;(shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));shift.current=null;ensureRush();renderKitchen();
 }
 
 /* Final employee-center completion: shared PIN, pickup, cleanup, and accurate manager labels. */
@@ -222,7 +222,7 @@ function training(role){
 }
 function clockIn(role){
  let v=document.getElementById('pin').value;if(v!==empPin()){document.getElementById('pinmsg').innerHTML='<span class="notice">Incorrect PIN. Try again.</span>';return}
- let now=Date.now();shift={role,start:now,end:now+REAL_SHIFT*1000,completed:0,correct:0,mistakes:0,oven:null,current:null,service:0,safety:0,cleanliness:0};
+ let now=Date.now();window.TTMonitor?.record('completed','Clocked in at Pizza Shop',{action:'employee-clock-in',role});shift={role,start:now,end:now+REAL_SHIFT*1000,completed:0,correct:0,mistakes:0,oven:null,current:null,service:0,safety:0,cleanliness:0};
  let k=roleKey(role);if(k==='kitchen')startKitchen();else if(k==='cashier')startCashier();else if(k==='dishwasher')startCleanup();else startPickup();
 }
 function pickupOrders(){
@@ -240,8 +240,8 @@ function verifyPickup(id){
  app.innerHTML='<section class="card"><span class="badge">ORDER CHECK</span><h1>Bag / Box #'+id+'</h1><p>Items in this order:</p><div class="pickupItems">'+items.map(a=>'<span>'+esc(a.x.name)+'</span>').join('')+'</div><h3>Which customer/order gets this food?</h3><div class="makegrid">'+[id,correct,id+2].filter((v,i,a)=>a.indexOf(v)===i).sort(()=>Math.random()-.5).map(n=>'<button class="btn white" onclick="handoffPickup('+id+','+n+')">ORDER #'+n+'</button>').join('')+'</div></section>';
 }
 function handoffPickup(id,chosen){
- if(Number(id)!==Number(chosen)){shift.mistakes++;app.innerHTML='<section class="card"><div class="notice"><h2>Stop — wrong order number.</h2><p>Recheck the receipt and food before handing it out.</p></div><button class="btn green" onclick="renderPickup()">RECHECK ORDER</button></section>';return}
- let o=PS.getOrder(id);if(!o)return;o.pickup={status:'HANDED OUT',employee:PS.residentName(),at:Date.now()};let patch={pickup:o.pickup};if(o.source!=='customer-counter'){patch.completed=true;patch.status='COMPLETED';patch.completedAt=Date.now()}PS.patchOrder(id,patch);shift.completed++;shift.correct++;shift.service++;renderPickup();
+ if(Number(id)!==Number(chosen)){(shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));app.innerHTML='<section class="card"><div class="notice"><h2>Stop — wrong order number.</h2><p>Recheck the receipt and food before handing it out.</p></div><button class="btn green" onclick="renderPickup()">RECHECK ORDER</button></section>';return}
+ let o=PS.getOrder(id);if(!o)return;o.pickup={status:'HANDED OUT',employee:PS.residentName(),at:Date.now()};let patch={pickup:o.pickup};if(o.source!=='customer-counter'){patch.completed=true;patch.status='COMPLETED';patch.completedAt=Date.now()}PS.patchOrder(id,patch);shift.completed++;(shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));shift.service++;renderPickup();
 }
 const CLEAN_STEPS=['SCRAPE FOOD','WASH WITH SOAP','RINSE','SANITIZE','AIR DRY','STORE CLEAN ITEMS'];
 let cleanRound=null;
@@ -252,14 +252,14 @@ function renderCleanup(scroll=true){
  app.innerHTML='<section class="card"><span class="badge">DISHWASHER / CLEANUP • CLOCKED IN</span><div class="clock">'+t.time+'</div><div class="shiftbar"><i style="width:'+t.pct+'%"></i></div><div class="statgrid"><div><b>'+shift.completed+'</b><br>Racks</div><div><b>'+shift.safety+'</b><br>Safety</div><div><b>'+shift.mistakes+'</b><br>Corrections</div></div></section><section class="card cleanupGame"><h2>Dirty Dish Rack</h2>'+(cleanRound.spill?'<div class="spillAlert">⚠️ A drink spilled near the work area.</div><button class="btn red" onclick="cleanSpill()">CLEAN & MARK WET FLOOR</button>':'')+'<p>Complete sanitation in the correct order.</p><div class="cleanSteps">'+CLEAN_STEPS.map((x,i)=>'<button class="btn '+(i<s?'green':'white')+'" onclick="cleanAction('+i+')">'+(i<s?'✓ ':'')+x+'</button>').join('')+'</div>'+(s>=CLEAN_STEPS.length?'<button class="btn green" onclick="finishCleanRack()">FINISH RACK</button>':'')+'</section>';
  if(scroll)window.scrollTo(0,0);
 }
-function cleanSpill(){cleanRound.spill=false;shift.safety++;shift.correct++;renderCleanup(false)}
+function cleanSpill(){cleanRound.spill=false;shift.safety++;(shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));renderCleanup(false)}
 function cleanAction(i){
- if(i!==cleanRound.step){shift.mistakes++;renderCleanup(false);return}
- cleanRound.step++;shift.correct++;if(i===3)shift.safety++;renderCleanup(false);
+ if(i!==cleanRound.step){(shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));renderCleanup(false);return}
+ cleanRound.step++;(shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));if(i===3)shift.safety++;renderCleanup(false);
 }
 function finishCleanRack(){
- if(cleanRound.step<CLEAN_STEPS.length||cleanRound.spill){shift.mistakes++;renderCleanup(false);return}
- shift.completed++;shift.cleanliness++;shift.correct++;newCleanRound();
+ if(cleanRound.step<CLEAN_STEPS.length||cleanRound.spill){(shift.mistakes++,window.TTMonitor?.record('correction','Pizza Shop work step needed correction',{action:'pizza-shop-work-step',success:false}));renderCleanup(false);return}
+ shift.completed++;shift.cleanliness++;(shift.correct++,window.TTMonitor?.record('completed','Successful Pizza Shop work step',{action:'pizza-shop-work-step',role:shift.role,success:true}));newCleanRound();
 }
 
 function clockOut(){

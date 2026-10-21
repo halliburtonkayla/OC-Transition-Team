@@ -104,4 +104,4 @@ function application(){modal.classList.remove('hidden');modalContent.innerHTML='
 function submitApplication(e){e.preventDefault();let fd=new FormData(e.target),obj={};fd.forEach((v,k)=>obj[k]=v);obj.resident=residentName();obj.status='Pending Ms. Kayla Review';obj.submitted=new Date().toISOString();let w=world();w.groceryApplications=w.groceryApplications||[];w.groceryApplications.push(obj);saveWorld(w);modalContent.innerHTML='<h2>Application Submitted</h2><p class="success notice">Your application for <b>'+obj.position+'</b> was sent to Ms. Kayla for review.</p><p>Status: <b>Pending</b></p><button class="action primary" onclick="closeModal()">Continue Shopping</button>'}
 saveCart();entrance();showEmployeeEntrance();
 </script><script src="tt-notifications.js?20261005-all2"></script>
-</body></html>
+<script src="assets/classroom-monitor/student.js?v=20261021a" defer></script></body></html>
