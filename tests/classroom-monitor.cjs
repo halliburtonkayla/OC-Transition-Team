@@ -22,8 +22,8 @@ const context=vm.createContext({console,TTMonitorCore:C,crypto,TextEncoder,Respo
 async function call(action,b={},auth=''){const r=await handler(new Request('https://example.invalid/functions/v1/classroom-monitor',{method:'POST',headers:{'Content-Type':'application/json',Origin:'https://halliburtonkayla.github.io',...(auth?{Authorization:'Bearer '+auth}:{})},body:JSON.stringify({action,...b})}));return {status:r.status,...await r.json()}}
 (async()=>{
  eq((await call('overview')).status,401);eq((await call('overview',{},'teacher-other')).status,403);eq((await call('join',{student:'Jaden'})).status,403);
- eq((await call('configure',{enabled:true,retention_days:7,approval_reference:'School approval'},'teacher-good')).status,400);
- eq((await call('configure',{enabled:true,retention_days:7,approval_reference:'QA school approval',school_approved:true},'teacher-good')).status,200);
+ eq((await call('configure',{enabled:true,retention_days:0},'teacher-good')).status,400);
+ eq((await call('configure',{enabled:true,retention_days:7},'teacher-good')).status,200);
  eq((await call('join',{student:'Invented student'})).status,400);const j=await call('join',{student:'Jaden'}),m=await call('join',{student:'Max'});eq(j.status,200);eq(m.status,200);eq((await call('begin',{token:j.token})).status,403);
  eq((await call('approve_device',{id:j.device_id,pair_code:j.pair_code,school:'South Fulton High School',identity_checked:true})).status,401);
  eq((await call('approve_device',{id:j.device_id,pair_code:'wrong',school:'South Fulton High School',identity_checked:true},'teacher-good')).status,400);
@@ -37,7 +37,7 @@ async function call(action,b={},auth=''){const r=await handler(new Request('http
  eq((await call('pause',{token:j.token,session_id:sj.id})).status,200);eq((await call('events',{token:j.token,session_id:sj.id,events:[{...event,id:uuid()}]})).status,403);eq((await call('signals_teacher',{session_id:sj.id},'teacher-good')).status,403);
  await call('resume',{token:j.token,session_id:sj.id});await call('heartbeat',{token:j.token,session_id:sj.id,page:'the-zoo.html',mirror_allowed:true});const ch=uuid();eq((await call('signal_teacher',{session_id:sj.id,channel:ch,kind:'request'},'teacher-good')).status,200);eq((await call('signal_student',{token:m.token,session_id:sj.id,channel:ch,kind:'answer'})).status,403);
  eq((await call('signal_student',{token:j.token,session_id:sj.id,channel:ch,kind:'answer',payload:{type:'answer',sdp:'test'}})).status,200);eq((await call('signals_teacher',{session_id:sj.id},'teacher-other')).status,403);
- await call('configure',{enabled:true,retention_days:7,approval_reference:'QA school approval',school_approved:true,allow_snapshot_fallback:true},'teacher-good');
+ await call('configure',{enabled:true,retention_days:7,allow_snapshot_fallback:true},'teacher-good');
  const frameChannel=uuid();eq((await call('signal_teacher',{session_id:sj.id,channel:frameChannel,kind:'request',payload:{transport:'snapshot'}},'teacher-good')).status,200);
  eq((await call('publish_snapshot',{token:m.token,session_id:sj.id,channel:frameChannel,payload:'Z3ppcA=='})).status,403,'other student cannot publish to the selected view');
  eq((await call('publish_snapshot',{token:j.token,session_id:sj.id,channel:frameChannel,payload:'Z3ppcA=='})).status,200);

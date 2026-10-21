@@ -89,7 +89,7 @@ Deno.serve(async(req:Request)=>{
   const cfg=await settings();
   if(action==='public_config')return out({enabled:cfg.enabled,retention_days:cfg.retention_days});
   if(action==='join'){
-   if(!cfg.enabled||!cfg.approval_reference||!cfg.retention_days)fail(403,'Miss Kayla has not enabled school-approved classroom recording yet.');
+   if(!cfg.enabled||!cfg.retention_days)fail(403,'Miss Kayla has not turned on classroom activity recording yet.');
    const name=C.canonical(b.student);if(!(await roster()).includes(name))fail(400,'Choose your own town student profile.');
    // Reuse the existing teacher-approved phone device, without accepting a classroom code as identity.
    let legacy:any=null;if(typeof b.phone_token==='string'&&b.phone_token.length<=100){legacy=(await api('tt_phone_sessions?token_hash=eq.'+await hash('transition-town-session-v1:'+b.phone_token)+'&approved_at=not.is.null&expires_at=gt.'+enc(iso())+'&limit=1'))[0];if(legacy?.name!==name)legacy=null;}
@@ -105,8 +105,8 @@ Deno.serve(async(req:Request)=>{
   if(teacherAction)u=await teacher(req);else d=await student(b.token);
   if(u){
    if(action==='configure'){
-    const days=Number(b.retention_days);if(b.enabled&&(!b.school_approved||!Number.isInteger(days)||days<1||days>365||!C.text(b.approval_reference,300)))fail(400,'Confirm school authorization and choose its approved retention period.');
-    const rows=await patch('settings','id=eq.true',{enabled:!!b.enabled,retention_days:days||cfg.retention_days,approval_reference:C.text(b.approval_reference,300)||cfg.approval_reference,allow_snapshot_fallback:!!b.allow_snapshot_fallback,updated_by:u.id,updated_at:iso()});
+    const days=Number(b.retention_days);if(!Number.isInteger(days)||days<1||days>365)fail(400,'Choose how many days to keep activity records (1–365).');
+    const rows=await patch('settings','id=eq.true',{enabled:!!b.enabled,retention_days:days||cfg.retention_days,allow_snapshot_fallback:!!b.allow_snapshot_fallback,updated_by:u.id,updated_at:iso()});
     if(!b.enabled){await patch('sessions','ended_at=is.null',{mirror_allowed:false,status:'paused'});await api('tt_monitor_frames?channel=not.is.null','DELETE');}else if(!b.allow_snapshot_fallback)await api('tt_monitor_frames?channel=not.is.null','DELETE');return out({settings:rows[0]});
    }
    if(action==='overview'){

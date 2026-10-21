@@ -45,3 +45,7 @@ A session also ends on explicit student logout/end, at its 30-minute deadline, o
 - `node tests/student-shop-core.cjs` preserves the existing shop/bank/training regression checks.
 - Browser QA uses a separate scratch preview and fictional teacher authentication/test records. It exercised pairing, actual shop actions/corrections, explicit observations, separate group reports, approval and a real changing game mirror via secure snapshots. No test purchases or observations were written to the real classroom workspace.
 - Live endpoint checks verify default recording-off, unauthenticated teacher rejection and no student joins before school approval. Real teacher sign-in, school authorization, a physical Chromebook/iPhone session and the school's network remain setup/verification steps for the school. The cloud browser supplied no usable direct-peer connection; the HTTPS fallback covers that case without falsely labeling an activity log as a screen.
+
+
+## Recording settings update
+The dashboard now uses teacher-controlled Recording Settings. There is no school-approval attestation or policy-reference field. Teachers turn activity recording on or off and choose a 1–365 day record lifetime (the form suggests 30 days). Saving requires teacher authentication; student verification, notices, pause/end controls and private storage remain in place. This replaces the former school-authorization setup described above.
