@@ -99,10 +99,10 @@ Deno.serve(async(req:Request)=>{
    const token=[...crypto.getRandomValues(new Uint8Array(32))].map(x=>x.toString(16).padStart(2,'0')).join('');
    const pair=String(crypto.getRandomValues(new Uint32Array(1))[0]%10000).padStart(4,'0');
    // School is always confirmed by a teacher before records can begin.
-   const row=(await add('devices',{student:name,token_hash:await hash('tt-monitor-v1:'+token),pair_code:pair}))[0];
+   const row=(await add('devices',{student:name,token_hash:await hash('tt-monitor-v1:'+token),pair_code:pair,expires_at:new Date(Date.now()+30*864e5).toISOString()}))[0];
    return out({token,device_id:row.id,pair_code:pair,approved:false,phone_verified:!!legacy,expires_at:row.expires_at});
   }
-  const teacherAction=['teacher_logout','overview','configure','approve_device','revoke_device','start_group','end_group','history','reports','save_report','signal_teacher','signals_teacher','revoke_view','report_session','add_observation','view_snapshot'].includes(action);
+  const teacherAction=['teacher_logout','overview','configure','approve_device','revoke_device','start_group','end_group','history','reports','delete_report','restore_report','save_report','signal_teacher','signals_teacher','revoke_view','report_session','add_observation','view_snapshot'].includes(action);
   let u:any=null,d:any=null;
   if(teacherAction)u=await teacher(req);else d=await student(b.token);
   if(u){
@@ -114,7 +114,7 @@ Deno.serve(async(req:Request)=>{
    }
    if(action==='overview'){
     await finalize();await purge(cfg);const cutoff=new Date(Date.now()-(cfg.retention_days||1)*864e5).toISOString();
-    const [devices,sessions,groups,reports]=await Promise.all([get('devices','revoked_at=is.null&expires_at=gt.'+enc(iso())+'&select=id,student,school,pair_code,approved_at,last_seen,created_at'),get('sessions','started_at=gte.'+enc(cutoff)+'&order=started_at.desc&limit=300'),get('groups','started_at=gte.'+enc(cutoff)+'&order=started_at.desc&limit=100'),get('reports','created_at=gte.'+enc(cutoff)+'&select=id,student,school,group_id,status,revision,created_at,updated_at&order=created_at.desc&limit=300')]);
+    const [devices,sessions,groups,reports]=await Promise.all([get('devices','revoked_at=is.null&expires_at=gt.'+enc(iso())+'&select=id,student,school,pair_code,approved_at,last_seen,created_at'),get('sessions','started_at=gte.'+enc(cutoff)+'&order=started_at.desc&limit=300'),get('groups','started_at=gte.'+enc(cutoff)+'&order=started_at.desc&limit=100'),get('reports','deleted_at=is.null&created_at=gte.'+enc(cutoff)+'&select=id,student,school,group_id,status,revision,created_at,updated_at&order=created_at.desc&limit=300')]);
     return out({settings:cfg,devices,sessions,groups,reports,roster:await roster(),services:C.SERVICES,now:iso()});
    }
    if(action==='approve_device'){
@@ -144,7 +144,7 @@ Deno.serve(async(req:Request)=>{
     const to=Number.isFinite(Date.parse(b.to))?new Date(b.to).toISOString():iso();const events=await eventsFor(name,from,to);return out({events});
    }
    if(action==='reports'){
-    let q='order=created_at.desc&created_at=gte.'+enc(new Date(Date.now()-(cfg.retention_days||1)*864e5).toISOString())+'&limit=300';
+    let q='deleted_at='+(b.deleted?'not.is.null':'is.null')+'&order=created_at.desc&created_at=gte.'+enc(new Date(Date.now()-(cfg.retention_days||1)*864e5).toISOString())+'&limit=300';
     if(b.id){if(!C.uid(b.id))fail(400,'Invalid report.');q+='&id=eq.'+b.id;}if(b.group_id){if(!C.uid(b.group_id))fail(400,'Invalid group.');q+='&group_id=eq.'+b.group_id;}
     return out({reports:await get('reports',q)});
    }
@@ -153,15 +153,16 @@ Deno.serve(async(req:Request)=>{
     const summary=C.text(b.summary,1500);if(!summary)fail(400,'Enter the observation you actually made.');
     return out({event:(await add('events',{id:crypto.randomUUID(),session_id:target.id,student:target.student,at:iso(),kind:'observation',source:'teacher_observed',summary,details:{teacher_id:u.id}}))[0]});
    }
+   if(action==='delete_report'||action==='restore_report'){if(!C.uid(b.id))fail(400,'Choose a report.');const rows=await patch('reports','id=eq.'+b.id,{deleted_at:action==='delete_report'?iso():null,deleted_by:action==='delete_report'?u.id:null,updated_at:iso()});if(!rows.length)fail(404,'Report not found.');return out({ok:true});}
    if(action==='save_report'){
-    if(!C.uid(b.id)||!Number.isInteger(b.revision))fail(400,'Invalid report.');const old=(await get('reports','id=eq.'+b.id))[0];if(!old)fail(404,'Report not found.');
+    if(!C.uid(b.id)||!Number.isInteger(b.revision))fail(400,'Invalid report.');const old=(await get('reports','id=eq.'+b.id))[0];if(!old||old.deleted_at)fail(404,'Report not found.');
     let validated;try{validated=C.validateReport({...b.draft,student:old.student,school:b.draft?.school||old.school},!!b.approve)}catch(e){fail(400,(e as Error).message)}const draft={...old.draft,...validated};
     const rows=await patch('reports','id=eq.'+b.id+'&revision=eq.'+b.revision,{draft,school:draft.school,status:b.approve?'approved':'draft',revision:b.revision+1,approved_at:b.approve?iso():null,approved_by:b.approve?u.id:null,updated_at:iso()});if(!rows.length)fail(409,'Another device updated this report. Reload it before editing.');return out({report:rows[0]});
    }
   }
   // Direct signaling contains descriptions only. Optional HTTPS mirroring keeps one expiring frame per viewing channel.
   if(action==='view_snapshot'||action==='publish_snapshot'){
-   if(!cfg.enabled||!cfg.allow_snapshot_fallback)fail(403,'The school has not enabled the secure snapshot fallback.');
+   if(!cfg.enabled||!cfg.allow_snapshot_fallback)fail(403,'Turn on secure snapshot fallback in Recording Settings.');
    if(!C.uid(b.session_id)||!C.uid(b.channel))fail(400,'Invalid live view.');
    const s=(await get('sessions','id=eq.'+b.session_id))[0];if(!s||s.ended_at||s.status!=='active'||!s.mirror_allowed||Date.now()-Date.parse(s.last_seen)>50000||(!u&&s.device_id!==d.id))fail(403,'Live town view is not allowed for this session.');
    const request=(await get('signals','session_id=eq.'+s.id+'&channel=eq.'+b.channel+'&sender=eq.teacher&kind=eq.request&expires_at=gt.'+enc(iso())+(u?'&teacher_id=eq.'+u.id:'')+'&order=created_at.desc&limit=1'))[0];

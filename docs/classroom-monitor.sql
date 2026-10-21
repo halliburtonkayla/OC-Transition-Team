@@ -83,3 +83,7 @@ language sql security invoker set search_path=pg_catalog,public as $$
 $$;
 revoke all on function public.tt_monitor_reserve_live_bytes(uuid,integer) from public,anon,authenticated;
 grant execute on function public.tt_monitor_reserve_live_bytes(uuid,integer) to service_role;
+
+-- Reports can be removed from the active list and restored before retention expiry.
+alter table public.tt_monitor_reports add column if not exists deleted_at timestamptz;
+alter table public.tt_monitor_reports add column if not exists deleted_by uuid;

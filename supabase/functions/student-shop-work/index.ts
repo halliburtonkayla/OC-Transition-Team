@@ -1,8 +1,11 @@
 import '../../../assets/student-businesses/catalog.js';
 import '../../../assets/student-businesses/work-config.js';
+import '../../../assets/main-attraction/studio-config.js';
 import '../../../assets/student-businesses/work-core.js';
 import '../../../assets/student-businesses/work-recipes.js';
 import '../../../assets/student-businesses/work-ops-core.js';
+import '../../../assets/main-attraction/service-core.js';
+import '../../../assets/main-attraction/studio-core.js';
 
 // Reuse the current classroom/teacher code validation without copying any codes.
 const Core=(globalThis as any).TTBusinessCore;
@@ -23,7 +26,7 @@ Deno.serve(async(req:Request)=>{
  if(req.method==='OPTIONS')return new Response('',{headers});
  if(req.method!=='POST')return out({error:'Use POST.'},405);
  try{
-  const raw=await req.text();if(raw.length>26000)return out({error:'Keep this order below 26,000 characters.'},413);
+  const raw=await req.text();if(raw.length>180000)return out({error:'Keep this order below 180,000 characters.'},413);
   let data;try{data=JSON.parse(raw);}catch{return out({error:'Send a valid shop request.'},400);}
   const base=Deno.env.get('SUPABASE_URL'),key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
   if(!base||!key)return out({error:'The classroom service is temporarily unavailable.'},503);
@@ -43,16 +46,16 @@ Deno.serve(async(req:Request)=>{
   if(data.action?.type==='hires')return out({hires:await hiredRows()});
   if(data.action?.type==='staff'&&!(await hiredRows(String(data.action.employee||''))).length)return out({error:'Hire this applicant in the interview room and send the decision before assigning classroom work.'},400);
   if(data.action?.type==='read'){
-   const {rows}=await db(query+'&select=state,revision');return out({state:rows[0]?.state||Core.initial(shop),revision:rows[0]?.revision||0});
+   const {rows}=await db(query+'&select=state,revision');return out({state:shop==='main-attraction'?(globalThis as any).MAStudio.ensure(rows[0]?.state||Core.initial(shop)):rows[0]?.state||Core.initial(shop),revision:rows[0]?.revision||0});
   }
   const requestId=String(data.requestId||'');if(!/^[a-zA-Z0-9-]{8,100}$/.test(requestId))return out({error:'This task needs a valid request ID. Reload the shop.'},400);
   // Optimistic compare-and-swap prevents two Chromebooks from spending the same
   // balance or completing the same food portion. Request IDs make retries safe.
   for(let attempt=0;attempt<5;attempt++){
    const {rows}=await db(query+'&select=state,revision');const row=rows[0];
-   const current=row?.state||Core.initial(shop);
+   let current=row?.state||Core.initial(shop);if(shop==='main-attraction'){(globalThis as any).MAStudio.ensure(current);if(!current.studio.importedLegacy?.length){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code));const digest=Array.from(new Uint8Array(bytes),x=>x.toString(16).padStart(2,'0')).join('');for(const oldWorkspace of [...new Set([workspace,...(workspace==='classroom'?['salon']:[])])]){const legacyScope='main-attraction-service-v1:'+digest.slice(0,32)+':'+oldWorkspace;const oldRows=(await db('tt_shop_workspaces?shop=eq.main-attraction&scope=eq.'+encodeURIComponent(legacyScope)+'&select=state')).rows;if(oldRows[0])current=(globalThis as any).MAStudio.importLegacy(current,oldRows[0].state,legacyScope);}}}
    if(current.seen.includes(requestId))return out({state:current,revision:row?.revision||0});
-   let next;try{next=Core.reduce(current,data.action,requestId);}catch(e){return out({error:(e as Error).message},400);}
+   if(shop==='main-attraction'&&data.action?.type==='salon-service'){const rows=(await db('tt_interview_decisions_latest?select=applicant_id,applicant_name&shop_id=eq.main-attraction&decision=eq.Hired&limit=100')).rows;data.action.hires=rows.filter((r:any)=>['morgan','avery'].includes(r.applicant_id));}let next;try{next=Core.reduce(current,data.action,requestId);}catch(e){return out({error:(e as Error).message},400);}
    const result=row?await db(query+'&revision=eq.'+row.revision,'PATCH',{state:next,revision:row.revision+1,updated_at:new Date().toISOString()}):await db('tt_shop_workspaces','POST',{scope,shop,state:next,revision:1});
    if(result.rows.length)return out({state:result.rows[0].state,revision:result.rows[0].revision});
   }
