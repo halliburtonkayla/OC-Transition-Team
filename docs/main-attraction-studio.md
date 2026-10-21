@@ -4,7 +4,7 @@ Open `main-attraction.html` → **Play Beauty Studio**, or `main-attraction-stud
 
 ## Play a shift
 
-Choose your town profile, then open the salon. **Choose a work role → Clock In for Work** starts one wall-clock timer at the first worker’s clock-in: 600 real seconds represents 08:00–16:00. Time continues through customer services, supplies, room care, background tabs and reconnections. A completed or early-ended shift produces actual business results and separate worker summaries. Unfinished clients are not charged. Teammates clock in to the same running shift without restarting it. Clock Out records each worker’s time; the shift ends early if everyone clocks out.
+Choose your town profile, then open the salon. **Choose a work role → enter your four-digit employee PIN → Clock In** starts one wall-clock timer at the first worker’s clock-in: 600 real seconds represents 08:00–16:00. Time continues through customer services, supplies, room care, background tabs and reconnections. A completed or early-ended shift produces actual business results and separate worker summaries. Unfinished clients are not charged. Teammates clock in to the same running shift without restarting it. Clock Out records each worker’s time; the shift ends early if everyone clocks out.
 
 For shared play, open **Play together / switch mode**, enter the existing classroom town code, and use salon session **classroom** on every device. This is the same workspace used by the existing salon supply room and business account. Custom session names intentionally have separate practice accounts. Solo practice shares the existing `ttShopWork_v1:main-attraction:<town profile>` state on that device.
 
@@ -45,3 +45,7 @@ Report Center includes **Delete report**, **Deleted reports**, and **Restore rep
 ## Verification
 
 `tests/main-attraction-studio.cjs` exercises all ten services, correct/incorrect results, financial links, deliveries, full timer expiry, report ownership, legacy register receipts, no overdraft, and repeat-safe payouts. Existing shop and classroom-monitor checks remain required. Native isolated server checks cover shared endpoint compatibility and atomic stored state; no real students receive test wages or purchases. Physical school Chromebooks/iPhones and sound playback still need classroom verification.
+
+The pink-and-gold Employee Time Clock is the first panel in Beauty Studio. The practice employee PIN card reuses the profile’s existing grocery PIN when available; it grants no teacher access. The keypad supports touch and keyboard input. The same PIN clocks the employee out.
+
+Applicant pages separate waiting, hired, held and declined candidates. Student devices must be connected by Miss Kayla (school + Connect student) to read saved classroom hiring. Individual question progress restores from that student’s recorded interview actions within the configured retention period; other students’ actions remain separate. Shared decision cards show team questions heard without exposing private notes. Unrecorded work on another device cannot be reconstructed.

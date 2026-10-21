@@ -43,7 +43,7 @@ Deno.serve(async(req:Request)=>{
    const filter='tt_interview_decisions_latest?select=applicant_id,applicant_name&shop_id=eq.'+encodeURIComponent(shop)+'&decision=eq.Hired&limit=200'+(employee?'&applicant_id=eq.'+encodeURIComponent(employee):'');
    return (await db(filter)).rows.filter((r:any)=>!!(globalThis as any).TTShopStaff[shop+':'+String(r.applicant_id).replace(/-short$/,'')]&&(!employee||String(r.applicant_id).replace(/-short$/,'')===employee)).map((r:any)=>({applicant_id:String(r.applicant_id).replace(/-short$/,''),applicant_name:r.applicant_name}));
   };
-  if(data.action?.type==='interview-status'){const rows=(await db('tt_interview_decisions_latest?select=shop_id,applicant_id,applicant_name,decision,decided_at&shop_id=eq.'+encodeURIComponent(shop)+'&limit=250')).rows;return out({decisions:rows});}
+  if(data.action?.type==='interview-status'){const rows=(await db('tt_interview_decisions_latest?select=shop_id,applicant_id,applicant_name,decision,decided_at,details&shop_id=eq.'+encodeURIComponent(shop)+'&limit=250')).rows;return out({decisions:rows.map((r:any)=>({shop_id:r.shop_id,applicant_id:r.applicant_id,applicant_name:r.applicant_name,decision:r.decision,decided_at:r.decided_at,questions_heard:[...new Set((Array.isArray(r.details?.asked)?r.details.asked:[]).filter((x:any)=>Number.isInteger(x)&&x>=0&&x<30))]}))});}
   if(data.action?.type==='hires')return out({hires:await hiredRows()});
   if(data.action?.type==='staff'&&!(await hiredRows(String(data.action.employee||''))).length)return out({error:'Hire this applicant in the interview room and send the decision before assigning classroom work.'},400);
   if(data.action?.type==='read'){
