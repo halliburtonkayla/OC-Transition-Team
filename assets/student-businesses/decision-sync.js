@@ -50,6 +50,7 @@
  document.addEventListener('click',e=>{if(e.target.closest('#retry-decisions'))flush();});
  window.addEventListener('online',flush);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush();});
- window.TTInterviewSync={mount,capture,flush};
+ async function loadLatest(shop){const name=({Max:'Bradley',Nick:'Nicholas',Aubry:'Aubrey',Jayden:'Jaden'})[sessionStorage.ttCurrent||localStorage.ttCurrent]||sessionStorage.ttCurrent||localStorage.ttCurrent||'';const token=sessionStorage.getItem('ttMonitorDevice:'+name)||localStorage.getItem('ttMonitorDevice:'+name)||'';let teacher;try{teacher=JSON.parse(sessionStorage.getItem('ttMonitorPinAuth')||'null')}catch{}const classCode=sessionStorage.getItem('ttShopClassCode')||localStorage.getItem('ttTownRoomCode')||sessionStorage.getItem('ttTownTeacherCode')||'';if(!token&&!teacher?.token&&!classCode)return[];const headers={'Content-Type':'application/json'};if(teacher?.token)headers.Authorization='Bearer '+teacher.token;const r=await fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{method:'POST',headers,body:JSON.stringify({action:'interview_status',shop,token}),signal:AbortSignal.timeout(10000)});if(r.ok)return(await r.json()).decisions||[];if(classCode&&shop!=='all'){const shared=await fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/student-shop-work',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:classCode,shop,action:{type:'interview-status'}}),signal:AbortSignal.timeout(10000)});if(shared.ok)return(await shared.json()).decisions||[];}return[];}
+ window.TTInterviewSync={mount,capture,flush,loadLatest};
  save();
 })();

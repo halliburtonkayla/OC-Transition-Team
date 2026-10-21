@@ -30,6 +30,7 @@ async function student(token:unknown){
  const d=(await get('devices','token_hash=eq.'+await hash('tt-monitor-v1:'+token)+'&limit=1'))[0];
  if(!d||d.revoked_at||Date.parse(d.expires_at)<=Date.now())fail(401,'Device access expired. Ask Miss Kayla to approve this device again.');return d;
 }
+async function hiringStatus(shop:string){const allowed=['main-attraction','cool-vibes','the-zoo','guardian-angel','3k-tire-shop'];if(shop!=='all'&&!allowed.includes(shop))fail(400,'Choose a student business.');const rows=await api('tt_interview_decisions_latest?select=shop_id,applicant_id,applicant_name,decision,decided_at&limit=500'+(shop==='all'?'':'&shop_id=eq.'+enc(shop)));const latest=new Map();for(const r of rows){const k=r.shop_id+':'+r.applicant_id.replace(/-short$/,'');if(!latest.has(k)||Date.parse(r.decided_at)>Date.parse(latest.get(k).decided_at))latest.set(k,r);}return [...latest.values()];}
 async function roster(){return (await api('tt_phone_contacts?select=name&name=neq.Miss%20Kayla&order=extension.asc')).map((x:any)=>x.name)}
 async function eventsFor(studentName:string,start:string,end:string){
  const events=[];for(let offset=0;offset<20000;offset+=1000){const rows=await get('events','student=eq.'+enc(studentName)+'&at=gte.'+enc(start)+'&at=lte.'+enc(end)+'&order=at.asc&limit=1000&offset='+offset);events.push(...rows);if(rows.length<1000)break;}return events;
@@ -102,10 +103,10 @@ Deno.serve(async(req:Request)=>{
    const row=(await add('devices',{student:name,token_hash:await hash('tt-monitor-v1:'+token),pair_code:pair,expires_at:new Date(Date.now()+30*864e5).toISOString()}))[0];
    return out({token,device_id:row.id,pair_code:pair,approved:false,phone_verified:!!legacy,expires_at:row.expires_at});
   }
-  const teacherAction=['teacher_logout','overview','configure','approve_device','revoke_device','start_group','end_group','history','reports','delete_report','restore_report','save_report','signal_teacher','signals_teacher','revoke_view','report_session','add_observation','view_snapshot'].includes(action);
+  const teacherAction=['teacher_logout','overview','configure','approve_device','revoke_device','start_group','end_group','history','reports','delete_report','restore_report','save_report','signal_teacher','signals_teacher','revoke_view','report_session','add_observation','view_snapshot'].includes(action)||(action==='interview_status'&&!!req.headers.get('authorization'));
   let u:any=null,d:any=null;
   if(teacherAction)u=await teacher(req);else d=await student(b.token);
-  if(u){
+  if(u){if(action==='interview_status')return out({decisions:await hiringStatus(String(b.shop||'all'))});
    if(action==='teacher_logout'){if(u.pin_session)await patch('teacher_sessions','token_hash=eq.'+await hash((req.headers.get('authorization')||'').slice(7)),{revoked_at:iso()});return out({ok:true});}
    if(action==='configure'){
     const days=Number(b.retention_days);if(!Number.isInteger(days)||days<1||days>365)fail(400,'Choose how many days to keep activity records (1–365).');
@@ -195,6 +196,7 @@ Deno.serve(async(req:Request)=>{
   if(action==='device_status')return out({approved:!!d.approved_at,student:d.student,school:d.school,enabled:cfg.enabled});
   if(action==='logout'){await patch('devices','id=eq.'+d.id,{revoked_at:iso()});for(const active of await get('sessions','device_id=eq.'+d.id+'&ended_at=is.null'))await endSession(active,iso());return out({ok:true});}
   if(!cfg.enabled)fail(403,'Classroom recording is currently off.');if(!d.approved_at||!d.school)fail(403,'Waiting for Miss Kayla to verify this student device and school.');
+  if(action==='interview_status')return out({decisions:await hiringStatus(String(b.shop||'all'))});
   if(action==='work_pay_ack'){await api('rpc/tt_work_pay_ack','POST',{p_student:d.student});return out({ok:true});}
   if(action==='begin'){
    await finalize();let s=(await get('sessions','device_id=eq.'+d.id+'&ended_at=is.null'))[0];
