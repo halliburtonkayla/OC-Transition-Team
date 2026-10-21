@@ -124,7 +124,7 @@ Deno.serve(async(req:Request)=>{
     if(!C.uid(b.id))fail(400,'Invalid device.');await patch('devices','id=eq.'+b.id,{revoked_at:iso()});const sessions=await get('sessions','device_id=eq.'+b.id+'&ended_at=is.null');for(const s of sessions)await endSession(s,iso());return out({ok:true});
    }
    if(action==='start_group'){
-    if(!cfg.enabled)fail(403,'Enable school-approved recording first.');if(!C.SERVICES.includes(b.service)||!['South Fulton High School','Obion County Central High School'].includes(b.school))fail(400,'Select one Pre-ETS service and school.');
+    if(!cfg.enabled)fail(403,'Turn on activity recording in Recording Settings first.');if(!C.SERVICES.includes(b.service)||!['South Fulton High School','Obion County Central High School'].includes(b.school))fail(400,'Select one Pre-ETS service and school.');
     const names=[...new Set((Array.isArray(b.members)?b.members:[]).map(C.canonical))];const namesAllowed=await roster();if(!names.length||names.some(n=>!namesAllowed.includes(n)))fail(400,'Select students from the existing roster.');
     const active=await get('groups','ended_at=is.null');if(active.some((g:any)=>g.members.some((n:string)=>names.includes(n))))fail(409,'A selected student is already in an active group. End that group first.');
     const group=(await add('groups',{title:C.text(b.title,100)||'30-minute work session',school:b.school,service:b.service,members:names,teacher_id:u.id}))[0];

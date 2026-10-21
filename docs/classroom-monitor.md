@@ -5,8 +5,8 @@ Open **Miss Kayla Central Hub → Live Classroom Monitor**, or `classroom-monito
 ## First use
 
 1. Use the teacher email already authorized in `tt_teacher_access`. Sign in by your existing password or a sign-in email. The public town PIN is deliberately insufficient for student records. A complete sign-in email link can be pasted into the sign-in panel if it opened on another device. No new teacher account or email message is created by deployment.
-2. Under **School Approval & Retention**, enter the school's actual authorization reference and its retention period (1–365 days). Recording ships **off**, with no assumed school approval or retention period.
-3. If direct peer viewing is blocked by the school network, the school may separately enable **secure HTTPS snapshot fallback**. It uses the existing Supabase project; no paid relay, subscription, plan upgrade, or recording service is enabled. Existing project quotas still apply. Encoded uploaded viewing data is capped at 20 MB per teacher per UTC day and frames are limited to one per three seconds.
+2. Under **Recording Settings**, turn on activity recording and choose how many days to keep records (1–365). The form suggests 30 days; save your preferred setting.
+3. If direct peer viewing is blocked by the school network, you can enable **secure HTTPS snapshot fallback**. It uses the existing Supabase project; no paid relay, subscription, plan upgrade, or recording service is enabled. Existing project quotas still apply. Encoded uploaded viewing data is capped at 20 MB per teacher per UTC day and frames are limited to one per three seconds.
 4. Students log in to their existing town profile. A connection notice appears automatically on town activity pages. The first device request appears in the private monitor. Match the student's name and four-digit pairing code in person, confirm their school, then approve. Per-device access expires after eight hours. Choosing another student's public profile does not authorize their records.
 5. Students appear automatically after verification, including when they navigate among town pages. A student can pause or end their session. The active student identity—not a shop's shared owner selector—owns their events.
 
@@ -14,7 +14,7 @@ Open **Miss Kayla Central Hub → Live Classroom Monitor**, or `classroom-monito
 
 - Start a **30-minute group** with one selected Pre-ETS service, school, focus, and the students present. Overlapping active group membership is rejected.
 - Click an online student's name for their individual view. The student must choose **Allow live town view** in their notice. Switch students using the session selector or overview.
-- Direct viewing uses encrypted WebRTC data channels and no outside STUN/TURN service. It may be blocked by network policy. **Use secure snapshot view** if its school setting is enabled; it also activates automatically after a failed direct connection attempt.
+- Direct viewing uses encrypted WebRTC data channels and no outside STUN/TURN service. It may be blocked by network policy. **Use secure snapshot view** if it is enabled in Recording Settings; it also activates automatically after a failed direct connection attempt.
 - This displays the rendered Transition Town game, including changing pages, animations, and accessible canvas snapshots. It is not remote control or a Chromebook desktop/video recording. It excludes other tabs, passwords, form values, typed notes, audio/video players, and inaccessible canvases. Same-site styles are embedded to preserve the actual game illustration/layout inside the read-only sandbox.
 - In the individual view, enter participation and assistance **only when you actually observed or provided it**. These teacher observations are distinguished from application events.
 - **Activity History & Replay** is a timestamped event timeline. Its replay does not show historical screens or rerun business actions.
