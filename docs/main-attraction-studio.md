@@ -4,7 +4,7 @@ Open `main-attraction.html` → **Play Beauty Studio**, or `main-attraction-stud
 
 ## Play a shift
 
-Choose your town profile, then open the salon. **Start 10-minute shift** starts one wall-clock timer: 600 real seconds represents 08:00–16:00. Time continues through customer services, supplies, room care, background tabs and reconnections. A completed or early-ended shift produces actual business results and separate worker summaries. Unfinished clients are not charged.
+Choose your town profile, then open the salon. **Choose a work role → Clock In for Work** starts one wall-clock timer at the first worker’s clock-in: 600 real seconds represents 08:00–16:00. Time continues through customer services, supplies, room care, background tabs and reconnections. A completed or early-ended shift produces actual business results and separate worker summaries. Unfinished clients are not charged. Teammates clock in to the same running shift without restarting it. Clock Out records each worker’s time; the shift ends early if everyone clocks out.
 
 For shared play, open **Play together / switch mode**, enter the existing classroom town code, and use salon session **classroom** on every device. This is the same workspace used by the existing salon supply room and business account. Custom session names intentionally have separate practice accounts. Solo practice shares the existing `ttShopWork_v1:main-attraction:<town profile>` state on that device.
 
