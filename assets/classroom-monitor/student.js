@@ -1,7 +1,7 @@
 /* Approved-device activity recording. Browser-reported evidence is never teacher observation. */
 (function(){'use strict';if(window.TTMonitor?.installed)return;
 const ROOT=new URL('../../',document.currentScript.src),ENDPOINT='https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor';
-const allowed=/^(transition-town|shop-floor|cool-vibes|the-zoo|3k-tire-shop|guardian-angel|main-attraction(?:-service|-appointments|-workstations|-studio)?|student-businesses|business-startup-marketplace|bank|grocery-(?:store|employee|trip)|pizza-(?:shop|employee)|coffee-(?:shop|employee)|transition-life|independent-living|housing-office|fire-department|salon-simulator|childcare-career-center)\.html$/;
+const allowed=/^(transition-game-show|transition-town|shop-floor|cool-vibes|the-zoo|3k-tire-shop|guardian-angel|main-attraction(?:-service|-appointments|-workstations|-studio)?|student-businesses|business-startup-marketplace|bank|grocery-(?:store|employee|trip)|pizza-(?:shop|employee)|coffee-(?:shop|employee)|transition-life|independent-living|housing-office|fire-department|salon-simulator|childcare-career-center)\.html$/;
 if(!allowed.test(location.pathname.split('/').pop()))return;
 const canon=n=>({Max:'Bradley',Nick:'Nicholas',Aubry:'Aubrey',Jayden:'Jaden'})[n]||n;
 const name=()=>canon(sessionStorage.ttCurrent||localStorage.ttCurrent||'');
