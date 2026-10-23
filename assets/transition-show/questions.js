@@ -1,66 +1,496 @@
-/* Original fictional practice scenarios. Answers model decisions, not legal or individualized advice. */
+/* Original challenge scenarios. Workplace rules are stated within each fictional scenario. */
 (function(g){const categories=[{"id": "ready", "name": "Work Ready", "icon": "✦", "color": "#7852d6"}, {"id": "grocery", "name": "Grocery Store", "icon": "▤", "color": "#148477"}, {"id": "childcare", "name": "Child Care", "icon": "♡", "color": "#b64f84"}, {"id": "fastfood", "name": "Fast Food", "icon": "◆", "color": "#cf633f"}, {"id": "military", "name": "Military", "icon": "★", "color": "#65853b"}, {"id": "education", "name": "Education", "icon": "✎", "color": "#3974be"}, {"id": "money", "name": "Money & Profit", "icon": "$", "color": "#9a711c"}];
 const rows=[
-['work','late','Your ride is running late. You may miss the start of your shift. What should you do first?',['Contact your supervisor as soon as you can.','Say nothing and hope nobody notices.','Ask a friend to clock in for you.'],0,'Give your supervisor an honest update and an estimated arrival time. Never ask someone else to clock in for you.','Think about who needs to know you will be late.'],
-['work','unsure','Your manager gives you a task you do not understand. What is a good next step?',['Guess and keep it a secret.','Ask them to explain or show the first step.','Leave without telling anyone.'],1,'Asking for clarification is a workplace skill. You can say, “Could you show me the first step?”','You can ask for help before you start.'],
-['work','complaint','A café customer says their order is wrong. What should you do?',['Argue that they ordered it wrong.','Ignore them until they leave.','Listen, check the order, and follow the store’s correction process.'],2,'Listen calmly, confirm what happened, and ask a manager for help when needed.','Start by listening to the customer.'],
-['work','spill','You find spilled water on the lobby floor. What should happen next?',['Follow the safety procedure: alert others and arrange safe cleanup.','Walk past it because it is not your job.','Hide it with a chair and tell nobody.'],0,'A spill can cause a fall. Follow your workplace’s procedure, use a warning sign if available, and get help or clean it safely.','Think about keeping people from slipping.'],
-['work','stock','The pantry is almost out of flour. There are more orders coming. What should you do?',['Keep taking orders and hope flour appears.','Check stock, tell the manager, and follow the restock process.','Use an unapproved ingredient without asking.'],1,'Checking inventory early helps the business plan purchases and avoid promising items it cannot make.','What would help the manager plan ahead?'],
-['work','honest','Your cash drawer is $10 short. What should you do?',['Change the sales total to hide it.','Say a coworker took it even though you do not know.','Tell the supervisor and recount using the store’s procedure.'],2,'Report the difference honestly. Recount and check the records with your supervisor. Do not invent a reason.','An honest report helps solve a money problem.'],
-['money','profit','Your business earns $100 in sales and has $70 in total expenses. How much profit did it make?',['$30','$100','$170'],0,'Profit = sales − expenses. $100 − $70 = $30. Sales coming in are revenue; expenses must be subtracted to find profit.','Subtract what the business spent from what it earned.'],
-['money','budget','You have $80. Your phone bill is $30 and transportation for work is $20. How much remains after both?',['$50','$30','$80'],1,'$80 − $30 − $20 = $30 left. Set aside money for needs before choosing extra purchases.','Add the two costs, then subtract them from $80.'],
-['money','revenue','The café takes in $200 from customers. It still needs to pay for supplies and wages. Is all $200 profit?',['Yes, any customer payment is profit.','Yes, expenses never count.','No. It is revenue; subtract expenses to find profit.'],2,'Customer payments are revenue. Profit is what remains after expenses for the same period.','Think about the costs the business still has.'],
-['money','pin','Someone messages you asking for your bank PIN so they can “help” you. What should you do?',['Keep the PIN private and contact the bank through its trusted contact information.','Send the PIN because the message sounds friendly.','Post the PIN in a group chat.'],0,'Keep your PIN private. If a message worries you, use a trusted way to contact your bank instead of the message’s link.','Your PIN is private.'],
-['money','restock','Supplies cost $40, but the business account has $25 available. What is the best next step?',['Place the order and ignore the account balance.','Review the budget with the manager before deciding what to buy.','Pretend the order costs $25.'],1,'Compare needs, available funds, and upcoming bills. Ask the manager before making a purchase the business cannot cover.','Check what the business can afford.'],
-['money','save','You are paid $200 in practice. You need $120 for bills and choose to save $30. How much is left?',['$80','$200','$50'],2,'$200 − $120 − $30 = $50 left for other choices. A simple plan helps you see where money goes.','Subtract the bills and the savings from your pay.'],
-['travel','backup','Your usual ride to work cancels. What should you do?',['Check a safe backup ride and contact your supervisor if you may be late.','Get into any stranger’s car.','Skip the shift without telling anyone.'],0,'Plan a safe, realistic backup and keep your workplace informed. Check the time and cost before choosing a ride.','You need a safe ride and a clear update to work.'],
-['travel','arrival','Work begins at 9:00. The trip takes 20 minutes. You want 10 extra minutes to arrive and get ready. When should you leave?',['8:50','8:30','9:00'],1,'Leave at 8:30: 20 minutes to travel plus 10 minutes to get ready. Real trips may need extra time for delays.','Count back 30 minutes from 9:00.'],
-['travel','route','You are trying a new bus route for a job interview. What is a useful preparation step?',['Assume it goes wherever you need.','Wait until the interview starts to look it up.','Check the route, stops, fare, and times ahead of the trip.'],2,'Check the route and return trip ahead of time. A practice trip with support can help when available.','What could you check before interview day?'],
-['travel','destination','A ride arrives, but you are unsure it is the ride you arranged. What should you do?',['Verify it through your arranged ride’s safety process before getting in.','Get in because the driver waved.','Share your home address with everybody nearby.'],0,'Use the identification and safety steps for the ride you arranged. If unsure, stay in a safe place and contact trusted support.','Check before getting in.'],
-['travel','plan','You have an appointment at 2:00. Why should you plan the trip home too?',['The return trip always costs nothing.','So you know how, when, and at what cost you will get back.','You only need to plan one direction.'],1,'A complete transportation plan includes both directions, pickup times, costs, and a backup when possible.','Think about what happens after the appointment.'],
-['travel','missed','You miss your planned ride. What is the best next step?',['Panic and turn off your phone.','Walk into an unsafe area to find a shortcut.','Stay somewhere safe, check the next safe option, and contact needed support.'],2,'Stay safe while checking the next available option. Update anyone who is waiting for you.','Safety comes before rushing.'],
-['voice','repeat','Someone explains a task too quickly. What could you say?',['“Could you repeat that more slowly, please?”','“Fine,” even though you did not understand.','Nothing, because questions are never allowed.'],0,'A clear, respectful request helps you get information you need. You can also ask for written steps or a demonstration.','You can ask for a different pace.'],
-['voice','support','Written directions help you follow a work task. What could you ask for?',['“You have to do all my work.”','“Could I have a written checklist for this task?”','“I will not tell you what helps me.”'],1,'Name the support that helps you do the task. A checklist, demonstration, or repeated instruction can be a useful request.','Say which tool would help you work.'],
-['voice','choice','A friend wants you to choose their career plan. You have different interests. What can you do?',['Choose it only to avoid disagreeing.','Give up on your own goals.','Explain your interests and explore choices that fit your goals.'],2,'Your interests, strengths, and preferences matter. You can listen to others while making your own plan with support.','Your future plan should include your own interests.'],
-['voice','respect','A coworker keeps interrupting while you explain a problem. What is a respectful response?',['“I would like to finish explaining, then hear your ideas.”','Yell insults.','Never speak again.'],0,'Use a calm, clear request. If the problem continues, use the workplace’s support process.','Try a calm sentence that names what you need.'],
-['voice','safety','You are asked to use equipment you have not been trained to use. What should you say?',['“I will guess so I look fast.”','“I need training before I can use this safely.”','“Safety does not matter.”'],1,'Speak up before using unfamiliar equipment. Ask for training and follow the workplace’s safety procedure.','Tell someone you need training first.'],
-['voice','help','You need help solving a problem with your work schedule. What is a useful way to ask?',['Tell everyone except the person who can help.','Change the schedule secretly.','Explain the issue to your supervisor and ask to discuss possible options.'],2,'Be specific about the problem and ask about available options. A request starts a conversation; it does not guarantee a change.','Think about who manages the schedule.'],
-['future','interest','You like working with animals. What could help you learn whether an animal-care job fits you?',['Explore the daily tasks and try an approved observation or practice activity.','Pick only by the job title.','Assume every animal job has the same duties.'],0,'Explore the daily tasks, work setting, training, and your own preferences. Trying a supported activity can help you learn more.','Look at what the work is actually like.'],
-['future','application','A job application asks for experience. What should you include?',['Invent a job you never had.','Describe real work, volunteer, school, or practice experience honestly.','Copy another person’s history.'],1,'Use honest examples of tasks you actually did. School projects and volunteer activities can help show relevant experience.','You can use real school or volunteer examples.'],
-['future','interview','An interviewer asks about teamwork. What is a strong answer?',['“I am the best,” with no example.','An invented story about being a manager.','A real example of how you helped a group complete a task.'],2,'Explain the situation, what you did, and the result you actually observed. A real example is more useful than an unsupported claim.','Use an example that really happened.'],
-['future','training','You are comparing two training programs. What should you check?',['The skills taught, requirements, total costs, supports, and job connections.','Only which logo looks nicer.','Only a friend’s guess about the program.'],0,'Compare practical details and ask the program questions. A trusted counselor can help you explore fit and available support.','Look beyond the picture or advertisement.'],
-['future','goal','You want a job but do not know where to begin. What is one useful small next step?',['Wait until every detail is solved.','List your interests and strengths, then talk with a trusted planning person.','Choose a job randomly and stop exploring.'],1,'A small next step can start your plan. You can explore jobs, practice skills, and ask for support as you learn.','Start with what interests you and what support is available.'],
-['future','contact','You are waiting for an employer to contact you. What should you check?',['Only social media comments.','Nothing until someone visits your house.','Your application contact information, messages, and voicemail.'],2,'Use current contact information and check for messages. A clear voicemail greeting can help an employer reach you.','Think about the ways the employer can reach you.'],
-["ready", "arrive", "Your shift begins at 8:00. What does being on time mean?", ["Be ready to begin assigned work at 8:00, following the time-clock policy.", "Reach the parking lot at 8:00, then take your time.", "Arrive whenever your friend arrives."], 0, "Plan enough time to get there and get ready. Follow the employer’s clock-in rules; do not work off the clock.", "Think about being ready when the shift starts."],
-["ready", "clothes", "Which outfit is the best choice for a scheduled work shift?", ["The clothes from yesterday, even if dirty.", "Clean clothes that follow the workplace’s dress and safety rules.", "Anything you want, regardless of the job’s rules."], 1, "Check the dress requirements ahead of time. Clean, suitable clothes and required protective items help you be prepared.", "The job may have a dress code or required uniform."],
-["ready", "hygiene", "What is a useful before-work routine?", ["Skip washing because nobody will notice.", "Use a strong fragrance instead of washing.", "Wash, care for your teeth, put on clean clothes, and follow job hygiene rules."], 2, "Personal hygiene is part of being ready for work. Follow workplace rules, including any fragrance restrictions.", "Think about cleanliness, not covering up a smell."],
-["ready", "alarm", "You have been late twice because you overslept. What is a useful plan?", ["Set an alarm, prepare the night before, and review your morning travel time.", "Wait for your boss to wake you up.", "Keep doing the same thing."], 0, "A realistic routine can include clothes, needed items, an alarm, and enough travel time. Ask for help setting up a routine if needed.", "What can you prepare before morning?"],
-["ready", "phone", "Your personal phone keeps distracting you during a shift. What should you do?", ["Keep checking it while customers wait.", "Follow the workplace’s phone policy and put it away when required.", "Ask customers to wait until your video ends."], 1, "Know the phone policy. If you need to handle an urgent matter, tell the supervisor and follow the workplace process.", "Work time has expectations for attention."],
-["ready", "feedback", "A supervisor explains that your workstation needs to be neater. What is a professional response?", ["Argue before they finish.", "Hide the clutter in someone else’s area.", "Listen, ask what needs to change, and organize it as instructed."], 2, "Feedback can show you what the job expects. Ask for an example or checklist if you need one.", "Find out the expected standard, then practice it."],
-["grocery", "zoning", "A supervisor asks you to zone a grocery aisle. What does that usually mean?", ["Straighten products, face labels forward, and match items to the correct shelf spots.", "Put every product on the front shelf, regardless of its label.", "Change every price label yourself."], 0, "Zoning or facing makes shelves neat and helps shoppers find items. Follow the store’s instructions and keep the aisle clear.", "Think about making the aisle neat and easy to shop."],
-["grocery", "wrongspot", "While zoning, you find cereal on a shelf labeled for soup. What should you do?", ["Leave it because it fits.", "Return it to its correct location using the store’s procedure.", "Switch the labels so it looks right."], 1, "Use the correct product location and shelf label. If you cannot find the location, ask rather than guessing.", "The product and shelf label should match."],
-["grocery", "helpfind", "A shopper asks where an item is, but you do not know. What should you do?", ["Point to a random aisle.", "Tell them to search by themselves.", "Ask a coworker or use the store’s item-location process to help."], 2, "Good customer service includes an honest answer and a helpful next step. Follow the store’s process for locating items.", "You can get help to give an accurate answer."],
-["grocery", "crushed", "You find a damaged package while stocking. What is the best response?", ["Set it aside and follow the store’s damaged-item procedure.", "Put it at the back so nobody notices.", "Sell it without checking with anyone."], 0, "Damaged goods need the store’s approved handling process. Tell the supervisor if you are unsure.", "Do not hide a product problem."],
-["grocery", "clock", "You arrive for your grocery shift. What should you do before starting paid tasks?", ["Start work under a coworker’s name.", "Follow the clock-in procedure under your own name and check your assignment.", "Wait until the end and guess your hours."], 1, "Use your own employee identity and follow the time-clock policy. Accurate attendance records matter.", "Your time record should belong to you."],
-["grocery", "aisle", "Boxes from your stocking cart are blocking an aisle. What should you do?", ["Leave them while you go on break.", "Make customers step over them.", "Keep the route clear and follow safe stocking and cleanup procedures."], 2, "An organized aisle helps customers and coworkers move safely. Store stock and equipment where your workplace directs.", "People need a clear path."],
-["childcare", "supervise", "You are helping in childcare and need supplies from another room. What is the right next step?", ["Arrange the required adult coverage with the lead before leaving.", "Leave the children alone for a minute.", "Ask a child to watch everyone."], 0, "Follow the center’s supervision and staffing procedure. Never leave children without the required supervision.", "Who will provide proper supervision while you are gone?"],
-["childcare", "handoff", "Someone you do not recognize comes to pick up a child. What should you do?", ["Release the child because the person knows their name.", "Follow the authorized-pickup and identity-check process with the lead.", "Ask another child whether the person looks familiar."], 1, "Use the center’s authorized pickup process. Ask the responsible staff member before releasing a child.", "The center needs to verify who is authorized."],
-["childcare", "cleanhands", "You are about to help serve snacks in childcare. What should you do first?", ["Wipe your hands on your shirt.", "Skip hygiene because you are in a hurry.", "Follow the handwashing and food-handling procedure."], 2, "Hygiene is part of care work. Follow the center’s handwashing and food-handling instructions before serving food.", "Food tasks need clean hands and the right procedure."],
-["childcare", "upset", "A child is upset and you are unsure how to help. What should you do?", ["Stay calm, keep the child supervised, and ask the lead for guidance.", "Yell until the child stops.", "Leave the room without arranging coverage."], 0, "Use calm communication and the center’s support procedure. Ask trained staff when you need help.", "Calm support and proper supervision come first."],
-["childcare", "privacy", "A friend asks for a child’s private information from the center. What should you do?", ["Share it because you know the friend.", "Keep it private and refer questions to authorized staff.", "Post the child’s record online."], 1, "Children and families’ records are private. Follow the center’s information-sharing process.", "Only authorized people should receive private records."],
-["fastfood", "ordercheck", "A customer asks for a sandwich with no onions. What should you do?", ["Use your favorite toppings instead.", "Assume they will pick the onions off.", "Confirm the order and follow the ticket and kitchen procedure."], 2, "Read and confirm the order. If a request cannot be filled, tell the customer or supervisor before promising it.", "The ticket should match the customer’s request."],
-["fastfood", "gloves", "You move from cleaning to preparing food. What should you do before handling the food?", ["Follow the required handwashing and glove-changing procedure.", "Keep using the same gloves.", "Wipe the gloves on your apron."], 0, "Follow the workplace’s handwashing and glove rules when changing tasks. Gloves do not replace handwashing.", "Different tasks can require a fresh hygiene step."],
-["fastfood", "rush", "There is a long line during the lunch rush. What matters most?", ["Skip order checks to go faster.", "Work steadily with the team while following food-safety and order procedures.", "Yell at waiting customers."], 1, "Speed is useful, but accurate orders and safe procedures still matter. Communicate with your team and ask for help.", "Being fast should not mean skipping safety."],
-["fastfood", "allergy", "A customer mentions a food allergy. You do not know the restaurant’s procedure. What should you do?", ["Guess that a tiny amount will be fine.", "Promise an item is safe without checking.", "Tell the trained supervisor and follow the restaurant’s allergy procedure."], 2, "Take the request seriously. Never guess or promise safety when you do not know; use the restaurant’s trained process.", "This needs the correct trained person and procedure."],
-["fastfood", "hair", "You are starting a food-preparation shift. What should you check?", ["Clean required work clothes and the required hair restraint or protective items.", "Whether you can skip the dress rules today.", "Whether perfume can replace personal hygiene."], 0, "Follow the restaurant’s clean-clothing, hair-restraint, and protective-equipment requirements before food work.", "Food preparation has specific appearance and hygiene rules."],
-["military", "teamwork", "During a military career-exploration activity, why does teamwork matter?", ["Only the fastest person matters.", "People must coordinate, communicate, and do their assigned part.", "Team members should hide mistakes from one another."], 1, "Military training emphasizes teamwork and discipline. Reliable communication helps a group carry out assigned tasks.", "A team depends on more than one person."],
-["military", "reporttime", "In a military workplace practice scenario, you are told where and when to report. What is a dependable response?", ["Go somewhere else without telling anyone.", "Wait until someone searches for you.", "Prepare what is required and be at the assigned place at the assigned time."], 2, "Preparation, punctuality, and following the assigned reporting instructions are habits to practice in career exploration.", "Check the place, time, and what you need beforehand."],
-["military", "gear", "Your training group is preparing issued equipment for an inspection practice. What should you do?", ["Use the checklist and report missing or damaged items to the responsible leader.", "Hide a broken item under another item.", "Assume somebody else checked your items."], 0, "Organize the required items and be honest about problems. Follow the training instructions and ask when unsure.", "Accountability means checking and reporting honestly."],
-["military", "clarify", "You do not understand a safe practice task during military career exploration. What should you do?", ["Pretend you understood.", "Respectfully ask the responsible instructor to clarify the task.", "Make up a different task and tell nobody."], 1, "Listening carefully and asking for clarification helps you follow the actual instructions.", "Get the instructions clear before starting."],
-["education", "classprep", "You are helping a teacher prepare a classroom. What is a professional first step?", ["Change the lesson plan without asking.", "Use the time to play on your phone.", "Check the assignment and prepare the requested materials neatly."], 2, "Support staff follow the teacher’s assignment, prepare materials, and ask questions about unclear instructions.", "Know the assignment before beginning."],
-["education", "studentprivacy", "You see private student information while helping in a school. What should you do?", ["Keep it private and follow the school’s information-handling procedure.", "Tell your friends at lunch.", "Post a photo because the paper looks interesting."], 0, "School work includes protecting private information. Ask the responsible staff member if you are unsure who may see it.", "Private information needs authorized handling."],
-["education", "trainingtime", "Your training class begins at 10:00. Which plan shows readiness?", ["Walk in at 10:15 and ask what you missed every day.", "Arrive with needed materials and be ready to begin at 10:00.", "Bring no supplies and hope someone else does the work."], 1, "Education and training also require preparation, attendance, and effort. Plan what you need before class starts.", "Be ready when the session begins."],
-["education", "mistake", "You make an error while preparing classroom copies. What should you do?", ["Throw everything away and leave.", "Hide the copies and say you finished.", "Tell the teacher, explain what happened, and ask how to correct it."], 2, "Honest communication and correction are useful workplace skills. A mistake is a chance to practice the expected process.", "The teacher needs an accurate update."]
+ [
+  "ready",
+  "orientation-plan",
+  "Orientation starts at 8:00. Travel takes 22 minutes, building check-in takes 8 minutes, and you want a 10-minute delay buffer. What is the latest planned departure time?",
+  [
+   "7:20",
+   "7:30",
+   "7:38"
+  ],
+  0,
+  "Plan backward: 8:00 minus 22 minutes travel, 8 minutes check-in, and 10 minutes buffer is 7:20.",
+  "Include travel, check-in, and the buffer, not just the drive.",
+  1
+ ],
+ [
+  "ready",
+  "uniform-check",
+  "Your clean uniform has a small tear near a machine area. Today’s dress checklist says clothing must have no loose fabric near equipment. What is the best first step?",
+  [
+   "Fold the torn area inward and begin, then mention it during break.",
+   "Show the supervisor and arrange an approved change or repair before that assignment.",
+   "Choose a different task yourself and explain the change at the end of the shift."
+  ],
+  1,
+  "Cleanliness and safety both matter. Bring the problem to the supervisor so an approved solution can be arranged before equipment work.",
+  "Check the dress standard and who can approve a different assignment.",
+  1
+ ],
+ [
+  "ready",
+  "rush-priorities",
+  "You have a restock task due in 10 minutes. A customer needs help, and you notice liquid spreading into the walkway. The shop procedure says to guard a spill and call for help. What is the best sequence?",
+  [
+   "Help the customer find the item, then guard the spill and finish restocking.",
+   "Finish the restock task first, then ask a coworker to handle the customer and spill.",
+   "Guard the spill and call for help, acknowledge the customer, then update the supervisor about restocking."
+  ],
+  2,
+  "The immediate hazard comes first under the stated procedure. Communicate with the customer and supervisor instead of silently dropping other duties.",
+  "Separate the immediate hazard from tasks with deadlines.",
+  2
+ ],
+ [
+  "ready",
+  "shift-swap",
+  "A coworker agrees to cover your shift. The posted policy says a swap is final only after manager approval. The coworker texts “all set,” but the schedule still lists you. What should you do?",
+  [
+   "Confirm approval with the manager and keep responsibility for your shift until it is approved.",
+   "Treat the coworker’s text as approval and check the schedule after the shift.",
+   "Ask the coworker to clock in using your employee code so the schedule matches."
+  ],
+  0,
+  "A coworker’s agreement and manager approval are different steps. Follow the stated process and use each worker’s own identity.",
+  "Look for the specific step that makes the swap final.",
+  2
+ ],
+ [
+  "ready",
+  "repeated-feedback",
+  "A supervisor says three orders were missing items. You followed the ticket from memory because it felt faster. What change best addresses the cause?",
+  [
+   "Work more slowly but keep using memory so you do not need to interrupt the supervisor.",
+   "Use a ticket-by-ticket completion check and ask the supervisor to review a few orders with you.",
+   "Ask someone else to check only when a customer reports a missing item."
+  ],
+  1,
+  "Change the process that caused the errors. A consistent check and a brief review can show whether accuracy is improving.",
+  "Choose a method that catches omissions before an order leaves.",
+  2
+ ],
+ [
+  "grocery",
+  "zone-labels",
+  "While zoning, you find 12-ounce and 18-ounce cereal boxes mixed together. The front looks neat, but only the 12-ounce shelf label is visible. What should you do?",
+  [
+   "Face all boxes forward and leave the sizes together because they are the same brand.",
+   "Move both sizes behind the visible label and report the missing label after closing.",
+   "Match each size to its assigned location and label, then face the products neatly."
+  ],
+  2,
+  "Zoning includes correct placement, not just a tidy front. Size and product labels must match the assigned shelf location.",
+  "A neat shelf can still have a product-location error.",
+  1
+ ],
+ [
+  "grocery",
+  "price-authority",
+  "A shopper says the shelf price is lower than the register price. You may pause a transaction but cannot approve price changes. What is the best response?",
+  [
+   "Acknowledge the concern and request an authorized price check before completing the sale.",
+   "Use the shopper’s quoted price to keep the line moving, then tell a manager later.",
+   "Complete the sale at the register price and direct the shopper to request a refund afterward."
+  ],
+  0,
+  "Help the shopper while staying within your authority. The stated process requires an authorized check before a price change.",
+  "Which action serves the customer without approving something outside your role?",
+  1
+ ],
+ [
+  "grocery",
+  "restock-count",
+  "A shelf holds 24 jars and currently has 7. You bring a case of 12 and a case of 6. How many jars go on the shelf, and how many stay in approved back stock?",
+  [
+   "18 on the shelf; 0 in back stock.",
+   "17 on the shelf; 1 in back stock.",
+   "12 on the shelf; 6 in back stock."
+  ],
+  1,
+  "There are 24 − 7 = 17 open spaces. You brought 18 jars, so 17 fit and 1 remains.",
+  "Calculate empty shelf spaces before using the case totals.",
+  2
+ ],
+ [
+  "grocery",
+  "date-rotation",
+  "Your store’s card says to place earlier sell-by dates in front and remove items past the sell-by date for supervisor review. Today is October 23. You have items dated October 22, October 25, and October 28. Which plan follows the card?",
+  [
+   "Place October 22 in front so it sells first; keep October 25 behind it.",
+   "Put the newest items in front and ask about older items after the shelf is filled.",
+   "Set October 22 items aside for review; put October 25 in front of October 28."
+  ],
+  2,
+  "Apply both parts of the stated store card: separate the past-date item and rotate the remaining dates in the required order.",
+  "The card gives separate instructions for past-date items and remaining stock.",
+  2
+ ],
+ [
+  "grocery",
+  "cash-reconcile",
+  "The opening cash float was $100. Recorded cash sales are $186, and approved cash refunds are $14. The drawer contains $267. What should you report?",
+  [
+   "Expected cash is $272; the drawer is $5 short.",
+   "Expected cash is $286; the drawer is $19 short.",
+   "Expected cash is $258; the drawer is $9 over."
+  ],
+  0,
+  "Expected cash = $100 + $186 − $14 = $272. Actual $267 is $5 less. Report and reconcile the difference using the store procedure.",
+  "Start with the float, add cash sales, and subtract cash refunds.",
+  2
+ ],
+ [
+  "childcare",
+  "coverage-handoff",
+  "You need supplies from another room. A trained coworker is nearby but has not agreed to cover your group. The center requires a clear adult handoff before leaving. What should you do?",
+  [
+   "Point toward your group while walking out because the coworker is already nearby.",
+   "Get an explicit accepted handoff that meets the center’s coverage procedure before leaving.",
+   "Wait until the children are quietly playing and make the trip as quickly as possible."
+  ],
+  1,
+  "Proximity is not an accepted handoff. Confirm who is responsible and follow the center’s coverage procedure before leaving.",
+  "A nearby adult and an adult who accepted responsibility are not the same thing.",
+  1
+ ],
+ [
+  "childcare",
+  "pickup-check",
+  "A familiar adult arrives for pickup. Their name is not on the current authorization list, and you cannot approve changes. They offer to show a text from the parent. What is the best next step?",
+  [
+   "Accept the text because the adult is familiar and note it in the pickup log.",
+   "Ask the child whether they know the adult, then decide whether to release them.",
+   "Keep the child supervised and ask the lead to follow the center’s authorization process."
+  ],
+  2,
+  "Use the current authorization process and the responsible lead. Familiarity or a text does not give you authority to approve a change.",
+  "Focus on who can verify and approve pickup authorization.",
+  1
+ ],
+ [
+  "childcare",
+  "activity-transition",
+  "The activity plan requires a headcount before leaving a room, at the door, and after arrival. The first count is correct. A coworker suggests skipping the door count because lunch is late. What should you do?",
+  [
+   "Complete the required counts and tell the lead the transition is taking longer.",
+   "Count only after arrival because that checks the same children.",
+   "Use the morning attendance total at the door and do a fresh count at lunch."
+  ],
+  0,
+  "Follow each checkpoint in the stated plan. A correct earlier count does not replace a required later count.",
+  "Ask what each checkpoint is meant to catch.",
+  2
+ ],
+ [
+  "childcare",
+  "record-accuracy",
+  "A form asks when a child’s snack was served. You remember serving it but not the exact time. Another worker suggests copying yesterday’s time to finish the form. What is the best response?",
+  [
+   "Use yesterday’s time because the schedule is usually the same.",
+   "Tell the lead the exact time is uncertain and document it according to the center’s correction process.",
+   "Leave the entire snack record blank so there is no chance of writing a wrong detail."
+  ],
+  1,
+  "Do not turn an estimate into a claimed fact. Report uncertainty and follow the approved documentation process.",
+  "Choose accurate communication about what you do and do not know.",
+  2
+ ],
+ [
+  "childcare",
+  "hygiene-workflow",
+  "The posted snack routine is: put away cleanup materials, wash hands, prepare the snack area, then serve. You have put away the materials but notice an unfinished cleanup note. Which plan best follows the routine?",
+  [
+   "Wash hands, finish the cleanup note and handling the cleaning kit, then serve.",
+   "Serve the packaged snacks first and complete the hygiene routine before the next activity.",
+   "Finish the note if needed, then wash hands and complete the snack setup before serving."
+  ],
+  2,
+  "Keep cleanup work separate from the food routine and follow the stated handwashing and setup sequence before serving.",
+  "Think about the task you do immediately before food preparation.",
+  2
+ ],
+ [
+  "fastfood",
+  "order-clarify",
+  "An order ticket says “no sauce,” but the customer now asks for sauce on the side. Your system allows order edits before preparation starts. What should you do?",
+  [
+   "Confirm the change, update the ticket, and communicate it to the kitchen before preparation.",
+   "Tell the kitchen verbally but leave the ticket unchanged to avoid slowing the line.",
+   "Prepare the original ticket and hand over sauce without checking whether preparation started."
+  ],
+  0,
+  "Use one accurate updated order record and communicate the change before work begins. A verbal-only change can be missed by another worker.",
+  "Make the customer request and the kitchen’s written instructions match.",
+  1
+ ],
+ [
+  "fastfood",
+  "hygiene-switch",
+  "You are assigned to switch from register work to food preparation. The task card requires handwashing and fresh gloves before food handling. The line is growing. What is the best choice?",
+  [
+   "Put fresh gloves over the gloves used at the register to save the handwashing time.",
+   "Tell the team about the switch and complete the required hygiene steps before preparing food.",
+   "Complete one food order, then wash and change gloves when the line becomes shorter."
+  ],
+  1,
+  "A rush does not remove the hygiene steps on the task card. Communicate the delay and follow the required transition before food work.",
+  "Which plan completes the required steps before the new task?",
+  1
+ ],
+ [
+  "fastfood",
+  "batch-capacity",
+  "You need 18 sandwiches. One tray holds 6, but only 2 trays fit at once. Each batch takes 4 minutes, and the task card requires complete batches. Ignoring loading time, what is the minimum total cooking time?",
+  [
+   "4 minutes: three trays cooked at the same time.",
+   "12 minutes: one tray cooked during each batch.",
+   "8 minutes: a batch of 12, then a batch of 6."
+  ],
+  2,
+  "Two trays cook 12 at once. A second 4-minute batch cooks the remaining 6, for 8 minutes total.",
+  "Use the equipment’s simultaneous capacity, not just the tray size.",
+  2
+ ],
+ [
+  "fastfood",
+  "refund-limit",
+  "A customer requests an $18 refund. Your role may approve refunds up to $10; larger amounts require a manager. The customer is upset and the manager is helping another worker. What should you do?",
+  [
+   "Acknowledge the issue, request manager approval, and explain that the refund needs that step.",
+   "Process two $9 refunds because each is below your approval limit.",
+   "Promise the $18 refund immediately and seek approval after the customer leaves."
+  ],
+  0,
+  "Splitting a transaction does not change the approval requirement. Be helpful without promising or approving something outside your authority.",
+  "The limit applies to the requested refund, not to how many entries you create.",
+  2
+ ],
+ [
+  "fastfood",
+  "stock-count-service",
+  "Four paid orders each require 2 rolls. You find only 6 usable rolls. The supervisor must approve substitutions or refunds. What is the best plan?",
+  [
+   "Use 1 roll on each of two orders so all four customers receive something.",
+   "Report a shortage of 2 rolls, pause new promises for that item, and obtain an approved plan for the affected orders.",
+   "Take two more orders first, then ask the supervisor to decide which customers wait."
+  ],
+  1,
+  "The four orders need 8 rolls; 6 leaves a shortage of 2. Communicate early and get approval before changing a paid order.",
+  "Calculate committed stock before deciding what you can promise.",
+  2
+ ],
+ [
+  "military",
+  "reporting-checklist",
+  "In a fictional military workplace exercise, instructions say report to Room B at 09:10 with identification and a completed equipment checklist. You are outside Room B at 09:05, but the checklist is unfinished. Are you fully ready?",
+  [
+   "Yes. Being early satisfies the reporting instruction even if paperwork is unfinished.",
+   "Yes, if another participant has already completed the same type of checklist.",
+   "No. Arrival is early, but the required checklist must also be completed or the issue reported."
+  ],
+  2,
+  "Readiness includes the required place, time, and materials or task preparation. Being early alone does not satisfy every stated requirement.",
+  "Check every part of the instruction, not just the reporting time.",
+  1
+ ],
+ [
+  "military",
+  "unclear-instruction",
+  "During a safe career-exploration exercise, you are told to sort supplies “by section,” but two lists show different section names. What is the best first move?",
+  [
+   "Show the instructor the mismatch and ask which list is current before sorting.",
+   "Choose the list that lets you finish fastest and mention the difference afterward.",
+   "Split the supplies between both systems so each list is partly followed."
+  ],
+  0,
+  "Clarify conflicting information before it creates rework. Show the exact mismatch so the responsible instructor can resolve it.",
+  "Find the person who can identify the current instruction.",
+  1
+ ],
+ [
+  "military",
+  "equipment-accountability",
+  "A practice inventory begins with 24 items. Your group issues 7 and receives 2 back. You count 18 remaining. What should the record show before the difference is resolved?",
+  [
+   "Expected 17, actual 18; report 1 extra item.",
+   "Expected 19, actual 18; report 1 item unaccounted for.",
+   "Expected 19, actual 18; record 19 because the issue log is the official record."
+  ],
+  1,
+  "24 − 7 + 2 = 19 expected. A count of 18 creates a difference of 1. Record the actual count and report the mismatch.",
+  "Returns add back to inventory; actual counts should not be silently replaced.",
+  2
+ ],
+ [
+  "military",
+  "team-deadline",
+  "Your exercise team has 15 minutes to prepare 3 supply stations. One person is delayed, and your assigned station is complete. Only the instructor may reassign duties. What is the best next step?",
+  [
+   "Take over another station without checking so the group finishes faster.",
+   "Wait without reporting because your own station is complete.",
+   "Report your completion and the team’s delay, then ask the instructor where you can assist."
+  ],
+  2,
+  "Dependability includes communication and helping within the exercise’s assigned structure. Request a useful approved next task.",
+  "Your own completion and the group’s remaining work both matter.",
+  2
+ ],
+ [
+  "military",
+  "inspection-feedback",
+  "An exercise checklist requires five labeled supply bins. You label four correctly and leave the fifth unreadable. The instructor says the station is not ready. Which response best demonstrates accountability?",
+  [
+   "Acknowledge the missing standard, correct the fifth label, and recheck all five against the checklist.",
+   "Explain that four out of five is enough because the deadline has passed.",
+   "Ask a teammate to confirm the unreadable label so the record can say five were checked."
+  ],
+  0,
+  "Meeting most checklist items does not make an incomplete requirement complete. Correct the specific issue and verify the whole standard.",
+  "Distinguish effort from meeting every stated requirement.",
+  2
+ ],
+ [
+  "education",
+  "copy-clarify",
+  "A teacher asks for 25 double-sided packets. The master has four single-sided pages, but the copier is set to one-sided printing. What should you clarify before starting?",
+  [
+   "Print all 100 sheets one-sided and staple them because the page content is correct.",
+   "Confirm the packet order and duplex settings, then make a sample before the full run.",
+   "Print 25 copies of the first two pages because double-sided means two pages total."
+  ],
+  1,
+  "Confirm how four pages form each packet and check a sample. Verifying setup before a large batch prevents repeated errors.",
+  "Separate the number of content pages from the number of physical sheets.",
+  1
+ ],
+ [
+  "education",
+  "private-record",
+  "A substitute asks you to send a student list to their personal email. Your role does not permit sharing records; the office handles access. What is the best response?",
+  [
+   "Send only names so the request can be handled quickly.",
+   "Send the list after the substitute shows a school badge, without checking the access process.",
+   "Refer the request to the office’s approved access process without sending the list yourself."
+  ],
+  2,
+  "A work-related reason does not automatically give you sharing authority. Use the school’s stated access process.",
+  "Check your role’s authority, not only who is making the request.",
+  1
+ ],
+ [
+  "education",
+  "materials-count",
+  "You must prepare kits for 8 groups of 4 students. Each student needs 2 cards. Cards come in packs of 15. What is the fewest full packs needed?",
+  [
+   "5 packs, providing 75 cards for a need of 64.",
+   "4 packs, providing 60 cards because 64 is closer to 60 than 75.",
+   "3 packs, because there are only 32 students."
+  ],
+  0,
+  "8 × 4 = 32 students; 32 × 2 = 64 cards. Four packs provide only 60, so five full packs are needed.",
+  "Find the total cards needed, then round the number of full packs up.",
+  2
+ ],
+ [
+  "education",
+  "competing-deadlines",
+  "A lesson starts in 12 minutes. The teacher needs a 5-minute room setup before students enter. Another staff member asks for an 8-minute copying task now. What is the best response?",
+  [
+   "Start both tasks because 5 minutes and 8 minutes are each shorter than 12 minutes.",
+   "Explain the timing conflict to the teacher or assigned supervisor and confirm which task takes priority.",
+   "Complete the copying task and begin setup when students enter without updating the teacher."
+  ],
+  1,
+  "The tasks total 13 minutes, exceeding the available 12. Communicate before silently choosing which requirement will be missed.",
+  "Add the task times and compare them with the actual deadline.",
+  2
+ ],
+ [
+  "education",
+  "follow-up-plan",
+  "Your training instructor says your work is accurate but often late. Which next-session plan most directly addresses that feedback?",
+  [
+   "Repeat the task without timing it so accuracy stays the only focus.",
+   "Submit an unfinished task at the deadline to show you can be on time.",
+   "Break the task into timed steps, check progress at agreed points, and review accuracy and completion time afterward."
+  ],
+  2,
+  "Target the stated problem while keeping the existing standard. Use progress checks to improve timeliness without discarding accuracy.",
+  "The goal is accuracy and timeliness together.",
+  2
+ ],
+ [
+  "money",
+  "profit-expenses",
+  "Today’s sales are $640. Ingredients cost $180, wages $220, and the day’s utilities allocation is $40. Ignoring other costs, what is today’s profit?",
+  [
+   "$200",
+   "$240",
+   "$460"
+  ],
+  0,
+  "Expenses are $180 + $220 + $40 = $440. Profit is $640 − $440 = $200.",
+  "Subtract all the listed expenses, not just the supplies.",
+  1
+ ],
+ [
+  "money",
+  "revenue-cash",
+  "Your café account starts with $300. Customer sales add $240, and supplies cost $90. There are no other transactions. Which statement is correct?",
+  [
+   "Ending cash and sales revenue for this period are both $450.",
+   "Ending cash is $450; sales revenue for this period is $240.",
+   "Ending cash is $150; sales revenue for this period is $240."
+  ],
+  1,
+  "Cash balance includes the opening $300. Sales revenue counts the $240 earned from customers during the period, not the opening balance.",
+  "Account balance and sales for a period are different measures.",
+  1
+ ],
+ [
+  "money",
+  "pack-costs",
+  "You need at least 45 cups. Supplier A sells 20 cups for $6 per pack. Supplier B sells 50 cups for $14 per pack. No delivery charges apply. Which purchase meets the need for the lowest total spend?",
+  [
+   "Two packs from A for $12.",
+   "Three packs from A for $18.",
+   "One pack from B for $14."
+  ],
+  2,
+  "A requires three packs to cover 45 cups, costing $18. B covers the need with one $14 pack. Two A packs cost less but provide only 40 cups.",
+  "The cheapest option must still provide enough cups.",
+  2
+ ],
+ [
+  "money",
+  "bill-before-draw",
+  "The business has $520 available. Wages of $180 and a $120 bill are due before new sales arrive. Essential supplies cost $140. How much remains for an owner payment after covering those listed commitments?",
+  [
+   "$80",
+   "$220",
+   "$260"
+  ],
+  0,
+  "The listed commitments total $180 + $120 + $140 = $440. $520 − $440 leaves $80. This scenario ignores any other required reserves or costs.",
+  "Subtract wages, the bill, and the essential supplies before the owner payment.",
+  2
+ ],
+ [
+  "money",
+  "break-even",
+  "A practice shop sells each service for $20. Supplies cost $8 per service, and the session has $60 in fixed expenses. How many services must be sold to exactly cover these listed costs?",
+  [
+   "3 services.",
+   "5 services.",
+   "8 services."
+  ],
+  1,
+  "Each sale contributes $20 − $8 = $12 toward fixed expenses. $60 ÷ $12 = 5 services to break even on the listed costs.",
+  "Subtract the per-service supply cost before using sales to cover fixed expenses.",
+  2
+ ]
 ];
-g.TTShowQuestions={categories,questions:rows.map(([category,id,prompt,options,answer,explanation,hint])=>({category:({work:'ready',travel:'ready',voice:'ready',future:'education'})[category]||category,id,prompt,options,answer,explanation,hint}))};if(typeof module!=='undefined')module.exports=g.TTShowQuestions;
-})(typeof window!=='undefined'?window:globalThis);
+g.TTShowQuestions={categories,questions:rows.map(([category,id,prompt,options,answer,explanation,hint,level])=>({category,id,prompt,options,answer,explanation,hint,level}))};if(typeof module!=="undefined")module.exports=g.TTShowQuestions;
+})(typeof window!=="undefined"?window:globalThis);

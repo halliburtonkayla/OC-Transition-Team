@@ -5,4 +5,15 @@ let s=C.create({bank:B,teams:['A','B'],random:()=>.3});check(s.cards.length===14
 s=C.create({bank:B,guided:true,seconds:0,random:()=>.2});check(s.cards.every(q=>q.options.length===2&&q.options.filter(o=>o.correct).length===1),'supported answers retain exactly one correct');C.choose(s,s.cards[0].id);s.paused=true;check(!C.buzz(s,0),'pause blocks input');s.paused=false;C.buzz(s,0);q=C.question(s);C.answer(s,q.options.findIndex(o=>!o.correct));check(C.buzz(s,0),'solo retry allowed');e=C.answer(s,q.options.findIndex(o=>o.correct));check(e.points===q.value/2&&e.retry,'retry half points');C.next(s);
 for(const card of s.cards.filter(q=>!q.done)){C.choose(s,card.id);C.buzz(s,0);C.answer(s,C.question(s).options.findIndex(o=>o.correct));C.next(s)}check(s.phase==='finished');check(C.winners(s).length===1);check(s.history.length===15,'all attempts retained');check(!C.choose(s,s.cards[0].id),'finished game stays finished');
 s=C.create({bank:B,teams:['A','B']});C.choose(s,s.cards[0].id);C.timeout(s);check(s.phase==='feedback'&&s.history[0].teamIndex===null,'timeout not attributed to a student');check(s.teams.every(t=>t.score===0));check(C.winners(s).length===2,'ties handled');
+for(const guided of [false,true])for(let game=0;game<60;game++){
+ const run=C.create({bank:B,guided});const positions=[];
+ for(const card of C.shuffle(run.cards)){
+  check(card.level===(card.value===100?1:2),'point value matches challenge level');
+  C.choose(run,card.id);const q=C.question(run);positions.push(q.options.findIndex(o=>o.correct));
+  const keep=q.options.map(o=>o.text).join('|');C.buzz(run,0);C.answer(run,q.options.findIndex(o=>!o.correct));C.buzz(run,0);check(q.options.map(o=>o.text).join('|')===keep,'retry keeps answer positions stable');C.answer(run,q.options.findIndex(o=>o.correct));C.next(run);
+ }
+ const counts=Array.from({length:guided?2:3},(_,i)=>positions.filter(p=>p===i).length);
+ check(Math.max(...counts)-Math.min(...counts)<=1,'correct answer letters balanced over game');
+ check(positions.every((p,i)=>i<2||p!==positions[i-1]||p!==positions[i-2]),'no three consecutive correct answers in one position');
+}
 console.log('PASS '+checks+' workplace question, buzzer, team, retry, pause, scoring, completion, timeout and evidence checks');
