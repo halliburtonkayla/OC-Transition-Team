@@ -1,5 +1,5 @@
 /* Classroom extension stays off outside the allowed Transition Town activities. */
-(function(){const script=document.createElement('script');script.src=new URL('assets/classroom-monitor/student.js?v=20261021-clockin',document.currentScript?.src||location.href).href;script.defer=true;document.head.append(script);})();
+(function(){const script=document.createElement('script');script.src=new URL('assets/classroom-monitor/student.js?v=20261023-auto-mirror',document.currentScript?.src||location.href).href;script.defer=true;document.head.append(script);})();
 /* OC Transition Team — persistent 30-minute session timer
    Uses localStorage so the active session survives navigation between pages. */
 (function(){
