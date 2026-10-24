@@ -1,6 +1,24 @@
 /* Draw the existing Town avatar colors and hairstyle as a walking character. */
 (function(){'use strict';
-window.TTDrawAvatar=function(ctx,x,y,a={},time=0,moving=false,scale=1){
+const portraits=new Map();
+function drawBusinessAvatar(ctx,x,y,name,time,moving,scale){
+const owner=window.TTBusinessAvatars?.[name];if(!owner?.image)return false;
+let img=portraits.get(owner.image);if(!img){img=new Image();img.src=owner.image;portraits.set(owner.image,img)}
+const bob=moving?Math.sin(time*10)*2:0,r=35;
+ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+ctx.fillStyle='#102b3544';ctx.beginPath();ctx.ellipse(0,3,29,8,0,0,Math.PI*2);ctx.fill();
+ctx.beginPath();ctx.arc(0,-43+bob,r,0,Math.PI*2);ctx.fillStyle='#fffbea';ctx.fill();
+if(img.complete&&img.naturalWidth){
+let sx=0,sy=0,sw=img.naturalWidth,sh=img.naturalHeight;
+if(owner.walkingCrop){const c=owner.walkingCrop;sx=c[0]*sw;sy=c[1]*sh;sw*=c[2];sh*=c[3]}
+else if(owner.size!=='contain'){const size=owner.size.split(' ').map(parseFloat),pos=owner.position.split(' ').map(parseFloat);sw=img.naturalWidth/(size[0]/100);sh=img.naturalHeight/((size[1]||size[0])/100);sx=(img.naturalWidth-sw)*(pos[0]||0)/100;sy=(img.naturalHeight-sh)*(pos[1]||0)/100;}
+const side=Math.min(sw,sh);sx+=(sw-side)/2;sy+=(sh-side)/2;
+ctx.save();ctx.clip();ctx.drawImage(img,sx,sy,side,side,-r,-43+bob-r,r*2,r*2);ctx.restore();
+}else{ctx.fillStyle='#51406d';ctx.font='bold 25px Arial';ctx.textAlign='center';ctx.fillText(name[0],0,-34+bob)}
+ctx.strokeStyle='#fffbea';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,-43+bob,r,0,Math.PI*2);ctx.stroke();ctx.restore();return true;
+}
+window.TTDrawAvatar=function(ctx,x,y,a={},time=0,moving=false,scale=1,name=''){
+if(drawBusinessAvatar(ctx,x,y,name,time,moving,scale))return;
 a=a||{};
 const safe=(v,d)=>/^#[0-9a-f]{3,8}$/i.test(v||'')?v:d,skin=safe(a.skin,'#9b654b'),hair=safe(a.hair,'#33231f'),shirt=safe(a.shirt,'#6c57a7'),pants=safe(a.pants,'#33435e'),step=moving?Math.sin(time*12)*5:0;
 ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);ctx.fillStyle='#102b3533';ctx.beginPath();ctx.ellipse(0,3,19,7,0,0,Math.PI*2);ctx.fill();
