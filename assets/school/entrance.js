@@ -3,21 +3,21 @@ window.schoolBuildingScene = function () {
   document.querySelector('#centerScene')?.remove();
   const scene = document.createElement('section');
   scene.id = 'centerScene';
-  scene.className = 'school-building-scene';
+  scene.className = 'school-building-scene school-interior-scene';
   scene.setAttribute('aria-label', 'Transition Town School');
   scene.innerHTML = `
-    <img class="school-building-art" src="assets/school/school-building.webp?v=20261024" alt="A welcoming brick school building with classroom windows, a clock, and a courtyard leading to the front doors.">
-    <div class="school-entrance-content">
-      <nav class="school-entrance-nav" aria-label="School navigation"><button onclick="document.querySelector('#centerScene')?.remove()">← Town Map</button><span>TRANSITION TOWN</span></nav>
-      <div class="school-welcome"><p>YOUR NEXT CHAPTER STARTS HERE</p><h1>Welcome to school</h1></div>
-      <div class="school-entrance-panel"><div class="school-panel-heading"><span>COME ON IN</span><h2>Where are we headed?</h2></div>
-        <div class="school-door-grid">
-          <a class="school-door school-career-door" href="school-career-lab.html"><span class="school-door-number">01</span><span><strong>Job Exploration</strong><small>50 careers · ID, résumé & work experience</small></span><b aria-hidden="true">→</b></a>
-          <button class="school-door" onclick="schoolClassrooms()"><span class="school-door-number">02</span><span><strong>Lesson Classrooms</strong><small>Learn skills for work and everyday life</small></span><b aria-hidden="true">→</b></button>
-          <button class="school-door" onclick="schoolGames()"><span class="school-door-number">03</span><span><strong>Educational Games</strong><small>Practice what you’re learning</small></span><b aria-hidden="true">→</b></button>
-        </div>
-        <div class="school-extra-doors"><button onclick="collegeFair()">College & Training</button><button onclick="shortTraining()">Training Video Lab</button><button onclick="collegeHowTo()">Resource Room</button><a href="pre-ets-session-reports.html">Teacher Reports</a></div>
-      </div>
-    </div>`;
+    <div class="school-hall-pan" aria-label="School hallway. Swipe sideways to look around."><div class="school-hall-stage">
+      <img class="school-hall-art" src="assets/school/school-hallway.webp?v=20261024inside" alt="Inside Transition Town School: a bright hallway with classroom doors, lockers, and a reception desk.">
+      <a class="hall-door hall-near-left" href="school-career-lab.html"><small>CAREER WING</small><strong>Job Exploration</strong><span>Enter →</span></a>
+      <button class="hall-door hall-mid-left" onclick="schoolClassrooms()"><small>LEARN</small><strong>Lesson Classrooms</strong><span>Enter →</span></button>
+      <button class="hall-door hall-far-left" onclick="collegeFair()"><strong>College & Training</strong><span>Enter →</span></button>
+      <button class="hall-door hall-near-right" onclick="schoolGames()"><small>PRACTICE</small><strong>Educational Games</strong><span>Enter →</span></button>
+      <button class="hall-door hall-mid-right" onclick="shortTraining()"><strong>Training Video Lab</strong><span>Enter →</span></button>
+      <button class="hall-door hall-far-right" onclick="collegeHowTo()"><strong>Resource Room</strong><span>Enter →</span></button>
+    </div></div>
+    <nav class="school-hall-nav" aria-label="School navigation"><button onclick="document.querySelector('#centerScene')?.remove()">← Town Map</button><div><small>TRANSITION TOWN SCHOOL</small><h1>Main hallway</h1></div><a href="pre-ets-session-reports.html">Teacher Reports</a></nav>
+    <div class="school-hall-directory"><span>Choose a door · Swipe to look around</span><div><a href="school-career-lab.html">Job Exploration →</a><button onclick="schoolClassrooms()">Classrooms →</button><button onclick="schoolGames()">Games →</button></div></div>`;
   document.body.appendChild(scene);
+  const pan=scene.querySelector('.school-hall-pan');
+  requestAnimationFrame(()=>{pan.scrollLeft=(pan.scrollWidth-pan.clientWidth)/2;});
 };
