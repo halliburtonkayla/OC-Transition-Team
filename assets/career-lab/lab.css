@@ -9,3 +9,5 @@
 .work-dialog .document-sheet,.work-dialog .sequence-list li,.work-dialog .sort-item,.work-dialog .receipt{color:#173b40}.work-dialog .record-fields label{color:#fff;text-shadow:0 2px 4px #000}.work-dialog .success-box{color:#164638}.task-panel .success-box{color:#fff}
 
 .immersive-stage{background-image:linear-gradient(#142a3a55,#0a1c2d99),url(art/school.webp)}.immersive-stage:has(.garment-table),.immersive-stage:has(.stock-cart),.immersive-stage:has(.checkout-scene){background-image:linear-gradient(#142a3a25,#0a1c2d70),url(art/apparel-room.webp)}
+
+.business-portrait{display:block;background-repeat:no-repeat;background-color:#e8e2d6;width:110px;height:110px;flex-shrink:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.business-initial{display:grid;place-items:center;font:bold 42px Georgia;color:#24534a}
