@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Multiplication Wall · Transition Town School</title>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#14213d;--purple:#7b61ff;--pink:#ff6fae;--blue:#40c3ff;--green:#36cf7c;--yellow:#ffd75e;--orange:#ff9b54}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#fff7fb,#eef8ff 52%,#fff8dd);color:var(--ink);min-height:100vh}
+header{background:linear-gradient(120deg,#7358e8,#f06faa,#42bfe9);color:#fff;padding:18px 20px;box-shadow:0 6px 20px #0002}
+.headerwrap{max-width:1200px;margin:auto;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+h1{margin:0;font:900 clamp(28px,5vw,46px) Georgia,serif}
+.subtitle{margin-top:5px;font-weight:800}
+.back{color:#fff;text-decoration:none;font-weight:900;background:#ffffff24;border:2px solid #ffffff88;padding:10px 14px;border-radius:14px}
+main{max-width:1200px;margin:auto;padding:18px}
+.topgrid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-bottom:14px}
+.panel{background:#fff;border-radius:24px;padding:18px;box-shadow:0 10px 24px #0001;border:3px solid #eee8ff}
+.questionBox{background:linear-gradient(145deg,#fff1f8,#f2efff,#eaf9ff);border:4px solid #d7cbff;border-radius:22px;padding:22px;text-align:center;min-height:180px;display:flex;flex-direction:column;justify-content:center}
+.questionLabel{font-size:14px;font-weight:900;letter-spacing:.12em;color:#6a50cf}
+.question{font-size:clamp(42px,9vw,84px);font-weight:1000;line-height:1;margin:12px 0}
+.prompt{font-weight:800;color:#5d6680}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;height:100%}
+.stat{border-radius:18px;padding:15px;text-align:center;font-weight:900;display:flex;flex-direction:column;justify-content:center;min-height:82px}
+.stat strong{font-size:clamp(26px,5vw,42px);margin-top:4px}
+.stat.time{grid-column:1/-1;background:#fff1d5;color:#8a5700}
+.stat.score{background:#eafff2;color:#16764a}
+.stat.cleared{background:#edf5ff;color:#235f95}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+button{font:inherit}
+.control{border:0;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer}
+.start{background:#36c97a;color:#fff}
+.pause{background:#ffd75e;color:#5c4300}
+.reset{background:#7256d8;color:#fff}
+.wall{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+.num{aspect-ratio:1/1;border:0;border-radius:14px;font-size:clamp(15px,2.6vw,25px);font-weight:1000;color:#18233f;cursor:pointer;box-shadow:0 5px 12px #0001;border:2px solid #ffffff;transition:transform .12s ease,opacity .25s ease}
+.num:nth-child(6n+1){background:#ffd7e9}.num:nth-child(6n+2){background:#e7ddff}.num:nth-child(6n+3){background:#d9f2ff}.num:nth-child(6n+4){background:#dff8e9}.num:nth-child(6n+5){background:#fff0bd}.num:nth-child(6n){background:#ffe0c8}
+.num:hover{transform:translateY(-2px)}
+.num.cleared{opacity:0;pointer-events:none}
+.num.wrong{animation:shake .25s linear 2;background:#ffb4b4}
+.num.correctFlash{background:#7ce3aa!important;transform:scale(1.08)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.feedback{margin-top:14px;min-height:58px;border-radius:16px;padding:13px;text-align:center;font-size:18px;font-weight:900;background:#fff7c9;border:3px solid #ffd75e;display:flex;align-items:center;justify-content:center}
+.feedback.good{background:#eafff1;border-color:#49d589;color:#146b42}.feedback.bad{background:#fff0ef;border-color:#ff8c86;color:#9c2a32}
+.end{display:none;text-align:center;margin-top:16px;background:linear-gradient(145deg,#fff3f9,#f2efff,#e9f9ff);border:4px solid #d8ccff;border-radius:24px;padding:24px}
+.end h2{margin:0 0 10px;font:900 42px Georgia;color:#654bc6}
+.end .big{font-size:54px;font-weight:1000;color:#1e7b51}
+.note{font-size:13px;color:#68738b;margin-top:10px}
+@media(max-width:760px){.topgrid{grid-template-columns:1fr}.wall{gap:5px}.num{border-radius:9px}.panel{padding:12px}.questionBox{min-height:150px;padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="headerwrap"><div><h1>Multiplication Wall</h1><div class="subtitle">Transition Town School · Clear as many boxes as you can in 10 minutes</div></div><a class="back" href="transition-town.html?school=1">← Back to School</a></div></header>
+<main>
+<section class="topgrid">
+  <div class="panel">
+    <div class="questionBox">
+      <div class="questionLabel">FIND THE ANSWER</div>
+      <div id="question" class="question">Press START</div>
+      <div id="prompt" class="prompt">Then tap the correct number on the wall.</div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="stats">
+      <div class="stat time">TIME LEFT<strong id="timer">10:00</strong></div>
+      <div class="stat score">CORRECT<strong id="score">0</strong></div>
+      <div class="stat cleared">BOXES CLEARED<strong id="cleared">0</strong></div>
+    </div>
+  </div>
+</section>
+
+<div class="controls">
+  <button id="startBtn" class="control start" type="button">START GAME</button>
+  <button id="pauseBtn" class="control pause" type="button" disabled>PAUSE</button>
+  <button id="resetBtn" class="control reset" type="button">RESET</button>
+</div>
+
+<section class="panel">
+  <div id="wall" class="wall" aria-label="Number wall from 1 to 100"></div>
+  <div id="feedback" class="feedback" aria-live="polite">Press START to begin the 10-minute challenge.</div>
+  <div class="note">Facts use numbers 1 through 10, so every answer is between 1 and 100. Once a correct answer is cleared, the game gives a new fact with a different answer so students never need to click a missing box.</div>
+  <div id="end" class="end">
+    <h2>Time!</h2>
+    <div id="endScore" class="big">0 boxes</div>
+    <p id="endMessage">Great work!</p>
+    <button id="playAgain" class="control reset" type="button">PLAY AGAIN</button>
+  </div>
+</section>
+</main>
+
+<script>
+(function(){
+ const wall=document.getElementById('wall');
+ const qEl=document.getElementById('question');
+ const prompt=document.getElementById('prompt');
+ const timerEl=document.getElementById('timer');
+ const scoreEl=document.getElementById('score');
+ const clearedEl=document.getElementById('cleared');
+ const feedback=document.getElementById('feedback');
+ const startBtn=document.getElementById('startBtn');
+ const pauseBtn=document.getElementById('pauseBtn');
+ const resetBtn=document.getElementById('resetBtn');
+ const end=document.getElementById('end');
+ const endScore=document.getElementById('endScore');
+ const endMessage=document.getElementById('endMessage');
+ const playAgain=document.getElementById('playAgain');
+
+ const facts=[];
+ const byAnswer={};
+ for(let a=1;a<=10;a++){
+   for(let b=1;b<=10;b++){
+     const ans=a*b;
+     if(!byAnswer[ans]) byAnswer[ans]=[];
+     byAnswer[ans].push({a,b,ans});
+   }
+ }
+ Object.values(byAnswer).forEach(arr=>facts.push(...arr));
+ const clearableAnswers=Object.keys(byAnswer).map(Number);
+
+ let current=null, score=0, cleared=new Set(), remaining=600, timer=null, running=false, paused=false;
+
+ function buildWall(){
+   wall.innerHTML='';
+   for(let n=1;n<=100;n++){
+     const b=document.createElement('button');
+     b.type='button';
+     b.className='num';
+     b.textContent=n;
+     b.dataset.n=n;
+     b.setAttribute('aria-label','Number '+n);
+     b.addEventListener('click',()=>pick(n,b));
+     wall.appendChild(b);
+   }
+ }
+ function availableAnswers(){
+   return clearableAnswers.filter(n=>!cleared.has(n));
+ }
+ function nextQuestion(){
+   const available=availableAnswers();
+   if(!available.length){finish(true);return;}
+   const ans=available[Math.floor(Math.random()*available.length)];
+   const list=byAnswer[ans];
+   current=list[Math.floor(Math.random()*list.length)];
+   qEl.textContent=current.a+' × '+current.b+' = ?';
+   prompt.textContent='Tap the answer on the number wall.';
+ }
+ function pick(n,btn){
+   if(!running||paused||!current)return;
+   if(n===current.ans){
+     score++;
+     cleared.add(n);
+     scoreEl.textContent=score;
+     clearedEl.textContent=cleared.size;
+     feedback.className='feedback good';
+     feedback.textContent='Correct! '+current.a+' × '+current.b+' = '+current.ans;
+     btn.classList.add('correctFlash');
+     setTimeout(()=>{btn.classList.remove('correctFlash');btn.classList.add('cleared');nextQuestion();},260);
+   }else{
+     feedback.className='feedback bad';
+     feedback.textContent='Try again. '+n+' is not the answer.';
+     btn.classList.add('wrong');
+     setTimeout(()=>btn.classList.remove('wrong'),450);
+   }
+ }
+ function tick(){
+   if(!running||paused)return;
+   remaining--;
+   updateTimer();
+   if(remaining<=0)finish(false);
+ }
+ function updateTimer(){
+   const m=Math.floor(remaining/60),s=remaining%60;
+   timerEl.textContent=m+':'+String(s).padStart(2,'0');
+ }
+ function start(){
+   if(running&&!paused)return;
+   if(!running){
+     running=true;paused=false;
+     end.style.display='none';
+     nextQuestion();
+     timer=setInterval(tick,1000);
+   }else if(paused){
+     paused=false;
+     pauseBtn.textContent='PAUSE';
+   }
+   startBtn.disabled=true;
+   pauseBtn.disabled=false;
+   feedback.className='feedback';
+   feedback.textContent='Game on! Find the answer.';
+ }
+ function pause(){
+   if(!running)return;
+   paused=!paused;
+   pauseBtn.textContent=paused?'RESUME':'PAUSE';
+   qEl.textContent=paused?'PAUSED':(current?current.a+' × '+current.b+' = ?':'');
+   prompt.textContent=paused?'Press RESUME when you are ready.':'Tap the answer on the number wall.';
+ }
+ function finish(allCleared){
+   running=false;paused=false;
+   if(timer){clearInterval(timer);timer=null;}
+   startBtn.disabled=false;pauseBtn.disabled=true;pauseBtn.textContent='PAUSE';
+   qEl.textContent=allCleared?'WALL COMPLETE!':'TIME!';
+   prompt.textContent='You cleared '+cleared.size+' number boxes.';
+   end.style.display='block';
+   endScore.textContent=cleared.size+' box'+(cleared.size===1?'':'es');
+   endMessage.textContent=allCleared?'Amazing! You cleared every multiplication answer on the wall.':(cleared.size>=30?'Excellent work!':cleared.size>=20?'Great job!':cleared.size>=10?'Nice work—keep practicing!':'Good practice. Try again and beat your score!');
+   feedback.className='feedback';
+   feedback.textContent='Challenge complete.';
+ }
+ function reset(){
+   if(timer){clearInterval(timer);timer=null;}
+   current=null;score=0;cleared=new Set();remaining=600;running=false;paused=false;
+   scoreEl.textContent='0';clearedEl.textContent='0';updateTimer();
+   startBtn.disabled=false;pauseBtn.disabled=true;pauseBtn.textContent='PAUSE';
+   qEl.textContent='Press START';prompt.textContent='Then tap the correct number on the wall.';
+   feedback.className='feedback';feedback.textContent='Press START to begin the 10-minute challenge.';
+   end.style.display='none';
+   buildWall();
+ }
+ startBtn.addEventListener('click',start);
+ pauseBtn.addEventListener('click',pause);
+ resetBtn.addEventListener('click',reset);
+ playAgain.addEventListener('click',reset);
+ buildWall();
+ updateTimer();
+})();
+</script>
+<script src="assets/classroom-monitor/student.js?v=20261026mathwall" defer></script>
+</body>
+</html>
