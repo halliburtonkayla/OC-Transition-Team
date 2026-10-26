@@ -1,0 +1,45 @@
+name: Career Feud checks
+on:
+  push:
+    branches: [main, career-feud-classroom]
+    paths:
+      - 'assets/career-feud/**'
+      - 'supabase/functions/career-feud/**'
+      - 'career-feud.html'
+      - 'assets/school/entrance.js'
+      - 'transition-town.html'
+      - 'tests/career-feud*'
+      - '.github/workflows/career-feud-checks.yml'
+  pull_request:
+    paths:
+      - 'assets/career-feud/**'
+      - 'supabase/functions/career-feud/**'
+      - 'career-feud.html'
+      - 'tests/career-feud*'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Logic, privacy, reports, and school integration
+        run: node tests/career-feud.cjs
+      - name: Install isolated browser test dependencies
+        run: npm install --prefix /tmp/career-feud-qa --no-save @playwright/test@1.51.1
+      - name: Install Chromium
+        run: /tmp/career-feud-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Host and two independent team browser sessions
+        env:
+          NODE_PATH: /tmp/career-feud-qa/node_modules
+        run: node tests/career-feud-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: career-feud-browser-evidence
+          path: career-feud-test-output/
+          if-no-files-found: ignore
