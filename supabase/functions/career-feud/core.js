@@ -32,6 +32,7 @@ export function remaining(s,now){
 }
 export function mutate(state,role,b,now){
  const s=copy(state),host=role==='host',n=host?-1:Number(role),a=b.action;
+ requireThat(b.requestId===undefined||(typeof b.requestId==='string'&&/^[A-Za-z0-9:_-]{1,100}$/.test(b.requestId)),'Invalid action identifier.');
  requireThat(host||n===0||n===1,'Invalid role.');
  if(b.requestId&&s.requests.includes(b.requestId))return s;
  const r=s.rounds.at(-1);

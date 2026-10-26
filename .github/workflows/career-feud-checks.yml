@@ -29,6 +29,11 @@ jobs:
           node-version: '22'
       - name: Logic, privacy, reports, and school integration
         run: node tests/career-feud.cjs
+      - name: Existing career lab, game show, and classroom monitor regression checks
+        run: |
+          node tests/career-lab.cjs
+          node tests/transition-show.cjs
+          node tests/classroom-monitor.cjs
       - name: Install isolated browser test dependencies
         run: npm install --prefix /tmp/career-feud-qa --no-save @playwright/test@1.51.1
       - name: Install Chromium

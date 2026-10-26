@@ -44,8 +44,10 @@ const server=http.createServer((req,res)=>{
   }
   const [host,one,two,duplicate]=await Promise.all(contexts.map(c=>c.newPage()));
   for(const p of [host,one,two,duplicate]){p.on('dialog',d=>d.accept());p.on('pageerror',e=>{if(p.url().includes('career-feud'))errors.push(e.message)})}
-  await host.addInitScript(()=>{sessionStorage.setItem('ttCurrent','Olivia');localStorage.setItem('ttCurrent','Olivia')});
+  
   await host.goto('http://127.0.0.1:4173/transition-town.html?school=1');
+  await host.locator('#loginProfile').selectOption('Olivia');await host.getByRole('button',{name:'Enter Transition Town',exact:true}).click();
+  await host.evaluate(()=>trainingCollege());
   await expect(host.locator('.school-hall-directory a[href="career-feud.html"]')).toBeVisible();
   await host.evaluate(()=>{schoolClassrooms()});await expect(host.locator('#centerScene')).toBeVisible();
   await host.evaluate(()=>{trainingCollege()});
