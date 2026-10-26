@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Developer Lab | Transition Town School</title>
+<style>
+:root{--ink:#172033;--muted:#60708a;--navy:#172b4d;--purple:#5b439d;--blue:#2368c4;--green:#24785a;--panel:#ffffff;--line:#dce3ee;--bg:#eef3f9}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#172b4d 0 190px,var(--bg) 190px);font-family:Arial,sans-serif;color:var(--ink)}
+header{max-width:1100px;margin:auto;padding:28px 22px 20px;color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+header h1{font:900 38px Georgia,serif;margin:5px 0}
+header p{margin:5px 0;color:#e9eef8;line-height:1.45}
+header a{color:#172033;background:#fff;text-decoration:none;font-weight:800;padding:11px 14px;border-radius:11px;white-space:nowrap}
+main{max-width:1000px;margin:auto;padding:0 22px 50px}
+.labintro{background:#fff;border-radius:22px;padding:22px;box-shadow:0 12px 32px #0d213522;margin-bottom:18px;border-top:6px solid var(--purple)}
+.labintro h2{margin:0 0 8px;font:900 25px Georgia,serif;color:var(--purple)}
+.labintro p{line-height:1.55;margin:7px 0}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:14px 0;box-shadow:0 6px 18px #15243c0c}
+.stephead{display:flex;align-items:center;gap:13px;margin-bottom:15px}
+.num{width:42px;height:42px;min-width:42px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-weight:900;font-size:19px}
+.step h2{font-size:22px;margin:0;color:var(--navy)}
+label{display:block;font-weight:800;margin:13px 0 6px}
+input[type=text],textarea,select{width:100%;font:inherit;padding:12px 13px;border:1px solid #b9c6d8;border-radius:10px;background:#fff;color:var(--ink)}
+textarea{min-height:95px;resize:vertical}
+.choicegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:9px}
+.choice{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:11px;padding:11px;background:#f9fbfe;font-weight:700}
+.choice input{width:19px;height:19px}
+.sketch{min-height:170px}
+.tip{background:#edf5ff;border-left:5px solid var(--blue);border-radius:10px;padding:12px 14px;margin:12px 0;line-height:1.5}
+.rule{background:#f6f0ff;border:1px solid #d8ccef;border-radius:14px;padding:17px;line-height:1.55}
+.actions{position:sticky;bottom:0;z-index:4;background:#ffffffee;backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-wrap:wrap;gap:9px;box-shadow:0 -6px 22px #1a29431c;margin-top:18px}
+button{border:0;border-radius:10px;padding:12px 16px;font:800 15px Arial;cursor:pointer}
+.save{background:var(--green);color:#fff}.send{background:var(--purple);color:#fff}.print{background:#e8edf5;color:#25364f}.clear{background:#fff0f0;color:#8c3030;border:1px solid #efc8c8}
+#status{font-weight:800;padding:8px 3px;min-height:34px;color:#285e49}
+small.helper{display:block;color:var(--muted);font-weight:normal;margin-top:5px;line-height:1.4}
+@media(max-width:650px){header{display:block}header a{display:inline-block;margin-top:12px}header h1{font-size:31px}.step{padding:18px 15px}.actions{border-radius:12px}}
+@media print{body{background:#fff}header a,.actions{display:none!important}header{color:#000;padding:10px 0}header p{color:#333}main{padding:0}.step,.labintro{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<header>
+<div><div>TRANSITION TOWN SCHOOL</div><h1>Developer Lab</h1><p>Plan it. Build it. Test it. Improve it.</p></div>
+<a href="transition-town.html">Back to Transition Town</a>
+</header>
+<main>
+<section class="labintro">
+<h2>My First Project</h2>
+<p>Use this planner before you start building. Your project can be a game, website, app, interactive story, quiz, simulator, or another idea you can explain.</p>
+<div class="tip"><b>Developer rule:</b> You may ask for help, use AI, and look things up. Before you finish, you should be able to explain what your project does and how at least one part of it works.</div>
+</section>
+
+<form id="developerForm">
+<section class="step">
+<div class="stephead"><span class="num">1</span><h2>Who are you?</h2></div>
+<label for="studentName">Student name</label>
+<input id="studentName" name="studentName" type="text" autocomplete="name" placeholder="Type your name">
+<label for="projectDate">Date</label>
+<input id="projectDate" name="projectDate" type="text" placeholder="MM/DD/YYYY">
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">2</span><h2>What do you want to create?</h2></div>
+<div class="choicegrid">
+<label class="choice"><input type="radio" name="projectType" value="Game">Game</label>
+<label class="choice"><input type="radio" name="projectType" value="Website">Website</label>
+<label class="choice"><input type="radio" name="projectType" value="App">App</label>
+<label class="choice"><input type="radio" name="projectType" value="Interactive Story">Interactive Story</label>
+<label class="choice"><input type="radio" name="projectType" value="Quiz or Challenge">Quiz or Challenge</label>
+<label class="choice"><input type="radio" name="projectType" value="Simulator">Simulator</label>
+<label class="choice"><input type="radio" name="projectType" value="Something Else">Something Else</label>
+</div>
+<label for="projectIdea">Describe your project idea</label>
+<textarea id="projectIdea" name="projectIdea" placeholder="What do you want to build?"></textarea>
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">3</span><h2>Who is it for?</h2></div>
+<label for="audience">Who would use or play your project?</label>
+<textarea id="audience" name="audience"></textarea>
+<label for="reason">Why would they want to use it?</label>
+<textarea id="reason" name="reason"></textarea>
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">4</span><h2>What should it do?</h2></div>
+<label for="feature1">Feature 1</label><input id="feature1" name="feature1" type="text">
+<label for="feature2">Feature 2</label><input id="feature2" name="feature2" type="text">
+<label for="feature3">Feature 3</label><input id="feature3" name="feature3" type="text">
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">5</span><h2>What should it look like?</h2></div>
+<label for="design">Describe or sketch your first screen</label>
+<textarea class="sketch" id="design" name="design" placeholder="Describe the title, buttons, menu, characters, score, pictures, colors, instructions, or layout you want."></textarea>
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">6</span><h2>What happens when someone uses it?</h2></div>
+<label for="action1">When the user clicks, presses, or does...</label>
+<input id="action1" name="action1" type="text">
+<label for="result1">Then what should happen?</label>
+<input id="result1" name="result1" type="text">
+<label for="action2">Another action</label>
+<input id="action2" name="action2" type="text">
+<label for="result2">Then what should happen?</label>
+<input id="result2" name="result2" type="text">
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">7</span><h2>What do you need to learn?</h2></div>
+<div class="choicegrid" id="skills">
+<label class="choice"><input type="checkbox" name="skills" value="Making buttons work">Making buttons work</label>
+<label class="choice"><input type="checkbox" name="skills" value="Adding pictures">Adding pictures</label>
+<label class="choice"><input type="checkbox" name="skills" value="Changing colors and design">Changing colors and design</label>
+<label class="choice"><input type="checkbox" name="skills" value="Making something move">Making something move</label>
+<label class="choice"><input type="checkbox" name="skills" value="Keeping score">Keeping score</label>
+<label class="choice"><input type="checkbox" name="skills" value="Adding a timer">Adding a timer</label>
+<label class="choice"><input type="checkbox" name="skills" value="Making screens or pages">Making screens or pages</label>
+<label class="choice"><input type="checkbox" name="skills" value="Saving information">Saving information</label>
+<label class="choice"><input type="checkbox" name="skills" value="Fixing errors in code">Fixing errors in code</label>
+<label class="choice"><input type="checkbox" name="skills" value="Publishing a project">Publishing a project</label>
+<label class="choice"><input type="checkbox" name="skills" value="Not sure yet">Not sure yet</label>
+</div>
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">8</span><h2>Your first building goal</h2></div>
+<label for="goal">What is ONE thing you want working by the end of today's session?</label>
+<textarea id="goal" name="goal"></textarea>
+</section>
+
+<section class="step">
+<div class="stephead"><span class="num">9</span><h2>Developer check-in</h2></div>
+<label for="working">Something I got working today</label>
+<textarea id="working" name="working"></textarea>
+<label for="notWorking">Something that did not work yet</label>
+<textarea id="notWorking" name="notWorking"></textarea>
+<label for="nextStep">My next step is</label>
+<textarea id="nextStep" name="nextStep"></textarea>
+<label for="explain">This part of my project works because...</label>
+<textarea id="explain" name="explain"></textarea>
+</section>
+</form>
+
+<section class="rule"><b>Privacy reminder:</b> Use school/project information only. Do not type passwords, private account numbers, or other sensitive personal information into this planner.</section>
+
+<div class="actions">
+<button type="button" class="save" id="saveBtn">Save Project</button>
+<button type="button" class="send" id="sendBtn">Send to Miss Kayla</button>
+<button type="button" class="print" onclick="window.print()">Print / Save PDF</button>
+<button type="button" class="clear" id="clearBtn">Start New Planner</button>
+<span id="status" role="status"></span>
+</div>
+</main>
+
+<script>
+(function(){
+const FORM=document.getElementById('developerForm');
+const STATUS=document.getElementById('status');
+const EMAIL='khalliburton@ocboe.com';
+const baseKey='tt-developer-lab-v1-';
+const today=new Date();
+document.getElementById('projectDate').value=[String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0'),today.getFullYear()].join('/');
+
+function key(){
+ const name=document.getElementById('studentName').value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-');
+ return baseKey+(name||'unspecified');
+}
+function values(){
+ const fd=new FormData(FORM),out={};
+ for(const [k,v] of fd.entries()){
+  if(k==='skills'){(out.skills??=[]).push(v)} else out[k]=v;
+ }
+ return out;
+}
+function restore(data){
+ if(!data)return;
+ for(const [k,v] of Object.entries(data)){
+  if(k==='skills'){
+   document.querySelectorAll('input[name="skills"]').forEach(el=>el.checked=(v||[]).includes(el.value));
+  } else {
+   const els=FORM.elements[k]; if(!els)continue;
+   if(els instanceof RadioNodeList){[...els].forEach(el=>el.checked=el.value===v)}
+   else els.value=v||'';
+  }
+ }
+}
+function save(){
+ const data=values();
+ localStorage.setItem(key(),JSON.stringify(data));
+ STATUS.textContent='Saved on this device.';
+ return data;
+}
+function body(d){
+ return [
+ 'TRANSITION TOWN DEVELOPER LAB',
+ 'Student: '+(d.studentName||''),
+ 'Date: '+(d.projectDate||''),
+ '',
+ 'PROJECT TYPE: '+(d.projectType||''),
+ 'PROJECT IDEA:',
+ d.projectIdea||'',
+ '',
+ 'WHO IS IT FOR?',
+ d.audience||'',
+ 'WHY WOULD THEY USE IT?',
+ d.reason||'',
+ '',
+ 'THREE FEATURES:',
+ '1. '+(d.feature1||''),
+ '2. '+(d.feature2||''),
+ '3. '+(d.feature3||''),
+ '',
+ 'DESIGN / FIRST SCREEN:',
+ d.design||'',
+ '',
+ 'INTERACTIONS:',
+ 'When: '+(d.action1||''),
+ 'Then: '+(d.result1||''),
+ 'When: '+(d.action2||''),
+ 'Then: '+(d.result2||''),
+ '',
+ 'SKILLS I NEED TO LEARN:',
+ (d.skills||[]).join(', '),
+ '',
+ 'TODAY\'S BUILDING GOAL:',
+ d.goal||'',
+ '',
+ 'DEVELOPER CHECK-IN',
+ 'Something I got working: '+(d.working||''),
+ 'Something that did not work yet: '+(d.notWorking||''),
+ 'My next step: '+(d.nextStep||''),
+ 'This part works because: '+(d.explain||'')
+ ].join('\n');
+}
+document.getElementById('saveBtn').addEventListener('click',save);
+document.getElementById('sendBtn').addEventListener('click',()=>{
+ const d=save();
+ if(!d.studentName){STATUS.textContent='Type your name before sending.';document.getElementById('studentName').focus();return}
+ if(!d.projectIdea){STATUS.textContent='Describe your project idea before sending.';document.getElementById('projectIdea').focus();return}
+ const subject='Developer Lab Project - '+d.studentName;
+ const href='mailto:'+EMAIL+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body(d));
+ STATUS.textContent='Opening your email. Review it, then click Send.';
+ window.location.href=href;
+});
+document.getElementById('clearBtn').addEventListener('click',()=>{
+ if(!confirm('Start a new planner? Make sure you saved anything you want to keep.'))return;
+ FORM.reset();
+ document.getElementById('projectDate').value=[String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0'),today.getFullYear()].join('/');
+ STATUS.textContent='New planner started.';
+});
+document.getElementById('studentName').addEventListener('change',()=>{
+ try{restore(JSON.parse(localStorage.getItem(key())||'null'));STATUS.textContent=localStorage.getItem(key())?'Saved planner loaded.':''}catch(e){}
+});
+})();
+</script>
+</body>
+</html>
