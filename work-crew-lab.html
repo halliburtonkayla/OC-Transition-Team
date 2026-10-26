@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Work Crew Lab | Transition Town School</title>
+<style>
+:root{--navy:#17324d;--blue:#2476b8;--gold:#f2c14e;--green:#2f8f62;--red:#c94b56;--ink:#17212b;--bg:#eef5f8;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#18384f 0 170px,var(--bg) 170px);color:var(--ink)}
+header{max-width:1050px;margin:auto;padding:24px 20px;color:#fff;display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+header h1{font:900 38px Georgia,serif;margin:5px 0}header p{margin:5px 0;color:#e9f4fb}
+header a{background:#fff;color:#17324d;text-decoration:none;font-weight:900;border-radius:12px;padding:11px 14px}
+main{max-width:980px;margin:auto;padding:0 18px 50px}
+.panel{background:#fff;border-radius:22px;padding:22px;box-shadow:0 10px 28px #0b223522;margin-bottom:17px}
+h2{color:var(--navy);margin-top:0}.big{font-size:25px}
+.studentgrid,.servicegrid,.activitygrid,.answergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.pick,.service,.activity,.answer{border:2px solid #d9e2ea;background:#f9fcfe;border-radius:16px;padding:18px;font:900 18px Arial;cursor:pointer;min-height:84px;color:var(--ink)}
+.pick.active,.service.active{border-color:var(--blue);background:#e7f4ff;box-shadow:0 0 0 3px #2476b822}
+.activity{background:#fff7dc;border-color:#eed78e;text-align:left}.activity small{display:block;font-size:12px;font-weight:700;color:#6c6655;margin-top:8px;line-height:1.35}
+.instructions{background:#f7fbff;border:3px solid #7cb5dc;border-radius:20px;padding:20px;margin:16px 0}
+.instructions .label{font-size:12px;font-weight:900;letter-spacing:.12em;color:#315c7a}
+.instructions p{font-size:24px;line-height:1.45;margin:10px 0}
+.controls{display:flex;flex-wrap:wrap;gap:9px}.controls button,.primary{border:0;border-radius:12px;padding:13px 17px;font:900 15px Arial;cursor:pointer}
+.read{background:#17324d;color:#fff}.again{background:#e7eef5;color:#17324d}.help{background:#f7d7dc;color:#8b2635}.done{background:var(--green);color:#fff}
+.progress{height:14px;background:#dfe8ef;border-radius:999px;overflow:hidden;margin:15px 0}.progress>div{height:100%;background:var(--green);width:0;transition:.2s}
+.taskarea{display:none}.taskarea.show{display:block}.feedback{font-weight:900;font-size:20px;min-height:32px;margin:12px 0}
+.answer{min-height:105px;font-size:18px}.answer.correct{background:#dff5e9;border-color:#5da87e}.answer.wrong{background:#ffe6e7;border-color:#d77880}
+.sortgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.sortbox{border:3px dashed #b9c7d3;border-radius:18px;padding:15px;min-height:180px;background:#fafcfd}.sortbox h3{margin-top:0}.sortitem{display:block;width:100%;margin:9px 0;border:1px solid #cfd9e2;border-radius:12px;background:#fff;padding:12px;font:800 16px Arial;cursor:pointer}
+.statusbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#17324d;color:white;border-radius:14px;padding:12px 15px;font-weight:800}
+.summary{background:#f3f8f5;border-left:6px solid var(--green);padding:16px;border-radius:12px;line-height:1.55}
+select,input{font:inherit;padding:11px;border:1px solid #bcc9d5;border-radius:10px}
+@media(max-width:650px){header{display:block}header a{display:inline-block;margin-top:10px}.sortgrid{grid-template-columns:1fr}.instructions p{font-size:21px}.pick,.service,.activity{min-height:70px}}
+</style>
+</head>
+<body>
+<header>
+<div><div>TRANSITION TOWN SCHOOL · CDC SUPPORT</div><h1>Work Crew Lab</h1><p>See it. Hear it. Do it. Check it.</p></div>
+<a href="transition-town.html">Back to School / Town</a>
+</header>
+<main>
+<section class="panel" id="setup">
+<h2 class="big">1. Who is working today?</h2>
+<div class="studentgrid">
+<button class="pick" data-student="Noah">Noah</button>
+<button class="pick" data-student="Clark">Clark</button>
+<button class="pick" data-student="Other Student">Other Student</button>
+</div>
+<div id="otherNameWrap" style="display:none;margin-top:12px"><label><b>Student name</b><br><input id="otherName" type="text" placeholder="Type student name"></label></div>
+<h2 class="big" style="margin-top:26px">2. Choose ONE Pre-ETS service for this session</h2>
+<div class="servicegrid">
+<button class="service" data-service="Work-Based Learning Experience">Work-Based Learning Experience</button>
+<button class="service" data-service="Workplace Readiness Training">Workplace Readiness Training</button>
+</div>
+<p style="color:#5a6b78"><b>Important:</b> The lab records only the service selected for this session.</p>
+<button class="primary done" id="continueBtn">Continue</button>
+</section>
+
+<section class="panel" id="activityMenu" style="display:none">
+<div class="statusbar"><span id="studentStatus"></span><span id="serviceStatus"></span></div>
+<h2 class="big" style="margin-top:22px">Choose an activity</h2>
+<div class="activitygrid">
+<button class="activity" id="shiftBtn">My First Shift<small>Complete a short job with one instruction at a time.</small></button>
+<button class="activity" id="matchBtn">Quick Match<small>Wordwall-style large-answer game for work skills and following directions.</small></button>
+<button class="activity" id="sortBtn">Sort It Out<small>Sort workplace choices into the right group.</small></button>
+</div>
+</section>
+
+<section class="panel taskarea" id="shiftArea">
+<div class="statusbar"><span id="shiftWho"></span><span id="shiftCount"></span></div>
+<h2 class="big">My First Shift</h2>
+<div class="progress"><div id="shiftProgress"></div></div>
+<div class="instructions">
+<div class="label">YOUR JOB RIGHT NOW</div>
+<p id="shiftInstruction"></p>
+<div class="controls">
+<button class="read" id="readShift">Read to Me</button>
+<button class="again" id="repeatShift">Show Me Again</button>
+<button class="help" id="helpShift">I Need Help</button>
+<button class="done" id="doneShift">I'm Done</button>
+</div>
+</div>
+<div class="feedback" id="shiftFeedback"></div>
+</section>
+
+<section class="panel taskarea" id="matchArea">
+<div class="statusbar"><span id="matchWho"></span><span id="matchScore"></span></div>
+<h2 class="big">Quick Match</h2>
+<div class="progress"><div id="matchProgress"></div></div>
+<div class="instructions">
+<div class="label">LISTEN OR READ</div>
+<p id="matchPrompt"></p>
+<div class="controls"><button class="read" id="readMatch">Read to Me</button><button class="again" id="repeatMatch">Show Me Again</button></div>
+</div>
+<div class="answergrid" id="matchAnswers"></div>
+<div class="feedback" id="matchFeedback"></div>
+</section>
+
+<section class="panel taskarea" id="sortArea">
+<div class="statusbar"><span id="sortWho"></span><span id="sortCount"></span></div>
+<h2 class="big">Sort It Out</h2>
+<div class="instructions">
+<div class="label">DIRECTIONS</div>
+<p id="sortPrompt">Click each card, then choose where it belongs.</p>
+<div class="controls"><button class="read" id="readSort">Read to Me</button></div>
+</div>
+<div id="sortCard" class="instructions" style="background:#fff8dd;border-color:#e4c967"></div>
+<div class="sortgrid">
+<button class="sortbox" id="goodBox"><h3>GOOD WORK CHOICE</h3><p>Click here if the card belongs here.</p></button>
+<button class="sortbox" id="helpBox"><h3>NEEDS HELP / FIX IT</h3><p>Click here if the card belongs here.</p></button>
+</div>
+<div class="feedback" id="sortFeedback"></div>
+</section>
+
+<section class="panel" id="finishPanel" style="display:none">
+<h2>Session Complete</h2>
+<div class="summary" id="summary"></div>
+<div class="controls" style="margin-top:14px">
+<button class="done" id="newActivity">Choose Another Activity</button>
+<button class="again" id="newSession">Start New Student Session</button>
+</div>
+</section>
+</main>
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let student='',service='',helpCount=0,completed=0;
+const shiftTasks=[
+ 'Put the cereal box on the cereal shelf.',
+ 'Check the shelf. Find one item that is in the wrong place.',
+ 'Move the item to the correct shelf.',
+ 'Pick up the empty box and put it in recycling.',
+ 'Look at the shelf one more time. Make sure it is neat.',
+ 'Tell your supervisor, "I finished my task. What should I do next?"'
+];
+const readinessMatch=[
+ {q:'Your supervisor gives you a direction and you do not understand. What should you do?',a:'Ask the supervisor to explain or show you again.',o:['Guess and hope it is right.','Ask the supervisor to explain or show you again.','Walk away from the task.']},
+ {q:'You finish your work early. What is the best next step?',a:'Tell your supervisor you are finished and ask what is next.',o:['Sit down without telling anyone.','Leave the work area.','Tell your supervisor you are finished and ask what is next.']},
+ {q:'You notice a spill on the floor while you are working. What should you do?',a:'Follow the workplace safety rule and tell the right person or clean it safely if that is your job.',o:['Ignore it.','Follow the workplace safety rule and tell the right person or clean it safely if that is your job.','Step over it and keep going.']},
+ {q:'You made a mistake putting an item in the wrong place. What should you do?',a:'Fix it and ask for help if you are not sure where it belongs.',o:['Hide the mistake.','Blame a coworker.','Fix it and ask for help if you are not sure where it belongs.']},
+ {q:'What does being ready for work mean?',a:'Be on time, clean, prepared, and ready to follow directions.',o:['Show up whenever you can.','Be on time, clean, prepared, and ready to follow directions.','Only bring your phone.']},
+ {q:'A customer asks you a question you do not know. What should you do?',a:'Be polite and get a coworker or supervisor who can help.',o:['Make up an answer.','Ignore the customer.','Be polite and get a coworker or supervisor who can help.']}
+];
+const wblMatch=[
+ {q:'Your job card says: first stock the drinks, then flatten boxes. What do you do first?',a:'Stock the drinks.',o:['Flatten boxes.','Stock the drinks.','Ask to go home.']},
+ {q:'You are told to wipe the table, throw away the trash, and then wash your hands. What comes second?',a:'Throw away the trash.',o:['Wash your hands.','Throw away the trash.','Wipe the table again.']},
+ {q:'You are stocking shelves and cannot find where an item belongs. What should you do?',a:'Use the label or ask the supervisor for help.',o:['Put it anywhere.','Hide it behind another item.','Use the label or ask the supervisor for help.']},
+ {q:'A supervisor says, "Put the cold food away first." Which item should you handle first?',a:'Milk.',o:['Paper towels.','Cereal.','Milk.']},
+ {q:'You finished all three steps on your work card. What should you do next?',a:'Tell the supervisor the task is complete.',o:['Leave without saying anything.','Tell the supervisor the task is complete.','Start changing someone else\'s work.']},
+ {q:'The picture on the shelf label does not match the item in your hand. What should you do?',a:'Stop and check before placing the item.',o:['Put it there anyway.','Stop and check before placing the item.','Throw the item away.']}
+];
+const sortCards=[
+ {t:'Ask for help when you do not understand.',good:true},
+ {t:'Ignore your supervisor and do something different.',good:false},
+ {t:'Tell someone when you finish your assigned task.',good:true},
+ {t:'Use your phone instead of doing your work.',good:false},
+ {t:'Fix a mistake when you notice it.',good:true},
+ {t:'Leave a spill on the floor and say nothing.',good:false},
+ {t:'Follow the steps on your work card.',good:true},
+ {t:'Argue with a customer.',good:false}
+];
+function speak(text){if(!('speechSynthesis'in window))return; speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.85;u.pitch=1; speechSynthesis.speak(u)}
+function showOnly(id){$$('.taskarea').forEach(x=>x.classList.remove('show'));$('#finishPanel').style.display='none';if(id)$(id).classList.add('show')}
+$$('.pick').forEach(b=>b.onclick=()=>{$$('.pick').forEach(x=>x.classList.remove('active'));b.classList.add('active');student=b.dataset.student;$('#otherNameWrap').style.display=student==='Other Student'?'block':'none'});
+$$('.service').forEach(b=>b.onclick=()=>{$$('.service').forEach(x=>x.classList.remove('active'));b.classList.add('active');service=b.dataset.service});
+$('#continueBtn').onclick=()=>{if(student==='Other Student')student=$('#otherName').value.trim();if(!student){alert('Choose a student.');return}if(!service){alert('Choose one Pre-ETS service.');return}$('#setup').style.display='none';$('#activityMenu').style.display='block';updateStatus()};
+function updateStatus(){$('#studentStatus').textContent='Student: '+student;$('#serviceStatus').textContent=service}
+$('#shiftBtn').onclick=startShift;$('#matchBtn').onclick=startMatch;$('#sortBtn').onclick=startSort;
+let shiftIndex=0;
+function startShift(){completed=0;helpCount=0;$('#activityMenu').style.display='none';shiftIndex=0;showOnly('#shiftArea');$('#shiftWho').textContent=student+' · '+service;drawShift()}
+function drawShift(){const text=shiftTasks[shiftIndex];$('#shiftInstruction').textContent=text;$('#shiftCount').textContent='Step '+(shiftIndex+1)+' of '+shiftTasks.length;$('#shiftProgress').style.width=(shiftIndex/shiftTasks.length*100)+'%';$('#shiftFeedback').textContent='';}
+$('#readShift').onclick=()=>speak($('#shiftInstruction').textContent);$('#repeatShift').onclick=()=>{drawShift();speak($('#shiftInstruction').textContent)};$('#helpShift').onclick=()=>{helpCount++;$('#shiftFeedback').textContent='Good job asking for help. Read or listen to the direction again.';speak('Good job asking for help. '+$('#shiftInstruction').textContent)};
+$('#doneShift').onclick=()=>{completed++;shiftIndex++;if(shiftIndex>=shiftTasks.length){$('#shiftProgress').style.width='100%';return finish('My First Shift',shiftTasks.length,shiftTasks.length)}drawShift();speak('Nice work. Next step. '+$('#shiftInstruction').textContent)};
+let matchList=[],matchIndex=0,matchCorrect=0;
+function shuffle(a){return a.slice().sort(()=>Math.random()-.5)}
+function startMatch(){completed=0;helpCount=0;matchList=shuffle(service.startsWith('Work-Based')?wblMatch:readinessMatch);matchIndex=0;matchCorrect=0;$('#activityMenu').style.display='none';showOnly('#matchArea');$('#matchWho').textContent=student+' · '+service;drawMatch()}
+function drawMatch(){const q=matchList[matchIndex];$('#matchPrompt').textContent=q.q;$('#matchScore').textContent='Score '+matchCorrect+' · Question '+(matchIndex+1)+'/'+matchList.length;$('#matchProgress').style.width=(matchIndex/matchList.length*100)+'%';$('#matchFeedback').textContent='';const box=$('#matchAnswers');box.innerHTML='';shuffle(q.o).forEach(ans=>{const b=document.createElement('button');b.className='answer';b.textContent=ans;b.onclick=()=>chooseMatch(b,ans);box.appendChild(b)})}
+function chooseMatch(btn,ans){const q=matchList[matchIndex];$$('#matchAnswers .answer').forEach(x=>x.disabled=true);if(ans===q.a){btn.classList.add('correct');matchCorrect++;$('#matchFeedback').textContent='Correct. Nice job!';speak('Correct. Nice job.')}else{btn.classList.add('wrong');$$('#matchAnswers .answer').forEach(x=>{if(x.textContent===q.a)x.classList.add('correct')});$('#matchFeedback').textContent='Let’s look at the best answer.';speak('Let us look at the best answer. '+q.a)}setTimeout(()=>{matchIndex++;if(matchIndex>=matchList.length){$('#matchProgress').style.width='100%';finish('Quick Match',matchCorrect,matchList.length)}else drawMatch()},900)}
+$('#readMatch').onclick=()=>speak($('#matchPrompt').textContent);$('#repeatMatch').onclick=()=>{speak($('#matchPrompt').textContent)};
+let sortList=[],sortIndex=0,sortCorrect=0;
+function startSort(){completed=0;helpCount=0;sortList=shuffle(sortCards);sortIndex=0;sortCorrect=0;$('#activityMenu').style.display='none';showOnly('#sortArea');$('#sortWho').textContent=student+' · '+service;drawSort()}
+function drawSort(){const c=sortList[sortIndex];$('#sortCard').innerHTML='<b style="font-size:22px">'+c.t+'</b>';$('#sortCount').textContent='Card '+(sortIndex+1)+'/'+sortList.length;$('#sortFeedback').textContent=''}
+function sortChoice(good){const c=sortList[sortIndex],ok=good===c.good;if(ok){sortCorrect++;$('#sortFeedback').textContent='Correct.';speak('Correct.')}else{$('#sortFeedback').textContent='Try this idea: think about whether this helps someone do the job safely and responsibly.';speak('Think about whether this helps someone do the job safely and responsibly.')}setTimeout(()=>{sortIndex++;if(sortIndex>=sortList.length)finish('Sort It Out',sortCorrect,sortList.length);else drawSort()},700)}
+$('#goodBox').onclick=()=>sortChoice(true);$('#helpBox').onclick=()=>sortChoice(false);$('#readSort').onclick=()=>speak($('#sortCard').innerText);
+function finish(activity,score,total){showOnly(null);$('#finishPanel').style.display='block';const now=new Date(),rec={student,service,activity,score,total,helpCount,at:now.toISOString()};const key='tt-work-crew-'+student.toLowerCase().replace(/[^a-z0-9]+/g,'-');const old=JSON.parse(localStorage.getItem(key)||'[]');old.push(rec);localStorage.setItem(key,JSON.stringify(old.slice(-30)));$('#summary').innerHTML='<b>'+student+'</b><br>Service: '+service+'<br>Activity: '+activity+'<br>Result: '+score+' of '+total+'<br>Help button used: '+helpCount+' time(s)<br><br><b>Teacher note:</b> This is a practice record from a shared-computer activity. Use your observation to document the student\'s actual participation and support needed.'}
+$('#newActivity').onclick=()=>{$('#finishPanel').style.display='none';$('#activityMenu').style.display='block';updateStatus()};$('#newSession').onclick=()=>location.reload();
+})();
+</script>
+</body>
+</html>

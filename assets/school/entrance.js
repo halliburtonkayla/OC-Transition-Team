@@ -14,9 +14,11 @@ window.schoolBuildingScene = function () {
       <button class="hall-door hall-near-right" onclick="schoolGames()"><small>PRACTICE</small><strong>Educational Games</strong><span>Enter →</span></button>
       <button class="hall-door hall-mid-right" onclick="shortTraining()"><strong>Training Video Lab</strong><span>Enter →</span></button>
       <button class="hall-door hall-far-right" onclick="collegeHowTo()"><strong>Resource Room</strong><span>Enter →</span></button>
+      <a class="hall-door hall-developer" href="developer-lab.html"><small>CREATE</small><strong>Developer Lab</strong><span>Plan & build →</span></a>
+      <a class="hall-door hall-workcrew" href="work-crew-lab.html"><small>CDC WORK LAB</small><strong>Work Crew Lab</strong><span>Practice a shift →</span></a>
     </div></div>
     <nav class="school-hall-nav" aria-label="School navigation"><button onclick="document.querySelector('#centerScene')?.remove()">← Town Map</button><div><small>TRANSITION TOWN SCHOOL</small><h1>Main hallway</h1></div><a href="pre-ets-session-reports.html">Teacher Reports</a></nav>
-    <div class="school-hall-directory"><a href="career-feud.html" style="background:#ffd477;color:#17213b;font-weight:800;padding:12px 16px;border-radius:10px;text-decoration:none">Ready, Set, Work!</a><span>Choose a door · Swipe to look around</span><div><a href="school-career-lab.html">Job Exploration →</a><button onclick="schoolClassrooms()">Classrooms →</button><button onclick="schoolGames()">Games →</button></div></div>`;
+    <div class="school-hall-directory"><a href="career-feud.html" style="background:#ffd477;color:#17213b;font-weight:800;padding:12px 16px;border-radius:10px;text-decoration:none">Ready, Set, Work!</a><span>Choose a door · Swipe to look around</span><div><a href="school-career-lab.html">Job Exploration →</a><a href="developer-lab.html">Developer Lab →</a><a href="work-crew-lab.html">Work Crew Lab →</a><button onclick="schoolClassrooms()">Classrooms →</button><button onclick="schoolGames()">Games →</button></div></div>`;
   document.body.appendChild(scene);
   const pan=scene.querySelector('.school-hall-pan');
   requestAnimationFrame(()=>{pan.scrollLeft=(pan.scrollWidth-pan.clientWidth)/2;});
