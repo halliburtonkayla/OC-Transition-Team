@@ -94,7 +94,7 @@ function hostPanel(){
 function results(){
  const host=s.role==='host';
  const tools=host?'<div class="print-tools">'+btn('Print session report','print','','primary')+'<select id="studentReport" aria-label="Student for individual summary">'+s.teams.map((t,i)=>t.members.map((n,j)=>'<option value="'+i+':'+j+'">'+esc(n)+'</option>').join('')).join('')+'</select>'+btn('Print individual summary','printStudent')+'</div>':'';
- return tools+'<section class="card history"><h2>Review the decisions</h2>'+s.history.map(r=>'<article><p class="eyebrow">QUESTION '+r.number+(r.skipped?' · SKIPPED':'')+'</p><h3>'+esc(r.prompt)+'</h3>'+responses(r)+'<p><b>Points:</b> '+esc(s.teams[0].name)+' '+r.points[0]+' · '+esc(s.teams[1].name)+' '+r.points[1]+'</p><p><b>Teaching explanation:</b> '+esc(r.guidance?.teaching||r.teaching||'This round was not revealed. Discuss it with your teacher.')+'</p>'+(host&&r.revealed?'<details><summary>Correct this round’s points</summary>'+scoresForm(r)+'</details>':'')+'</article>').join('')+'</section>'+tools;
+ return tools+'<section class="card history"><h2>Review the decisions</h2>'+s.history.map(r=>'<article><p class="eyebrow">QUESTION '+r.number+(r.skipped?' · SKIPPED':'')+'</p><h3>'+esc(r.prompt)+'</h3>'+responses(r)+'<p><b>Points:</b> '+esc(s.teams[0].name)+' '+r.points[0]+' · '+esc(s.teams[1].name)+' '+r.points[1]+'</p><p><b>Teaching explanation:</b> '+esc(r.guidance?.teaching||r.teaching||'This round was not revealed. Discuss it with your teacher.')+'</p>'+(host&&r.revealed?'<details><summary>Correct this round’s points</summary>'+scoresForm(r)+'</details>':'')+'</article>').join('')+'</section>';
 }
 function renderGame(){
  if(!s)return;mode='game';

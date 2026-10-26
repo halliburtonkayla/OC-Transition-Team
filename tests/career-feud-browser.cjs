@@ -100,6 +100,7 @@ const server=http.createServer((req,res)=>{
   await host.getByRole('button',{name:'Save notes',exact:true}).click();await expect(host.locator('#notesSaved')).toHaveText('Saved');
   await host.locator('[data-action=end]').click();
   await expect(one.locator('.results-heading')).toBeVisible();
+  await expect(host.locator('#studentReport')).toHaveCount(1);
   await host.evaluate(()=>window.print=()=>{window.__printed=true});
   await host.locator('[data-action=print]').first().click();
   await expect(host.locator('#printArea')).toContainText('TEAM ONE CORRECTED');
