@@ -39,7 +39,15 @@ button{font:inherit}
 .num.cleared{opacity:0;pointer-events:none}
 .num.wrong{animation:shake .25s linear 2;background:#ffb4b4}
 .num.correctFlash{background:#7ce3aa!important;transform:scale(1.08)}
+.num{position:relative;overflow:visible}
+.num.pop-correct{animation:popCorrect .42s ease forwards;z-index:5}
+.num.fade-away{animation:fadeAway .42s ease forwards}
+.confetti-burst{position:absolute;inset:0;pointer-events:none;z-index:10}
+.confetti-piece{position:absolute;width:9px;height:9px;border-radius:2px;opacity:1;animation:confettiFly .72s ease-out forwards}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes popCorrect{0%{transform:scale(1)}35%{transform:scale(1.28)}65%{transform:scale(1.12)}100%{transform:scale(1.2)}}
+@keyframes fadeAway{0%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(.15)}}
+@keyframes confettiFly{0%{transform:translate(0,0) rotate(0deg);opacity:1}100%{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 .feedback{margin-top:14px;min-height:58px;border-radius:16px;padding:13px;text-align:center;font-size:18px;font-weight:900;background:#fff7c9;border:3px solid #ffd75e;display:flex;align-items:center;justify-content:center}
 .feedback.good{background:#eafff1;border-color:#49d589;color:#146b42}.feedback.bad{background:#fff0ef;border-color:#ff8c86;color:#9c2a32}
 .end{display:none;text-align:center;margin-top:16px;background:linear-gradient(145deg,#fff3f9,#f2efff,#e9f9ff);border:4px solid #d8ccff;border-radius:24px;padding:24px}
@@ -144,6 +152,24 @@ button{font:inherit}
    qEl.textContent=current.a+' × '+current.b+' = ?';
    prompt.textContent='Tap the answer on the number wall.';
  }
+ function burstConfetti(btn){
+   const burst=document.createElement('div');
+   burst.className='confetti-burst';
+   const colors=['#ff6fae','#7b61ff','#40c3ff','#36cf7c','#ffd75e','#ff9b54','#ff5f66'];
+   for(let i=0;i<22;i++){
+     const piece=document.createElement('span');
+     piece.className='confetti-piece';
+     piece.style.background=colors[Math.floor(Math.random()*colors.length)];
+     piece.style.left='50%';
+     piece.style.top='50%';
+     piece.style.setProperty('--x',(Math.random()*160-80)+'px');
+     piece.style.setProperty('--y',(Math.random()*160-80)+'px');
+     piece.style.setProperty('--r',(Math.random()*720-360)+'deg');
+     burst.appendChild(piece);
+   }
+   btn.appendChild(burst);
+   setTimeout(()=>burst.remove(),760);
+ }
  function pick(n,btn){
    if(!running||paused||!current)return;
    if(n===current.ans){
@@ -153,8 +179,14 @@ button{font:inherit}
      clearedEl.textContent=cleared.size;
      feedback.className='feedback good';
      feedback.textContent='Correct! '+current.a+' × '+current.b+' = '+current.ans;
-     btn.classList.add('correctFlash');
-     setTimeout(()=>{btn.classList.remove('correctFlash');btn.classList.add('cleared');nextQuestion();},260);
+     burstConfetti(btn);
+     btn.classList.add('pop-correct','correctFlash');
+     setTimeout(()=>btn.classList.add('fade-away'),220);
+     setTimeout(()=>{
+       btn.classList.add('cleared');
+       btn.classList.remove('pop-correct','fade-away','correctFlash');
+       nextQuestion();
+     },700);
    }else{
      feedback.className='feedback bad';
      feedback.textContent='Try again. '+n+' is not the answer.';
