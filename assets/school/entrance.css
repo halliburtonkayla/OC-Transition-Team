@@ -21,3 +21,9 @@
 .hall-developer small{color:#bfeaff}
 .hall-developer:hover{background:#31568a;border-color:#fff}
 @media(max-width:700px){.hall-developer{left:50%;top:64%;width:150px}.school-hall-directory>div{overflow-x:auto;max-width:calc(100vw - 42px)}}
+
+/* Shared-computer CDC Work Crew Lab */
+.hall-workcrew{left:50%;top:77%;width:180px;background:#245d4bed;border-color:#a9e0be}
+.hall-workcrew small{color:#c9f1d8}
+.hall-workcrew:hover{background:#2d765f;border-color:#fff}
+@media(max-width:700px){.hall-workcrew{left:50%;top:79%;width:155px}}
