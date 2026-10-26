@@ -172,7 +172,7 @@ document.addEventListener('click',async e=>{
   }
   if(action==='leave'){if(notesDirty&&!confirm('Your participation notes have not been saved. Leave this screen?'))return;welcome();return}
   if(action==='copy'){try{await navigator.clipboard.writeText($('joinLink').value);notice('Student join link copied.')}catch{$('joinLink').select();notice('Press Ctrl+C to copy the selected student link.')}return}
-  if(action==='print'||action==='printStudent'){if(notesDirty){await act('notes',notesDraft);notesDirty=false}const html=window.CareerFeudReport.html(s,action==='printStudent'?$('studentReport').value:undefined);$('printArea').innerHTML=html;window.print();return}
+  if(action==='print'||action==='printStudent'){const studentKey=action==='printStudent'?$('studentReport').value:undefined;if(notesDirty){await act('notes',notesDraft);notesDirty=false}const html=window.CareerFeudReport.html(s,studentKey);$('printArea').innerHTML=html;window.print();return}
   if(action==='ready'){await act('ready',{ready:true});return}
   if(action==='timer'){await act('timer',{seconds:Number($('timerSeconds').value)});return}
   if(action==='untimed'){await act('timer',{seconds:0});return}

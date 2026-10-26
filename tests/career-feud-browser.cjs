@@ -108,6 +108,8 @@ const server=http.createServer((req,res)=>{
   await host.locator('[data-action=printStudent]').first().click();
   await expect(host.locator('#printArea')).toContainText('Observed Olivia explain');
   await expect(host.locator('#printArea')).toContainText('TEAM WORK');
+  await host.locator('#studentReport').selectOption('1:2');await host.locator('[data-note="1:2"]').fill('Observed Nick take the spokesperson turn.');await host.locator('[data-action=printStudent]').first().click();
+  await expect(host.locator('#printArea h2').first()).toHaveText('Individual student summary: Nick');await expect(host.locator('#printArea')).toContainText('Observed Nick take the spokesperson turn.');
   await host.emulateMedia({media:'print'});await host.pdf({path:path.join(ART,'individual-summary.pdf'),format:'Letter'});await host.emulateMedia({media:'screen'});
   // Check a smaller Chromebook display and narrow layout with a new session.
   await host.locator('[data-action=leave]').click();await host.locator('[data-action=setup]').click();await host.locator('select[name=seconds]').selectOption('0');await host.locator('#hostForm button.primary').click();
