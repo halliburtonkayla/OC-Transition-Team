@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CDC Sort It! · Transition Town School</title>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#17213b;--purple:#7256d8;--pink:#ef6fab;--blue:#4bbbe8;--green:#35c878;--red:#ff626d;--yellow:#ffd85a}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:linear-gradient(135deg,#fff5fb,#eef8ff 48%,#fff9df);min-height:100vh}
+header{background:linear-gradient(120deg,#6e57d7,#e96da8,#49bde8);color:#fff;padding:18px 20px;box-shadow:0 5px 20px #0002}
+header .wrap{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header a{color:#fff;text-decoration:none;font-weight:900;background:#ffffff22;border:2px solid #ffffff77;padding:10px 14px;border-radius:14px}
+header h1{margin:0;font-size:clamp(26px,5vw,44px);font-family:Georgia,serif}
+header p{margin:5px 0 0;font-weight:700}
+main{max-width:1050px;margin:auto;padding:20px}
+.instructions{background:#fff;border:4px solid #ffe177;border-radius:22px;padding:16px 18px;box-shadow:0 8px 20px #0001;margin-bottom:16px}
+.instructions b{color:#6a4fd0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.stat{border-radius:18px;padding:14px;text-align:center;font-weight:900;box-shadow:0 6px 16px #0001}
+.stat strong{display:block;font-size:26px;margin-top:3px}
+.stat:nth-child(1){background:#fff0f7;color:#a1346c}.stat:nth-child(2){background:#eafff2;color:#177649}.stat:nth-child(3){background:#eaf7ff;color:#23688e}
+.game{background:#fff;border-radius:26px;padding:20px;box-shadow:0 12px 30px #0002;border:3px solid #eee8ff}
+.progress{height:16px;border-radius:999px;background:#eef0f5;overflow:hidden;margin-bottom:18px}
+.progress>div{height:100%;width:0;background:linear-gradient(90deg,#7a5fe0,#ef6fab,#4bc3e7);transition:width .25s ease}
+.card{min-height:210px;border-radius:24px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(145deg,#fff6fb,#f3f0ff,#ebfaff);border:4px solid #dcd2ff;box-shadow:inset 0 0 0 5px #fff,0 7px 16px #0001}
+.card .num{font-size:13px;font-weight:900;letter-spacing:.12em;color:#7558d7;margin-bottom:12px}
+.card .question{font-size:clamp(24px,5vw,38px);font-weight:900;line-height:1.15;max-width:760px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.choice{border:0;border-radius:20px;padding:18px;min-height:76px;font-size:clamp(22px,4vw,30px);font-weight:1000;color:#fff;cursor:pointer;box-shadow:0 8px 16px #0002;transition:transform .12s ease}
+.choice:active{transform:scale(.98)}
+.safe{background:linear-gradient(135deg,#24b865,#6ae8a0)}
+.unsafe{background:linear-gradient(135deg,#ee4e5c,#ff9c73)}
+.feedback{margin-top:16px;min-height:70px;border-radius:18px;padding:15px;text-align:center;font-size:20px;font-weight:900;background:#fff7c9;border:3px solid #ffd85a;display:flex;align-items:center;justify-content:center}
+.feedback.good{background:#eafff1;border-color:#51d98d;color:#166b42}
+.feedback.bad{background:#fff0ef;border-color:#ff8d89;color:#9d2831}
+.finish{display:none;text-align:center;padding:26px;background:linear-gradient(145deg,#fff3fa,#f1edff,#e7f9ff);border-radius:24px;border:4px solid #d9ccff}
+.finish h2{font:900 clamp(30px,6vw,52px) Georgia;margin:0 0 10px;color:#654bc6}
+.finish .bigscore{font-size:52px;font-weight:1000;color:#1e7a52;margin:10px}
+button.restart{border:0;border-radius:16px;background:#7256d8;color:white;padding:14px 20px;font-weight:900;font-size:18px;cursor:pointer}
+.small{font-size:14px;color:#657087}
+@media(max-width:620px){.stats{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.game{padding:14px}.card{padding:18px;min-height:190px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="wrap">
+  <div><h1>CDC Sort It!</h1><p>Transition Town School · Life Skills</p></div>
+  <a href="transition-town.html?school=1">← Back to School</a>
+ </div>
+</header>
+<main>
+ <section class="instructions">
+  <b>How to play:</b> Read the situation. Decide if it is <b>SAFE</b> or <b>UNSAFE</b>, then tap the correct button.
+  <div class="small">Teacher tip: read the card aloud, let students discuss it, then have one student choose the answer.</div>
+ </section>
+
+ <section class="stats">
+  <div class="stat">SCORE<strong id="score">0 / 20</strong></div>
+  <div class="stat">CORRECT<strong id="correct">0</strong></div>
+  <div class="stat">LEFT<strong id="left">20</strong></div>
+ </section>
+
+ <section class="game">
+  <div class="progress" aria-label="Game progress"><div id="bar"></div></div>
+  <div id="playArea">
+   <div class="card">
+    <div class="num" id="num">CARD 1 OF 20</div>
+    <div class="question" id="question"></div>
+   </div>
+   <div class="choices">
+    <button class="choice safe" id="safeBtn" type="button">SAFE</button>
+    <button class="choice unsafe" id="unsafeBtn" type="button">UNSAFE</button>
+   </div>
+   <div class="feedback" id="feedback" aria-live="polite">Choose SAFE or UNSAFE.</div>
+  </div>
+  <div class="finish" id="finish">
+   <h2>Great Job!</h2>
+   <p>You finished all 20 cards.</p>
+   <div class="bigscore" id="finalScore">0 / 20</div>
+   <p id="finalMessage"></p>
+   <button class="restart" id="restart" type="button">PLAY AGAIN</button>
+  </div>
+ </section>
+</main>
+
+<script>
+(function(){
+ const cards=[
+  {q:"Wipe up a spill on the floor.",a:"safe",why:"Cleaning up a spill helps prevent someone from slipping."},
+  {q:"Run in the hallway.",a:"unsafe",why:"Running in a hallway can cause falls or collisions."},
+  {q:"Wash your hands before cooking.",a:"safe",why:"Clean hands help keep food safe."},
+  {q:"Touch a hot pan with your bare hand.",a:"unsafe",why:"A hot pan can burn your skin."},
+  {q:"Tell an adult or supervisor if something is broken.",a:"safe",why:"Reporting broken equipment helps keep everyone safe."},
+  {q:"Leave food on the floor.",a:"unsafe",why:"Food on the floor can cause slips and attract pests."},
+  {q:"Wear gloves when a teacher or supervisor tells you to use them for cleaning.",a:"safe",why:"The correct protective equipment can help keep your hands safe."},
+  {q:"Play with an electrical outlet.",a:"unsafe",why:"Electrical outlets can cause serious injury."},
+  {q:"Use a step stool the correct way to reach something high.",a:"safe",why:"Using the right equipment is safer than climbing on furniture."},
+  {q:"Stand on a rolling chair to reach a shelf.",a:"unsafe",why:"A rolling chair can move and cause you to fall."},
+  {q:"Read the label before using a cleaning product.",a:"safe",why:"Labels tell you how to use a product safely."},
+  {q:"Mix cleaning chemicals together without permission.",a:"unsafe",why:"Some chemicals can become dangerous when mixed."},
+  {q:"Put a knife down with the blade facing away from you.",a:"safe",why:"Keeping the sharp edge away from your body lowers the chance of a cut."},
+  {q:"Wave scissors around while talking to a friend.",a:"unsafe",why:"Sharp tools should be carried and used carefully."},
+  {q:"Keep your work area clean and clear.",a:"safe",why:"A clear work area helps prevent trips, spills, and accidents."},
+  {q:"Ignore a wet-floor sign and walk through the wet area.",a:"unsafe",why:"Wet-floor signs warn you that the area may be slippery."},
+  {q:"Ask for help when you do not know how to use a machine or tool.",a:"safe",why:"Asking first can prevent injuries and mistakes."},
+  {q:"Use a machine after being told not to touch it.",a:"unsafe",why:"Only use equipment when you have permission and know how to use it."},
+  {q:"Carry a box so you can still see where you are walking.",a:"safe",why:"You need to see your path so you do not trip or bump into something."},
+  {q:"Pick up broken glass with your bare hands.",a:"unsafe",why:"Broken glass can cut you. Get an adult or supervisor and use the proper cleanup tools."}
+ ];
+ let index=0,correct=0,locked=false;
+ const q=document.getElementById("question"),num=document.getElementById("num"),score=document.getElementById("score"),correctEl=document.getElementById("correct"),left=document.getElementById("left"),bar=document.getElementById("bar"),feedback=document.getElementById("feedback"),playArea=document.getElementById("playArea"),finish=document.getElementById("finish"),finalScore=document.getElementById("finalScore"),finalMessage=document.getElementById("finalMessage");
+ function render(){
+  q.textContent=cards[index].q;
+  num.textContent="CARD "+(index+1)+" OF "+cards.length;
+  score.textContent=correct+" / "+cards.length;
+  correctEl.textContent=correct;
+  left.textContent=cards.length-index;
+  bar.style.width=(index/cards.length*100)+"%";
+  feedback.className="feedback";
+  feedback.textContent="Choose SAFE or UNSAFE.";
+  locked=false;
+ }
+ function answer(choice){
+  if(locked)return;
+  locked=true;
+  const item=cards[index],good=choice===item.a;
+  if(good){correct++;feedback.className="feedback good";feedback.textContent="Correct! "+item.why;}
+  else{feedback.className="feedback bad";feedback.textContent="Not quite. This is "+item.a.toUpperCase()+". "+item.why;}
+  score.textContent=correct+" / "+cards.length;
+  correctEl.textContent=correct;
+  setTimeout(function(){
+   index++;
+   if(index>=cards.length){complete();}else{render();}
+  },1600);
+ }
+ function complete(){
+  playArea.style.display="none";
+  finish.style.display="block";
+  bar.style.width="100%";
+  left.textContent="0";
+  finalScore.textContent=correct+" / "+cards.length;
+  if(correct>=18)finalMessage.textContent="Excellent safety skills!";
+  else if(correct>=14)finalMessage.textContent="Nice work! Keep practicing the tricky ones.";
+  else finalMessage.textContent="Good practice. Play again and see if you can beat your score!";
+ }
+ function restart(){
+  index=0;correct=0;locked=false;finish.style.display="none";playArea.style.display="block";render();
+ }
+ document.getElementById("safeBtn").addEventListener("click",()=>answer("safe"));
+ document.getElementById("unsafeBtn").addEventListener("click",()=>answer("unsafe"));
+ document.getElementById("restart").addEventListener("click",restart);
+ render();
+})();
+</script>
+<script src="assets/classroom-monitor/student.js?v=20261026cdcsort" defer></script>
+</body>
+</html>
