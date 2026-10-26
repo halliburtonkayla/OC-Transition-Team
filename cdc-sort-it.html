@@ -14,145 +14,151 @@ header a{color:#fff;text-decoration:none;font-weight:900;background:#ffffff22;bo
 header h1{margin:0;font-size:clamp(26px,5vw,44px);font-family:Georgia,serif}
 header p{margin:5px 0 0;font-weight:700}
 main{max-width:1050px;margin:auto;padding:20px}
+.levels{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 14px}
+.levelTab{border:0;border-radius:16px;padding:12px 8px;font-weight:1000;background:#ece8ff;color:#5c4e94}
+.levelTab.active{background:#7256d8;color:#fff}
+.levelTab.locked{opacity:.45}
 .instructions{background:#fff;border:4px solid #ffe177;border-radius:22px;padding:16px 18px;box-shadow:0 8px 20px #0001;margin-bottom:16px}
 .instructions b{color:#6a4fd0}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
 .stat{border-radius:18px;padding:14px;text-align:center;font-weight:900;box-shadow:0 6px 16px #0001}
-.stat strong{display:block;font-size:26px;margin-top:3px}
-.stat:nth-child(1){background:#fff0f7;color:#a1346c}.stat:nth-child(2){background:#eafff2;color:#177649}.stat:nth-child(3){background:#eaf7ff;color:#23688e}
+.stat strong{display:block;font-size:25px;margin-top:3px}
+.stat:nth-child(1){background:#f1edff;color:#6047bd}.stat:nth-child(2){background:#fff0f7;color:#a1346c}.stat:nth-child(3){background:#eafff2;color:#177649}.stat:nth-child(4){background:#eaf7ff;color:#23688e}
 .game{background:#fff;border-radius:26px;padding:20px;box-shadow:0 12px 30px #0002;border:3px solid #eee8ff}
 .progress{height:16px;border-radius:999px;background:#eef0f5;overflow:hidden;margin-bottom:18px}
 .progress>div{height:100%;width:0;background:linear-gradient(90deg,#7a5fe0,#ef6fab,#4bc3e7);transition:width .25s ease}
-.card{min-height:210px;border-radius:24px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(145deg,#fff6fb,#f3f0ff,#ebfaff);border:4px solid #dcd2ff;box-shadow:inset 0 0 0 5px #fff,0 7px 16px #0001}
+.card{min-height:220px;border-radius:24px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(145deg,#fff6fb,#f3f0ff,#ebfaff);border:4px solid #dcd2ff;box-shadow:inset 0 0 0 5px #fff,0 7px 16px #0001}
 .card .num{font-size:13px;font-weight:900;letter-spacing:.12em;color:#7558d7;margin-bottom:12px}
 .card .question{font-size:clamp(24px,5vw,38px);font-weight:900;line-height:1.15;max-width:760px}
+.readBtn{margin-top:15px;border:0;border-radius:999px;padding:11px 18px;background:#7256d8;color:#fff;font-weight:900;cursor:pointer}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
 .choice{border:0;border-radius:20px;padding:18px;min-height:76px;font-size:clamp(22px,4vw,30px);font-weight:1000;color:#fff;cursor:pointer;box-shadow:0 8px 16px #0002;transition:transform .12s ease}
 .choice:active{transform:scale(.98)}
 .safe{background:linear-gradient(135deg,#24b865,#6ae8a0)}
 .unsafe{background:linear-gradient(135deg,#ee4e5c,#ff9c73)}
 .feedback{margin-top:16px;min-height:70px;border-radius:18px;padding:15px;text-align:center;font-size:20px;font-weight:900;background:#fff7c9;border:3px solid #ffd85a;display:flex;align-items:center;justify-content:center}
-.feedback.good{background:#eafff1;border-color:#51d98d;color:#166b42}
-.feedback.bad{background:#fff0ef;border-color:#ff8d89;color:#9d2831}
-.finish{display:none;text-align:center;padding:26px;background:linear-gradient(145deg,#fff3fa,#f1edff,#e7f9ff);border-radius:24px;border:4px solid #d9ccff}
-.finish h2{font:900 clamp(30px,6vw,52px) Georgia;margin:0 0 10px;color:#654bc6}
-.finish .bigscore{font-size:52px;font-weight:1000;color:#1e7a52;margin:10px}
-button.restart{border:0;border-radius:16px;background:#7256d8;color:white;padding:14px 20px;font-weight:900;font-size:18px;cursor:pointer}
+.feedback.good{background:#eafff1;border-color:#51d98d;color:#166b42}.feedback.bad{background:#fff0ef;border-color:#ff8d89;color:#9d2831}
+.reward{display:none;text-align:center;padding:28px;background:linear-gradient(145deg,#fff4fa,#f1edff,#e8faff);border-radius:24px;border:4px solid #d8ccff}
+.reward h2{font:900 clamp(32px,6vw,54px) Georgia;margin:0;color:#654bc6}.reward .star{font-size:64px;margin:8px}.reward p{font-size:20px;font-weight:800}
+.rewardActions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.rewardBtn,.nextBtn{border:0;border-radius:18px;padding:18px;font-size:20px;font-weight:1000;cursor:pointer}
+.rewardBtn{background:linear-gradient(135deg,#ff70ae,#7a5fe0,#46c0ea);color:#fff}.nextBtn{background:#35c878;color:#fff}
+.finish{display:none;text-align:center;padding:28px;background:linear-gradient(145deg,#fff3fa,#f1edff,#e7f9ff);border-radius:24px;border:4px solid #d9ccff}
+.finish h2{font:900 clamp(30px,6vw,52px) Georgia;margin:0 0 10px;color:#654bc6}.finish .bigscore{font-size:52px;font-weight:1000;color:#1e7a52;margin:10px}
+.restart{border:0;border-radius:16px;background:#7256d8;color:white;padding:14px 20px;font-weight:900;font-size:18px;cursor:pointer}
+.confetti{position:fixed;pointer-events:none;width:10px;height:14px;z-index:9999;animation:fall 1.4s ease-out forwards}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(75vh) rotate(720deg);opacity:0}}
 .small{font-size:14px;color:#657087}
-@media(max-width:620px){.stats{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.game{padding:14px}.card{padding:18px;min-height:190px}}
+@media(max-width:700px){.levels{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.choices,.rewardActions{grid-template-columns:1fr}.game{padding:14px}.card{padding:18px;min-height:190px}}
 </style>
 </head>
 <body>
-<header>
- <div class="wrap">
-  <div><h1>CDC Sort It!</h1><p>Transition Town School · Life Skills</p></div>
-  <a href="transition-town.html?school=1">← Back to School</a>
- </div>
-</header>
+<header><div class="wrap"><div><h1>CDC Sort It!</h1><p>Transition Town School · Safe or Unsafe Challenge</p></div><a href="transition-town.html?school=1">← Back to School</a></div></header>
 <main>
- <section class="instructions">
-  <b>How to play:</b> Read the situation. Decide if it is <b>SAFE</b> or <b>UNSAFE</b>, then tap the correct button.
-  <div class="small">Teacher tip: read the card aloud, let students discuss it, then have one student choose the answer.</div>
- </section>
-
- <section class="stats">
-  <div class="stat">SCORE<strong id="score">0 / 20</strong></div>
-  <div class="stat">CORRECT<strong id="correct">0</strong></div>
-  <div class="stat">LEFT<strong id="left">20</strong></div>
- </section>
-
- <section class="game">
-  <div class="progress" aria-label="Game progress"><div id="bar"></div></div>
-  <div id="playArea">
-   <div class="card">
-    <div class="num" id="num">CARD 1 OF 20</div>
-    <div class="question" id="question"></div>
-   </div>
-   <div class="choices">
-    <button class="choice safe" id="safeBtn" type="button">SAFE</button>
-    <button class="choice unsafe" id="unsafeBtn" type="button">UNSAFE</button>
-   </div>
-   <div class="feedback" id="feedback" aria-live="polite">Choose SAFE or UNSAFE.</div>
-  </div>
-  <div class="finish" id="finish">
-   <h2>Great Job!</h2>
-   <p>You finished all 20 cards.</p>
-   <div class="bigscore" id="finalScore">0 / 20</div>
-   <p id="finalMessage"></p>
-   <button class="restart" id="restart" type="button">PLAY AGAIN</button>
-  </div>
- </section>
+<div id="levels" class="levels"></div>
+<section class="instructions"><b>How to play:</b> Listen to the situation, then choose <b>SAFE</b> or <b>UNSAFE</b>. Finish all 10 cards to unlock the next level and earn a Starlight reward.</section>
+<section class="stats">
+<div class="stat">LEVEL<strong id="levelStat">1 / 5</strong></div>
+<div class="stat">SCORE<strong id="score">0 / 10</strong></div>
+<div class="stat">CORRECT<strong id="correct">0</strong></div>
+<div class="stat">LEFT<strong id="left">10</strong></div>
+</section>
+<section class="game">
+<div class="progress"><div id="bar"></div></div>
+<div id="playArea">
+<div class="card"><div class="num" id="num"></div><div class="question" id="question"></div><button id="readBtn" class="readBtn" type="button">READ IT TO ME</button></div>
+<div class="choices"><button class="choice safe" id="safeBtn" type="button">SAFE</button><button class="choice unsafe" id="unsafeBtn" type="button">UNSAFE</button></div>
+<div class="feedback" id="feedback" aria-live="polite">Choose SAFE or UNSAFE.</div>
+</div>
+<div id="reward" class="reward">
+<div class="star">★</div><h2>Level Unlocked!</h2><p id="rewardText"></p>
+<div class="rewardActions"><button id="starlightBtn" class="rewardBtn" type="button">PLAY STARLIGHT REWARD</button><button id="nextBtn" class="nextBtn" type="button">SKIP REWARD — NEXT LEVEL</button></div>
+</div>
+<div id="finish" class="finish"><h2>You Beat Every Level!</h2><div class="bigscore" id="finalScore"></div><p>All 5 safety levels are complete.</p><button id="restart" class="restart" type="button">PLAY AGAIN</button></div>
+</section>
 </main>
-
 <script>
 (function(){
- const cards=[
-  {q:"Wipe up a spill on the floor.",a:"safe",why:"Cleaning up a spill helps prevent someone from slipping."},
-  {q:"Run in the hallway.",a:"unsafe",why:"Running in a hallway can cause falls or collisions."},
-  {q:"Wash your hands before cooking.",a:"safe",why:"Clean hands help keep food safe."},
-  {q:"Touch a hot pan with your bare hand.",a:"unsafe",why:"A hot pan can burn your skin."},
-  {q:"Tell an adult or supervisor if something is broken.",a:"safe",why:"Reporting broken equipment helps keep everyone safe."},
-  {q:"Leave food on the floor.",a:"unsafe",why:"Food on the floor can cause slips and attract pests."},
-  {q:"Wear gloves when a teacher or supervisor tells you to use them for cleaning.",a:"safe",why:"The correct protective equipment can help keep your hands safe."},
-  {q:"Play with an electrical outlet.",a:"unsafe",why:"Electrical outlets can cause serious injury."},
-  {q:"Use a step stool the correct way to reach something high.",a:"safe",why:"Using the right equipment is safer than climbing on furniture."},
-  {q:"Stand on a rolling chair to reach a shelf.",a:"unsafe",why:"A rolling chair can move and cause you to fall."},
-  {q:"Read the label before using a cleaning product.",a:"safe",why:"Labels tell you how to use a product safely."},
-  {q:"Mix cleaning chemicals together without permission.",a:"unsafe",why:"Some chemicals can become dangerous when mixed."},
-  {q:"Put a knife down with the blade facing away from you.",a:"safe",why:"Keeping the sharp edge away from your body lowers the chance of a cut."},
-  {q:"Wave scissors around while talking to a friend.",a:"unsafe",why:"Sharp tools should be carried and used carefully."},
-  {q:"Keep your work area clean and clear.",a:"safe",why:"A clear work area helps prevent trips, spills, and accidents."},
-  {q:"Ignore a wet-floor sign and walk through the wet area.",a:"unsafe",why:"Wet-floor signs warn you that the area may be slippery."},
-  {q:"Ask for help when you do not know how to use a machine or tool.",a:"safe",why:"Asking first can prevent injuries and mistakes."},
-  {q:"Use a machine after being told not to touch it.",a:"unsafe",why:"Only use equipment when you have permission and know how to use it."},
-  {q:"Carry a box so you can still see where you are walking.",a:"safe",why:"You need to see your path so you do not trip or bump into something."},
-  {q:"Pick up broken glass with your bare hands.",a:"unsafe",why:"Broken glass can cut you. Get an adult or supervisor and use the proper cleanup tools."}
- ];
- let index=0,correct=0,locked=false;
- const q=document.getElementById("question"),num=document.getElementById("num"),score=document.getElementById("score"),correctEl=document.getElementById("correct"),left=document.getElementById("left"),bar=document.getElementById("bar"),feedback=document.getElementById("feedback"),playArea=document.getElementById("playArea"),finish=document.getElementById("finish"),finalScore=document.getElementById("finalScore"),finalMessage=document.getElementById("finalMessage");
- function render(){
-  q.textContent=cards[index].q;
-  num.textContent="CARD "+(index+1)+" OF "+cards.length;
-  score.textContent=correct+" / "+cards.length;
-  correctEl.textContent=correct;
-  left.textContent=cards.length-index;
-  bar.style.width=(index/cards.length*100)+"%";
-  feedback.className="feedback";
-  feedback.textContent="Choose SAFE or UNSAFE.";
-  locked=false;
- }
- function answer(choice){
-  if(locked)return;
-  locked=true;
-  const item=cards[index],good=choice===item.a;
-  if(good){correct++;feedback.className="feedback good";feedback.textContent="Correct! "+item.why;}
-  else{feedback.className="feedback bad";feedback.textContent="Not quite. This is "+item.a.toUpperCase()+". "+item.why;}
-  score.textContent=correct+" / "+cards.length;
-  correctEl.textContent=correct;
-  setTimeout(function(){
-   index++;
-   if(index>=cards.length){complete();}else{render();}
-  },1600);
- }
- function complete(){
-  playArea.style.display="none";
-  finish.style.display="block";
-  bar.style.width="100%";
-  left.textContent="0";
-  finalScore.textContent=correct+" / "+cards.length;
-  if(correct>=18)finalMessage.textContent="Excellent safety skills!";
-  else if(correct>=14)finalMessage.textContent="Nice work! Keep practicing the tricky ones.";
-  else finalMessage.textContent="Good practice. Play again and see if you can beat your score!";
- }
- function restart(){
-  index=0;correct=0;locked=false;finish.style.display="none";playArea.style.display="block";render();
- }
- document.getElementById("safeBtn").addEventListener("click",()=>answer("safe"));
- document.getElementById("unsafeBtn").addEventListener("click",()=>answer("unsafe"));
- document.getElementById("restart").addEventListener("click",restart);
- render();
+const levels=[
+{name:'School Safety',cards:[
+{q:'Walk in the hallway.',a:'safe',why:'Walking helps prevent falls and collisions.'},
+{q:'Push someone while waiting in line.',a:'unsafe',why:'Pushing can hurt someone.'},
+{q:'Tell a teacher if you see water on the floor.',a:'safe',why:'An adult can help clean it before someone slips.'},
+{q:'Run down the stairs.',a:'unsafe',why:'Running on stairs can cause a serious fall.'},
+{q:'Keep your backpack out of the walkway.',a:'safe',why:'Clear walkways help prevent trips.'},
+{q:'Throw classroom supplies across the room.',a:'unsafe',why:'Thrown objects can hit someone.'},
+{q:'Use scissors while sitting and paying attention.',a:'safe',why:'Sharp tools should be used carefully.'},
+{q:'Put your fingers inside a pencil sharpener.',a:'unsafe',why:'Moving parts can hurt your fingers.'},
+{q:'Ask for help if a chair or desk is broken.',a:'safe',why:'Broken furniture should be reported.'},
+{q:'Climb on top of a desk for fun.',a:'unsafe',why:'You could fall and get hurt.'}
+]},
+{name:'Kitchen Safety',cards:[
+{q:'Wash your hands before touching food.',a:'safe',why:'Clean hands help keep food safe.'},
+{q:'Touch a hot pan with your bare hand.',a:'unsafe',why:'Hot pans can burn you.'},
+{q:'Use an oven mitt to move a hot pan.',a:'safe',why:'An oven mitt protects your hands.'},
+{q:'Leave a knife hanging off the edge of the counter.',a:'unsafe',why:'It could fall and cut someone.'},
+{q:'Turn pot handles away from the edge of the stove.',a:'safe',why:'This helps prevent hot pots from being knocked over.'},
+{q:'Taste food that fell on a dirty floor.',a:'unsafe',why:'Food on the floor can pick up germs.'},
+{q:'Put food back in the refrigerator when you are finished.',a:'safe',why:'Cold food needs to stay cold.'},
+{q:'Use a wet hand to plug in a kitchen appliance.',a:'unsafe',why:'Water and electricity are dangerous together.'},
+{q:'Clean up a small spill right away.',a:'safe',why:'Cleaning spills helps prevent slipping.'},
+{q:'Run while carrying a plate or glass.',a:'unsafe',why:'You could fall, break it, or hurt someone.'}
+]},
+{name:'Cleaning Safety',cards:[
+{q:'Read the label before using a cleaning product.',a:'safe',why:'The label tells you how to use it safely.'},
+{q:'Mix two cleaning chemicals together.',a:'unsafe',why:'Some chemicals make dangerous gases when mixed.'},
+{q:'Wear gloves when your teacher or supervisor tells you to.',a:'safe',why:'Gloves can protect your skin.'},
+{q:'Spray cleaning product toward another person.',a:'unsafe',why:'Cleaning products can hurt eyes and skin.'},
+{q:'Put a wet-floor sign near a wet floor.',a:'safe',why:'The sign warns people to be careful.'},
+{q:'Leave a mop lying across a walkway.',a:'unsafe',why:'Someone could trip over it.'},
+{q:'Put cleaning supplies away when you are done.',a:'safe',why:'Supplies belong in their proper storage area.'},
+{q:'Smell a chemical closely to figure out what it is.',a:'unsafe',why:'Breathing chemicals can be harmful.'},
+{q:'Tell an adult if a bottle is leaking.',a:'safe',why:'A leaking container should be handled safely.'},
+{q:'Use a cleaning product without permission when you do not know what it is.',a:'unsafe',why:'Ask before using unfamiliar chemicals.'}
+]},
+{name:'Community Safety',cards:[
+{q:'Look both ways before crossing a street.',a:'safe',why:'Checking for traffic helps you cross safely.'},
+{q:'Cross the street without checking for cars.',a:'unsafe',why:'Cars may be coming even if you do not hear them.'},
+{q:'Stay with your group on a community trip.',a:'safe',why:'Staying together helps everyone remain safe.'},
+{q:'Go somewhere with a stranger because they offer you candy.',a:'unsafe',why:'Do not leave with someone you do not know.'},
+{q:'Ask a trusted adult for help if you are lost.',a:'safe',why:'A trusted adult can help you get back safely.'},
+{q:'Touch a strange dog without asking the owner.',a:'unsafe',why:'Always ask before approaching an animal.'},
+{q:'Wear your seat belt in a car.',a:'safe',why:'Seat belts help protect you in a crash.'},
+{q:'Walk through a parking lot without watching for cars.',a:'unsafe',why:'Cars may be backing up or moving nearby.'},
+{q:'Wait for the walk signal before crossing at a crosswalk.',a:'safe',why:'The signal helps tell you when it is safer to cross.'},
+{q:'Pick up a needle you find on the ground.',a:'unsafe',why:'Do not touch sharp or unknown objects. Tell an adult.'}
+]},
+{name:'Work Safety',cards:[
+{q:'Ask for help when you do not know how to use a machine.',a:'safe',why:'Training helps prevent injuries and mistakes.'},
+{q:'Use a machine after being told not to touch it.',a:'unsafe',why:'Only use equipment when you have permission and training.'},
+{q:'Carry a box so you can still see where you are walking.',a:'safe',why:'You need to see your path.'},
+{q:'Carry a box so high that it blocks your face.',a:'unsafe',why:'You could trip or run into something.'},
+{q:'Tell your supervisor when equipment is broken.',a:'safe',why:'Broken equipment needs to be repaired before use.'},
+{q:'Keep working with a broken electrical cord.',a:'unsafe',why:'Damaged cords can cause shocks or fires.'},
+{q:'Wear required safety gear for your job.',a:'safe',why:'Safety gear protects you from workplace hazards.'},
+{q:'Horseplay while other people are working.',a:'unsafe',why:'Horseplay can cause accidents.'},
+{q:'Keep your work area clean and organized.',a:'safe',why:'An organized area reduces trips and mistakes.'},
+{q:'Pick up broken glass with your bare hands.',a:'unsafe',why:'Use the correct cleanup tools and get help.'}
+]}];
+
+let level=0,index=0,correct=0,totalCorrect=0,locked=false,unlocked=1;
+const q=document.getElementById('question'),num=document.getElementById('num'),score=document.getElementById('score'),correctEl=document.getElementById('correct'),left=document.getElementById('left'),bar=document.getElementById('bar'),feedback=document.getElementById('feedback'),playArea=document.getElementById('playArea'),reward=document.getElementById('reward'),finish=document.getElementById('finish'),levelStat=document.getElementById('levelStat'),rewardText=document.getElementById('rewardText'),nextBtn=document.getElementById('nextBtn');
+
+function speak(t){if('speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.83;speechSynthesis.speak(u)}}
+function renderTabs(){const box=document.getElementById('levels');box.innerHTML='';levels.forEach((l,i)=>{const b=document.createElement('button');b.className='levelTab'+(i===level?' active':'')+(i>=unlocked?' locked':'');b.textContent='Level '+(i+1)+'\n'+l.name;b.disabled=i>=unlocked;b.onclick=()=>{level=i;index=0;correct=0;showGame();render()};box.appendChild(b)})}
+function render(){const cards=levels[level].cards,item=cards[index];q.textContent=item.q;num.textContent='LEVEL '+(level+1)+' · CARD '+(index+1)+' OF '+cards.length+' · '+levels[level].name;score.textContent=correct+' / '+cards.length;correctEl.textContent=correct;left.textContent=cards.length-index;levelStat.textContent=(level+1)+' / '+levels.length;bar.style.width=(index/cards.length*100)+'%';feedback.className='feedback';feedback.textContent='Choose SAFE or UNSAFE.';locked=false;renderTabs()}
+function answer(choice){if(locked)return;locked=true;const item=levels[level].cards[index],good=choice===item.a;if(good){correct++;totalCorrect++;feedback.className='feedback good';feedback.textContent='Correct! '+item.why}else{feedback.className='feedback bad';feedback.textContent='Not quite. This is '+item.a.toUpperCase()+'. '+item.why}score.textContent=correct+' / 10';correctEl.textContent=correct;setTimeout(()=>{index++;if(index>=10)levelComplete();else render()},1450)}
+function confetti(){const colors=['#ef6fab','#7256d8','#4bbbe8','#35c878','#ffd85a','#ff8b59'];for(let i=0;i<45;i++){let p=document.createElement('i');p.className='confetti';p.style.left=Math.random()*100+'vw';p.style.top='0';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.animationDelay=Math.random()*.35+'s';document.body.appendChild(p);setTimeout(()=>p.remove(),1900)}}
+function levelComplete(){playArea.style.display='none';bar.style.width='100%';unlocked=Math.min(levels.length,Math.max(unlocked,level+2));renderTabs();confetti();if(level===levels.length-1){finish.style.display='block';document.getElementById('finalScore').textContent=totalCorrect+' / 50';return}reward.style.display='block';rewardText.textContent='You finished '+levels[level].name+' and unlocked Level '+(level+2)+': '+levels[level+1].name+'! Choose your reward or keep going.';nextBtn.textContent='SKIP REWARD — GO TO LEVEL '+(level+2)}
+function showGame(){reward.style.display='none';finish.style.display='none';playArea.style.display='block';bar.style.width='0%'}
+function nextLevel(){level++;index=0;correct=0;showGame();render()}
+document.getElementById('safeBtn').onclick=()=>answer('safe');document.getElementById('unsafeBtn').onclick=()=>answer('unsafe');
+document.getElementById('readBtn').onclick=()=>speak(q.textContent+'. Is this safe or unsafe?');
+document.getElementById('starlightBtn').onclick=()=>{nextBtn.textContent="I'M BACK — GO TO LEVEL "+(level+2);window.open('https://starlight-family-adventures.ppg8r682jb.chatgpt.site','_blank','noopener')};
+nextBtn.onclick=nextLevel;
+document.getElementById('restart').onclick=()=>{level=0;index=0;correct=0;totalCorrect=0;unlocked=1;showGame();render()};
+render();
 })();
 </script>
-<script src="assets/classroom-monitor/student.js?v=20261026cdcsort" defer></script>
-</body>
-</html>
+<script src="assets/classroom-monitor/student.js?v=20261026cdclevels" defer></script>
+</body></html>
