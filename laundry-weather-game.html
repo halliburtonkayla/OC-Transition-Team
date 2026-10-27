@@ -1,6 +1,345 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laundry Weather Match</title><style>
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff4fb,#eef8ff,#fff7dd);color:#17213b}header{padding:18px;background:linear-gradient(120deg,#7256d8,#ef6fab,#45bee8);color:#fff}header a{color:#fff;font-weight:900;text-decoration:none}.wrap{max-width:1000px;margin:auto;padding:18px}.panel{background:#fff;border-radius:24px;padding:20px;box-shadow:0 10px 25px #0001;border:3px solid #eee8ff}.top{display:grid;grid-template-columns:1fr 1fr;gap:16px}.weather{text-align:center;background:#f5f3ff;border-radius:20px;padding:18px}.weather h2{font-size:38px;margin:8px}.weather p{font-size:22px;font-weight:900}.character{background:linear-gradient(#c5ebff 0 60%,#9ad17a 60%);border-radius:20px;min-height:300px;display:flex;align-items:flex-end;justify-content:center;position:relative}.person{position:relative;width:150px;height:245px}.head{position:absolute;top:4px;left:39px;width:72px;height:72px;border-radius:50%;background:#9b694d;border:4px solid #664735}.hair{position:absolute;top:-7px;left:-7px;width:86px;height:35px;border-radius:50%;background:#2a211f}.body{position:absolute;top:74px;left:24px;width:102px;height:100px;border-radius:22px;background:#58b7df;border:4px solid #fff}.legs{position:absolute;top:166px;left:36px;width:78px;height:74px;border-left:30px solid #354c78;border-right:30px solid #354c78}.coat,.hat,.scarf,.shorts,.boots,.rain{display:none;position:absolute;z-index:5}.show{display:block}.coat{top:72px;left:18px;width:114px;height:112px;border-radius:22px;background:#ef6fab;border:5px solid #fff}.hat{top:-12px;left:29px;width:92px;height:28px;border-radius:40px 40px 8px 8px;background:#7256d8}.scarf{top:68px;left:32px;width:86px;height:20px;border-radius:20px;background:#ff9b54}.shorts{top:154px;left:30px;width:90px;height:40px;border-radius:10px;background:#ffd75e}.boots{bottom:0;left:26px;width:98px;height:27px;border-left:40px solid #563b2d;border-right:40px solid #563b2d}.rain{top:72px;left:18px;width:114px;height:112px;border-radius:22px;background:#48c6b2;border:5px solid #fff}.reaction{position:absolute;right:12px;top:12px;background:#fff;border:3px solid #e6dcff;border-radius:16px;padding:10px;font-weight:900;max-width:190px;text-align:center}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}.choice{border:0;border-radius:17px;padding:15px;min-height:110px;font-size:18px;font-weight:900;background:#eef7ff}.choice:nth-child(even){background:#fff0f7}.choice small{display:block;color:#69748c;margin-top:6px}.choice.reading{outline:6px solid #ffd75a;transform:scale(1.04)}.feedback{margin-top:14px;padding:14px;border-radius:16px;text-align:center;font-weight:900;background:#fff6c9;border:3px solid #ffd75a}.good{background:#eafff1;border-color:#4ed98b}.hot{background:#fff0dd;border-color:#ff9b54}.cold{background:#eaf6ff;border-color:#51bde8}.wet{background:#eafbf7;border-color:#48c6b2}.buttons{display:flex;gap:8px;flex-wrap:wrap}.read{border:0;border-radius:14px;padding:11px 14px;background:#7256d8;color:#fff;font-weight:900}.reward{display:none;text-align:center;margin-top:16px;background:#f4efff;border:4px solid #d9ccff;border-radius:22px;padding:22px}.reward button{border:0;border-radius:14px;padding:13px 17px;font-weight:900;margin:5px}.bonus{background:#ef6fab;color:white}.next{background:#36c97a;color:white}.socks{display:none;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.sock{border:0;border-radius:14px;padding:18px;font-weight:900;background:#ece8ff}.sock.open{outline:5px solid #ffd75a}.sock.done{background:#dcffe9;opacity:.6}.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.pill{background:#fff;border-radius:999px;padding:9px 13px;font-weight:900}@media(max-width:700px){.top{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.socks{grid-template-columns:repeat(2,1fr)}}</style></head><body>
-<header><a href="transition-town.html?school=1">← Back to School</a><h1>Laundry & Dress for the Weather</h1></header><main class="wrap"><div class="stats"><span class="pill">Level <b id="level">1</b>/4</span><span class="pill">Correct <b id="score">0</b></span><span class="pill">Round <b id="round">1</b>/4</span></div><section id="game" class="panel"><div class="top"><div class="weather"><b id="season">SUMMER</b><h2 id="weather">Sunny and hot</h2><p id="temp">95°F</p><div class="buttons"><button class="read" id="readWeather">Read Weather</button><button class="read" id="readChoices" style="background:#ef6fab">Read Choices</button></div></div><div class="character"><div class="reaction" id="reaction">Help me get dressed!</div><div class="person"><div id="hat" class="hat"></div><div id="coat" class="coat"></div><div id="scarf" class="scarf"></div><div id="shorts" class="shorts"></div><div id="boots" class="boots"></div><div id="rain" class="rain"></div><div class="head"><div class="hair"></div></div><div class="body"></div><div class="legs"></div></div></div></div><div id="choices" class="choices"></div><div id="feedback" class="feedback">Pick the outfit that matches the weather.</div></section><section id="reward" class="reward"><h2>Level Complete!</h2><p>You earned a Laundry Star.</p><button id="bonus" class="bonus">Play Sock Match Bonus</button><button id="next" class="next">Skip Reward & Keep Going</button><div id="socks" class="socks"></div></section></main>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laundry Weather Match</title><style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff4fb,#eef8ff,#fff7dd);color:#17213b}header{padding:18px;background:linear-gradient(120deg,#7256d8,#ef6fab,#45bee8);color:#fff}header a{color:#fff;font-weight:900;text-decoration:none}.wrap{max-width:1000px;margin:auto;padding:18px}.panel{background:#fff;border-radius:24px;padding:20px;box-shadow:0 10px 25px #0001;border:3px solid #eee8ff}.top{display:grid;grid-template-columns:1fr 1fr;gap:16px}.weather{text-align:center;background:#f5f3ff;border-radius:20px;padding:18px}.weather h2{font-size:38px;margin:8px}.weather p{font-size:22px;font-weight:900}.character{background:linear-gradient(#c5ebff 0 60%,#9ad17a 60%);border-radius:20px;min-height:300px;display:flex;align-items:flex-end;justify-content:center;position:relative}.person{position:relative;width:150px;height:245px}.head{position:absolute;top:4px;left:39px;width:72px;height:72px;border-radius:50%;background:#9b694d;border:4px solid #664735}.hair{position:absolute;top:-7px;left:-7px;width:86px;height:35px;border-radius:50%;background:#2a211f}.body{position:absolute;top:74px;left:24px;width:102px;height:100px;border-radius:22px;background:#58b7df;border:4px solid #fff}.legs{position:absolute;top:166px;left:36px;width:78px;height:74px;border-left:30px solid #354c78;border-right:30px solid #354c78}.coat,.hat,.scarf,.shorts,.boots,.rain{display:none;position:absolute;z-index:5}.show{display:block}.coat{top:72px;left:18px;width:114px;height:112px;border-radius:22px;background:#ef6fab;border:5px solid #fff}.hat{top:-12px;left:29px;width:92px;height:28px;border-radius:40px 40px 8px 8px;background:#7256d8}.scarf{top:68px;left:32px;width:86px;height:20px;border-radius:20px;background:#ff9b54}.shorts{top:154px;left:30px;width:90px;height:40px;border-radius:10px;background:#ffd75e}.boots{bottom:0;left:26px;width:98px;height:27px;border-left:40px solid #563b2d;border-right:40px solid #563b2d}.rain{top:72px;left:18px;width:114px;height:112px;border-radius:22px;background:#48c6b2;border:5px solid #fff}.reaction{position:absolute;right:12px;top:12px;background:#fff;border:3px solid #e6dcff;border-radius:16px;padding:10px;font-weight:900;max-width:190px;text-align:center}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}.choice{border:0;border-radius:17px;padding:15px;min-height:110px;font-size:18px;font-weight:900;background:#eef7ff}.choice:nth-child(even){background:#fff0f7}.choice small{display:block;color:#69748c;margin-top:6px}.choice.reading{outline:6px solid #ffd75a;transform:scale(1.04)}.feedback{margin-top:14px;padding:14px;border-radius:16px;text-align:center;font-weight:900;background:#fff6c9;border:3px solid #ffd75a}.good{background:#eafff1;border-color:#4ed98b}.hot{background:#fff0dd;border-color:#ff9b54}.cold{background:#eaf6ff;border-color:#51bde8}.wet{background:#eafbf7;border-color:#48c6b2}.buttons{display:flex;gap:8px;flex-wrap:wrap}.read{border:0;border-radius:14px;padding:11px 14px;background:#7256d8;color:#fff;font-weight:900}.reward{display:none;text-align:center;margin-top:16px;background:#f4efff;border:4px solid #d9ccff;border-radius:22px;padding:22px}.reward button{border:0;border-radius:14px;padding:13px 17px;font-weight:900;margin:5px}.bonus{background:#ef6fab;color:white}.next{background:#36c97a;color:white}.socks{display:none;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.sock{border:0;border-radius:14px;padding:18px;font-weight:900;background:#ece8ff}.sock.open{outline:5px solid #ffd75a}.sock.done{background:#dcffe9;opacity:.6}.stats{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.pill{background:#fff;border-radius:999px;padding:9px 13px;font-weight:900}@media(max-width:700px){.top{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.socks{grid-template-columns:repeat(2,1fr)}}
+/* Sock Match uses picture cards and native buttons for touch and keyboard play. */
+[hidden]{display:none!important}button{cursor:pointer;touch-action:manipulation}button:focus-visible,header a:focus-visible{outline:4px solid #263987;outline-offset:5px}button:disabled{cursor:default}.speech-status{font-weight:700;color:#384567}.speech-status:empty{display:none}.reward h2:focus{outline:none}.bonus-panel{margin-top:18px}.bonus-panel h3{font-size:26px;margin-bottom:8px}.sock-audio{min-height:48px;background:#7256d8;color:white;display:inline-flex;align-items:center;gap:8px}.sock-audio svg{width:24px;height:24px}.socks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;max-width:700px;margin:18px auto}.socks .sock{margin:0;position:relative;display:flex;align-items:center;justify-content:center;min-height:140px;padding:12px;border:3px solid #b9a8ef;border-radius:18px;background:#ece8ff;color:#26345c}.sock svg{display:block;pointer-events:none}.sock-art{width:82px;height:106px;max-width:100%}.sock-back{width:78px;height:96px}.sock.open{background:#fff9db;outline:4px solid #c59612;outline-offset:1px}.sock.done{background:#e5fff0;border-color:#258255;outline:none;opacity:1}.match-mark{position:absolute;top:6px;right:6px;width:25px;height:25px;border-radius:50%;background:#187245;color:white;display:flex;align-items:center;justify-content:center}.match-mark svg{width:19px;height:19px}.bonus-feedback{font-size:21px;font-weight:900;min-height:1.4em}.bonus-feedback.matched{color:#17633e}.bonus-feedback.try-again{color:#62411b}.bonus-progress{font-size:20px;font-weight:900}.reward .bonus,.reward .next{min-height:48px}.reward .next{background:#187744}.reward .bonus{background:#af3371}.read{min-height:48px}@media(max-width:520px){.socks{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sock{min-height:126px}.reward{padding:16px}.weather h2{font-size:32px}}@media(prefers-reduced-motion:reduce){.choice.reading{transform:none}}
+</style></head><body>
+<header><a href="transition-town.html?school=1">← Back to School</a><h1>Laundry & Dress for the Weather</h1></header><main class="wrap"><div class="stats"><span class="pill">Level <b id="level">1</b>/4</span><span class="pill">Correct <b id="score">0</b></span><span class="pill">Round <b id="round">1</b>/4</span></div><section id="game" class="panel"><div class="top"><div class="weather"><b id="season">SUMMER</b><h2 id="weather">Sunny and hot</h2><p id="temp">95°F</p><div class="buttons"><button class="read" id="readWeather">Read Weather</button><button class="read" id="readChoices" style="background:#ef6fab">Read Choices</button></div></div><div class="character"><div class="reaction" id="reaction">Help me get dressed!</div><div class="person"><div id="hat" class="hat"></div><div id="coat" class="coat"></div><div id="scarf" class="scarf"></div><div id="shorts" class="shorts"></div><div id="boots" class="boots"></div><div id="rain" class="rain"></div><div class="head"><div class="hair"></div></div><div class="body"></div><div class="legs"></div></div></div></div><p id="speechStatus" class="speech-status" role="status"></p><div id="choices" class="choices"></div><div id="feedback" class="feedback">Pick the outfit that matches the weather.</div></section><section id="reward" class="reward" aria-labelledby="rewardTitle"><h2 id="rewardTitle" tabindex="-1">Level Complete!</h2><p>You earned a Laundry Star. Play the bonus or keep going.</p><button id="bonus" class="bonus">Play Sock Match Bonus</button><button id="next" class="next">Skip Reward &amp; Keep Going</button><div id="bonusPanel" class="bonus-panel" hidden><h3>Sock Match</h3><p>Turn over two cards. Find all four matching pairs.</p><button id="sockAudio" class="sock-audio" type="button" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor"/><path d="M16 8q4 4 0 8m3-11q7 7 0 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="sockAudioLabel">Read Sock Descriptions: On</span></button><p id="bonusProgress" class="bonus-progress">Pairs found: 0 of 4</p><div id="socks" class="socks" aria-label="Sock matching cards"></div><p id="bonusFeedback" class="bonus-feedback" role="status" aria-live="polite" aria-atomic="true">Find two socks that look the same.</p></div></section></main>
 <script>
-(()=>{const outfits={summer:['T-shirt + shorts + sneakers',['shorts'],'cool'],spring:['T-shirt + light pants + sneakers',[],'mild'],fall:['Sweater + long pants + sneakers',['coat'],'mild'],winter:['Coat + pants + hat + scarf + boots',['coat','hat','scarf','boots'],'warm'],rain:['Rain jacket + pants + rain boots',['rain','boots'],'rain'],snow:['Heavy coat + hat + scarf + boots',['coat','hat','scarf','boots'],'warm']};const levels=[[['SUMMER','Sunny and hot','95°F','summer'],['SUMMER','Hot and humid','90°F','summer'],['SPRING','Warm and breezy','72°F','spring'],['SUMMER','Very hot outside','98°F','summer']],[['WINTER','Cold and windy','30°F','winter'],['WINTER','Snowing outside','25°F','snow'],['FALL','Cool and cloudy','55°F','fall'],['WINTER','Very cold morning','20°F','winter']],[['SPRING','Rainy and cool','58°F','rain'],['SPRING','Sunny but cool','64°F','spring'],['FALL','Rainy and windy','50°F','rain'],['FALL','Cool fall afternoon','60°F','fall']],[['MIXED','Sunny and chilly','48°F','fall'],['MIXED','Warm rain shower','70°F','rain'],['MIXED','Cold with snow','28°F','snow'],['MIXED','Hot sunny afternoon','92°F','summer']]];let lv=0,rd=0,score=0,lock=false;const ids=x=>document.getElementById(x),choices=ids('choices');function speak(t){if('speechSynthesis'in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.rate=.8;speechSynthesis.speak(u)}}function clear(){['hat','coat','scarf','shorts','boots','rain'].forEach(x=>ids(x).classList.remove('show'))}function dress(k){clear();outfits[k][1].forEach(x=>ids(x).classList.add('show'))}function render(){lock=false;ids('level').textContent=lv+1;ids('round').textContent=rd+1;let s=levels[lv][rd];ids('season').textContent=s[0];ids('weather').textContent=s[1];ids('temp').textContent=s[2];ids('reaction').textContent='Help me get dressed!';clear();choices.innerHTML='';let keys=Object.keys(outfits).sort(()=>Math.random()-.5);keys.forEach((k,i)=>{let b=document.createElement('button');b.className='choice';b.dataset.k=k;b.innerHTML=outfits[k][0]+'<small>Choice '+(i+1)+'</small>';b.onclick=()=>pick(k);choices.appendChild(b)});ids('feedback').className='feedback';ids('feedback').textContent='Pick the outfit that matches the weather.'}function pick(k){if(lock)return;let right=levels[lv][rd][3];dress(k);if(k===right){lock=true;score++;ids('score').textContent=score;ids('reaction').textContent='Good job! I feel just right.';ids('feedback').className='feedback good';ids('feedback').textContent='Good job! This outfit matches the weather.';speak('Good job! This outfit matches the weather.');setTimeout(nextRound,1000)}else{let need=outfits[right][2],got=outfits[k][2];if(need==='warm'&&(got==='cool'||got==='mild')){ids('reaction').textContent='Brrr! I am too cold.';ids('feedback').className='feedback cold';ids('feedback').textContent='Too cold! Pick warmer clothes.';speak('Brrr! I am too cold. Pick warmer clothes.')}else if((need==='cool'||need==='mild')&&got==='warm'){ids('reaction').textContent='Whew! I am too hot.';ids('feedback').className='feedback hot';ids('feedback').textContent='Too hot! Pick something lighter.';speak('Whew! I am too hot. Pick something lighter.')}else if(need==='rain'&&k!=='rain'){ids('reaction').textContent='I am getting wet!';ids('feedback').className='feedback wet';ids('feedback').textContent='I need clothes for rain.';speak('I am getting wet. I need clothes for rain.')}else{ids('reaction').textContent='That does not feel right.';ids('feedback').className='feedback hot';ids('feedback').textContent='Try a different outfit.';speak('Try a different outfit.')}}}function nextRound(){rd++;if(rd===4){ids('game').style.display='none';ids('reward').style.display='block';ids('next').textContent=lv===3?'Finish Game':'Skip Reward and Keep Going'}else render()}function goNext(){ids('reward').style.display='none';ids('socks').style.display='none';if(lv===3){ids('game').style.display='block';choices.innerHTML='';ids('season').textContent='GREAT JOB';ids('weather').textContent='All Levels Complete!';ids('temp').textContent='';ids('reaction').textContent='You did it!';ids('feedback').className='feedback good';ids('feedback').textContent='You finished with '+score+' correct outfits.';return}lv++;rd=0;ids('game').style.display='block';render()}function bonus(){ids('socks').style.display='grid';ids('bonus').style.display='none';let vals=['A','A','B','B','C','C','D','D'].sort(()=>Math.random()-.5),first=null,hold=false,done=0;ids('socks').innerHTML='';vals.forEach(v=>{let b=document.createElement('button');b.className='sock';b.textContent='SOCK';b.dataset.v=v;b.onclick=()=>{if(hold||b.classList.contains('done')||b===first)return;b.textContent=v;b.classList.add('open');if(!first){first=b;return}if(first.dataset.v===b.dataset.v){first.classList.add('done');b.classList.add('done');first=null;done++;if(done===4){speak('Great matching! Reward complete.');setTimeout(goNext,700)}}else{hold=true;let old=first;first=null;setTimeout(()=>{old.textContent='SOCK';b.textContent='SOCK';old.classList.remove('open');b.classList.remove('open');hold=false},600)}};ids('socks').appendChild(b)})}ids('readWeather').onclick=()=>{let s=levels[lv][rd];speak(s[0]+'. '+s[1]+'. '+s[2])};ids('readChoices').onclick=()=>{let bs=[...choices.querySelectorAll('.choice')],i=0;function read(){if(i>=bs.length)return;bs.forEach(x=>x.classList.remove('reading'));let b=bs[i];b.classList.add('reading');speak('Choice '+(i+1)+'. '+outfits[b.dataset.k][0]);setTimeout(()=>{b.classList.remove('reading');i++;read()},1450)}read()};ids('bonus').onclick=bonus;ids('next').onclick=goNext;render()})();
+(() => {
+const outfits={summer:['T-shirt + shorts + sneakers',['shorts'],'cool'],spring:['T-shirt + light pants + sneakers',[],'mild'],fall:['Sweater + long pants + sneakers',['coat'],'mild'],winter:['Coat + pants + hat + scarf + boots',['coat','hat','scarf','boots'],'warm'],rain:['Rain jacket + pants + rain boots',['rain','boots'],'rain'],snow:['Heavy coat + hat + scarf + boots',['coat','hat','scarf','boots'],'warm']};const levels=[[['SUMMER','Sunny and hot','95°F','summer'],['SUMMER','Hot and humid','90°F','summer'],['SPRING','Warm and breezy','72°F','spring'],['SUMMER','Very hot outside','98°F','summer']],[['WINTER','Cold and windy','30°F','winter'],['WINTER','Snowing outside','25°F','snow'],['FALL','Cool and cloudy','55°F','fall'],['WINTER','Very cold morning','20°F','winter']],[['SPRING','Rainy and cool','58°F','rain'],['SPRING','Sunny but cool','64°F','spring'],['FALL','Rainy and windy','50°F','rain'],['FALL','Cool fall afternoon','60°F','fall']],[['MIXED','Sunny and chilly','48°F','fall'],['MIXED','Warm rain shower','70°F','rain'],['MIXED','Cold with snow','28°F','snow'],['MIXED','Hot sunny afternoon','92°F','summer']]];
+  let lv = 0, rd = 0, score = 0, lock = false;
+  let phase = 'outfit', roundTimer = null, bonusTimer = null, bonusState = null;
+  let speechSequence = 0, activeSpeech = null, readingChoices = false, readSocks = true;
+  const ids = id => document.getElementById(id);
+  const choices = ids('choices');
+  const hasSpeech = () => 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+
+  // A new action cancels the whole old sequence, including browsers that do not
+  // send an onend event when cancel() is called.
+  function stopSpeech() {
+    speechSequence++;
+    if (activeSpeech) activeSpeech.finish(false);
+    if (hasSpeech()) {
+      try { window.speechSynthesis.cancel(); } catch (_) {}
+    }
+    readingChoices = false;
+    ids('speechStatus').textContent = '';
+    choices.querySelectorAll('.choice').forEach(b => b.classList.remove('reading'));
+    ids('readChoices').textContent = 'Read Choices';
+    ids('readChoices').setAttribute('aria-pressed', 'false');
+  }
+
+  function say(text, sequence) {
+    if (!hasSpeech() || sequence !== speechSequence) return Promise.resolve(false);
+    return new Promise(resolve => {
+      const utterance = new window.SpeechSynthesisUtterance(text);
+      utterance.rate = .8;
+      utterance.lang = 'en-US';
+      const task = { finish(completed) {
+        utterance.onend = utterance.onerror = null;
+        if (activeSpeech === task) activeSpeech = null;
+        resolve(completed && sequence === speechSequence);
+      }};
+      activeSpeech = task;
+      utterance.onend = () => task.finish(true);
+      utterance.onerror = () => task.finish(false);
+      try {
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        window.speechSynthesis.speak(utterance);
+      } catch (_) { task.finish(false); }
+    });
+  }
+
+  function speak(text) {
+    stopSpeech();
+    return say(text, speechSequence);
+  }
+
+  async function readChoices() {
+    if (readingChoices) { stopSpeech(); return; }
+    if (phase !== 'outfit' || lock) return;
+    stopSpeech();
+    if (!hasSpeech()) {
+      ids('speechStatus').textContent = 'Read aloud is unavailable on this device. You can still choose an outfit.';
+      return;
+    }
+    ids('speechStatus').textContent = '';
+    const sequence = speechSequence;
+    readingChoices = true;
+    ids('readChoices').textContent = 'Stop Reading';
+    ids('readChoices').setAttribute('aria-pressed', 'true');
+    const buttons = [...choices.querySelectorAll('.choice')];
+    for (let i = 0; i < buttons.length; i++) {
+      if (sequence !== speechSequence) return;
+      const button = buttons[i];
+      button.classList.add('reading');
+      const description = outfits[button.dataset.k][0].replace(/ \+ /g, ' and ');
+      const completed = await say('Choice ' + (i + 1) + '. ' + description, sequence);
+      if (sequence !== speechSequence) return;
+      button.classList.remove('reading');
+      if (!completed) {
+        ids('speechStatus').textContent = 'Reading stopped. Press Read Choices to try again.';
+        break;
+      }
+    }
+    if (sequence === speechSequence) {
+      readingChoices = false;
+      ids('readChoices').textContent = 'Read Choices';
+      ids('readChoices').setAttribute('aria-pressed', 'false');
+    }
+  }
+
+  function clear() {
+    ['hat','coat','scarf','shorts','boots','rain'].forEach(id => ids(id).classList.remove('show'));
+  }
+  function dress(key) {
+    clear();
+    outfits[key][1].forEach(id => ids(id).classList.add('show'));
+  }
+  function shuffle(values) {
+    const result = [...values];
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
+  function render() {
+    stopSpeech();
+    lock = false;
+    ids('level').textContent = lv + 1;
+    ids('round').textContent = rd + 1;
+    const scenario = levels[lv][rd];
+    ids('season').textContent = scenario[0];
+    ids('weather').textContent = scenario[1];
+    ids('temp').textContent = scenario[2];
+    ids('reaction').textContent = 'Help me get dressed!';
+    clear();
+    choices.innerHTML = '';
+    shuffle(Object.keys(outfits)).forEach((key, i) => {
+      const button = document.createElement('button');
+      button.className = 'choice';
+      button.dataset.k = key;
+      button.innerHTML = outfits[key][0] + '<small>Choice ' + (i + 1) + '</small>';
+      button.onclick = () => pick(key);
+      choices.appendChild(button);
+    });
+    ids('feedback').className = 'feedback';
+    ids('feedback').textContent = 'Pick the outfit that matches the weather.';
+  }
+  function pick(key) {
+    if (phase !== 'outfit' || lock) return;
+    stopSpeech();
+    const right = levels[lv][rd][3];
+    dress(key);
+    if (key === right) {
+      lock = true;
+      score++;
+      ids('score').textContent = score;
+      ids('reaction').textContent = 'Good job! I feel just right.';
+      ids('feedback').className = 'feedback good';
+      ids('feedback').textContent = 'Good job! This outfit matches the weather.';
+      speak('Good job! This outfit matches the weather.');
+      roundTimer = setTimeout(nextRound, 1000);
+    } else {
+      const need = outfits[right][2], got = outfits[key][2];
+      if (need === 'warm' && (got === 'cool' || got === 'mild')) {
+        ids('reaction').textContent = 'Brrr! I am too cold.';
+        ids('feedback').className = 'feedback cold';
+        ids('feedback').textContent = 'Too cold! Pick warmer clothes.';
+        speak('Brrr! I am too cold. Pick warmer clothes.');
+      } else if ((need === 'cool' || need === 'mild') && got === 'warm') {
+        ids('reaction').textContent = 'Whew! I am too hot.';
+        ids('feedback').className = 'feedback hot';
+        ids('feedback').textContent = 'Too hot! Pick something lighter.';
+        speak('Whew! I am too hot. Pick something lighter.');
+      } else if (need === 'rain' && key !== 'rain') {
+        ids('reaction').textContent = 'I am getting wet!';
+        ids('feedback').className = 'feedback wet';
+        ids('feedback').textContent = 'I need clothes for rain.';
+        speak('I am getting wet. I need clothes for rain.');
+      } else {
+        ids('reaction').textContent = 'That does not feel right.';
+        ids('feedback').className = 'feedback hot';
+        ids('feedback').textContent = 'Try a different outfit.';
+        speak('Try a different outfit.');
+      }
+    }
+  }
+
+  function resetBonus() {
+    clearTimeout(bonusTimer);
+    bonusTimer = null;
+    bonusState = null;
+    ids('socks').innerHTML = '';
+    ids('bonusPanel').hidden = true;
+    ids('bonus').hidden = false;
+    ids('bonusProgress').textContent = 'Pairs found: 0 of 4';
+    ids('bonusFeedback').className = 'bonus-feedback';
+    ids('bonusFeedback').textContent = 'Find two socks that look the same.';
+  }
+  function showReward() {
+    phase = 'reward';
+    stopSpeech();
+    resetBonus();
+    ids('game').style.display = 'none';
+    ids('reward').style.display = 'block';
+    ids('rewardTitle').textContent = 'Level ' + (lv + 1) + ' Complete!';
+    ids('next').textContent = lv === 3 ? 'Skip Reward & Finish Game' : 'Skip Reward & Keep Going';
+    ids('rewardTitle').focus();
+  }
+  function nextRound() {
+    roundTimer = null;
+    if (phase !== 'outfit' || !lock) return;
+    if (rd === 3) showReward();
+    else { rd++; render(); }
+  }
+  function goNext() {
+    if (phase !== 'reward' && phase !== 'bonus') return;
+    stopSpeech();
+    clearTimeout(roundTimer);
+    resetBonus();
+    ids('reward').style.display = 'none';
+    ids('game').style.display = 'block';
+    if (lv === 3) {
+      phase = 'finished';
+      choices.innerHTML = '';
+      ids('season').textContent = 'GREAT JOB';
+      ids('weather').textContent = 'All Levels Complete!';
+      ids('temp').textContent = '';
+      ids('reaction').textContent = 'You did it!';
+      ids('feedback').className = 'feedback good';
+      ids('feedback').textContent = 'You finished with ' + score + ' correct outfits.';
+      ids('readWeather').hidden = ids('readChoices').hidden = true;
+      ids('feedback').setAttribute('tabindex', '-1');
+      ids('feedback').focus();
+      return;
+    }
+    phase = 'outfit';
+    lv++;
+    rd = 0;
+    render();
+    ids('readWeather').focus();
+  }
+
+  const sockTypes = [
+    { key: 'stripes', description: 'Red sock with white stripes', color: '#e44957', accent: '#fff6f0', pattern: '<path d="M20 34h45M20 51h45M20 68h45M33 85h40M49 102h37" fill="none" stroke="#fff6f0" stroke-width="7"/>' },
+    { key: 'dots', description: 'Blue sock with white dots', color: '#287bda', accent: '#dcf2ff', pattern: '<g fill="#fff"><circle cx="32" cy="34" r="5"/><circle cx="53" cy="46" r="5"/><circle cx="32" cy="58" r="5"/><circle cx="53" cy="70" r="5"/><circle cx="39" cy="83" r="5"/><circle cx="61" cy="95" r="5"/><circle cx="80" cy="94" r="5"/></g>' },
+    { key: 'zigzags', description: 'Yellow sock with dark zigzags', color: '#ffd24b', accent: '#fff0ac', pattern: '<path d="m20 35 11-7 11 11 11-11 12 7m-45 22 11-7 11 11 11-11 12 7m-39 22 11-7 11 11 11-11 12 7m-25 22 11-7 11 11 11-11 12 7" fill="none" stroke="#69460d" stroke-width="5" stroke-linejoin="round"/>' },
+    { key: 'stars', description: 'Purple sock with yellow stars', color: '#8953c5', accent: '#ead9ff', pattern: '<g fill="#ffe367"><path d="m36 29 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/><path d="m49 57 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/><path d="m69 82 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/></g>' }
+  ];
+  const sockShape = 'M23 10H62V67L88 84C100 92 99 106 88 113C82 117 74 116 68 112L30 88C24 84 21 78 21 71Z';
+  const checkMark = '<span class="match-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  const cardBack = '<svg class="sock-back" viewBox="0 0 100 110" aria-hidden="true"><path d="M21 41Q50 0 79 41" fill="none" stroke="#7256d8" stroke-width="7"/><path d="m13 40 10 55h54l10-55z" fill="#d5c8ff" stroke="#59438e" stroke-width="4" stroke-linejoin="round"/><path d="m32 53 4 29m14-29v29m18-29-4 29M25 65h50M28 80h44" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>';
+  function sockPicture(type, index) {
+    // Each inline SVG has its own clip ID, so repeated pairs render reliably.
+    const clip = 'sock-clip-' + lv + '-' + index;
+    return '<svg class="sock-art" viewBox="0 0 110 125" aria-hidden="true"><defs><clipPath id="' + clip + '"><path d="' + sockShape + '"/></clipPath></defs><path d="' + sockShape + '" fill="' + type.color + '"/><g clip-path="url(#' + clip + ')">' + type.pattern + '</g><path d="M23 10h39v16H23z" fill="' + type.accent + '" stroke="#29304b" stroke-width="3"/><path d="' + sockShape + '" fill="none" stroke="#29304b" stroke-width="3" stroke-linejoin="round"/></svg>';
+  }
+  function hideSock(button, index) {
+    button.innerHTML = cardBack;
+    button.classList.remove('open');
+    button.setAttribute('aria-pressed', 'false');
+    button.setAttribute('aria-label', 'Face-down sock card ' + (index + 1) + '. Turn over.');
+  }
+  function revealSock(button, type, index) {
+    button.innerHTML = sockPicture(type, index);
+    button.classList.add('open');
+    button.setAttribute('aria-pressed', 'true');
+    button.setAttribute('aria-label', type.description);
+  }
+  function bonus() {
+    if (phase !== 'reward') return;
+    stopSpeech();
+    phase = 'bonus';
+    ids('bonusPanel').hidden = false;
+    ids('bonus').hidden = true;
+    ids('next').textContent = lv === 3 ? 'Skip Bonus & Finish Game' : 'Skip Bonus & Keep Going';
+    const state = { first: null, hold: false, done: 0, completed: false };
+    bonusState = state;
+    ids('socks').innerHTML = '';
+    shuffle([...sockTypes, ...sockTypes]).forEach((type, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'sock';
+      button.dataset.v = type.key;
+      hideSock(button, index);
+      button.onclick = () => {
+        if (phase !== 'bonus' || bonusState !== state || state.hold ||
+            button.classList.contains('done') || (state.first && state.first.button === button)) return;
+        revealSock(button, type, index);
+        if (!state.first) {
+          state.first = { button, type, index };
+          ids('bonusFeedback').className = 'bonus-feedback';
+          ids('bonusFeedback').textContent = 'Find the sock that looks the same.';
+          if (readSocks) speak(type.description);
+          return;
+        }
+        const first = state.first;
+        state.first = null;
+        if (first.type.key === type.key) {
+          [first.button, button].forEach(card => {
+            card.classList.add('done');
+            card.insertAdjacentHTML('beforeend', checkMark);
+            card.setAttribute('aria-disabled', 'true');
+            card.setAttribute('aria-label', 'Matched pair. ' + type.description);
+          });
+          state.done++;
+          ids('bonusProgress').textContent = 'Pairs found: ' + state.done + ' of 4';
+          ids('bonusFeedback').className = 'bonus-feedback matched';
+          ids('bonusFeedback').textContent = 'A match! These socks go together.';
+          if (state.done === 4) {
+            state.completed = true;
+            ids('bonusFeedback').textContent = 'All four pairs found! Reward complete.';
+            ids('next').textContent = lv === 3 ? 'Finish Game' : 'Next Level';
+            if (readSocks) speak('Great matching! You found all four pairs. Reward complete.');
+          } else if (readSocks) speak('A match! ' + type.description + '. ' + state.done + ' of four pairs found.');
+        } else {
+          state.hold = true;
+          ids('bonusFeedback').className = 'bonus-feedback try-again';
+          ids('bonusFeedback').textContent = 'Different socks. Try again.';
+          if (readSocks) speak(type.description + '. These socks are different. Try again.');
+          bonusTimer = setTimeout(() => {
+            if (phase !== 'bonus' || bonusState !== state) return;
+            hideSock(first.button, first.index);
+            hideSock(button, index);
+            state.hold = false;
+            bonusTimer = null;
+          }, 1100);
+        }
+      };
+      ids('socks').appendChild(button);
+    });
+    ids('socks').querySelector('button').focus();
+  }
+  ids('readWeather').onclick = () => {
+    if (phase !== 'outfit') return;
+    const scenario = levels[lv][rd];
+    speak(scenario[0] + '. ' + scenario[1] + '. ' + scenario[2]);
+    if (!hasSpeech()) ids('speechStatus').textContent = 'Read aloud is unavailable on this device. You can still choose an outfit.';
+  };
+  ids('readChoices').onclick = readChoices;
+  ids('readChoices').setAttribute('aria-pressed', 'false');
+  ids('sockAudio').onclick = () => {
+    readSocks = !readSocks;
+    ids('sockAudio').setAttribute('aria-pressed', String(readSocks));
+    ids('sockAudioLabel').textContent = 'Read Sock Descriptions: ' + (readSocks ? 'On' : 'Off');
+    if (readSocks) speak('Sock descriptions on. Turn over a card to hear its sock.');
+    else stopSpeech();
+  };
+  if (!hasSpeech()) {
+    readSocks = false;
+    ids('sockAudio').disabled = true;
+    ids('sockAudio').setAttribute('aria-pressed', 'false');
+    ids('sockAudioLabel').textContent = 'Sock descriptions unavailable on this device';
+  }
+  ids('bonus').onclick = bonus;
+  ids('next').onclick = goNext;
+  window.addEventListener('pagehide', () => {
+    stopSpeech();
+    clearTimeout(roundTimer);
+    clearTimeout(bonusTimer);
+  });
+  render();
+})();
 </script><script src="assets/classroom-monitor/student.js?v=20261026laundry" defer></script></body></html>
