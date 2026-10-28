@@ -27,7 +27,7 @@ const server=http.createServer((req,res)=>{
  const target=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));
  if(!target.startsWith(root+path.sep)){res.writeHead(403).end();return}
  fs.stat(target,(err,stat)=>{if(err||!stat.isFile()){res.writeHead(404).end();return}
- const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.webp':'image/webp','.png':'image/png'};
+ const types={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.webp':'image/webp','.png':'image/png'};
  res.writeHead(200,{'Content-Type':types[path.extname(target)]||'application/octet-stream'});fs.createReadStream(target).pipe(res);
  });
 });
@@ -48,10 +48,19 @@ const server=http.createServer((req,res)=>{
   await host.goto('http://127.0.0.1:4173/transition-town.html?school=1');
   await host.locator('#loginProfile').selectOption('Olivia');await host.getByRole('button',{name:'Enter Transition Town',exact:true}).click();
   await host.evaluate(()=>trainingCollege());
-  await expect(host.locator('.school-hall-directory a[href="career-feud.html"]')).toBeVisible();
+  await expect(host.locator('.school-hall-art')).toBeVisible();
+  await expect(host.getByRole('button',{name:'School Directory',exact:true})).toBeVisible();
+  await expect(host.locator('#schoolDirectoryDialog')).toHaveCount(0);
+  await host.getByRole('button',{name:'School Directory',exact:true}).click();
+  await expect(host.locator('#schoolDirectoryDialog .school-room')).toHaveCount(6);
+  await host.keyboard.press('Escape');
+  await expect(host.locator('#schoolDirectoryDialog')).toHaveCount(0);
+  await expect(host.locator('.school-hall-art')).toBeVisible();
   await host.evaluate(()=>{schoolClassrooms()});await expect(host.locator('#centerScene')).toBeVisible();
   await host.evaluate(()=>{trainingCollege()});
-  await host.locator('.school-hall-directory a[href="career-feud.html"]').click();
+  await host.getByRole('button',{name:'School Directory',exact:true}).click();
+  await host.locator('#schoolDirectoryDialog [data-school-dir="room"][data-room="wow"]').click();
+  await host.locator('#schoolDirectoryDialog .school-feature-link[href="career-feud.html"]').click();
   await expect(host.getByRole('button',{name:'Host Game',exact:true})).toBeVisible();
   await host.getByRole('button',{name:'Host Game',exact:true}).click();
   await host.locator('select[name=length]').selectOption('2');await host.locator('#teacherPin').fill('1234');
