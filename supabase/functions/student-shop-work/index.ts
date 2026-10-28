@@ -6,6 +6,7 @@ import '../../../assets/student-businesses/work-recipes.js';
 import '../../../assets/student-businesses/work-ops-core.js';
 import '../../../assets/main-attraction/service-core.js';
 import '../../../assets/main-attraction/studio-core.js';
+import '../../../assets/business-workday/core.js';
 
 // Reuse the current classroom/teacher code validation without copying any codes.
 const Core=(globalThis as any).TTBusinessCore;
