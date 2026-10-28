@@ -89,11 +89,11 @@ header>div{flex-shrink:0}.logo{font-size:25px}.topbtn{white-space:nowrap}
 <button onclick="if(need())location.href='driving-simulator-game.html'">Driver Training · Playable Route</button>
 <button onclick="place('park')">Transition Park</button>
 <button onclick="place('safety')">Police Department</button>
-<button onclick="location.href='cool-vibes.html'">Cool Vibes</button>
-<button onclick="location.href='guardian-angel.html'">Guardian Angel Childcare</button>
-<button onclick="location.href='the-zoo.html'">The Zoo Pet Sitting</button>
-<button onclick="location.href='3k-tire-shop.html'">3K Tire Shop</button>
-<button onclick="location.href='main-attraction.html'">The Main Attraction</button>
+<button onclick="location.href='business-workday.html?shop=cool-vibes'">Cool Vibes</button>
+<button onclick="location.href='business-workday.html?shop=guardian-angel'">Guardian Angel Childcare</button>
+<button onclick="location.href='business-workday.html?shop=the-zoo'">The Zoo Pet Sitting</button>
+<button onclick="location.href='business-workday.html?shop=3k-tire-shop'">3K Tire Shop</button>
+<button onclick="location.href='business-workday.html?shop=main-attraction'">The Main Attraction</button>
 <button onclick="location.href='student-businesses.html'">All Student Shops · Interviews</button>
 <button onclick="location.href='transition-game-show.html'">Ready, Set, Work! · Game Show</button>
 <button onclick="place('housing')">Neighborhood</button>
@@ -113,11 +113,11 @@ header>div{flex-shrink:0}.logo{font-size:25px}.topbtn{white-space:nowrap}
 <button class="lot maplot homelot" aria-label="Neighborhood and Housing" onclick="place('housing')"><div class="building home"><span class="mapmark">HOMES</span></div><b>Neighborhood</b></button>
 <button class="lot maplot shoplot" aria-label="Town Shops" onclick="place('shops')"><div class="building shop"><span class="mapmark">SHOPS</span></div><b>Town Shops</b></button>
 <button class="maplot" style="left:30%;top:25%;width:26%;height:16%" aria-label="Transition Town High School" onclick="place('school')"></button><button class="maplot" style="left:59%;top:28%;width:15%;height:13%" aria-label="School Stadium" onclick="place('park')"></button><div class="bizdistrict"><span class="districttitle">STUDENT BUSINESS DISTRICT</span>
-<button class="bizbuilding coolmap" aria-label="Cool Vibes" onclick="location.href='cool-vibes.html'"><strong>COOL VIBES</strong><small>Café</small></button>
-<button class="bizbuilding tiremap" aria-label="3K Tire Shop" onclick="location.href='3k-tire-shop.html'"><strong>3K TIRE SHOP</strong><small>Best Tires to Roll on All Streets</small></button>
-<button class="bizbuilding zoomap" aria-label="The Zoo Pet Sitting" onclick="location.href='the-zoo.html'"><strong>THE ZOO</strong><small>Pet Sitting • Your Pet, Our Pack</small></button>
-<button class="bizbuilding guardianmap" aria-label="Guardian Angel Childcare" onclick="location.href='guardian-angel.html'"><strong>GUARDIAN ANGEL</strong><small>Childcare</small></button>
-<button class="bizbuilding salonmap" aria-label="The Main Attraction" onclick="location.href='main-attraction.html'"><strong>THE MAIN ATTRACTION</strong><small>Hair • Makeup • Lashes • Nails</small></button>
+<button class="bizbuilding coolmap" aria-label="Cool Vibes" onclick="location.href='business-workday.html?shop=cool-vibes'"><strong>COOL VIBES</strong><small>Café</small></button>
+<button class="bizbuilding tiremap" aria-label="3K Tire Shop" onclick="location.href='business-workday.html?shop=3k-tire-shop'"><strong>3K TIRE SHOP</strong><small>Best Tires to Roll on All Streets</small></button>
+<button class="bizbuilding zoomap" aria-label="The Zoo Pet Sitting" onclick="location.href='business-workday.html?shop=the-zoo'"><strong>THE ZOO</strong><small>Pet Sitting • Your Pet, Our Pack</small></button>
+<button class="bizbuilding guardianmap" aria-label="Guardian Angel Childcare" onclick="location.href='business-workday.html?shop=guardian-angel'"><strong>GUARDIAN ANGEL</strong><small>Childcare</small></button>
+<button class="bizbuilding salonmap" aria-label="The Main Attraction" onclick="location.href='business-workday.html?shop=main-attraction'"><strong>THE MAIN ATTRACTION</strong><small>Hair • Makeup • Lashes • Nails</small></button>
 </div><button class="park" aria-label="Transition Park" onclick="place('park')"><b>Transition Town Park</b></button></section></div><p class="maphelp">Tap a building on the town map to enter it. On a phone or tablet, swipe across the town to explore.</p></main></div><button class="phone" onclick="phone()">PHONE<span class="badge" id="badge">0</span></button><div class="sheet" id="sheet" onclick="if(event.target===this)closeSheet()"><div class="window"><button class="close" onclick="closeSheet()">×</button><div id="content"></div></div></div>
 <script>
 function toggleTownTheme(){
@@ -170,8 +170,8 @@ function login(){
  ensure(n);current=n;localStorage.ttCurrent=n;sessionStorage.ttCurrent=n;sessionStorage.ttVisitIdentity=n;status.textContent=n+' is in Transition Town.';const next=new URLSearchParams(location.search).get('next');if(next&&/^[a-z0-9-]+\.html(?:\?[^#]*)?$/.test(next)){location.replace(next);return;}studentView()
 }
 function loginKayla(){current='Ms. Kayla';ensure(current);localStorage.ttCurrent=current;sessionStorage.ttCurrent=current;teacherView()}
-function studentView(){sessionStorage.removeItem('ttKaylaPinVerified');document.body.classList.remove('teacher-mode','login-required');if(!current){resident();return}status.textContent=current+' is exploring Transition Town. Choose a place on the city map.';closeSheet();renderResidentDashboard()}
-function teacherView(){if(sessionStorage.getItem('ttKaylaPinVerified')!=='yes'){return requestKaylaPin()}document.body.classList.remove('login-required');document.body.classList.add('teacher-mode');renderResidentDashboard();teacher()}
+function studentView(){sessionStorage.removeItem('ttKaylaPinVerified');document.body.classList.remove('teacher-mode','login-required');if(!current){resident();return}status.textContent=current+' is exploring Transition Town. Choose a place on the city map.';closeSheet();renderResidentDashboard();window.TTPayday?.enter(current)}
+function teacherView(){if(sessionStorage.getItem('ttKaylaPinVerified')!=='yes'){return requestKaylaPin()}document.body.classList.remove('login-required');document.body.classList.add('teacher-mode');renderResidentDashboard();teacher();window.TTPayday?.enter(current)}
 function requestKaylaPin(){openSheet('<h2>🔒 Miss Kayla View</h2><p>Enter your four-digit PIN to open teacher controls.</p><label for="ttKaylaPin" style="display:block;font-weight:800">Teacher PIN</label><input id="ttKaylaPin" class="field" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="4-digit PIN" style="font-size:24px;letter-spacing:8px"><p id="ttKaylaPinError" role="alert" style="color:#a52828;font-weight:800"></p><button class="primary" onclick="unlockKaylaView()">Unlock Miss Kayla View</button><button class="action" onclick="closeSheet()">Cancel</button>');let p=document.getElementById('ttKaylaPin');if(p){p.focus();p.addEventListener('keydown',e=>{if(e.key==='Enter')unlockKaylaView()})}}
 async function unlockKaylaView(){const field=document.getElementById('ttKaylaPin'),err=document.getElementById('ttKaylaPinError');try{const r=await fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'teacher_pin',pin:field?.value||''}),signal:AbortSignal.timeout(12000)});const d=await r.json();if(field)field.value='';if(!r.ok)throw Error(d.error||'Unable to sign in.');sessionStorage.setItem('ttMonitorPinAuth',JSON.stringify(d));sessionStorage.setItem('ttKaylaPinVerified','yes');closeSheet();teacherView()}catch(error){if(err)err.textContent=error.message}}
 function renderResidentDashboard(){
@@ -735,6 +735,7 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
 
 
 
+<script src="assets/business-workday/payday-core.js?v=20261028a"></script><script src="assets/business-workday/payday.js?v=20261028a"></script>
 <script src="tt-notifications.js?v=20261005-all2"></script><script src="tt-room.js?v=20261006-contacts"></script>
 <script>
 // Football returns directly to the existing park sports menu.
@@ -743,7 +744,7 @@ if (new URLSearchParams(location.search).get('park') === 'football') {
 }
 </script>
 <script src="transition-life/catalog.js?v=20261006-2"></script><script src="transition-life/core.js?v=20261006-2"></script><script src="transition-life/storage.js?v=20261006-2"></script><script src="transition-life/town-bridge.js?v=20261006-sidebar-only"></script>
-<a href="pre-ets-session-reports.html" style="position:fixed;bottom:14px;right:14px;z-index:9999;background:#302365;color:white;padding:12px 16px;border-radius:12px;font:bold 14px Arial;text-decoration:none;box-shadow:0 3px 14px #0005">Teacher: Pre-ETS Reports</a><script src="assets/classroom-monitor/student.js?v=20261021studio" defer></script><script src="assets/career-lab/business-avatars.js?v=20261024walking"></script><script src="assets/career-lab/avatar.js?v=20261024walking"></script><script src="assets/career-lab/town-walk.js?v=20261024walking"></script><script>if(["1","classrooms","legacy"].includes(new URLSearchParams(location.search).get("school")))window.addEventListener("load",function(){if(current){if(new URLSearchParams(location.search).get("school")==="classrooms")schoolClassrooms();else if(new URLSearchParams(location.search).get("school")==="legacy")schoolOriginalHallway();else trainingCollege()}});</script></body></html>
+<a href="pre-ets-session-reports.html" style="position:fixed;bottom:14px;right:14px;z-index:9999;background:#302365;color:white;padding:12px 16px;border-radius:12px;font:bold 14px Arial;text-decoration:none;box-shadow:0 3px 14px #0005">Teacher: Pre-ETS Reports</a><script src="assets/classroom-monitor/student.js?v=20261028workday" defer></script><script src="assets/career-lab/business-avatars.js?v=20261024walking"></script><script src="assets/career-lab/avatar.js?v=20261024walking"></script><script src="assets/career-lab/town-walk.js?v=20261024walking"></script><script>if(["1","classrooms","legacy"].includes(new URLSearchParams(location.search).get("school")))window.addEventListener("load",function(){if(current){if(new URLSearchParams(location.search).get("school")==="classrooms")schoolClassrooms();else if(new URLSearchParams(location.search).get("school")==="legacy")schoolOriginalHallway();else trainingCollege()}});</script></body></html>
 
 
 
