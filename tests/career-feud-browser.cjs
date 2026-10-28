@@ -47,6 +47,13 @@ const server=http.createServer((req,res)=>{
   
   await host.goto('http://127.0.0.1:4173/transition-town.html?school=1');
   await host.locator('#loginProfile').selectOption('Olivia');await host.getByRole('button',{name:'Enter Transition Town',exact:true}).click();
+  // Complete the existing optional classroom-dollar notice before school navigation.
+  const payday=host.locator('#ttPaydayCelebration[open]');
+  await payday.waitFor({state:'visible',timeout:3000}).catch(()=>{});
+  if(await payday.isVisible()){
+    await payday.locator('#ttPaydayCollect').click();
+    await expect(payday).not.toBeVisible();
+  }
   await host.evaluate(()=>trainingCollege());
   await expect(host.locator('.school-hall-art')).toBeVisible();
   await expect(host.getByRole('button',{name:'School Directory',exact:true})).toBeVisible();
