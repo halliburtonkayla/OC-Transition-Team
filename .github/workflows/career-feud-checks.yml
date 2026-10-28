@@ -28,7 +28,10 @@ jobs:
         with:
           node-version: '22'
       - name: Logic, privacy, reports, and school integration
-        run: node tests/career-feud.cjs
+        run: |
+          node tests/career-feud.cjs
+          node tests/career-feud-players.cjs
+          node tests/career-feud-endpoint.cjs
       - name: Existing career lab, game show, and classroom monitor regression checks
         run: |
           node tests/career-lab.cjs
@@ -41,10 +44,13 @@ jobs:
       - name: Host and two independent team browser sessions
         env:
           NODE_PATH: /tmp/career-feud-qa/node_modules
-        run: node tests/career-feud-browser.cjs
+        run: |
+          node tests/career-feud-browser.cjs
+          node tests/career-feud-players-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: career-feud-browser-evidence
           path: career-feud-test-output/
           if-no-files-found: ignore
+

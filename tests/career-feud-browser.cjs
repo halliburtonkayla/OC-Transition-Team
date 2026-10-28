@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const C=new Function(read('supabase/functions/career-feud/core.js').replace(/export /g,'')+'\nreturn {FOCI,createState,mutate,view,remaining};')();
+const C=new Function(read('supabase/functions/career-feud/core.js').replace(/export /g,'')+'\nreturn {FOCI,createState,mutate,view,remaining,claimName};')();
 const BANK=new Function(read('supabase/functions/career-feud/questions.js').replace(/export /g,'')+'\nreturn BANK;')();
 const w={};new Function('window',read('assets/career-feud/report.js'))(w);const REPORT=w.CareerFeudReport;
 
@@ -12,14 +12,14 @@ function mock(b,headers,url){
  let room=rooms.get(b.code);
  if(b.action==='create'){
   if(!headers.authorization)throw Error('Teacher authentication required');
-  room={code:'TESTAB',host:b.token,seats:[null,null],state:C.createState(b,BANK,Date.now())};rooms.set(room.code,room);return {code:room.code,...C.view(room.state,'host',Date.now())};
+  room={code:'TESTAB',host:b.token,seats:[null,null],state:C.createState(b,BANK,Date.now())};room.seats=room.state.teams.map(()=>null);rooms.set(room.code,room);return {code:room.code,...C.view(room.state,'host',Date.now())};
  }
  if(!room)throw Error('Room not found');
- if(b.action==='inspect')return {code:room.code,phase:room.state.phase,teams:room.state.teams.map((t,i)=>({...t,available:!room.seats[i]}))};
+ if(b.action==='inspect')return {code:room.code,phase:room.state.phase,gameMode:room.state.gameMode,playerCount:room.state.playerCount,teams:room.state.teams.map((t,i)=>({...t,available:!room.seats[i]}))};
  let role=b.token===room.host?'host':room.seats.indexOf(b.token);
  if(b.action==='join'){
   if(room.seats[b.team]&&room.seats[b.team]!==b.token)throw Error('That team is already on another laptop');
-  room.seats[b.team]=b.token;role=b.team;room.state=C.mutate(room.state,role,{action:'heartbeat'},Date.now());
+  room.state=C.claimName(room.state,b.team,b.name,role===b.team);room.seats[b.team]=b.token;role=b.team;room.state=C.mutate(room.state,role,{action:'heartbeat'},Date.now());
  }else{if(role===-1)throw Error('Unauthorized');if(b.action!=='state'){room.state=C.mutate(room.state,role,b,Date.now());if(b.action==='release')room.seats[b.team]=null;}}
  return {code:room.code,...C.view(room.state,role,Date.now(),room.seats.map(Boolean))};
 }
@@ -70,6 +70,8 @@ const server=http.createServer((req,res)=>{
   await host.locator('#schoolDirectoryDialog .school-feature-link[href="career-feud.html"]').click();
   await expect(host.getByRole('button',{name:'Host Game',exact:true})).toBeVisible();
   await host.getByRole('button',{name:'Host Game',exact:true}).click();
+  const fillTeamRoster=async()=>{await host.locator('#gameMode').selectOption('teams');await host.locator('#playerCount').selectOption('6');for(const [i,names] of [['0',['Olivia','Bradley (Max)','Alyssa']],['1',['Jocquan','Kaylee','Nick']]])for(let j=0;j<names.length;j++)await host.locator('[name=student'+i+j+']').fill(names[j]);};
+  await fillTeamRoster();
   await host.locator('select[name=length]').selectOption('2');await host.locator('#teacherPin').fill('1234');
   await host.getByRole('button',{name:'Create live room'}).click();
   await expect(host.locator('.room-code')).toHaveText('TESTAB');
@@ -128,7 +130,7 @@ const server=http.createServer((req,res)=>{
   await expect(host.locator('#printArea h2').first()).toHaveText('Individual student summary: Nick');await expect(host.locator('#printArea')).toContainText('Observed Nick take the spokesperson turn.');
   await host.emulateMedia({media:'print'});await host.pdf({path:path.join(ART,'individual-summary.pdf'),format:'Letter'});await host.emulateMedia({media:'screen'});
   // Check a smaller Chromebook display and narrow layout with a new session.
-  await host.locator('[data-action=leave]').click();await host.locator('[data-action=setup]').click();await host.locator('select[name=seconds]').selectOption('0');await host.locator('#hostForm button.primary').click();
+  await host.locator('[data-action=leave]').click();await host.locator('[data-action=setup]').click();await fillTeamRoster();await host.locator('select[name=seconds]').selectOption('0');await host.locator('#hostForm button.primary').click();
   for(const p of [one,two]){await p.evaluate(()=>localStorage.removeItem('ttCareerFeudTeam:TESTAB'));}
   await one.setViewportSize({width:1280,height:720});
   await one.goto('http://127.0.0.1:4173/career-feud.html?room=TESTAB');await one.locator('[data-action=claim][data-team="0"]').click();
@@ -143,3 +145,4 @@ const server=http.createServer((req,res)=>{
   console.log('Browser network uses an isolated in-memory fixture. Production backend API verification is documented separately.');
  }finally{await browser.close();server.close()}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1});
+
