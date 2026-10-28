@@ -1,0 +1,7 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {QUESTIONS,WORD_BANK,placeWord,checkAnswers,PBS_VIDEO} from '../assets/watch-learn/pbs-ready-data.mjs';
+import {studentPrintHTML} from '../assets/watch-learn/pbs-ready.mjs';
+test('three sequential single-word questions and shuffled bottom bank share one source',()=>{assert.equal(QUESTIONS.length,3);assert.deepEqual(QUESTIONS.map(q=>q.answer),['informed','collaboration','glue']);assert.deepEqual(WORD_BANK,['glue','informed','collaboration']);assert.ok(QUESTIONS.every(q=>!q.answer.includes(' ')));const h=studentPrintHTML();assert.ok(h.indexOf('Word bank')>h.indexOf('</ol>'));assert.ok(!h.includes('Answer key'));assert.ok(h.includes(PBS_VIDEO.source));});
+test('move, replace, retry and reject untrusted drag data without duplicate words',()=>{let a=['','',''];a=placeWord(a,'glue',0);a=placeWord(a,'glue',2);assert.deepEqual(a,['','','glue']);a=placeWord(a,'informed',2);assert.deepEqual(a,['','','informed']);assert.deepEqual(placeWord(a,'<script>',0),a);assert.deepEqual(placeWord(a,'glue',8),a);a=placeWord(a,'informed',0);a=placeWord(a,'collaboration',1);a=placeWord(a,'glue',2);assert.deepEqual(checkAnswers(a),[true,true,true]);});
+test('official published PBS embed and distinct student packet',()=>{assert.equal(PBS_VIDEO.embed,'https://player.pbs.org/viralplayer/3072467436/');assert.equal(PBS_VIDEO.studentPdf,'printables/watch-learn-pbs-ready-student.pdf');});
