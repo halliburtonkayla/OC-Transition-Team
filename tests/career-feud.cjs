@@ -68,5 +68,8 @@ return assertions;
 })();
 for(const file of ['assets/career-feud/game.js','assets/career-feud/report.js','assets/school/entrance.js'])new vm.Script(read(file),{filename:file});
 const town=read('transition-town.html');for(const m of town.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){if(!/\bsrc=/.test(m[1]))new vm.Script(m[2]);}
-if(!read('assets/school/entrance.js').includes('href="career-feud.html"')||!town.includes('transition-game-show.html'))throw Error('School integration or legacy game missing');
+const schoolEntrance=read('assets/school/entrance.js');
+const directSchoolGame=schoolEntrance.includes('href="career-feud.html"');
+const directorySchoolGame=schoolEntrance.includes('schoolDirectoryDialog')&&schoolEntrance.includes('../school-directory/directory.mjs')&&read('assets/school-directory/catalogue.mjs').includes("['career-feud.html'");
+if(!(directSchoolGame||directorySchoolGame)||!town.includes('transition-game-show.html'))throw Error('School integration or legacy game missing');
 console.log('Career Feud logic/report checks passed: '+passed.length);
