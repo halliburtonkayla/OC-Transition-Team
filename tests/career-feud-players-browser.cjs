@@ -9,12 +9,12 @@ const server=http.createServer((req,res)=>{
  fs.stat(target,(err,stat)=>{if(err||!stat.isFile())return res.writeHead(404).end();res.writeHead(200,{'Content-Type':({'.html':'text/html','.js':'text/javascript','.css':'text/css'})[path.extname(target)]||'application/octet-stream'});fs.createReadStream(target).pipe(res)});
 });
 (async()=>{
- await new Promise(resolve=>server.listen(4173,'127.0.0.1',resolve));const browser=await chromium.launch(),contexts=[],errors=[];
+ await new Promise(resolve=>server.listen(4173,'127.0.0.1',resolve));const browser=await chromium.launch(),contexts=[],errors=[],testPages=[];
  try{
   async function page(){
    const context=await browser.newContext({viewport:{width:1366,height:768}});contexts.push(context);
    await context.route('https://tyzpophjoptciihaszqj.supabase.co/**',async route=>{const r=await f.call(route.request().postDataJSON(),route.request().headers().authorization);await route.fulfill({status:r.status,contentType:'application/json',body:JSON.stringify(r.body)})});
-   const p=await context.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('dialog',d=>d.accept());return p;
+   const p=await context.newPage();testPages.push(p);p.on('pageerror',e=>errors.push(e.message));p.on('dialog',d=>d.accept());return p;
   }
   const host=await page(),players=await Promise.all(Array.from({length:6},page)),duplicate=await page();
   await host.goto('http://127.0.0.1:4173/career-feud.html');
@@ -33,9 +33,9 @@ const server=http.createServer((req,res)=>{
    await players[i].locator('[data-action=claim][data-team="'+i+'"]').click();await expect(players[i].locator('.podium')).toHaveCount(3);
   }
   await duplicate.goto(url);for(let i=0;i<3;i++)await expect(duplicate.locator('[data-action=claim][data-team="'+i+'"]').first()).toBeDisabled();
-  async function ready(active=[0,1,2]){for(const i of active)await players[i].locator('[data-action=ready]').click();await expect(host.locator('[data-action=start]')).toBeEnabled();await host.locator('[data-action=start]').evaluate(el=>{el.click();el.click()});await expect(host.locator('.question')).toBeVisible();}
+  async function ready(active=[0,1,2]){await expect(host.locator('#app')).not.toHaveClass(/\bbusy\b/);for(const i of active)await players[i].locator('[data-action=ready]').click();await expect(host.locator('[data-action=start]')).toBeEnabled();await host.locator('[data-action=start]').evaluate(el=>{el.click();el.click()});await expect(host.locator('.question')).toBeVisible();}
   async function answer(active=[0,1,2]){for(const i of active){await expect(players[i].locator('#teamAnswer')).toBeVisible();await players[i].locator('#teamAnswer').fill('PRIVATE '+i+': Explain the safe next step.');await players[i].locator('#lockButton').click();}await expect(host.locator('.response').first()).toContainText('PRIVATE 0');}
-  async function score(points){await host.locator('[data-action=reveal]').click();for(let i=0;i<points.length;i++){if(points[i]===null)continue;await host.locator('.scoreForm[data-team="'+i+'"] input').first().fill(String(points[i]));await host.locator('.scoreForm[data-team="'+i+'"] button').first().click();}}
+  async function score(points){await host.locator('[data-action=reveal]').click();for(let i=0;i<points.length;i++){if(points[i]===null)continue;await host.locator('.scoreForm[data-team="'+i+'"] input').first().fill(String(points[i]));await host.locator('.scoreForm[data-team="'+i+'"] button').first().click();await expect(host.locator('#app')).not.toHaveClass(/\bbusy\b/);}}
   await ready();await answer();
   if((await players[1].locator('#app').innerText()).includes('PRIVATE 0'))throw Error('Hidden answer leaked');
   await players[0].reload();await expect(players[0].locator('#teamAnswer')).toHaveValue(/PRIVATE 0/);await expect(players[0].locator('#teamAnswer')).toBeDisabled();
@@ -63,5 +63,5 @@ const server=http.createServer((req,res)=>{
   await host.locator('[data-action=home]').click();await host.locator('[data-action=setup]').click();await expect(host.locator('#playerCount')).toHaveValue('3');await expect(host.locator('#gameMode')).toHaveValue('individual');
   if(errors.length)throw Error('Browser exceptions: '+errors.join('; '));
   console.log('Career Feud individual browser checks passed: actual3/6 counts, own typed names, blank reset, independent sync/privacy, rapid controls, cumulative winner, repeated tied-leader rounds, report/reconnect, team roster count, mobile layout. Isolated production-handler fixture; not live network.');
- }finally{await browser.close();server.close();}
+ }catch(error){for(let i=0;i<testPages.length;i++){try{await testPages[i].screenshot({path:path.join(ART,'failure-player-'+i+'.png'),fullPage:true});fs.writeFileSync(path.join(ART,'failure-player-'+i+'.txt'),await testPages[i].locator('body').innerText())}catch{}}fs.writeFileSync(path.join(ART,'failure-fixture.json'),JSON.stringify(f.tables.tt_career_feud_rooms.map(r=>({code:r.code,state:r.state})),null,2));throw error;}finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1});

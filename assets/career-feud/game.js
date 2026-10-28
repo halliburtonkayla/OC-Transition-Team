@@ -7,8 +7,8 @@ const app=document.getElementById('app'),$=id=>document.getElementById(id),esc=x
 const btn=(label,action,extra='',cls='')=>'<button type="button" class="'+cls+'" data-action="'+action+'" '+extra+'>'+label+'</button>';
 const read=(storage,key,fallback=null)=>{try{return JSON.parse(storage.getItem(key)||'null')??fallback}catch{return fallback}};
 const token=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join('');
-let s=null,session=null,mode='welcome',selection=null,busy=false,pendingActions=0,polling=false,lastHeartbeat=0,queue=Promise.resolve(),draftTimer=null,pendingCreate=null,clockAt=0,lastRender='',sound=false,audioContext=null,setupTeams=blankTeams(3),setupMode='individual',setupCount=3,viewEpoch=0,notesDraft=null,notesDirty=false;
-const drafts=new Map();
+let s=null,session=null,mode='welcome',selection=null,busy=false,polling=false,lastHeartbeat=0,queue=Promise.resolve(),draftTimer=null,pendingCreate=null,clockAt=0,lastRender='',sound=false,audioContext=null,setupTeams=blankTeams(3),setupMode='individual',setupCount=3,viewEpoch=0,notesDraft=null,notesDirty=false;
+const drafts=new Map(),pendingByEpoch=new Map();
 function notice(msg){$('notice').textContent=msg;$('notice').classList.add('show');clearTimeout(notice.timer);notice.timer=setTimeout(()=>$('notice').classList.remove('show'),6500)}
 function connection(msg,bad=false){$('connection').textContent=msg;$('connection').classList.toggle('bad',bad)}
 function beep(kind){if(!sound)return;try{audioContext=audioContext||new (window.AudioContext||window.webkitAudioContext)();audioContext.resume();const o=audioContext.createOscillator(),g=audioContext.createGain();o.connect(g);g.connect(audioContext.destination);o.frequency.value=kind==='reveal'?740:440;g.gain.setValueAtTime(.06,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.3);o.start();o.stop(audioContext.currentTime+.31)}catch{}}
@@ -24,14 +24,34 @@ function accept(d){
  if(s.role==='host'&&!notesDirty)notesDraft={notes:{...s.notes},nextPlan:s.nextPlan};
  renderGame();tick();
 }
+// Keep backend-disabled controls disabled after an in-flight write completes.
+// Reapply this after rendering because accept() may replace the button elements.
+function busyControls(){
+ busy=(pendingByEpoch.get(viewEpoch)||0)>0;
+ app.classList.toggle('busy',busy);app.setAttribute('aria-busy',String(busy));
+ for(const button of app.querySelectorAll('button')){
+  if(['leave','home','copy'].includes(button.dataset.action))continue;
+  if(busy&&mode==='game'){
+   if(button.dataset.busyDisabled===undefined)button.dataset.busyDisabled=String(button.disabled);
+   button.disabled=true;
+  }else if(button.dataset.busyDisabled!==undefined){
+   button.disabled=button.dataset.busyDisabled==='true';delete button.dataset.busyDisabled;
+  }
+ }
+}
+function disabledState(button,disabled){
+ if(!button)return;
+ if(button.dataset.busyDisabled!==undefined)button.dataset.busyDisabled=String(disabled);
+ button.disabled=disabled||busy;
+}
 function act(action,extra={}){
  const id=token(),saved=session?{...session}:null,epoch=viewEpoch;
  const expected=!['heartbeat','notes','score','undo'].includes(action)&&s?{expectedRound:s.roundNumber,expectedPhase:s.phase}:{};
- pendingActions++;busy=true;app.classList.add('busy');
+ pendingByEpoch.set(epoch,(pendingByEpoch.get(epoch)||0)+1);busyControls();
  queue=queue.catch(()=>{}).then(async()=>{
   try{if(!saved||epoch!==viewEpoch)throw Error('Return to your room before changing it.');const d=await request({...saved,...expected,...extra,action,requestId:id});if(epoch===viewEpoch)accept(d);return d}
   catch(e){if(epoch===viewEpoch){connection('Connection or action needs attention',true);notice(e.name==='AbortError'?'Connection timed out. Reconnect and check the saved state before retrying.':e.message)}throw e}
-  finally{pendingActions--;busy=pendingActions>0;app.classList.toggle('busy',busy)}
+  finally{const pending=(pendingByEpoch.get(epoch)||1)-1;if(pending)pendingByEpoch.set(epoch,pending);else pendingByEpoch.delete(epoch);busyControls();tick()}
  });return queue;
 }
 
@@ -49,7 +69,7 @@ function roundLabel(r){return r.tiebreaker?'TIEBREAKER '+(r.tiebreakerNumber||r.
 function winnerName(){const i=typeof s.winner==='number'?s.winner:s.winner?.index;return Number.isInteger(i)?s.teams[i]?.name:null}
 
 function welcome(){
- viewEpoch++;mode='welcome';s=null;session=null;lastRender='';app.classList.remove('busy');clearTimeout(draftTimer);drafts.clear();notesDraft=null;notesDirty=false;pendingCreate=null;
+ viewEpoch++;mode='welcome';busyControls();s=null;session=null;lastRender='';app.classList.remove('busy');clearTimeout(draftTimer);drafts.clear();notesDraft=null;notesDirty=false;pendingCreate=null;
  const code=new URLSearchParams(location.search).get('room')||'';
  app.innerHTML='<section class="welcome"><div class="welcome-hero"><span class="pill">The school game-show stage</span><h1>Ready, Set,<br><em>Work!</em></h1><p>Your real players. Real workplace decisions. Type your answer, make your case, and build your overall score.</p></div><div class="split"><section class="card host-card"><p class="eyebrow">TEACHER COMPUTER</p><h2>Run the show.</h2><p>Choose 2–6 players or two teams. Award each round’s points; the game totals them and breaks ties with extra rounds.</p>'+btn('Host Game','setup','','primary')+'</section><section class="card team-card"><p class="eyebrow">PLAYER OR TEAM LAPTOP</p><h2>Take your podium.</h2><form id="joinForm" class="stack"><label>Room code<input id="roomCode" class="code-input" maxlength="6" minlength="6" pattern="[A-Za-z2-9]{6}" value="'+esc(code)+'" required autocomplete="off"></label><button class="cyan">Join Game</button></form></section></div><p class="footer-note">No preset student names · No student accounts · Teacher-awarded points · Automatic overall tally</p></section>';
 }
@@ -59,7 +79,7 @@ function readTeams(form){return [...form.querySelectorAll('[data-roster-team]')]
 
 function teacherToken(){const p=read(sessionStorage,'ttMonitorPinAuth');if(p?.token&&Date.parse(p.expires_at)>Date.now())return p.token;const a=read(sessionStorage,'tt-monitor-auth-v1');return a?.access_token||''}
 function setup(){
- viewEpoch++;mode='setup';setupMode='individual';setupCount=3;setupTeams=blankTeams(setupCount);pendingCreate=null;
+ viewEpoch++;mode='setup';busyControls();setupMode='individual';setupCount=3;setupTeams=blankTeams(setupCount);pendingCreate=null;
  app.innerHTML='<section class="setup"><p class="eyebrow">HOST DESK</p><h1>Set up your classroom show.</h1><p class="muted">Choose only the players who are here today. Each individual player types their own name when joining.</p><form id="hostForm" class="stack"><div class="card fieldgrid"><label>Play mode<select name="gameMode" id="gameMode"><option value="individual">Individual players · overall winner</option><option value="teams">Two teams · shared answers</option></select></label><label>Actual player count<select name="playerCount" id="playerCount">'+Array.from({length:5},(_,i)=>'<option value="'+(i+2)+'" '+(i===1?'selected':'')+'>'+(i+2)+' players</option>').join('')+'</select></label><p id="setupModeHelp" class="muted">One laptop per player. Only the selected players need to join.</p></div><div class="card fieldgrid"><label>Pre-ETS service focus<select name="focus">'+FOCI.map(f=>'<option>'+f+'</option>').join('')+'</select></label><label>Questions this session<select name="length">'+Array.from({length:14},(_,i)=>'<option '+(i===13?'selected':'')+'>'+(i+1)+'</option>').join('')+'</select></label><label>Discussion time per round<select name="seconds"><option value="90">90 seconds</option><option value="60">60 seconds</option><option value="120">2 minutes</option><option value="180">3 minutes</option><option value="0">Untimed</option></select></label></div><div id="setupRosters" class="split"></div><div class="card"><div class="host-id"><img src="miss-kayla-info-center.png" alt="Existing Miss Kayla artwork"><div><h2>Miss Kayla’s host controls</h2><p class="muted">Use your existing Transition Town teacher passcode.</p></div></div><label>Teacher passcode '+(teacherToken()?'(already signed in; leave blank)':'')+'<input name="pin" id="teacherPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" '+(teacherToken()?'':'required')+'></label><p class="muted">Scores add up across the whole session. Tied leaders play extra questions until one winner remains.</p><div class="row"><button class="primary">Create live room</button>'+btn('Back','home','','quiet')+'</div></div></form></section>';
 }
 function updateSetup(){
@@ -128,7 +148,7 @@ function results(){
 function renderGame(){
  if(!s)return;mode='game';
  const host=s.role==='host',signature=JSON.stringify({...s,serverNow:0,remaining:0,revision:0});
- if(signature===lastRender)return;lastRender=signature;
+ if(signature===lastRender){busyControls();return}lastRender=signature;
  const focused=document.activeElement,focusId=focused?.id,start=focused?.selectionStart,end=focused?.selectionEnd;
  const detailStates=[...app.querySelectorAll('details')].map(d=>d.open);
  const sameRound=app.dataset.round===String(s.roundNumber);
@@ -144,8 +164,9 @@ function tick(){
  if(!s)return;
  const left=s.remaining===null?null:Math.max(0,s.remaining-(!s.paused&&s.phase==='discuss'?Math.floor((Date.now()-clockAt)/1000):0));
  const clock=$('clock');if(clock){clock.textContent=s.phase==='reveal'?'REVEAL':s.paused?'PAUSED':left===null?'UNTIMED':Math.floor(left/60)+':'+String(left%60).padStart(2,'0');clock.classList.toggle('urgent',left!==null&&left<=10)}
- if($('lockButton'))$('lockButton').disabled=s.phase!=='discuss'||s.paused||s.round.answers[s.role].locked||left===0;
+ disabledState($('lockButton'),s.phase!=='discuss'||s.paused||!!s.round?.answers[s.role]?.locked||left===0||$('answerForm')?.dataset.pending==='true');
  if($('answerStatus')&&left===0&&!s.round.answers[s.role].locked)$('answerStatus').textContent='Time is up. Your draft stays here; the teacher can add time.';
+ busyControls();
 }
 async function refresh(){
  if(!session||polling||busy)return;polling=true;const epoch=viewEpoch;
@@ -212,9 +233,9 @@ document.addEventListener('click',async e=>{
   if(action==='skip'&&!confirm('Skip this question? It will be recorded as skipped, and hidden answers will stay hidden.'))return;
   if(action==='end'&&!confirm('Finish regular play and check the overall tally? A tied lead will open a tiebreaker. Hidden answers stay hidden.'))return;
   if(action==='reveal'&&!activeIndices(s.round).every(i=>s.round.answers[i].locked)&&!confirm('A competing player or team has not locked an answer. Reveal the answers saved so far?'))return;
-  if(['start','pause','resume','reveal','next','skip','end','undo'].includes(action)){b.disabled=true;await act(action)}
+  if(['start','pause','resume','reveal','next','skip','end','undo'].includes(action))await act(action);
  }catch(e){if(epoch===viewEpoch)notice(e.message);if(b.isConnected)b.disabled=false}
- finally{delete app.dataset.claiming;}
+ finally{delete app.dataset.claiming;busyControls();}
 });
 window.addEventListener('beforeunload',e=>{if(notesDirty){e.preventDefault();e.returnValue=''}});
 window.addEventListener('online',refresh);
