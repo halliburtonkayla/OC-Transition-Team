@@ -23,3 +23,15 @@ window.schoolBuildingScene = function () {
   const pan=scene.querySelector('.school-hall-pan');
   requestAnimationFrame(()=>{pan.scrollLeft=(pan.scrollWidth-pan.clientWidth)/2;});
 };
+
+
+/* Six-room directory; the original hallway remains a compatibility destination. */
+window.schoolOriginalHallway = window.schoolBuildingScene;
+window.schoolBuildingScene = function () {
+  document.querySelector('#centerScene')?.remove();
+  const root = document.createElement('section');
+  root.id = 'centerScene';
+  root.className = 'school-organized';
+  document.body.appendChild(root);
+  import('../school-directory/directory.mjs?v=20261028').then(m => { if(root.isConnected) m.renderSchool(root,true); }).catch(() => { root.remove(); window.schoolOriginalHallway(); });
+};

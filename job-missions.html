@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#153b42">
+  <meta name="description" content="Six hands-on school job missions with pictures, optional speech, rewards and real-world practice cards. No student account needed.">
+  <title>Job Missions · Ready for Work! · Transition Town School</title>
+  <link rel="stylesheet" href="assets/job-missions/style.css?v=20261028">
+  <script type="module" src="assets/job-missions/app.mjs?v=20261028"></script>
+</head>
+<body>
+  <a class="skip-link" href="#app">Skip to activity</a>
+  <header class="topbar">
+    <a class="brand" href="transition-town.html?school=1"><span class="brand-mark" aria-hidden="true">TT</span><span>TRANSITION TOWN<small>SCHOOL · JOB MISSIONS</small></span></a>
+    <nav aria-label="Job Missions navigation">
+      <button data-action="home">⌂ <span>Job center</span></button>
+      <button data-action="audio" id="audioToggle" aria-pressed="false">♬ <span>Audio off</span></button>
+      <button data-action="motion" id="motionToggle" aria-pressed="false">◌ <span>Motion on</span></button>
+      <button data-action="teacher">▦ <span>Teacher</span></button>
+    </nav>
+  </header>
+  <main id="app" tabindex="-1" data-monitor-private></main>
+  <div id="announcer" class="sr-only" aria-live="polite" role="status"></div>
+  <section id="printArea" aria-label="Printable school mission"></section>
+  <noscript><p>This activity needs JavaScript. Enable JavaScript, then reload to play.</p></noscript>
+</body>
+</html>
