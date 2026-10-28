@@ -33,5 +33,5 @@ window.schoolBuildingScene = function () {
   root.id = 'centerScene';
   root.className = 'school-organized';
   document.body.appendChild(root);
-  import('../school-directory/directory.mjs?v=20261028').then(m => { if(root.isConnected) m.renderSchool(root,true); }).catch(() => { root.remove(); window.schoolOriginalHallway(); });
+  import('../school-directory/directory.mjs?v=20261028no-corner-art').then(m => { if(root.isConnected) m.renderSchool(root,true); }).catch(() => { root.remove(); window.schoolOriginalHallway(); });
 };
