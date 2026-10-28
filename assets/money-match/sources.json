@@ -1,0 +1,9 @@
+{
+  "penny": "https://www.usmint.gov/content/dam/usmint/coins/circulating-coins/2025-lincoln-penny-uncirculated-obverse-philadelphia.jpg",
+  "nickel": "https://www.usmint.gov/content/dam/usmint/coins/circulating-coins/2025-jefferson-nickel-uncirculated-obverse-philadelphia.jpg",
+  "dime": "https://www.usmint.gov/content/dam/usmint/coins/circulating-coins/2025-roosevelt-dime-uncirculated-obverse-philadelphia.jpg",
+  "quarter": "https://www.usmint.gov/content/dam/usmint/coins/american-women-quarters/2025-american-women-quarters-coin-uncirculated-obverse-philadelphia.jpg",
+  "one": "https://www.uscurrency.gov/sites/default/files/styles/bill_version/public/denominations/1_1963-present-front-1_0.jpg.jpg?itok=4Y3M6xCA",
+  "five": "https://www.uscurrency.gov/sites/default/files/styles/bill_version/public/denominations/%245-FRN-2021-face.png.jpg?itok=RcxNac5p",
+  "ten": "https://www.uscurrency.gov/sites/default/files/styles/bill_version/public/denominations/10_2006-present-front-v2.1-jpg.jpg.jpg?itok=V3yT8Jl8"
+}
