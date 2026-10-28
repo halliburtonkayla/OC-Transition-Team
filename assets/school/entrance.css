@@ -27,3 +27,41 @@
 .hall-workcrew small{color:#c9f1d8}
 .hall-workcrew:hover{background:#2d765f;border-color:#fff}
 @media(max-width:700px){.hall-workcrew{left:50%;top:79%;width:155px}}
+
+/* Keep the immersive school visible; open the directory only when requested. */
+.school-hall-tools{display:flex;gap:10px;align-items:center}
+.school-hall-nav .school-directory-trigger{background:#f6cb69;color:#183b41;border:2px solid #fff2c7;font-size:15px;font-weight:900;min-height:48px;padding:13px 20px;box-shadow:0 5px 18px #0004}
+.school-hall-shortcuts>div{justify-content:center;flex-wrap:wrap}
+.school-hall-shortcuts>span{margin:0 0 10px}
+.school-hall-shortcuts .hall-job-missions-link{background:#215e4f;color:#fff7d7;border:2px solid #e5c58a;font-size:13px}
+.school-directory-dialog{width:min(1120px,calc(100vw - 36px));max-height:88dvh;padding:0;border:2px solid #e5c58a;border-radius:18px;background:#fcfaf5;color:#243c49;box-shadow:0 24px 80px #0008;overflow:auto}
+.school-directory-dialog::backdrop{background:#071e2c99}
+.school-directory-dialog-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;background:#173e45;color:#fff6df}
+.school-directory-dialog-bar button{font:700 13px Arial;min-height:46px;padding:10px 15px;border:1px solid #e6d9b6;border-radius:9px;background:#fff5dc;color:#234249;cursor:pointer}
+.school-directory-dialog .school-organized{min-height:0}
+.school-directory-dialog .school-shell{padding:0 22px 22px}
+.school-directory-dialog .school-directory-top{padding:12px 0}
+.school-directory-dialog .school-brand{display:none}
+.school-directory-dialog .school-directory-top nav{margin-left:auto}
+.school-directory-compact-heading{padding:23px 0 12px}
+.school-directory-compact-heading h1{font:700 30px Georgia;color:#244e48}
+.school-directory-compact-heading p{margin-top:8px;font-size:15px;color:#526e70}
+.school-directory-dialog .school-room-door h2{font-size:17px}
+.school-directory-dialog .school-room-door p{font-size:12px}
+.school-directory-dialog .school-room-door{padding:17px}
+@media(max-width:700px){
+ .school-hall-nav{flex-wrap:wrap}
+ .school-hall-nav>div:not(.school-hall-tools){flex:1}
+ .school-hall-tools{width:100%;justify-content:space-between;gap:9px}
+ .school-hall-nav .school-directory-trigger{font-size:14px;flex:1}
+ .school-hall-tools a{max-width:none;min-height:46px;display:flex;align-items:center}
+ .school-hall-shortcuts{bottom:max(12px,env(safe-area-inset-bottom))}
+ .school-hall-shortcuts .hall-job-missions-link{font-size:11px}
+ .school-directory-dialog{width:calc(100vw - 16px);max-height:92dvh}
+ .school-directory-dialog-bar{padding:11px 12px}
+ .school-directory-dialog-bar strong{font-size:14px}
+ .school-directory-dialog-bar button{font-size:11px;padding:9px}
+ .school-directory-dialog .school-shell{padding:0 12px 18px}
+ .school-directory-dialog .school-room-door h2{font-size:14px}
+ .school-directory-dialog .school-room-door{padding:14px 10px}
+}
