@@ -1,0 +1,29 @@
+name: Count Quest checks
+on:
+  pull_request:
+    paths:
+      - 'count-to-100.html'
+      - 'assets/count-quest/**'
+      - 'assets/classroom-monitor/student.js'
+      - 'tests/count-quest.test.mjs'
+      - 'tools/build-count-quest-review.mjs'
+      - 'docs/count-quest-review.html'
+      - '.github/workflows/count-quest-checks.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Counting progression and retry checks
+        run: node --test tests/count-quest.test.mjs
+      - name: Existing money and monitoring regressions
+        run: |
+          node --test tests/money-match.test.mjs
+          node tests/classroom-monitor.cjs
+          node tests/classroom-multiview.cjs
