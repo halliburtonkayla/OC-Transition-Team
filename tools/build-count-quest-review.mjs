@@ -5,9 +5,9 @@ const root=new URL('../',import.meta.url),read=p=>readFile(new URL(p,root),'utf8
 let [html,css,core,game]=await Promise.all(['count-to-100.html','assets/count-quest/game.css','assets/count-quest/core.mjs','assets/count-quest/game.mjs'].map(read));
 const digest=createHash('sha256').update(html+css+core+game).digest('hex');
 const images=Object.fromEntries(await Promise.all(['apple','ball','parcel','town'].map(async name=>[name,'data:image/svg+xml;base64,'+Buffer.from(await read(`assets/count-quest/${name}.svg`)).toString('base64')])));
-core=core.replace(/^export /gm,'');game=game.replace(/^import .*?;\n/,'');
+core=core.replace(/^export /gm,'');game=game.replace(/^import .*?;\n/gm,'');
 game=game.replace('src="assets/count-quest/${level.picture}.svg"','src="${REVIEW_IMAGES[level.picture]}"').replace('src="assets/count-quest/${l.picture}.svg"','src="${REVIEW_IMAGES[l.picture]}"');
-const script=`const REVIEW_IMAGES=${JSON.stringify(images)};\n${core}\n${game}\nfor(const selector of ['.school-link','.wordmark'])$(selector).addEventListener('click',e=>{e.preventDefault();goHome();});\n$('.school-link').textContent='← Adventure map';\n`;
+const script=`const learningId=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);const learningStore=()=>({read:()=>({records:[],checkpoint:null}),append:()=>true,checkpoint:()=>true,event:()=>{}});\nconst REVIEW_IMAGES=${JSON.stringify(images)};\n${core}\n${game}\nfor(const selector of ['.school-link','.wordmark'])$(selector).addEventListener('click',e=>{e.preventDefault();goHome();});\n$('.school-link').textContent='← Adventure map';\n`;
 html=html.replace(/\s*<script[^>]+src="assets\/classroom-monitor[^>]+><\/script>/,'').replace(/\s*<script type="module" src="assets\/count-quest\/game.mjs"><\/script>/,'');
 html=html.replace('<link rel="stylesheet" href="assets/count-quest/game.css">',`<style>${css}</style>`).replace('src="assets/count-quest/town.svg"',`src="${images.town}"`);
 html=html.replace('<title>','<title>Review copy · ').replace('<body>','<body>\n<div style="text-align:center;background:#34405f;color:white;padding:8px;font:12px Arial">PLAYABLE REVIEW COPY · Not the live school game · Progress stays in this visit</div>');

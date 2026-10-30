@@ -1,0 +1,64 @@
+name: Classroom release checks
+on:
+  push:
+    branches: [main, fix/classroom-ready-release-20261030]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Every active local reference and script
+        run: node tools/release-audit.mjs
+      - name: Existing games, shared shops, privacy and financial regressions
+        run: |
+          node tests/pricing-stage.cjs
+          node tests/student-shop-core.cjs
+          node tests/main-attraction-studio.cjs
+          node tests/business-workday.cjs
+          node tests/business-workday-edge.cjs
+          node tests/classroom-monitor.cjs
+          node tests/classroom-multiview.cjs
+          node tests/career-lab.cjs
+          node tests/transition-show.cjs
+          node tests/career-feud.cjs
+          node tests/career-feud-players.cjs
+          node tests/career-feud-endpoint.cjs
+          node tests/transition-life-core.test.cjs
+          node tests/driving-core.test.cjs
+          node tests/basketball-core.test.mjs
+          node tests/football-core.test.mjs
+          node tests/softball-core.test.mjs
+          node --test tests/count-quest.test.mjs tests/money-match.test.mjs tests/laundry-weather.test.cjs tests/job-missions.test.mjs tests/watch-learn.test.mjs tests/pbs-ready.test.mjs
+      - name: Install isolated test dependencies
+        run: npm install --prefix /tmp/classroom-qa --no-save jsdom@26.1.0 linkedom@0.18.12 @playwright/test@1.51.1
+      - name: Response history, resume, stories, matching and classroom DOM workflows
+        env:
+          NODE_PATH: /tmp/classroom-qa/node_modules
+          SCHOOL_JSDOM: /tmp/classroom-qa/node_modules/jsdom
+        run: |
+          node --test tests/school-release.test.mjs
+          node tests/career-lab-ui.cjs
+      - name: Install Chromium
+        run: /tmp/classroom-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Real browser workflows and three viewport sizes
+        env:
+          NODE_PATH: /tmp/classroom-qa/node_modules
+        run: |
+          node tests/school-release-browser.cjs
+          node tests/career-feud-browser.cjs
+          node tests/career-feud-players-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: classroom-browser-evidence
+          path: |
+            school-release-test-output/
+            career-feud-test-output/
+          if-no-files-found: ignore

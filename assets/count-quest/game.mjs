@@ -1,4 +1,6 @@
+import {learningId,learningStore} from '../learning/progress.mjs';
 import {LEVELS,MODES,word,questions,Round,optionsFor} from './core.mjs';
+const learning=learningStore('count-quest');let runId='';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const PICTURES={apple:{one:'apple',many:'apples'},ball:{one:'basketball',many:'basketballs'},parcel:{one:'package',many:'packages'}};
 let level=LEVELS[0],mode='count',rounds=[],index=0,round=null,results=[],voice=true,activeView='home',utterances=new Set();
@@ -42,9 +44,9 @@ function openLevel(id){
   autoSay(`Numbers ${level.min} to ${level.max}. ${level.min===1?'Start with touch and count. ':''}Choose a mission.`);
 }
 function start(nextMode){
-  mode=nextMode;rounds=questions(level,mode,guided()?2:3);index=0;results=[];show('play');
+  runId=learningId();mode=nextMode;rounds=questions(level,mode,guided()?2:3);index=0;results=[];show('play');
   $('#place-name').textContent=level.place;$('#mission-name').textContent=modeInfo().name;$('#range-badge').textContent=level.label;$('#play-guided').checked=guided();
-  record('visit',`started ${modeInfo().name}, numbers ${level.label}.`);render();
+  saveProgress(0);record('visit',`started ${modeInfo().name}, numbers ${level.label}.`);render();
 }
 function instructions(){
   const q=round.q,noun=PICTURES[level.picture];
@@ -92,11 +94,11 @@ function touch(i,b){
   if(round.ready){$$('[data-answer]').forEach(x=>x.disabled=false);$('#answer-label').textContent='Choose how many';feedback(`${round.q.answer} altogether. Now choose ${round.q.answer}.`);say(`${round.q.answer} altogether. Choose ${word(round.q.answer)}.`,true);}
 }
 function pick(n,b){
-  const result=round.answer(n);if(result===null)return;
+  const result=round.answer(n);if(result===null)return;learning.append({id:learningId(),runId,mode,level:level.id,target:round.q.answer,answer:n,correct:result,attempt:round.attempts,gameHelp:round.helpUsed,guided:guided()});
   $$('[data-answer]').forEach(x=>x.classList.remove('retry'));
   if(result){
     b.classList.add('correct');$$('[data-answer]').forEach(x=>x.disabled=true);$$('[data-object]').forEach(x=>x.disabled=true);$('#next').disabled=false;$('#help').disabled=true;$('#recount').disabled=true;
-    const detail={answer:round.q.answer,attempts:round.attempts,help:round.helpUsed,guided:guided(),recounts:round.recounts};results.push(detail);drawMap();
+    const detail={answer:round.q.answer,attempts:round.attempts,help:round.helpUsed,guided:guided(),recounts:round.recounts};results.push(detail);saveProgress(index+1);drawMap();
     const text=mode==='next'?`Yes! ${round.q.answer} comes after ${round.q.previous}.`:mode==='match'?`You found ${round.q.answer}! Good matching.`:mode==='numeral'?`Yes! This is ${word(round.q.answer)}.`:`Yes! You counted ${round.q.answer}!`;
     feedback('✓ '+text,'success');if($('#auto-read').checked)say(text+' Choose Next when you are ready.',mode==='count');$('#side-message').textContent='Another light for your town. Nice work!';
     record('completed',`${modeInfo().name}, answer ${round.q.answer}, ${round.attempts} attempt${round.attempts===1?'':'s'}; ${guided()?'extra guidance on; ':''}${round.helpUsed?'game help used':'no game-help button used'}. Teacher prompting not assessed.`,{quantity:round.q.answer,attempt:round.attempts,success:true,status:(guided()?'extra guidance on; ':'')+(round.helpUsed?'game help used; teacher prompting not assessed':'teacher prompting not assessed')});
@@ -117,7 +119,7 @@ function help(automatic=false){
   feedback(text);say(text);correct?.focus({preventScroll:true});
 }
 function finish(){
-  show('finish');$('#finish-summary').textContent=`${results.length} steps. ${results.length} lights. Look what you did!`;
+  learning.append({id:runId||learningId(),mode,level:level.id,results,completed:true});learning.checkpoint(null);show('finish');$('#finish-summary').textContent=`${results.length} steps. ${results.length} lights. Look what you did!`;
   const helped=results.filter(r=>r.help).length;
   $('#finish-detail').textContent=`${level.place} · ${modeInfo().name} · Numbers ${level.label}. ${helped?`${helped} ${helped===1?'step':'steps'} used game help. `:''}Every try is practice.`;
   $('#finish-lights').innerHTML=results.map(()=>'<span>✦</span>').join('');
@@ -147,3 +149,6 @@ $('#auto-read').addEventListener('change',()=>{if(!$('#auto-read').checked)stopS
 $('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else $('#fullscreen').setAttribute('aria-label','Full screen unavailable on this device');}catch{$('#fullscreen').setAttribute('aria-label','Full screen unavailable on this device');}});
 document.addEventListener('fullscreenchange',()=>{const full=!!document.fullscreenElement;$('#fullscreen').setAttribute('aria-label',full?'Exit full screen':'Enter full screen');$('#fullscreen').innerHTML=`⛶ <span>${full?'Exit full screen':'Full screen'}</span>`;});
 window.addEventListener('pagehide',stopSpeech);document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech();});
+
+function saveProgress(nextIndex){learning.checkpoint({runId,level:level.id,mode,rounds,index:nextIndex,results,guided:guided()});}
+const savedProgress=learning.read().checkpoint;if(savedProgress&&LEVELS.some(l=>l.id===savedProgress.level)&&MODES.some(m=>m.id===savedProgress.mode)&&Array.isArray(savedProgress.rounds)&&savedProgress.rounds.length&&Number.isInteger(savedProgress.index)&&savedProgress.index>=0&&savedProgress.index<=savedProgress.rounds.length&&Array.isArray(savedProgress.results)){const resume=document.createElement('button');resume.id='resume-count';resume.className='quiet';resume.textContent='Resume saved mission';$('#quick-start').after(resume);resume.onclick=()=>{runId=savedProgress.runId;level=LEVELS.find(l=>l.id===savedProgress.level);mode=savedProgress.mode;rounds=savedProgress.rounds;index=savedProgress.index;results=savedProgress.results;$('#guided').checked=!!savedProgress.guided;if(index>=rounds.length){finish();return;}show('play');$('#place-name').textContent=level.place;$('#mission-name').textContent=modeInfo().name;$('#range-badge').textContent=level.label;$('#play-guided').checked=guided();render();};}

@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-28",
+  "date": "2026-10-30",
   "scope": "All repository HTML pages and their literal local href/src and navigation URLs. External availability and dynamic URLs are not inferred.",
   "pages": [
     {
@@ -28,6 +28,10 @@
           "exists": true
         },
         {
+          "target": "business-workday.html",
+          "exists": true
+        },
+        {
           "target": "assets/student-businesses/3k-tire-shop/data.js",
           "exists": true
         },
@@ -47,7 +51,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 2784
+      "bytes": 3179
     },
     {
       "path": "ADD-THIS-BUTTON.html",
@@ -131,7 +135,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3894
+      "bytes": 3981
     },
     {
       "path": "animated-stories.html",
@@ -392,7 +396,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3956
+      "bytes": 3951
     },
     {
       "path": "book-02.html",
@@ -407,7 +411,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3930
+      "bytes": 3925
     },
     {
       "path": "book-03.html",
@@ -422,7 +426,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3902
+      "bytes": 3897
     },
     {
       "path": "book-04.html",
@@ -437,7 +441,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3807
+      "bytes": 3802
     },
     {
       "path": "book-05.html",
@@ -452,7 +456,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3780
+      "bytes": 3775
     },
     {
       "path": "book-06.html",
@@ -467,7 +471,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3839
+      "bytes": 3834
     },
     {
       "path": "book-07.html",
@@ -482,7 +486,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3764
+      "bytes": 3759
     },
     {
       "path": "book-08.html",
@@ -497,7 +501,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3634
+      "bytes": 3629
     },
     {
       "path": "book-09.html",
@@ -512,7 +516,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3789
+      "bytes": 3784
     },
     {
       "path": "book-10.html",
@@ -527,7 +531,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3675
+      "bytes": 3670
     },
     {
       "path": "book-11.html",
@@ -542,7 +546,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3697
+      "bytes": 3692
     },
     {
       "path": "book-12.html",
@@ -557,7 +561,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3787
+      "bytes": 3782
     },
     {
       "path": "build-your-own-story.html",
@@ -596,6 +600,75 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 27994
+    },
+    {
+      "path": "business-workday.html",
+      "title": "Opening Day · Transition Town",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/town-visit.js",
+          "exists": true
+        },
+        {
+          "target": "assets/business-workday/workday.css",
+          "exists": true
+        },
+        {
+          "target": "assets/student-businesses/catalog.js",
+          "exists": true
+        },
+        {
+          "target": "assets/student-businesses/work-config.js",
+          "exists": true
+        },
+        {
+          "target": "assets/main-attraction/studio-config.js",
+          "exists": true
+        },
+        {
+          "target": "assets/student-businesses/work-core.js",
+          "exists": true
+        },
+        {
+          "target": "assets/student-businesses/work-recipes.js",
+          "exists": true
+        },
+        {
+          "target": "assets/student-businesses/work-ops-core.js",
+          "exists": true
+        },
+        {
+          "target": "assets/main-attraction/service-core.js",
+          "exists": true
+        },
+        {
+          "target": "assets/main-attraction/studio-core.js",
+          "exists": true
+        },
+        {
+          "target": "assets/business-workday/core.js",
+          "exists": true
+        },
+        {
+          "target": "assets/student-businesses/pricing-guard.js",
+          "exists": true
+        },
+        {
+          "target": "assets/business-workday/app.js",
+          "exists": true
+        },
+        {
+          "target": "session.js",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [
+        "workspace"
+      ],
+      "contentFlags": [],
+      "bytes": 1767
     },
     {
       "path": "career-adventures.html",
@@ -716,10 +789,6 @@
           "exists": true
         },
         {
-          "target": "assets/career-lab/business-avatars.js",
-          "exists": true
-        },
-        {
           "target": "assets/career-feud/report.js",
           "exists": true
         },
@@ -739,7 +808,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 1308
+      "bytes": 1272
     },
     {
       "path": "career-interest-snapshot.html",
@@ -898,6 +967,42 @@
           "exists": true
         },
         {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "classroom-monitor.html",
+          "exists": true
+        },
+        {
+          "target": "count-to-100.html",
+          "exists": true
+        },
+        {
+          "target": "memory-match.html",
+          "exists": true
+        },
+        {
+          "target": "laundry-weather-game.html",
+          "exists": true
+        },
+        {
+          "target": "cdc-sort-it.html",
+          "exists": true
+        },
+        {
+          "target": "job-missions.html",
+          "exists": true
+        },
+        {
+          "target": "build-your-own-story.html",
+          "exists": true
+        },
+        {
+          "target": "ask-for-help-self-advocacy.html",
+          "exists": true
+        },
+        {
           "target": "cdc-cooking-match.html",
           "exists": true
         },
@@ -922,11 +1027,19 @@
           "exists": true
         },
         {
+          "target": "money-counting-game.html",
+          "exists": true
+        },
+        {
           "target": "grocery-trip.html",
           "exists": true
         },
         {
           "target": "stories.html",
+          "exists": true
+        },
+        {
+          "target": "assets/learning/legacy.mjs",
           "exists": true
         },
         {
@@ -937,7 +1050,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3796
+      "bytes": 5967
     },
     {
       "path": "cdc-cleaning.html",
@@ -1040,6 +1153,10 @@
           "exists": true
         },
         {
+          "target": "assets/learning/legacy.mjs",
+          "exists": true
+        },
+        {
           "target": "assets/classroom-monitor/student.js",
           "exists": true
         }
@@ -1047,7 +1164,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 16609
+      "bytes": 17790
     },
     {
       "path": "cdl_truck_driving_presentation.html",
@@ -1085,7 +1202,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3242
+      "bytes": 3236
     },
     {
       "path": "childcare-simulator.html",
@@ -1108,7 +1225,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 8021
+      "bytes": 8008
     },
     {
       "path": "childcare_worker_presentation.html",
@@ -1166,7 +1283,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 954
+      "bytes": 964
     },
     {
       "path": "cleanup-life-skills-game.html",
@@ -1193,7 +1310,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 8802
+      "bytes": 8789
     },
     {
       "path": "cna_nursing_presentation.html",
@@ -1325,7 +1442,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5336
+      "bytes": 5429
     },
     {
       "path": "college-training-compare.html",
@@ -1476,6 +1593,10 @@
           "exists": true
         },
         {
+          "target": "business-workday.html",
+          "exists": true
+        },
+        {
           "target": "assets/student-businesses/cool-vibes/data.js",
           "exists": true
         },
@@ -1495,7 +1616,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5190
+      "bytes": 5582
     },
     {
       "path": "cosmetology_barbering_presentation.html",
@@ -1541,22 +1662,38 @@
     },
     {
       "path": "count-to-100.html",
-      "title": "Count to 100 · Transition Town School",
+      "title": "Count Quest · Count to 100 · Transition Town School",
       "room": "wow",
       "links": [
+        {
+          "target": "assets/count-quest/game.css",
+          "exists": true
+        },
+        {
+          "target": "assets/count-quest/game.mjs",
+          "exists": true
+        },
+        {
+          "target": "assets/classroom-monitor/student.js",
+          "exists": true
+        },
         {
           "target": "transition-town.html",
           "exists": true
         },
         {
-          "target": "assets/classroom-monitor/student.js",
+          "target": "count-to-100.html",
+          "exists": true
+        },
+        {
+          "target": "assets/count-quest/town.svg",
           "exists": true
         }
       ],
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5138
+      "bytes": 6621
     },
     {
       "path": "culinary_restaurant_career_presentation.html",
@@ -1897,7 +2034,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 10794
+      "bytes": 10788
     },
     {
       "path": "farming_careers_presentation.html",
@@ -2099,7 +2236,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3163
+      "bytes": 3150
     },
     {
       "path": "gaming_careers_presentation.html",
@@ -2359,6 +2496,10 @@
           "exists": true
         },
         {
+          "target": "business-workday.html",
+          "exists": true
+        },
+        {
           "target": "assets/student-businesses/guardian-angel/data.js",
           "exists": true
         },
@@ -2378,7 +2519,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3307
+      "bytes": 3704
     },
     {
       "path": "healthcare-simulator.html",
@@ -2405,7 +2546,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 4942
+      "bytes": 4929
     },
     {
       "path": "home-beyond.html",
@@ -3516,8 +3657,8 @@
           "exists": true
         },
         {
-          "target": "Transition_Team_Resource_Library_Guide.docx",
-          "exists": false
+          "target": "expanded-resource-library.html",
+          "exists": true
         },
         {
           "target": "Transition_Team_Lesson_Pathways.docx",
@@ -3534,7 +3675,7 @@
       ],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 50339
+      "bytes": 50326
     },
     {
       "path": "index-original-backup.html",
@@ -3942,8 +4083,8 @@
           "exists": true
         },
         {
-          "target": "Transition_Team_Resource_Library_Guide.docx",
-          "exists": false
+          "target": "expanded-resource-library.html",
+          "exists": true
         },
         {
           "target": "Transition_Team_Lesson_Pathways.docx",
@@ -3960,7 +4101,7 @@
       ],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 48772
+      "bytes": 48759
     },
     {
       "path": "index.html",
@@ -4443,8 +4584,8 @@
           "exists": true
         },
         {
-          "target": "Transition_Team_Resource_Library_Guide.docx",
-          "exists": false
+          "target": "expanded-resource-library.html",
+          "exists": true
         },
         {
           "target": "Transition_Team_Lesson_Pathways.docx",
@@ -4461,7 +4602,7 @@
       ],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 50388
+      "bytes": 50375
     },
     {
       "path": "index_fixed_presentations.html",
@@ -4881,15 +5022,11 @@
           "exists": true
         },
         {
-          "target": "Transition_Team_Resource_Library_Guide.docx",
-          "exists": false
-        },
-        {
-          "target": "Transition_Team_Lesson_Pathways.docx",
+          "target": "expanded-resource-library.html",
           "exists": true
         },
         {
-          "target": "session.js",
+          "target": "Transition_Team_Lesson_Pathways.docx",
           "exists": true
         }
       ],
@@ -4901,7 +5038,7 @@
         "quickChoice"
       ],
       "contentFlags": [],
-      "bytes": 61812
+      "bytes": 61765
     },
     {
       "path": "interactive-stories.html",
@@ -4928,7 +5065,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 8461
+      "bytes": 8448
     },
     {
       "path": "job-application-practice.html",
@@ -4952,6 +5089,41 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 5808
+    },
+    {
+      "path": "job-description-detectives.html",
+      "title": "Job Description Detectives · Transition Town",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/job-detectives/style.css",
+          "exists": true
+        },
+        {
+          "target": "session.js",
+          "exists": true
+        },
+        {
+          "target": "assets/job-detectives/app.mjs",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "school-directory.html",
+          "exists": true
+        },
+        {
+          "target": "cdc-center.html",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 827
     },
     {
       "path": "job-exploration.html",
@@ -5011,6 +5183,33 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 3034
+    },
+    {
+      "path": "job-missions.html",
+      "title": "Job Missions · Ready for Work! · Transition Town School",
+      "room": "jobs",
+      "links": [
+        {
+          "target": "assets/job-missions/style.css",
+          "exists": true
+        },
+        {
+          "target": "assets/job-missions/app.mjs",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "session.js",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 1674
     },
     {
       "path": "jordans-first-day.html",
@@ -5136,7 +5335,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5715
+      "bytes": 5808
     },
     {
       "path": "life-story-library.html",
@@ -5273,6 +5472,10 @@
           "exists": true
         },
         {
+          "target": "assets/student-businesses/pricing-guard.js",
+          "exists": true
+        },
+        {
           "target": "session.js",
           "exists": true
         }
@@ -5280,7 +5483,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 27957
+      "bytes": 28034
     },
     {
       "path": "main-attraction-studio.html",
@@ -5336,6 +5539,10 @@
           "exists": true
         },
         {
+          "target": "assets/student-businesses/pricing-guard.js",
+          "exists": true
+        },
+        {
           "target": "assets/main-attraction/studio.js",
           "exists": true
         },
@@ -5347,7 +5554,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 1687
+      "bytes": 1770
     },
     {
       "path": "main-attraction-training.html",
@@ -5437,6 +5644,10 @@
           "exists": true
         },
         {
+          "target": "business-workday.html",
+          "exists": true
+        },
+        {
           "target": "assets/student-businesses/decision-sync.js",
           "exists": true
         },
@@ -5452,7 +5663,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3786
+      "bytes": 4184
     },
     {
       "path": "mansion-01.html",
@@ -5623,6 +5834,10 @@
           "exists": true
         },
         {
+          "target": "assets/learning/memory.mjs",
+          "exists": true
+        },
+        {
           "target": "assets/classroom-monitor/student.js",
           "exists": true
         }
@@ -5630,7 +5845,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 4442
+      "bytes": 2535
     },
     {
       "path": "miss-kayla-inbox.html",
@@ -5727,11 +5942,43 @@
     },
     {
       "path": "money-counting-game.html",
-      "title": "Money Counting Game",
+      "title": "Money Match · Transition Town School",
       "room": "wow",
       "links": [
         {
+          "target": "assets/money-match/game.css",
+          "exists": true
+        },
+        {
+          "target": "assets/money-match/game.mjs",
+          "exists": true
+        },
+        {
           "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "assets/money-match/penny.webp",
+          "exists": true
+        },
+        {
+          "target": "assets/money-match/quarter.webp",
+          "exists": true
+        },
+        {
+          "target": "assets/money-match/dime.webp",
+          "exists": true
+        },
+        {
+          "target": "assets/money-match/nickel.webp",
+          "exists": true
+        },
+        {
+          "target": "assets/money-match/one.webp",
+          "exists": true
+        },
+        {
+          "target": "cdc-center.html",
           "exists": true
         },
         {
@@ -5742,7 +5989,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3846
+      "bytes": 5870
     },
     {
       "path": "move-out-simulator.html",
@@ -5773,7 +6020,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3700
+      "bytes": 3747
     },
     {
       "path": "multiplication-wall.html",
@@ -5904,7 +6151,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 4835
+      "bytes": 4928
     },
     {
       "path": "park-fishing.html",
@@ -6015,7 +6262,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5000
+      "bytes": 5093
     },
     {
       "path": "pdf-viewer.html",
@@ -6253,7 +6500,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5554
+      "bytes": 5564
     },
     {
       "path": "presentations.html",
@@ -6378,7 +6625,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 14696
+      "bytes": 14676
     },
     {
       "path": "relax-color.html",
@@ -6501,7 +6748,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3603
+      "bytes": 3656
     },
     {
       "path": "school-career-lab.html",
@@ -6545,6 +6792,29 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 1953
+    },
+    {
+      "path": "school-directory.html",
+      "title": "Six Rooms · Transition Town School",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/school-directory/directory.css",
+          "exists": true
+        },
+        {
+          "target": "assets/school-directory/directory.mjs",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 635
     },
     {
       "path": "self-advocacy.html",
@@ -6631,6 +6901,10 @@
           "exists": true
         },
         {
+          "target": "assets/student-businesses/pricing-guard.js",
+          "exists": true
+        },
+        {
           "target": "assets/student-businesses/work.js",
           "exists": true
         },
@@ -6641,6 +6915,10 @@
         {
           "target": "session.js",
           "exists": true
+        },
+        {
+          "target": "business-workday.html",
+          "exists": true
         }
       ],
       "externalLinks": [],
@@ -6648,7 +6926,7 @@
         "work-content"
       ],
       "contentFlags": [],
-      "bytes": 1790
+      "bytes": 2265
     },
     {
       "path": "simple-recipes.html",
@@ -6687,7 +6965,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 12531
+      "bytes": 12518
     },
     {
       "path": "simulators.html",
@@ -6847,7 +7125,7 @@
     },
     {
       "path": "student-businesses.html",
-      "title": "Student Shops & Interviews • Transition Town",
+      "title": "Student Businesses · Opening Day • Transition Town",
       "room": "town",
       "links": [
         {
@@ -6867,7 +7145,7 @@
           "exists": true
         },
         {
-          "target": "3k-tire-shop.html",
+          "target": "business-workday.html",
           "exists": true
         },
         {
@@ -6875,15 +7153,7 @@
           "exists": true
         },
         {
-          "target": "cool-vibes.html",
-          "exists": true
-        },
-        {
           "target": "assets/student-businesses/cool-vibes-interior.webp",
-          "exists": true
-        },
-        {
-          "target": "guardian-angel.html",
           "exists": true
         },
         {
@@ -6891,15 +7161,7 @@
           "exists": true
         },
         {
-          "target": "the-zoo.html",
-          "exists": true
-        },
-        {
           "target": "assets/student-businesses/the-zoo-interior.webp",
-          "exists": true
-        },
-        {
-          "target": "main-attraction.html",
           "exists": true
         },
         {
@@ -6926,7 +7188,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3450
+      "bytes": 3738
     },
     {
       "path": "teacher_teacher_assistant_presentation.html",
@@ -7015,6 +7277,10 @@
           "exists": true
         },
         {
+          "target": "business-workday.html",
+          "exists": true
+        },
+        {
           "target": "assets/student-businesses/the-zoo/data.js",
           "exists": true
         },
@@ -7034,7 +7300,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 2812
+      "bytes": 3202
     },
     {
       "path": "transition-game-show.html",
@@ -7179,23 +7445,7 @@
           "exists": true
         },
         {
-          "target": "cool-vibes.html",
-          "exists": true
-        },
-        {
-          "target": "guardian-angel.html",
-          "exists": true
-        },
-        {
-          "target": "the-zoo.html",
-          "exists": true
-        },
-        {
-          "target": "3k-tire-shop.html",
-          "exists": true
-        },
-        {
-          "target": "main-attraction.html",
+          "target": "business-workday.html",
           "exists": true
         },
         {
@@ -7283,6 +7533,14 @@
           "exists": true
         },
         {
+          "target": "assets/business-workday/payday-core.js",
+          "exists": true
+        },
+        {
+          "target": "assets/business-workday/payday.js",
+          "exists": true
+        },
+        {
           "target": "tt-notifications.js",
           "exists": true
         },
@@ -7333,7 +7591,7 @@
       ],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 217005
+      "bytes": 217647
     },
     {
       "path": "transportation-to-work.html",
@@ -7460,6 +7718,49 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 9327
+    },
+    {
+      "path": "watch-and-learn.html",
+      "title": "Watch & Learn · Transition Town School",
+      "room": "watch",
+      "links": [
+        {
+          "target": "assets/job-missions/style.css",
+          "exists": true
+        },
+        {
+          "target": "assets/watch-learn/classroom.css",
+          "exists": true
+        },
+        {
+          "target": "assets/career-lab/business-avatars.js",
+          "exists": true
+        },
+        {
+          "target": "session.js",
+          "exists": true
+        },
+        {
+          "target": "assets/watch-learn/classroom.mjs",
+          "exists": true
+        },
+        {
+          "target": "assets/watch-learn/pbs-ready.css",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "index.html",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 1427
     },
     {
       "path": "welding_pipe_welding_presentation.html",
@@ -7653,7 +7954,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3879
+      "bytes": 3870
     },
     {
       "path": "worksheets.html",
@@ -7765,24 +8066,19 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 12539
+    },
+    {
+      "path": "docs/count-quest-review.html",
+      "title": "Review copy · Count Quest · Count to 100 · Transition Town School",
+      "room": "wow",
+      "links": [],
+      "externalLinks": [],
+      "fragmentReview": [
+        "adventure-map"
+      ],
+      "contentFlags": [],
+      "bytes": 74591
     }
   ],
-  "broken": [
-    {
-      "from": "index(20260922-155132).html",
-      "to": "Transition_Team_Resource_Library_Guide.docx"
-    },
-    {
-      "from": "index-original-backup.html",
-      "to": "Transition_Team_Resource_Library_Guide.docx"
-    },
-    {
-      "from": "index_dropdowns_in_exact_spot.html",
-      "to": "Transition_Team_Resource_Library_Guide.docx"
-    },
-    {
-      "from": "index_fixed_presentations.html",
-      "to": "Transition_Team_Resource_Library_Guide.docx"
-    }
-  ]
+  "broken": []
 }

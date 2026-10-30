@@ -1,3 +1,5 @@
+import {learningId,learningStore} from '../learning/progress.mjs';
+const learning=learningStore('money-match');
 import {MONEY,COINS,total,dollars,spokenAmount,describe,coinQuestions,countQuestions,matchBoards,QuizProgress,placeGroup,checkMatches} from './core.mjs';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const scales={penny:.79,nickel:.88,dime:.74,quarter:1};
@@ -46,7 +48,7 @@ function renderQuiz(){
  feedback(isCoin?'Take your time. You can ask for help.':'Count the money and choose the total.');
  $$('.answer-card').forEach(b=>b.addEventListener('click',()=>{
   const option=q.options[Number(b.dataset.option)],correct=option===q.answer;
-  if(!progress.answer(index,correct))return;
+  if(!progress.answer(index,correct))return;learning.append({id:learningId(),mode,question:index+1,answer:option,correct,gameHelp:helpUsed});learning.event(correct?'completed':'correction','Money Match: chose '+(isCoin?MONEY[option].name:dollars(option))+'; '+(correct?'correct':'retry')+'. Teacher assistance not assessed.',{task:mode+'-'+(index+1),item:isCoin?MONEY[option].name:dollars(option),success:correct,status:helpUsed?'game help used':'teacher assistance not assessed'});
   $$('.answer-card').forEach(x=>x.classList.remove('retry'));
   if(correct){
    b.classList.add('correct');$$('.answer-card').forEach(x=>x.disabled=true);$('#next').disabled=false;
@@ -99,7 +101,7 @@ function check(){
  autoSay($('#feedback').textContent.replace('✓',''));
 }
 function finish(){
- show('finish');const count=mode==='match'?matched:progress.solved.size,first=mode==='match'?firstTry:progress.firstTry;
+ learning.append({id:learningId(),mode,completed:true,gameHelp:helpUsed});show('finish');const count=mode==='match'?matched:progress.solved.size,first=mode==='match'?firstTry:progress.firstTry;
  $('#finish-summary').textContent=mode==='match'?`You matched ${count} money groups!`:`You completed ${count} questions!`;
  $('#finish-detail').textContent=`${first} correct on the first try. ${helpUsed?'You used a help tool. ':''}Every try is practice.`;
  $('#finish-title').focus();autoSay('Nice work! '+$('#finish-summary').textContent);
