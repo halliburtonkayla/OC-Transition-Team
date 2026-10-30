@@ -15,11 +15,12 @@ const server=http.createServer((req,res)=>{const file=path.resolve(root,'.'+deco
  await go('cdc-center.html');await expect(page.getByRole('link',{name:/Count Quest/})).toBeVisible();assert.ok(await page.locator('.grid a').count()>=18);
  await go('school-directory.html');await expect(page.locator('.school-room')).toHaveCount(6);await expect(page.getByRole('button',{name:/MISS KAYLA’S OFFICE.*ENTER ROOM/})).toBeVisible();
  await go('career-feud.html');await page.locator('[data-action=setup]').click();await expect(page.locator('#gameMode')).toHaveValue('teams');await expect(page.locator('#playerCount')).toHaveValue('6');await expect(page.locator('[name^=student]')).toHaveCount(6);
+ await go('transition-town.html');await page.locator('#loginProfile').selectOption('Guest');await page.getByRole('button',{name:'Enter Transition Town',exact:true}).click();const payday=page.locator('#ttPaydayCelebration[open]');await payday.waitFor({state:'visible',timeout:3000}).catch(()=>{});if(await payday.isVisible()){await payday.locator('#ttPaydayCollect').click();await expect(payday).not.toBeVisible();}await page.getByRole('button',{name:'All Student Shops · Interviews',exact:true}).click();
  for(const shop of ['cool-vibes','the-zoo','guardian-angel','3k-tire-shop','main-attraction']){
   const state=global.TTBusinessCore.initial(shop),work=global.TTWorkday.init(state),task=work.tasks[0],step=task.steps[0];
-  await go('business-workday.html?shop='+shop);await expect(page.locator('[data-task]').first()).toBeVisible();await page.locator('[data-task="'+task.id+'"]').click();await page.locator('[data-tool="'+step.tool+'"]').click();
+  await page.locator('[href="business-workday.html?shop='+shop+'"]').click();await expect(page.locator('[data-task]').first()).toBeVisible();await page.locator('[data-task="'+task.id+'"]').click();await page.locator('[data-tool="'+step.tool+'"]').click();
   if(['verify','measure'].includes(step.mode)){await page.locator('#answer').fill(String(step.answer));await page.locator('#finishStep').click();await expect(page.locator('.step-count .passed')).toHaveCount(1);}
-  await page.screenshot({path:path.join(out,shop+'-opening.png')});
+  await page.screenshot({path:path.join(out,shop+'-opening.png')});await page.locator('[href="student-businesses.html"]').click();
  }
  for(const width of [390,768,1366]){await page.setViewportSize({width,height:900});for(const target of ['job-description-detectives.html','watch-and-learn.html?lesson=directions','cdc-center.html','memory-match.html','count-to-100.html','school-directory.html']){await go(target);await expect(page.locator('h1').first()).toBeVisible();assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Horizontal overflow: '+target+' at '+width);}}
  await go('classroom-monitor.html');await expect(page.locator('#monitorTeacherPin')).toBeVisible();await expect(page.locator('[data-stage-approve]')).toHaveCount(0);

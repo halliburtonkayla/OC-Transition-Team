@@ -8,7 +8,7 @@ const images=Object.fromEntries(await Promise.all(['apple','ball','parcel','town
 core=core.replace(/^export /gm,'');game=game.replace(/^import .*?;\n/gm,'');
 game=game.replace('src="assets/count-quest/${level.picture}.svg"','src="${REVIEW_IMAGES[level.picture]}"').replace('src="assets/count-quest/${l.picture}.svg"','src="${REVIEW_IMAGES[l.picture]}"');
 const script=`const learningId=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);const learningStore=()=>({read:()=>({records:[],checkpoint:null}),append:()=>true,checkpoint:()=>true,event:()=>{}});\nconst REVIEW_IMAGES=${JSON.stringify(images)};\n${core}\n${game}\nfor(const selector of ['.school-link','.wordmark'])$(selector).addEventListener('click',e=>{e.preventDefault();goHome();});\n$('.school-link').textContent='← Adventure map';\n`;
-html=html.replace(/\s*<script[^>]+src="assets\/classroom-monitor[^>]+><\/script>/,'').replace(/\s*<script type="module" src="assets\/count-quest\/game.mjs"><\/script>/,'');
+html=html.replace(/\s*<script[^>]+src="assets\/classroom-monitor[^>]+><\/script>/,'').replace(/\s*<script type="module" src="assets\/count-quest\/game.mjs(?:\?[^"]*)?"><\/script>/,'');
 html=html.replace('<link rel="stylesheet" href="assets/count-quest/game.css">',`<style>${css}</style>`).replace('src="assets/count-quest/town.svg"',`src="${images.town}"`);
 html=html.replace('<title>','<title>Review copy · ').replace('<body>','<body>\n<div style="text-align:center;background:#34405f;color:white;padding:8px;font:12px Arial">PLAYABLE REVIEW COPY · Not the live school game · Progress stays in this visit</div>');
 html=html.replace('href="transition-town.html?school=1"','href="#adventure-map"').replace('href="count-to-100.html"','href="#adventure-map"');
