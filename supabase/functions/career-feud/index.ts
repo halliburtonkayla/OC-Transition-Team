@@ -1,5 +1,5 @@
 import {BANK} from './questions.js';
-import {createState,mutate,view} from './core.js';
+import {createState,mutate,view,claimName} from './core.js';
 const BASE=Deno.env.get('SUPABASE_URL')!,KEY=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const ORIGIN='https://halliburtonkayla.github.io';
 class Problem extends Error{constructor(public status:number,msg:string){super(msg)}}
@@ -33,7 +33,7 @@ Deno.serve(async req=>{
  const out=(v:unknown,status=200)=>new Response(JSON.stringify(v),{status,headers});
  if(!allowed)return out({error:'Origin not allowed.'},403);
  if(req.method==='OPTIONS')return new Response('',{headers});
- if(req.method==='GET')return out({service:'Transition Town Career Feud',version:1});
+ if(req.method==='GET')return out({service:'Transition Town Career Feud',version:2});
  if(req.method!=='POST')return out({error:'Use POST.'},405);
  try{
   if(Number(req.headers.get('content-length')||0)>32000)fail(413,'Request too large.');
@@ -50,7 +50,7 @@ Deno.serve(async req=>{
    // Remove expired game records only; other Town records are untouched.
    await db('tt_career_feud_rooms?expires_at=lt.'+encodeURIComponent(new Date().toISOString()),'DELETE');
    const s=createState(b,BANK,Date.now(),()=>crypto.getRandomValues(new Uint32Array(1))[0]/4294967296);
-   for(let i=0;i<4;i++){const code=codeOf();try{await db('tt_career_feud_rooms','POST',{code,teacher_id:teacherId,host_hash:h,state:s});return out({code,...view(s,'host',Date.now())});}catch(e){if(!(e instanceof Problem)||e.status!==409)throw e;}}
+   for(let i=0;i<4;i++){const code=codeOf();try{await db('tt_career_feud_rooms','POST',{code,teacher_id:teacherId,host_hash:h,team_hashes:s.teams.map(()=>null),state:s});return out({code,...view(s,'host',Date.now())});}catch(e){if(!(e instanceof Problem)||e.status!==409)throw e;}}
    fail(503,'Please try creating the room again.');
   }
   const code=String(b.code||'').trim().toUpperCase();if(!/^[A-Z2-9]{6}$/.test(code))fail(400,'Enter the six-character room code.');
@@ -59,17 +59,17 @@ Deno.serve(async req=>{
    const row=(await db('tt_career_feud_rooms?code=eq.'+code+'&limit=1'))[0];
    if(!row||Date.parse(row.expires_at)<=Date.now())fail(404,'Room not found or expired. Check the code with your teacher.');
    const claimed=row.team_hashes.map(Boolean);
-   if(action==='inspect')return out({code,phase:row.state.phase,teams:row.state.teams.map((t:any,i:number)=>({...t,available:!claimed[i]}))});
+   if(action==='inspect')return out({code,phase:row.state.phase,gameMode:row.state.gameMode||'teams',playerCount:row.state.playerCount||row.state.teams.reduce((n:number,t:any)=>n+t.members.length,0),teams:row.state.teams.map((t:any,i:number)=>({...t,available:!claimed[i]}))});
    if(!tokenHash)fail(401,'Rejoin using this device or ask the host to release your team seat.');
    let role:any=row.host_hash===tokenHash?'host':row.team_hashes.indexOf(tokenHash);
    let state=row.state,hashes=[...row.team_hashes];
    if(action==='join'){
     if(role==='host')fail(403,'Use a separate laptop for each team.');
-    const team=Number(b.team);if(team!==0&&team!==1)fail(400,'Choose one of the two teams.');
+    const team=Number(b.team);if(!Number.isInteger(team)||team<0||team>=state.teams.length)fail(400,'Choose an available player or team seat.');
     if(role!==-1&&role!==team)fail(409,'This device already belongs to the other team.');
     if(hashes[team]&&hashes[team]!==tokenHash)fail(409,'That team is already on another laptop. Choose your assigned team or ask the host to release the seat.');
     if(state.phase==='ended'&&role===-1)fail(409,'This session has ended.');
-    role=team;hashes[team]=tokenHash;state=mutate(state,role,{action:'heartbeat'},Date.now());
+    state=claimName(state,team,b.name,role===team);role=team;hashes[team]=tokenHash;state=mutate(state,role,{action:'heartbeat'},Date.now());
    }else{
     if(role===-1)fail(401,'This device is not assigned to the room. Rejoin or ask the teacher to release the seat.');
     if(action==='state')return out({code,...view(state,role,Date.now(),claimed)});
@@ -83,3 +83,4 @@ Deno.serve(async req=>{
   fail(409,'The room is busy. Retry your action; saved answers are safe.');
  }catch(e){const status=e instanceof Problem?e.status:400;return out({error:e instanceof Error?e.message:'Game request failed.'},status);}
 });
+

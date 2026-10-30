@@ -4,19 +4,20 @@ Connected classroom game added to the existing Transition Town school.
 
 ## Use
 
-1. Enter the school hallway and select **Ready, Set, Work!** (also in Educational Games).
-2. On the teacher computer select **Host Game**, choose one service focus and 1–14 questions, edit the two three-person teams, and use the existing Transition Town teacher passcode.
-3. Copy the student join link or share the six-character room code. Each of the two student laptops selects a different team. There are no student accounts.
-4. Teams review their discussion leader, typist, and spokesperson roles and click READY. The host starts the round.
-5. Teams discuss, type one shared answer, and LOCK IN. Only the host and the submitting team can see an unrevealed answer.
-6. Reveal, hear both spokespeople, and set each team's round points. Next opens a role-rotation break. Both teams confirm readiness before the next round.
-7. End opens results and teacher print controls. Save individual observations and the next-session plan before printing.
+1. Open the existing **Ready, Set, Work!** / `career-feud.html` game from the school directory.
+2. On the teacher computer select **Host Game**. Choose **Individual players** (default) or **Two teams**, then the **actual player count, 2–6**, service focus, 1–14 questions, and discussion time. Use the existing teacher passcode.
+3. Individual mode creates exactly the selected number of blank seats. Each student opens the join link on their laptop, types their name, and claims a seat. There are no preset student identities or student accounts. Duplicate names require a distinguishing initial.
+4. Two-team mode keeps one laptop per team and the original six-person arrangement. Smaller actual counts split across two teams (one to three people per team). Each participant types a name into the blank roster before creation. Roles rotate using the actual roster size.
+5. Only the selected players/teams must connect and confirm READY. Each individual submits an answer; team mode submits one shared answer per team. Answers stay hidden from opponents until the host reveals them.
+6. The teacher awards round points using the existing question guidance. The game automatically sums every round. Individual mode determines the overall player winner; team mode determines the overall team winner. There is no AI or subjective single “best answer” award.
+7. If the overall lead is tied when regular play finishes (or the host ends early), only tied leaders play an extra question. Other students watch and do not block readiness. Ties repeat until one leader remains. Tiebreaker points (0–100) count in the final tally. Unused questions from the same focus are used first; after the focus bank is exhausted, questions cycle rather than leaving the game stuck.
+8. Results show the overall tally sheet, including each regular question and tiebreaker. Print the session or individual report, teacher observations, and next-session plan. Score corrections and undo recalculate the winner; a corrected tie reopens a tiebreaker.
 
-Default rosters: Olivia, Bradley (Max), Alyssa / Jocquan, Kaylee, Nick. Olivia and Jocquan cannot be placed on the same team. Rosters can be changed in the lobby; they are fixed once play starts to preserve accurate role history.
+New sessions always start with blank student names and zero points. Refreshing an existing room restores its own names, answers and totals. Releasing a seat during play keeps its recorded identity and scores; the replacement laptop must enter the same name. Existing saved two-team rooms remain compatible. Rosters are fixed once play starts to preserve accurate role history.
 
 ## Content
 
-78 open-ended scenarios: 36 Workplace Readiness, 14 Job Exploration, 14 Self-Advocacy, and 14 Postsecondary Education. One service per session, 14 questions by default without repeats. No preset phrase matching, multiple-choice scoring, fabricated surveys, or automatic judging. All points are awarded by the teacher.
+78 open-ended scenarios: 36 Workplace Readiness, 14 Job Exploration, 14 Self-Advocacy, and 14 Postsecondary Education. One service per session, 14 questions by default without repeats. No preset phrase matching, multiple-choice scoring, fabricated surveys, or automatic answer judging. Round points are awarded by the teacher; totals, winners, and tiebreaker eligibility are calculated automatically.
 
 ## Connection and access
 
@@ -40,9 +41,19 @@ Printable reports contain Central Time date/time, elapsed duration (including pa
 
 ## Preservation
 
-The existing school building, avatars, businesses, classrooms, and old game-show route remain. The school hallway gains a direct game link; the Educational Games menu gains a connected-game card. The former keyboard game remains under Practice Game Show. The existing business-avatar map is reused.
+The existing school building, avatars, businesses, classrooms, and old game-show route remain. The school hallway gains a direct game link; the Educational Games menu gains a connected-game card. The former keyboard game remains under Practice Game Show. The game uses typed-name initials, not preset student portraits; the Town’s other avatars are unchanged.
 
 ## Verification
+
+### Player-count and tally update (prepared; not deployed)
+
+- 40 existing logic/report checks and 49 new player/count/tiebreaker checks pass locally.
+- 39 checks execute the actual production `index.ts` handler with an isolated in-memory PostgREST transport, including concurrent seat claims and optimistic-version retry. No production credentials, database writes, or network calls are used.
+- Existing regression suites pass: Career Lab (1,537), practice game show (3,769), and classroom monitor (85).
+- Browser suites cover the preserved two-team flow plus actual three/six-player sessions, typed names, reconnect, cumulative scoring, repeated ties, reports, and narrow layout. Browser execution in this cloud shell is blocked by its process/socket sandbox; draft-PR CI is the verification path. Do not treat source parsing as a browser pass.
+- Deployment requires the updated `career-feud` Edge Function **before** publishing the v2 frontend. No schema migration, authentication change, new service, or separate game route is required. Repository changes alone do not deploy the Edge Function.
+
+### Original release verification (historical)
 
 - 40 executed logic, authorization-view, timer, role, content, and report checks in the coding tool's JavaScript runtime.
 - 23 executed checks against the deployed Supabase endpoint using an authenticated temporary teacher session, two independent team credentials, and a third duplicate-seat attempt. Included real room creation, concurrent joins, question/score synchronization, lock, filtered opposing answers, teacher-control rejection, rejoin, unlock, reveal, pause/resume, untimed, score undo, role rotation, skip, early end, and reports built from the live room.
@@ -53,3 +64,4 @@ The existing school building, avatars, businesses, classrooms, and old game-show
 - Production browser testing remains separate from backend API checks. School Wi-Fi and actual classroom Chromebooks were not available for validation.
 
 Backend schema source is in `docs/career-feud-schema.sql`. Edge function and question source are in `supabase/functions/career-feud/`.
+

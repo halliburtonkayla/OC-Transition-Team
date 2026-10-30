@@ -1,6 +1,6 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
-const C=new Function(read('supabase/functions/career-feud/core.js').replace(/export /g,'')+'\nreturn {FOCI,createState,mutate,view,remaining};')();
+const C=new Function(read('supabase/functions/career-feud/core.js').replace(/export /g,'')+'\nreturn {FOCI,createState,mutate,view,remaining,claimName};')();
 const BANK=new Function(read('supabase/functions/career-feud/questions.js').replace(/export /g,'')+'\nreturn BANK;')();
 const w={};new Function('window',read('assets/career-feud/report.js'))(w);const REPORT=w.CareerFeudReport;
 
@@ -8,14 +8,15 @@ const passed=(function(){
 const assertions=[];
 function ok(v,label){if(!v)throw Error(label);assertions.push(label)}
 function rejects(fn,label){let failed=false;try{fn()}catch{failed=true}ok(failed,label)}
-let now=1000000,st=C.createState({length:14,seconds:90},BANK,now,()=>.42);
+const fixture=[{name:'Team 1',members:['Olivia','Bradley (Max)','Alyssa']},{name:'Team 2',members:['Jocquan','Kaylee','Nick']}];
+let now=1000000,st=C.createState({gameMode:'teams',teams:fixture,length:14,seconds:90},BANK,now,()=>.42);
 ok(BANK.length>=35,'At least 35 scenarios');
 ok(BANK.filter(q=>q.focus==='Workplace Readiness').length>=35,'At least 35 Workplace Readiness scenarios');
 ok(BANK.every(q=>q.lookFor.length>=3&&q.alternatives&&q.points&&q.teaching),'Every question has teacher judging guidance');
 ok(new Set(st.deck.map(q=>q.id)).size===14,'14 unique questions');
 ok(st.deck.every(q=>q.focus==='Workplace Readiness'),'Session contains exactly one service focus');
-ok(st.teams[0].members.includes('Olivia')&&st.teams[1].members.includes('Jocquan'),'Requested classroom teams');
-rejects(()=>C.createState({teams:[{name:'A',members:['Olivia','Jocquan','A']},{name:'B',members:['B','C','D']}]},BANK,now),'Olivia and Jocquan cannot share a team');
+ok(C.createState({},BANK,now).teams.every(t=>t.members[0]===''),'No preset individual student names');
+rejects(()=>C.createState({teams:[{name:'A',members:['A','B','C']},{name:'B',members:[' a ','D','E']}]},BANK,now),'Duplicate typed names rejected across teams');
 rejects(()=>C.mutate(st,'host',{action:'start'},now),'Host waits for both connected ready teams');
 const send=(role,action,b={})=>st=C.mutate(st,role,{action,...b},++now);
 send(0,'heartbeat');send(1,'heartbeat');send(0,'ready',{ready:true});send(1,'ready',{ready:true});send('host','start',{requestId:'start-once'});
@@ -73,3 +74,4 @@ const directSchoolGame=schoolEntrance.includes('href="career-feud.html"');
 const directorySchoolGame=schoolEntrance.includes('schoolDirectoryDialog')&&schoolEntrance.includes('../school-directory/directory.mjs')&&read('assets/school-directory/catalogue.mjs').includes("['career-feud.html'");
 if(!(directSchoolGame||directorySchoolGame)||!town.includes('transition-game-show.html'))throw Error('School integration or legacy game missing');
 console.log('Career Feud logic/report checks passed: '+passed.length);
+
