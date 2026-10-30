@@ -1,8 +1,8 @@
 # Transition Town School activity and navigation audit
 
-Audited 2026-10-28. Existing files, Town records, business pages and game URLs are preserved.
+Audited 2026-10-30. Existing files, Town records, business pages and game URLs are preserved.
 
-198 existing HTML pages inspected. 4 literal local references still point to absent repository files. The remaining references are listed below. External URLs, dynamic destinations, playback and game behavior require separate checks.
+204 existing HTML pages inspected. 0 literal local references still point to absent repository files. The remaining references are listed below. External URLs, dynamic destinations, playback and game behavior require separate checks.
 
 ## Navigation decisions
 
@@ -19,7 +19,7 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 
 | Existing URL | Page title | Room | Local links | Missing references |
 | --- | --- | --- | ---: | ---: |
-| 3k-tire-shop.html | 3K Tire Shop • Owner Interviews | town | 9 | 0 |
+| 3k-tire-shop.html | 3K Tire Shop • Owner Interviews | town | 10 | 0 |
 | ADD-THIS-BUTTON.html | Untitled | compatibility | 1 | 0 |
 | INDEX_CHANGES.html | Untitled | compatibility | 2 | 0 |
 | after-party-book.html | The After-Party \| Transition Team | wow | 2 | 0 |
@@ -48,22 +48,23 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 | book-12.html | The Group Project Nobody Wanted | compatibility | 1 | 0 |
 | build-your-own-story.html | Build Your Own Story | kindness | 2 | 0 |
 | business-startup-marketplace.html | Business Startup Marketplace | studio | 2 | 0 |
+| business-workday.html | Opening Day · Transition Town | wow | 14 | 0 |
 | career-adventures.html | Career Adventures | studio | 8 | 0 |
 | career-challenge.html | High School Career Challenge | studio | 5 | 0 |
 | career-explorer.html | Career A–Z | studio | 6 | 0 |
-| career-feud.html | Ready, Set, Work! — Career Feud | wow | 6 | 0 |
+| career-feud.html | Ready, Set, Work! — Career Feud | wow | 5 | 0 |
 | career-interest-snapshot.html | Career Interest Snapshot \| Transition Team | studio | 3 | 0 |
 | career-research-sheet.html | Career Research Sheet \| Transition Team | studio | 3 | 0 |
 | career-scroll.html | Career Scroll \| OC Transition Team | studio | 3 | 0 |
 | career-specific-interview.html | Career-Specific Interview Builder \| Transition Team | studio | 3 | 0 |
 | career_presentations.html | Career Presentations | studio | 11 | 0 |
-| cdc-center.html | CDC Center \| OC Transition Team | watch | 10 | 0 |
+| cdc-center.html | CDC Center \| OC Transition Team | watch | 21 | 0 |
 | cdc-cleaning.html | CDC Cleaning & Home Skills | jobs | 2 | 0 |
 | cdc-cooking-match.html | CDC Make It! Cooking Match | jobs | 2 | 0 |
 | cdc-hands-on.html | CDC Hands-On Life & Work Skills | jobs | 1 | 0 |
 | cdc-hygiene.html | CDC Hygiene & Daily Routine | watch | 2 | 0 |
 | cdc-job-match.html | CDC Job Tool Match | jobs | 2 | 0 |
-| cdc-sort-it.html | CDC Sort It! · Transition Town School | wow | 2 | 0 |
+| cdc-sort-it.html | CDC Sort It! · Transition Town School | wow | 3 | 0 |
 | cdl_truck_driving_presentation.html | CDL &amp; Truck Driving Careers \| Transition Team | studio | 2 | 0 |
 | childcare-career-center.html | Childcare Career Center | wow | 2 | 0 |
 | childcare-simulator.html | Childcare Challenge \| Transition Team | jobs | 3 | 0 |
@@ -79,10 +80,10 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 | construction_careers_presentation.html | Construction Careers \| Transition Team | studio | 2 | 0 |
 | content_creator_presentation.html | Content Creator \| Transition Team | studio | 2 | 0 |
 | cooking-game.html | Cooking Simulator | wow | 7 | 0 |
-| cool-vibes.html | Cool Vibes Café • Owner Interviews | town | 9 | 0 |
+| cool-vibes.html | Cool Vibes Café • Owner Interviews | town | 10 | 0 |
 | cosmetology_barbering_presentation.html | Cosmetology &amp; Barbering | studio | 2 | 0 |
 | cosmetology_career_presentation.html | Cosmetology &amp; Beauty Careers | studio | 3 | 0 |
-| count-to-100.html | Count to 100 · Transition Town School | wow | 2 | 0 |
+| count-to-100.html | Count Quest · Count to 100 · Transition Town School | wow | 6 | 0 |
 | culinary_restaurant_career_presentation.html | Culinary &amp; Restaurant Careers | studio | 3 | 0 |
 | culinary_restaurant_presentation.html | Culinary &amp; Restaurant Careers \| Transition Team | studio | 2 | 0 |
 | customer-service.html | Customer Service Scenarios \| Transition Team | watch | 3 | 0 |
@@ -112,7 +113,7 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 | group-projects.html | Group Projects \| Transition Team | kindness | 4 | 0 |
 | group-readings.html | Group Reading Room \| Transition Team | kindness | 2 | 0 |
 | guardian-angel-daycare-simulator.html | Guardian Angel • Daycare Shift | jobs | 1 | 0 |
-| guardian-angel.html | Guardian Angel Childcare • Owner Interviews | town | 10 | 0 |
+| guardian-angel.html | Guardian Angel Childcare • Owner Interviews | town | 11 | 0 |
 | healthcare-simulator.html | Healthcare Career Simulator \| Transition Team | jobs | 4 | 0 |
 | home-beyond.html | Home & Beyond • Transition Town | town | 10 | 0 |
 | house-01.html | House 1 — Maple Street Starter Home | compatibility | 6 | 0 |
@@ -131,14 +132,16 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 | hvac_career_presentation.html | HVAC | studio | 3 | 0 |
 | hvac_presentation.html | HVAC Careers \| Transition Team | studio | 2 | 0 |
 | independent-living.html | Independent Living \| OC Transition Team | wow | 15 | 0 |
-| index(20260922-155132).html | Transition Team \| Obion County Schools | compatibility | 104 | 1 |
-| index-original-backup.html | Transition Team \| Obion County Schools | compatibility | 103 | 1 |
+| index(20260922-155132).html | Transition Team \| Obion County Schools | compatibility | 104 | 0 |
+| index-original-backup.html | Transition Team \| Obion County Schools | compatibility | 103 | 0 |
 | index.html | Transition Team \| Obion County Schools | compatibility | 15 | 0 |
-| index_dropdowns_in_exact_spot.html | Transition Team \| Obion County Schools | compatibility | 104 | 1 |
-| index_fixed_presentations.html | Transition Team \| Obion County Schools | compatibility | 106 | 1 |
+| index_dropdowns_in_exact_spot.html | Transition Team \| Obion County Schools | compatibility | 104 | 0 |
+| index_fixed_presentations.html | Transition Team \| Obion County Schools | compatibility | 105 | 0 |
 | interactive-stories.html | What Would YOU Do? \| Transition Team | kindness | 4 | 0 |
 | job-application-practice.html | Practice Job Application \| Transition Team | studio | 3 | 0 |
+| job-description-detectives.html | Job Description Detectives · Transition Town | studio | 6 | 0 |
 | job-exploration.html | Job Exploration \| OC Transition Team | studio | 12 | 0 |
+| job-missions.html | Job Missions · Ready for Work! · Transition Town School | jobs | 4 | 0 |
 | jordans-first-day.html | Jordan's First Day at Work \| Transition Team | wow | 2 | 0 |
 | just-a-joke-book.html | It Was Just a Joke… \| Transition Team | wow | 2 | 0 |
 | landscaping_presentation.html | Landscaping Careers | studio | 2 | 0 |
@@ -148,21 +151,21 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 | life-story-library.html | 30 Life Story Adventures \| Transition Team | wow | 4 | 0 |
 | main-attraction-appointments.html | Main Attraction \| Appointment Practice | wow | 4 | 0 |
 | main-attraction-employee-training.html | The Main Attraction \| Student Training | jobs | 2 | 0 |
-| main-attraction-service.html | The Main Attraction \| Shared Service Desk | jobs | 15 | 0 |
-| main-attraction-studio.html | The Main Attraction · Beauty Studio | wow | 14 | 0 |
+| main-attraction-service.html | The Main Attraction \| Shared Service Desk | jobs | 16 | 0 |
+| main-attraction-studio.html | The Main Attraction · Beauty Studio | wow | 15 | 0 |
 | main-attraction-training.html | The Main Attraction • Owner Interviews | wow | 1 | 0 |
 | main-attraction-workstations.html | Main Attraction \| Salon Training | jobs | 5 | 0 |
-| main-attraction.html | The Main Attraction • Owner Interviews | town | 12 | 0 |
+| main-attraction.html | The Main Attraction • Owner Interviews | town | 13 | 0 |
 | mansion-01.html | Mansion 1 — Maple Ridge Estate | compatibility | 6 | 0 |
 | mansion-02.html | Mansion 2 — Oak Valley Manor | compatibility | 6 | 0 |
 | mansion-03.html | Mansion 3 — Silver Creek Estate | compatibility | 6 | 0 |
 | mansion-04.html | Mansion 4 — Riverstone Manor | compatibility | 6 | 0 |
 | medical_assistant_presentation.html | Medical Assistant | studio | 2 | 0 |
-| memory-match.html | Memory Match · Transition Town School | wow | 2 | 0 |
+| memory-match.html | Memory Match · Transition Town School | wow | 3 | 0 |
 | miss-kayla-inbox.html | Miss Kayla Central Hub | teacher | 9 | 0 |
 | mock-interview-interviewer.html | Mock Interview — Interviewer Guide \| Transition Team | studio | 3 | 0 |
 | mock-interview-student.html | Mock Interview — Student Practice \| Transition Team | studio | 3 | 0 |
-| money-counting-game.html | Money Counting Game | wow | 2 | 0 |
+| money-counting-game.html | Money Match · Transition Town School | wow | 10 | 0 |
 | move-out-simulator.html | Move Out Simulator \| Transition Team | jobs | 5 | 0 |
 | multiplication-wall.html | Multiplication Wall · Transition Town School | wow | 2 | 0 |
 | nursing_cna_career_presentation.html | Nursing &amp; CNA | studio | 3 | 0 |
@@ -189,27 +192,29 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 | retail_employee_presentation.html | Retail Employee \| Transition Team | studio | 2 | 0 |
 | salon-simulator.html | Salon Studio Simulator \| Transition Team | jobs | 6 | 0 |
 | school-career-lab.html | Job Exploration · Transition Town School | studio | 8 | 0 |
+| school-directory.html | Six Rooms · Transition Town School | wow | 3 | 0 |
 | self-advocacy.html | Self-Advocacy \| OC Transition Team | watch | 6 | 0 |
-| shop-floor.html | Student Shop Workday • Transition Town | wow | 14 | 0 |
+| shop-floor.html | Student Shop Workday • Transition Town | wow | 16 | 0 |
 | simple-recipes.html | Simple Recipes \| Transition Team | wow | 7 | 0 |
 | simulators.html | Game Zone &amp; Simulators | jobs | 11 | 0 |
 | smart-transition-goal.html | SMART Transition Goal \| Transition Team | watch | 3 | 0 |
 | softball-game.html | Softball at Transition Park | wow | 7 | 0 |
 | stories.html | What Would You Do? \| Transition Team | wow | 7 | 0 |
-| student-businesses.html | Student Shops & Interviews • Transition Town | town | 18 | 0 |
+| student-businesses.html | Student Businesses · Opening Day • Transition Town | town | 14 | 0 |
 | teacher_teacher_assistant_presentation.html | Teacher &amp; Teacher Assistant | studio | 2 | 0 |
 | teamwork-reflection.html | Teamwork &amp; Group Project Reflection \| Transition Team | watch | 3 | 0 |
 | the-drama-book.html | The Drama \| Transition Team | wow | 2 | 0 |
-| the-zoo.html | The Zoo Pet Sitting • Owner Interviews | town | 9 | 0 |
+| the-zoo.html | The Zoo Pet Sitting • Owner Interviews | town | 10 | 0 |
 | transition-game-show.html | Ready, Set, Work! · Transition Town | wow | 6 | 0 |
 | transition-life.html | My Home • Transition Life | wow | 12 | 0 |
-| transition-town.html | Transition Town | town | 47 | 0 |
+| transition-town.html | Transition Town | town | 45 | 0 |
 | transportation-to-work.html | Transportation to Work Plan \| Transition Team | watch | 3 | 0 |
 | truck_driving_cdl_career_presentation.html | Truck Driving &amp; CDL | studio | 3 | 0 |
 | veterinary_animal_care_presentation.html | Veterinary &amp; Animal Care \| Transition Team | studio | 1 | 0 |
 | veterinary_career_presentation.html | Veterinary Careers | studio | 3 | 0 |
 | warehouse_manufacturing_career_presentation.html | Warehouse &amp; Manufacturing | studio | 3 | 0 |
 | warehouse_manufacturing_presentation.html | Warehouse &amp; Manufacturing | studio | 2 | 0 |
+| watch-and-learn.html | Watch & Learn · Transition Town School | watch | 8 | 0 |
 | welding_pipe_welding_presentation.html | Welding &amp; Pipe Welding \| Transition Team | studio | 2 | 0 |
 | work-crew-lab.html | Work Crew Lab \| Transition Town School | jobs | 1 | 0 |
 | workplace-communication.html | Workplace Communication Practice \| Transition Team | watch | 3 | 0 |
@@ -217,13 +222,10 @@ Audited 2026-10-28. Existing files, Town records, business pages and game URLs a
 | workplace-readiness.html | Workplace Readiness \| OC Transition Team | watch | 15 | 0 |
 | workplace-simulator.html | Virtual Workplace Simulator \| Transition Team | jobs | 8 | 0 |
 | worksheets.html | Worksheet Library \| Transition Team | teacher | 25 | 0 |
+| docs/count-quest-review.html | Review copy · Count Quest · Count to 100 · Transition Town School | wow | 0 | 0 |
 
 ## Pre-existing missing local references
 
-- index(20260922-155132).html → Transition_Team_Resource_Library_Guide.docx
-- index-original-backup.html → Transition_Team_Resource_Library_Guide.docx
-- index_dropdowns_in_exact_spot.html → Transition_Team_Resource_Library_Guide.docx
-- index_fixed_presentations.html → Transition_Team_Resource_Library_Guide.docx
 
 ## Duplicate, confusing and unfinished navigation
 

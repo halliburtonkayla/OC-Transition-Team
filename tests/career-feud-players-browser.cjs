@@ -19,7 +19,7 @@ const server=http.createServer((req,res)=>{
   const host=await page(),players=await Promise.all(Array.from({length:6},page)),duplicate=await page();
   await host.goto('http://127.0.0.1:4173/career-feud.html');
   await host.evaluate(()=>sessionStorage.setItem('tt-monitor-auth-v1',JSON.stringify({access_token:'test-teacher'})));
-  const setup=async(count,length=1)=>{await host.locator('[data-action=setup]').click();await host.locator('#playerCount').selectOption(String(count));await host.locator('[name=length]').selectOption(String(length));await host.locator('[name=seconds]').selectOption('0');};
+  const setup=async(count,length=1)=>{await host.locator('[data-action=setup]').click();await host.locator('#gameMode').selectOption('individual');await host.locator('#playerCount').selectOption(String(count));await host.locator('[name=length]').selectOption(String(length));await host.locator('[name=seconds]').selectOption('0');};
   await setup(3,2);
   await expect(host.locator('[name^=student]')).toHaveCount(0);
   for(const n of ['Olivia','Bradley','Alyssa','Jocquan','Kaylee','Nick'])if((await host.locator('#app').innerText()).includes(n))throw Error('Preset name in setup: '+n);
@@ -60,7 +60,7 @@ const server=http.createServer((req,res)=>{
   // Team roster respects actual count and is blank on every new setup.
   await host.locator('[data-action=leave]').click();await setup(3);await host.locator('#gameMode').selectOption('teams');await expect(host.locator('[name^=student]')).toHaveCount(3);
   await host.locator('#playerCount').selectOption('6');await expect(host.locator('[name^=student]')).toHaveCount(6);for(const el of await host.locator('[name^=student]').all())await expect(el).toHaveValue('');
-  await host.locator('[data-action=home]').click();await host.locator('[data-action=setup]').click();await expect(host.locator('#playerCount')).toHaveValue('3');await expect(host.locator('#gameMode')).toHaveValue('individual');
+  await host.locator('[data-action=home]').click();await host.locator('[data-action=setup]').click();await expect(host.locator('#playerCount')).toHaveValue('6');await expect(host.locator('#gameMode')).toHaveValue('teams');
   if(errors.length)throw Error('Browser exceptions: '+errors.join('; '));
   console.log('Career Feud individual browser checks passed: actual3/6 counts, own typed names, blank reset, independent sync/privacy, rapid controls, cumulative winner, repeated tied-leader rounds, report/reconnect, team roster count, mobile layout. Isolated production-handler fixture; not live network.');
  }catch(error){for(let i=0;i<testPages.length;i++){try{await testPages[i].screenshot({path:path.join(ART,'failure-player-'+i+'.png'),fullPage:true});fs.writeFileSync(path.join(ART,'failure-player-'+i+'.txt'),await testPages[i].locator('body').innerText())}catch{}}fs.writeFileSync(path.join(ART,'failure-fixture.json'),JSON.stringify(f.tables.tt_career_feud_rooms.map(r=>({code:r.code,state:r.state})),null,2));throw error;}finally{await browser.close();server.close();}
