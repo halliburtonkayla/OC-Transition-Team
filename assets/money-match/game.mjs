@@ -27,15 +27,15 @@ function start(nextMode){
  mode=nextMode;config={choices:Number($('#choices').value),level:$('#level').value};
  rounds=mode==='coin'?coinQuestions(config.choices):mode==='count'?countQuestions(config.level,config.choices):matchBoards(config.level);
  index=0;progress=new QuizProgress(rounds.length);matched=0;firstTry=0;helpUsed=false;
- show('play');render();
+ show('play');render();saveMoney();
 }
-function render(){
+function render(resetMatch=true){
  stopSpeech();$('#mode-name').textContent={coin:'KNOW THE COIN',match:'MATCH THE MONEY',count:'COUNT THE MONEY'}[mode];
  $('#progress-label').textContent=(mode==='match'?'Board ':'Question ')+(index+1)+' of '+rounds.length;
  $('#next').disabled=true;$('#next').textContent=index===rounds.length-1?'Finish ✓':mode==='match'?'Next board →':'Next →';
  $('.progress-track').setAttribute('aria-valuemax',String(rounds.length));$('.progress-track').setAttribute('aria-valuenow',String(index));$('#progress-fill').style.width=(index/rounds.length*100)+'%';
  if(mode==='match'){
-  assignments={};locked=new Set();selected='';attempts={};
+  if(resetMatch){assignments={};locked=new Set();selected='';attempts={};}
   $('#question').textContent='Match the money.';$('#instruction').textContent='1. Choose a money group.  2. Choose its amount.';renderMatch();feedback('Tap a group, then tap an empty box. You can also drag.');
  }else renderQuiz();
  $('#question').focus();autoSay(questionSpeech());
@@ -48,7 +48,7 @@ function renderQuiz(){
  feedback(isCoin?'Take your time. You can ask for help.':'Count the money and choose the total.');
  $$('.answer-card').forEach(b=>b.addEventListener('click',()=>{
   const option=q.options[Number(b.dataset.option)],correct=option===q.answer;
-  if(!progress.answer(index,correct))return;learning.append({id:learningId(),mode,question:index+1,answer:option,correct,gameHelp:helpUsed});learning.event(correct?'completed':'correction','Money Match: chose '+(isCoin?MONEY[option].name:dollars(option))+'; '+(correct?'correct':'retry')+'. Teacher assistance not assessed.',{task:mode+'-'+(index+1),item:isCoin?MONEY[option].name:dollars(option),success:correct,status:helpUsed?'game help used':'teacher assistance not assessed'});
+  if(!progress.answer(index,correct))return;saveMoney();learning.append({id:learningId(),mode,question:index+1,answer:option,correct,gameHelp:helpUsed});learning.event(correct?'completed':'correction','Money Match: chose '+(isCoin?MONEY[option].name:dollars(option))+'; '+(correct?'correct':'retry')+'. Teacher assistance not assessed.',{task:mode+'-'+(index+1),item:isCoin?MONEY[option].name:dollars(option),success:correct,status:helpUsed?'game help used':'teacher assistance not assessed'});
   $$('.answer-card').forEach(x=>x.classList.remove('retry'));
   if(correct){
    b.classList.add('correct');$$('.answer-card').forEach(x=>x.disabled=true);$('#next').disabled=false;
@@ -88,26 +88,26 @@ function renderMatch(focusKey){
 function place(target,group){
  const next=placeGroup(assignments,target,group,current(),locked);
  if(next[target]!==group)return;
- assignments=next;selected='';renderMatch('target:'+target);feedback('Money placed. Match the other groups, then check.');autoSay('Money placed.');
+ assignments=next;selected='';saveMoney();renderMatch('target:'+target);feedback('Money placed. Match the other groups, then check.');autoSay('Money placed.');
 }
 function check(){
  const result=checkMatches(assignments,current(),locked);
  if(!result.correct.length&&!result.incorrect.length){feedback('Choose a money group and an amount first.');return;}
- for(const target of [...result.correct,...result.incorrect]){const group=assignments[target];attempts[group]=(attempts[group]||0)+1;}
+ for(const target of [...result.correct,...result.incorrect]){const group=assignments[target];attempts[group]=(attempts[group]||0)+1;const chosen=current().groups.find(g=>g.id===group),amount=current().targets.find(t=>t.id===target),correct=result.correct.includes(target);learning.append({id:learningId(),mode,question:index+1,answer:chosen.cents,target:amount.cents,correct,gameHelp:helpUsed});learning.event(correct?'completed':'correction','Money Match: matched '+describe(chosen.items)+' to '+dollars(amount.cents)+'; '+(correct?'correct':'retry')+'. Teacher assistance not assessed.',{task:'match-'+(index+1),item:describe(chosen.items),success:correct,attempt:attempts[group],status:helpUsed?'game help used':'teacher assistance not assessed'});}
  for(const target of result.correct){locked.add(target);matched++;if(attempts[assignments[target]]===1)firstTry++;}
  for(const target of result.incorrect)delete assignments[target];selected='';renderMatch();
  if(locked.size===current().targets.length){$('#next').disabled=false;feedback('✓ All matched! You counted every group.','success');$('#next').focus({preventScroll:true});}
  else {feedback(result.incorrect.length?'Some need another look. Correct matches stay. Try the remaining money.':'✓ Good matches! Finish the empty boxes.',result.incorrect.length?'retry':'success');$('.group-card:not(:disabled)')?.focus({preventScroll:true});}
- autoSay($('#feedback').textContent.replace('✓',''));
+ saveMoney();autoSay($('#feedback').textContent.replace('✓',''));
 }
 function finish(){
- learning.append({id:learningId(),mode,completed:true,gameHelp:helpUsed});show('finish');const count=mode==='match'?matched:progress.solved.size,first=mode==='match'?firstTry:progress.firstTry;
+ learning.append({id:learningId(),mode,completed:true,gameHelp:helpUsed});learning.checkpoint(null);show('finish');const count=mode==='match'?matched:progress.solved.size,first=mode==='match'?firstTry:progress.firstTry;
  $('#finish-summary').textContent=mode==='match'?`You matched ${count} money groups!`:`You completed ${count} questions!`;
  $('#finish-detail').textContent=`${first} correct on the first try. ${helpUsed?'You used a help tool. ':''}Every try is practice.`;
  $('#finish-title').focus();autoSay('Nice work! '+$('#finish-summary').textContent);
 }
 $$('[data-start]').forEach(b=>b.addEventListener('click',()=>start(b.dataset.start)));
-$('#next').addEventListener('click',()=>{if($('#next').disabled)return;if(index===rounds.length-1)finish();else{index++;render();}});
+$('#next').addEventListener('click',()=>{if($('#next').disabled)return;if(index===rounds.length-1)finish();else{index++;render();saveMoney();}});
 function goHome(){show('home');$('[data-start]')?.focus();}
 $('#activities').addEventListener('click',goHome);$('#choose').addEventListener('click',goHome);
 $('#restart').addEventListener('click',()=>start(mode));$('#again').addEventListener('click',()=>start(mode));
@@ -119,3 +119,7 @@ $('#close-help').addEventListener('click',()=>$('#help').close());$('#help').add
 $('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else $('#fullscreen').textContent='Use your device’s display controls';}catch{$('#fullscreen').textContent='Full screen unavailable';}});
 document.addEventListener('fullscreenchange',()=>{$('#fullscreen').innerHTML=document.fullscreenElement?'⛶ <span>Exit full screen</span>':'⛶ <span>Full screen</span>';$('#fullscreen').setAttribute('aria-label',document.fullscreenElement?'Exit full screen':'Enter full screen');});
 window.addEventListener('pagehide',stopSpeech);document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech();});
+
+function saveMoney(){learning.checkpoint({mode,config,rounds,index,assignments,locked:[...locked],attempts,matched,firstTry,helpUsed,quiz:progress?{attempts:progress.attempts,solved:[...progress.solved],firstTry:progress.firstTry}:null});}
+function resumeMoney(saved){try{if(!saved||!['coin','count','match'].includes(saved.mode)||!Array.isArray(saved.rounds)||!saved.rounds.length||saved.rounds.length>100||!Number.isInteger(saved.index)||saved.index<0||saved.index>=saved.rounds.length)throw Error();mode=saved.mode;config=saved.config;rounds=saved.rounds;index=saved.index;assignments=saved.assignments||{};locked=new Set(saved.locked||[]);attempts=saved.attempts||{};matched=saved.matched||0;firstTry=saved.firstTry||0;helpUsed=!!saved.helpUsed;progress=new QuizProgress(rounds.length);if(saved.quiz){progress.attempts=saved.quiz.attempts;progress.solved=new Set(saved.quiz.solved);progress.firstTry=saved.quiz.firstTry;}show('play');render(false);if(mode==='match'&&locked.size===current().targets.length||mode!=='match'&&progress.solved.has(index)){$('#next').disabled=false;$$('.answer-card').forEach(b=>b.disabled=true);feedback('Saved correct answers restored. Choose Next when you are ready.','success');}return true;}catch{goHome();feedback('This saved mission could not be resumed. Choose a new practice.');return false;}}
+const savedMoney=learning.read().checkpoint;if(savedMoney){const button=document.createElement('button');button.className='outline';button.id='resume-money';button.textContent='Resume saved money mission';$('[data-start]').after(button);button.onclick=()=>resumeMoney(savedMoney);}

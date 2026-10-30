@@ -281,5 +281,5 @@ test('weather reactions, score lock, school return, and classroom monitor stay i
   g.leave();
   assert.equal(g.timers.size, 0);
   assert.match(html, /href="transition-town\.html\?school=1"/);
-  assert.match(html, /src="assets\/classroom-monitor\/student\.js\?v=20261026laundry" defer/);
+  assert.match(html, /src="assets\/classroom-monitor\/student\.js\?v=[^"\s]+" defer/);
 });
