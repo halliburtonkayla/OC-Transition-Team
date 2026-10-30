@@ -5093,7 +5093,7 @@
     {
       "path": "job-description-detectives.html",
       "title": "Job Description Detectives · Transition Town",
-      "room": "wow",
+      "room": "studio",
       "links": [
         {
           "target": "assets/job-detectives/style.css",
@@ -5483,7 +5483,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 28034
+      "bytes": 28089
     },
     {
       "path": "main-attraction-studio.html",
@@ -5554,7 +5554,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 1770
+      "bytes": 1764
     },
     {
       "path": "main-attraction-training.html",

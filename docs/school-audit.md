@@ -139,7 +139,7 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | index_fixed_presentations.html | Transition Team \| Obion County Schools | compatibility | 105 | 0 |
 | interactive-stories.html | What Would YOU Do? \| Transition Team | kindness | 4 | 0 |
 | job-application-practice.html | Practice Job Application \| Transition Team | studio | 3 | 0 |
-| job-description-detectives.html | Job Description Detectives · Transition Town | wow | 6 | 0 |
+| job-description-detectives.html | Job Description Detectives · Transition Town | studio | 6 | 0 |
 | job-exploration.html | Job Exploration \| OC Transition Team | studio | 12 | 0 |
 | job-missions.html | Job Missions · Ready for Work! · Transition Town School | jobs | 4 | 0 |
 | jordans-first-day.html | Jordan's First Day at Work \| Transition Team | wow | 2 | 0 |

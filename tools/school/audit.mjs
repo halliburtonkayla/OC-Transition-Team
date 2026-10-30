@@ -13,7 +13,7 @@ function category(p){
  if(/^(?:index(?:[-_(]|\.html)|ADD-|INDEX_|apartment-simulator\()/.test(p)||/^(?:house|mansion|book)-\d/.test(p)||p.startsWith('tests/'))return 'compatibility';
  if(/^(?:classroom-monitor|pre-ets|miss-kayla|downloads|worksheets|expanded-resource|resource-viewer|pdf-viewer)/.test(p))return 'teacher';
  if(/^(?:group-projects|relax-color|build-your-own-story|group-readings|animated-stories|interactive-stories)/.test(p))return 'kindness';
- if(/^(?:career|job-exploration|school-career|job-application|mock-interview|resume|business-startup|developer|college|postsecondary|offer)/.test(p)||/presentation/.test(p))return 'studio';
+ if(/^(?:career|job-exploration|job-description|school-career|job-application|mock-interview|resume|business-startup|developer|college|postsecondary|offer)/.test(p)||/presentation/.test(p))return 'studio';
  if(/^(?:job-missions|work-crew|cdc-(?:hands|cleaning|cooking|job)|.*simulator|grocery-employee|pizza-employee|coffee-employee|main-attraction-(?:employee|service|workstations))/.test(p))return 'jobs';
  if(/^(?:workplace-readiness|workplace-communication|workplace-problem|attendance|read-work|first-day|first-paycheck|transportation|teamwork|customer|ask-for-help|self-advocacy|smart-transition|career-research|career-interest|grocery-budget|housing-comparison|cdc-center|cdc-hygiene|watch-and-learn)/.test(p))return 'watch';
  if(/^(?:transition-town|student-business|3k-tire|cool-vibes|guardian-angel\.html|the-zoo|main-attraction\.html|grocery-store|pizza-shop|coffee-shop|bank|fire-department|housing-office|home-beyond)/.test(p))return 'town';

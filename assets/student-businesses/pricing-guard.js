@@ -9,5 +9,6 @@ function check(s,a){if(!restricted(s))return;
 }
 C.reduce=function(previous,a,id,now){check(previous,a);return base(previous,a,id,now);};
 g.TTBusinessPricing={restricted,check};
+g.TTShopConnection={deviceToken(){try{const raw=sessionStorage.getItem('ttCurrent')||localStorage.getItem('ttCurrent')||'',name=({Max:'Bradley','Max / Bradley':'Bradley',Nick:'Nicholas',Aubry:'Aubrey',Jayden:'Jaden'})[raw]||raw;return sessionStorage.getItem('ttMonitorDevice:'+name)||localStorage.getItem('ttMonitorDevice:'+name)||'';}catch{return '';}}};
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',()=>{const page=location.pathname.split('/').pop(),shop=new URLSearchParams(location.search).get('shop')||(/main-attraction/.test(page)?'main-attraction':'');if(!['3k-tire-shop','main-attraction'].includes(shop))return;const note=document.createElement('aside');note.className='pricing-stage-notice';note.style.cssText='padding:14px 20px;background:#fff3d4;border:1px solid #d0af56;color:#432f14;font:16px/1.5 system-ui';note.innerHTML='Pricing is teacher controlled. Until Miss Kayla approves this stage, use interviews, opening checks, and free workstation practice. <a href="classroom-monitor.html#business">Miss Kayla: review pricing stage</a>';document.body.prepend(note);});
 })(globalThis);

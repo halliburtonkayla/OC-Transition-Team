@@ -65,6 +65,15 @@ Deno.serve(async(req:Request)=>{
    }
    return out({error:'The business changed. Refresh and review again.'},409);
   }
+  // A classroom code identifies the room; an approved device identifies the student.
+  const deviceToken=String(data.deviceToken||'');
+  if(!/^[a-f0-9]{64}$/.test(deviceToken))return out({error:'Ask Miss Kayla to connect this device in the Live Classroom Monitor before joining shared business work. Solo practice remains available.'},403);
+  const deviceBytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('tt-monitor-v1:'+deviceToken)),deviceHash=Array.from(new Uint8Array(deviceBytes),x=>x.toString(16).padStart(2,'0')).join('');
+  const approvedDevice=(await db('tt_monitor_devices?token_hash=eq.'+deviceHash+'&select=id,student,approved_at,school,expires_at,revoked_at&limit=1')).rows[0];
+  if(!approvedDevice?.approved_at||!approvedDevice.school||approvedDevice.revoked_at||!Number.isFinite(Date.parse(approvedDevice.expires_at))||Date.parse(approvedDevice.expires_at)<=Date.now())return out({error:'This device is waiting for approval or its access expired. Ask Miss Kayla to reconnect it.'},403);
+  const canonical=(n:string)=>({'Max':'Bradley','Max / Bradley':'Bradley','Nick':'Nicholas','Aubry':'Aubrey','Jayden':'Jaden'} as Record<string,string>)[n]||n;
+  const student=canonical(approvedDevice.student),owner=Object.keys(Core.config(shop).owners).find(n=>canonical(n)===student);
+  if(data.action&&typeof data.action==='object'){data.action.actor=owner||student;data.action.device='approved-device:'+approvedDevice.id;}
   const hiredRows=async(employee?:string)=>{
    const filter='tt_interview_decisions_latest?select=applicant_id,applicant_name&shop_id=eq.'+encodeURIComponent(shop)+'&decision=eq.Hired&limit=200'+(employee?'&applicant_id=eq.'+encodeURIComponent(employee):'');
    return (await db(filter)).rows.filter((r:any)=>!!(globalThis as any).TTShopStaff[shop+':'+String(r.applicant_id).replace(/-short$/,'')]&&(!employee||String(r.applicant_id).replace(/-short$/,'')===employee)).map((r:any)=>({applicant_id:String(r.applicant_id).replace(/-short$/,''),applicant_name:r.applicant_name}));

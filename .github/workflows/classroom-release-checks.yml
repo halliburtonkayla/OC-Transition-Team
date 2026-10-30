@@ -54,6 +54,7 @@ jobs:
           node tests/school-release-browser.cjs
           node tests/career-feud-browser.cjs
           node tests/career-feud-players-browser.cjs
+          node tests/hub-smoke-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
