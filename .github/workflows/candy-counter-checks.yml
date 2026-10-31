@@ -1,0 +1,33 @@
+name: Candy Counter checks
+on:
+  push:
+    branches: [feature/candy-counter]
+  pull_request:
+    paths:
+      - 'candy-counter.html'
+      - 'assets/candy-counter/**'
+      - 'assets/school-directory/catalogue.mjs'
+      - 'cdc-center.html'
+      - 'student-businesses.html'
+      - 'tests/candy-counter*'
+      - '.github/workflows/candy-counter-checks.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Calculations, isolated records and existing activity regressions
+        run: node --test tests/candy-counter.test.mjs tests/money-match.test.mjs tests/count-quest.test.mjs tests/job-missions.test.mjs
+      - name: Install isolated DOM test dependency
+        run: npm install --prefix /tmp/candy-counter-qa --no-save jsdom@26.1.0
+      - name: Student controls, report and teacher workflows
+        env:
+          SCHOOL_JSDOM: /tmp/candy-counter-qa/node_modules/jsdom
+        run: node --test tests/candy-counter-ui.test.mjs
+      - name: Check active local references and script syntax
+        run: node tools/release-audit.mjs
