@@ -52,3 +52,11 @@ The Candy Counter suite covers all 500 supported prices with quantities 1–5; i
 The dedicated `Candy Counter checks` workflow runs on the development branch and relevant pull requests, without a deployment step. Browser verification and any remaining limitations are recorded in the pull request.
 
 ![Candy Counter development preview](candy-counter-preview.jpg)
+
+## Realistic visual update
+
+The student entry now shows a photographic library-table counter with a glass candy bowl, an order tray and a cash register. Individual countable wrapped-sucker images replace the vector shapes. The heading, adjustable price and practice stock are live HTML; image details never drive calculations. Workers and roles are in an expandable drawer, and student directions are shorter. Teacher reports and all financial/stock rules are unchanged.
+
+Artwork was made with the built-in image-generation tool and optimized as local WebP assets:
+- `assets/candy-counter/real-counter.webp`: photorealistic customer-eye view of a small library candy table, wrapped Dum-Dum-style suckers in a glass bowl, empty metal order tray, teal register, warm daylight, no people or interface panels.
+- `assets/candy-counter/wrapped-sucker.webp`: one realistic red-and-white wrapped small lollipop with a white stick, isolated on transparent background, used as a countable object.
