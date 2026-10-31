@@ -6,5 +6,9 @@
 .connectbar details{min-width:0;max-width:100%}
 .connectbar details:not([open])>:not(summary){display:none}
 .connectbar form label{min-width:0;max-width:100%}
+/* Preserve the clock's actual text width instead of shrinking its box below
+   a single line when the header shares a tablet row. */
+header.wd-head>div:first-child{min-width:0}
+header.wd-head .clockbox{flex-shrink:0;min-width:max-content}
 
 .small{font-size:13px;color:var(--muted)}.tool span{font-size:12px}.taskbutton small{margin-top:4px}button:hover{filter:brightness(1.04)}
