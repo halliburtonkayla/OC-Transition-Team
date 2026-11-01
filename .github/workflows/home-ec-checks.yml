@@ -9,6 +9,7 @@ on:
       - 'assets/school/entrance.*'
       - 'assets/classroom-monitor/**'
       - 'tests/home-ec*.mjs'
+      - 'tests/home-ec*.cjs'
       - 'tools/home-ec/**'
       - 'printables/home-ec/**'
       - '.github/workflows/home-ec-checks.yml'
@@ -17,6 +18,7 @@ permissions:
 jobs:
   classroom:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -36,3 +38,15 @@ jobs:
         run: |
           node tools/school/audit.mjs
           node -e "const d=require('./docs/school-inventory.json'); if(d.pages.some(x=>x.links.some(l=>!l.exists)))process.exit(1)"
+      - name: Install isolated browser for automated rendering checks
+        run: tools/home-ec/node_modules/.bin/playwright install --with-deps chromium
+      - name: Render the actual classroom, exercise walking and check responsive layouts
+        env:
+          NODE_PATH: ${{ github.workspace }}/tools/home-ec/node_modules
+        run: node tests/home-ec-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: home-economics-browser-evidence
+          path: home-ec-browser-output/
+          if-no-files-found: ignore

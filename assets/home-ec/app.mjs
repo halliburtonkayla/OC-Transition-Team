@@ -131,4 +131,4 @@ setInterval(()=>{for(const t of document.querySelectorAll('[data-timer]')){const
 window.addEventListener('storage',e=>{if((sessionStorage.ttCurrent||localStorage.ttCurrent)!==store.student){state.paused=true;viewer?.update(state);notice('The active profile changed. Return through the school to continue with the right profile.');}else if(e.key?.startsWith('ttLearning:v1:')&&e.key.endsWith(':'+ACTIVITY)){state=restoreState(store.read().checkpoint);render();viewer?.update(state);}});
 window.addEventListener('pagehide',()=>{save();viewer?.dispose();window.speechSynthesis?.cancel();});
 // Read-only diagnostics; no action or completion bypass is exposed.
-window.TTHomeEc=Object.freeze({getState:()=>JSON.parse(JSON.stringify(state)),stats:()=>viewer?.stats(),renderFailed:()=>renderFailed});
+window.TTHomeEc=Object.freeze({getState:()=>JSON.parse(JSON.stringify(state)),stats:()=>viewer?.stats(),pose:()=>viewer?.pose(),renderFailed:()=>renderFailed});
