@@ -1,0 +1,26 @@
+name: Prism Pour school checks
+on:
+  push:
+    branches: [main]
+    paths: ['prism-pour.html', 'assets/prism-pour/**', 'tests/prism-pour-*.test.mjs', '.github/workflows/prism-pour-checks.yml']
+  pull_request:
+    paths: ['prism-pour.html', 'assets/prism-pour/**', 'assets/school-directory/**', 'assets/school/entrance.js', 'assets/classroom-monitor/student.js', 'school-directory.html', 'transition-town.html', 'game-zone.html', 'docs/school-inventory.json', 'tests/prism-pour-*.test.mjs', '.github/workflows/prism-pour-checks.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: All puzzles, checkpoints, report scores, school links and student isolation
+        run: node --test tests/prism-pour-*.test.mjs
+      - name: Existing classroom recording and privacy regressions
+        run: |
+          node tests/classroom-monitor.cjs
+          node tests/classroom-multiview.cjs
+      - name: All local references and script syntax
+        run: node tools/release-audit.mjs
