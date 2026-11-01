@@ -12,7 +12,7 @@
           "exists": true
         },
         {
-          "target": "assets/letter-lane/game.mjs",
+          "target": "assets/letter-lane/drive-game.mjs",
           "exists": true
         },
         {
@@ -28,14 +28,14 @@
           "exists": true
         },
         {
-          "target": "assets/letter-lane/voice.mp3",
+          "target": "assets/letter-lane/driving-voice.mp3",
           "exists": true
         }
       ],
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 8329
+      "bytes": 9710
     },
     {
       "path": "3k-tire-shop.html",

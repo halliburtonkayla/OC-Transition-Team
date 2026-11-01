@@ -37,7 +37,7 @@ test('the school, CDC center, game zone, full catalogue and approved-device moni
  for(const p of ['transition-town.html','cdc-center.html','game-zone.html','assets/school-directory/catalogue.mjs'])assert.ok(read(p).includes('letter-lane.html'),p);
  assert.equal(JSON.parse(read('docs/school-inventory.json')).pages.filter(p=>p.path==='letter-lane.html'&&p.room==='wow').length,1);
  assert.ok(read('assets/classroom-monitor/student.js').includes('|letter-lane|'));
- const html=read('letter-lane.html');for(const p of ['game.css','game.mjs','car.webp'])assert.ok(html.includes('assets/letter-lane/'+p));
+ const html=read('letter-lane.html');for(const p of ['game.css','drive-game.mjs','car.webp'])assert.ok(html.includes('assets/letter-lane/'+p));
  for(const p of ['game.css','game.mjs','core.mjs','pictures.mjs','landscape.webp','car.webp'])assert.ok(fs.statSync(new URL('../assets/letter-lane/'+p,import.meta.url)).size>0);
 });
 

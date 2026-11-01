@@ -2,9 +2,9 @@ name: Letter Lane checks
 on:
   push:
     branches: [main]
-    paths: ['letter-lane.html', 'assets/letter-lane/**', 'tests/letter-lane.test.mjs', '.github/workflows/letter-lane-checks.yml']
+    paths: ['letter-lane.html', 'assets/letter-lane/**', 'tests/letter-lane.test.mjs', 'tests/letter-lane-driving.test.mjs', '.github/workflows/letter-lane-checks.yml']
   pull_request:
-    paths: ['letter-lane.html', 'assets/letter-lane/**', 'assets/school-directory/catalogue.mjs', 'assets/classroom-monitor/student.js', 'cdc-center.html', 'game-zone.html', 'transition-town.html', 'tests/letter-lane.test.mjs', '.github/workflows/letter-lane-checks.yml']
+    paths: ['letter-lane.html', 'assets/letter-lane/**', 'assets/school-directory/catalogue.mjs', 'assets/classroom-monitor/student.js', 'cdc-center.html', 'game-zone.html', 'transition-town.html', 'tests/letter-lane.test.mjs', 'tests/letter-lane-driving.test.mjs', '.github/workflows/letter-lane-checks.yml']
 permissions:
   contents: read
 jobs:
@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '24'
       - name: Letter collection, retries, rewards, resume, player isolation and school links
-        run: node --test tests/letter-lane.test.mjs
+        run: node --test tests/letter-lane.test.mjs tests/letter-lane-driving.test.mjs
       - name: Game scripts
         run: |
           node --check assets/letter-lane/game.mjs
@@ -25,3 +25,7 @@ jobs:
           node --check assets/letter-lane/pictures.mjs
           node --check assets/letter-lane/voice.mjs
           node --check assets/letter-lane/voice-cues.mjs
+          node --check assets/letter-lane/runner.mjs
+          node --check assets/letter-lane/road-view.mjs
+          node --check assets/letter-lane/drive-game.mjs
+          node --check assets/letter-lane/driving-cues.mjs
