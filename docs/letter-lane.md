@@ -1,45 +1,56 @@
-# Letter Lane
+# Letter Lane · Continuous Driving
 
-Open `letter-lane.html` from School → The Wow Zone, the school’s original Educational Games menu, CDC Student Center, or Digital Game Zone. This is an additional activity; the existing town, hallway, profiles, businesses, balances, and games are retained.
+Open `letter-lane.html` from School → The Wow Zone, the original school game menu, CDC Student Center, or Digital Game Zone. The car now drives continuously: students steer into approaching letters, stars, and power coins. Pickups are collected by physical crossings in the road simulation. There are no clickable letter-choice tiles or a Drive-to-answer button.
 
-The default first drive spells **jam**. A student hears the word, sees its picture, and taps a letter to steer the car to it. Each collected letter earns three stars. Wrong choices leave the word position and stars intact. Pickups wait for the student; there is no timer, crash, or failed round.
+## Road and powers
 
-## Practice options
+- Left/right steering moves the car across three lanes. Letters, coins, stars, cones and roadside markers approach in perspective while the road scrolls beneath the car.
+- **↑ jump coins** add two jumps, with up to four stored. Jump, Space, up-arrow or an upward swipe uses a charge and lifts the car. A cone can be jumped over while the car is high enough.
+- **ϟ lightning coins** give six seconds of boost fuel and turn on a faster driving speed. Boost can be switched off/on while fuel remains. Fuel is consumed only during active boosted travel.
+- Stars and coins are earned only by driving into them. Letter collection does not add unseen road stars. These pickups are separate from Town money.
+- A cone bump briefly slows the car. It never removes stars, letters or coins. A missed/wrong letter returns on a later road row; there is no game-over timer or lost progress.
+- Complete a three-letter word to stop for its spoken review and celebration, then choose the next drive or replay.
 
-| Mode | Support |
+Word pictures: **jam, cat, sun, bus, cup, dog, hat, map, pig, bed, pen, hen**.
+
+## Support choices
+
+| Mode | Spelling support |
 | --- | --- |
-| Follow me (default) | Picture, spoken word and target letter, printed word, arrow and glow on the correct pickup. |
-| Find the letter | Picture, spoken word and target letter, printed word; choices have no answer glow until help is requested. |
-| Spell it | Picture and spoken word; uncollected slots and next-letter clue are concealed. “Show me” reveals the next letter and marks that slot as supported practice. |
+| Follow me (default) | Picture, spoken word/letter, printed word, glowing correct pickup, and a lane arrow/spoken lane cue. The student still steers. |
+| Find the letter | Picture, spoken word/letter, printed word; no answer glow or lane clue until help is requested. |
+| Spell it | Picture and spoken word. Uncollected slots and next-letter clue are concealed until Show me is used. |
 
-Word pictures: **jam, cat, sun, bus, cup, dog, hat, map, pig, bed, pen, hen**. Options include capital/lowercase letters and less movement. System reduced-motion preference is honored. Change support or case to begin a fresh word. The word is spoken and spelled again on completion; the student chooses the next drive or a replay.
+Slow & steady is the default speed; Cruise is available. Optional **Help me jump** uses a stored jump when a cone is close and records that assistance separately. It is off by default. Capital/lowercase letters and less extra motion are available. Reduced-motion preference suppresses cosmetic effects; the actual driving motion remains part of this game. Changing spelling mode/case starts a fresh word. Pace and jump assistance can change without discarding a word.
 
-An adult can begin by modeling a word, saying its sounds with the student, and using Follow me. The game practices picture-word association, letter identification, and letter order. Supported matching and a completed word are not evidence of independent reading or spelling. The practice history identifies the support used.
+## Controls and voice
 
-## Controls and accessibility
+- **Steer:** left/right buttons, left/right arrow keys, number keys 1–3, sideways swipe/drag, or tap a section of the road. A road tap steers the car; it never directly collects a letter.
+- **Jump:** Jump, Space, up arrow, or an upward swipe, after collecting a jump coin.
+- **Boost:** Boost, B, or down arrow, while fuel remains.
+- **Break:** pause button, P, or Escape. Leaving the tab pauses driving. Resume restores the road, powers and word position.
+- **Hear/Show me:** repeat instructions or reveal the target letter/lane. Word pictures, progress, status and controls are accessible DOM elements; the animated road uses canvas.
 
-- Tap a letter for a single-action steer and collect. Dragging is not required.
-- Left/right arrow keys steer; Space on Drive collects. Number keys 1–3 select the matching road lane. Letter buttons also work with Tab and Enter/Space.
-- Picture and speaker buttons repeat the word or instruction. Show me supplies the next-letter clue. Break pauses play; leaving the tab pauses it too.
-- The driving world is decorative canvas. Letters, prompts, controls, counters, and picture choices are accessible DOM elements. Progress announcements are event-based, with no per-frame screen-reader updates.
-- Device text-to-speech is preferred. If it fails or never starts, 47 bundled voice clips supply word names, letter names, directions and celebrations, without an API key or paid service. The backup uses a single local MP3 sprite with explicit cue times; cancellation prevents an old prompt from restarting after a break or another prompt. Browser autoplay settings still apply. Actual speaker output on the user’s iPhone has not been verified; browser playback of the backup was verified.
+Device speech is preferred. A bundled local MP3 sprite provides 56 recorded synthetic voice cues if device speech fails or never starts. This includes words, letter names, lane directions and power instructions. It requires no paid service or API key. Browser autoplay settings still apply; actual speaker output on the user’s iPhone has not been verified.
 
-## Records and classroom connection
+## Records and compatibility
 
-Uses the existing separate `learningStore('letter-lane')`. Records belong to the active Town identity on this device, with Guest practice in session storage. Checkpoints allow a partially collected word to resume after a reload. Invalid checkpoints are rejected. A player change cancels the current drive before further credit. No `ttWorld`, business ledger, or balance writes are made.
+The existing `learningStore('letter-lane')` remains separate from `ttWorld`, profiles, financial balances and business ledgers. Old practice records remain readable. Incomplete version-1 words migrate with their already-earned letters/stars. Version-2 checkpoints preserve the road position, item IDs, pickup ledger, jumps, active jump pose, boost fuel, responses and word progress. Earned items cannot be collected twice after resume.
 
-Each actual attempted pickup records the response, expected letter, correctness, position, mode, capitalization and whether the letter clue was shown. A word summary records attempts, retries, supported letters and stars. Completion IDs are idempotent. When an existing teacher-approved device session is active, the existing classroom monitor receives corresponding practice events. Teacher observation and independent mastery are not inferred. The current-player history in Options is local practice history, not a new teacher authentication system.
+Only physical letter collisions create spelling responses. Missed rows are kept distinct from wrong-letter responses. New completion summaries include physical stars/coins, cone bumps, manual/assisted jumps, missed rows, distance, speed and spelling support. Existing teacher-approved classroom monitoring receives practice events. Matching with a clue, assisted jumps and completing a word are not labeled independent reading/spelling mastery.
+
+The original scene/car art, school menus and other activities remain. Legacy entry code/audio remain for compatibility with cached earlier pages; the current page loads `drive-game.mjs` with a new cache version.
 
 ## Verification
 
-- `node --test tests/letter-lane.test.mjs tests/count-quest.test.mjs`: 19 passed.
-- `node tests/classroom-monitor.cjs`: 85 report-evidence, identity, access, signaling, session and concurrency assertions passed.
-- `node tests/classroom-multiview.cjs`: existing multiview checks passed.
-- New scripts pass `node --check`.
-- Browser: wrong-letter retry with no lost stars; complete JAM with 9 stars; capital CAT in Spell it with one clue recorded; support/case changes after completion; steering, Break/resume; reload at 1/3 letters resumes at 1/3 and 3 stars.
-- Responsive browser frames: 320×760, 390×844, and 768×1024, plus desktop and an 1180×800 classroom laptop frame (controls end at y=747). Narrow-phone overflow was corrected; the checked 320 frame has equal document/client widths. Browser verified the recorded voice playing with media ready-state 4, stopping on Break, and continuing through completion when device speech was unavailable. Browser checks use Guest practice, with no real student identities or production classroom records.
+- 32 focused tests across driving, spelling/voice and Count Quest passed; 85 existing monitor assertions and multiview regressions also passed.
+- Driving tests cover automatic forward travel, real lane collisions, all 12 words, repeated/missed letters, independent star pickups, jump charge use and cone clearance, cone slowdown, boost fuel/expiry, pause, variable frame rates, idempotent completion and corrupt-checkpoint rejection.
+- Resume tests include old progress migration and a car already in mid-jump. Driving narration tests verify that ability cues use the correct audio sprite.
+- Browser: physically completed JAM with 9 stars and 5 coins; collected a lightning coin and observed speed rise from 25 to 43; manually jumped and verified a 72px lifted car pose and spent charge; pause stopped motion and voice; a reload retained progress, coins and jump charges.
+- Browser pointer gestures: sideways drag changed the lane, upward drag used one jump. Phone layouts at 320 and 390, plus tablet at 768, were checked. At the smallest checked viewport the document and client widths both measure 305px, and all six driving buttons measure at least 44px wide.
+- Browser QA used Guest practice and did not create real student classroom records.
 
-![Verified gameplay](letter-lane-game-20261101.jpg)
+![Continuous driving with power coins, cones and letter pickups](letter-lane-driving.jpg)
 
 ## Original artwork
 
@@ -53,6 +64,6 @@ Car prompt:
 
 > Use case: stylized-concept. Asset type: a single high quality transparent game vehicle sprite. One adorable but age-respectful detailed glossy cherry-red compact sporty hatchback seen DIRECTLY FROM BEHIND AND SLIGHTLY ABOVE, symmetrical centered, car pointed AWAY from viewer as though driving down a road. Three-quarter elevated REAR view shows roof and wide rear window, no front or side face. Beautiful 3D game asset, convincing rounded automobile body, glossy red paint, black rubber tires, silver wheel rims, rear red taillights with amber indicators, rounded rear bumper, wide dark teal rear window with subtle sky reflection, rear license plate blank. Full vehicle clearly contained in image with generous transparent margin, no ground plane, no surroundings, no road, no person. Real transparent alpha background, no checkerboard drawn, no text, no watermark. Single car only, polished family video game quality.
 
-## Rebuild the voice backup
+## Rebuild the driving voice
 
-Run `python tools/build-letter-lane-audio.py` with FFmpeg and its libflite filter installed. It uses the built-in CMU SLT synthetic voice to create `assets/letter-lane/voice.mp3` and `voice-cues.mjs`. No network service or voice cloning is used. The MP3 contains 47 separated clips (about 81 seconds total, 484 KB).
+Run `python tools/build-letter-lane-audio.py --driving` with FFmpeg and its libflite filter installed. The CMU SLT synthetic voice produces `assets/letter-lane/driving-voice.mp3` and `driving-cues.mjs` (56 clips, about 114 seconds total, 686 KB). No network speech service or voice cloning is used. Without `--driving`, the script retains the original 47-clip fallback build for legacy pages.
