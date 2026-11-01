@@ -65,3 +65,7 @@
  .school-directory-dialog .school-room-door h2{font-size:14px}
  .school-directory-dialog .school-room-door{padding:14px 10px}
 }
+
+/* Additive classroom entrance; original hallway artwork and doors are retained. */
+.hall-homeec{left:29%;top:62%;width:195px;background:#72435ded;border-color:#f4bfd1}.hall-homeec small{color:#ffe1ed}.hall-homeec:hover{background:#8c5471}
+@media(max-width:700px){.hall-homeec{left:27%;top:64%;width:160px}.hall-homeec strong{font-size:13px}}

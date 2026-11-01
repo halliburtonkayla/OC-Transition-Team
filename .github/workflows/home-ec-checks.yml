@@ -1,0 +1,38 @@
+name: Home Economics checks
+on:
+  pull_request:
+    paths:
+      - 'home-economics.html'
+      - 'assets/home-ec/**'
+      - 'assets/candy-counter/**'
+      - 'grocery-store.html'
+      - 'assets/school/entrance.*'
+      - 'assets/classroom-monitor/**'
+      - 'tests/home-ec*.mjs'
+      - 'tools/home-ec/**'
+      - 'printables/home-ec/**'
+      - '.github/workflows/home-ec-checks.yml'
+permissions:
+  contents: read
+jobs:
+  classroom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/home-ec/package-lock.json
+      - run: npm ci --prefix tools/home-ec --ignore-scripts --no-audit --no-fund
+      - name: Learning rules, real grocery DOM, teacher observations, geometry and snack-shop regressions
+        env:
+          SCHOOL_JSDOM: ${{ github.workspace }}/tools/home-ec/node_modules/jsdom
+        run: node --test tests/home-ec*.test.mjs tests/candy-counter*.test.mjs tests/school-release.test.mjs
+      - run: node tests/student-shop-core.cjs
+      - run: node tests/business-workday.cjs
+      - run: node tests/classroom-monitor.cjs
+      - name: Local references
+        run: |
+          node tools/school/audit.mjs
+          node -e "const d=require('./docs/school-inventory.json'); if(d.pages.some(x=>x.links.some(l=>!l.exists)))process.exit(1)"

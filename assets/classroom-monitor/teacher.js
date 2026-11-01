@@ -1,3 +1,4 @@
+import {renderHomeEcTeacher} from '../home-ec/teacher.mjs';
 import {ClassroomGrid} from './multiview.js?v=20261023-grid';
 import {createClient} from '../vendor/supabase-2.117.2.js';
 const BASE='https://tyzpophjoptciihaszqj.supabase.co',KEY='sb_publishable_0AOXFP5xxMIrY1PzP-mhBg_FrrnWbfU';
@@ -9,7 +10,7 @@ const stamp=t=>t?new Date(t).toLocaleString('en-US',{timeZone:'America/Chicago',
 const age=t=>Math.max(0,Math.round((Date.now()-Date.parse(t))/1000));
 let user=null,data=null,view=(new URLSearchParams(location.hash.slice(1)).get('type')==='recovery'?'account':location.hash.slice(1))||(root.dataset.mode==='reports'?'reports':'live'),refreshing=false,selected=null,history=[],reports=[],editing=null,peer=null,channel='',seen=new Set(),since='',lastFrame=0,watchStarted=0,retries=0,authReady=false,replayTimer=null,snapshotMode=false,lastSnapshot='',snapshotRenew=0,snapshotBusy=false,autoWatch=true,watchBusy=false;
 let classroomGrid=null,gridWatching=true;
-const tabs=[['resources','Teacher Resource Center'],['live','Live Classroom Monitor'],['multiview','Classroom Screen Grid'],['student','Individual Student View'],['history','Activity History & Replay'],['groups','Active Group Sessions'],['reports','Pre-ETS Report Center'],['export','Print & Export Reports'],['business','Business Pricing Stages'],['settings','Recording Settings'],['account','My Password']];
+const tabs=[['resources','Teacher Resource Center'],['live','Live Classroom Monitor'],['multiview','Classroom Screen Grid'],['student','Individual Student View'],['history','Activity History & Replay'],['groups','Active Group Sessions'],['reports','Pre-ETS Report Center'],['export','Print & Export Reports'],['homeec','Home Economics & Life Skills'],['business','Business Pricing Stages'],['settings','Recording Settings'],['account','My Password']];
 const btn=(label,action,extra='',cls='')=>`<button type="button" class="${cls}" data-monitor-action="${action}" ${extra}>${label}</button>`;
 function toast(s){let t=$('monitorToast');if(!t){t=document.createElement('div');t.id='monitorToast';t.setAttribute('role','status');document.body.append(t)}t.textContent=s;t.hidden=false;clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.hidden=true,8000);}
 function login(message=''){
@@ -29,7 +30,7 @@ async function refresh(){if(refreshing)return;refreshing=true;try{const session=
 function activeSessions(){return (data?.sessions||[]).filter(s=>!s.ended_at&&age(s.last_seen)<50)}
 function updateCurrentView(){if(view==='live')renderLive();else if(view==='student')updateStudent();else if(view==='groups')updateGroups();else if(view==='multiview')updateGrid();}
 function selectView(id){if(!tabs.some(([x])=>x===id))id='live';if(id!=='student')closeView();closeGrid();root.classList.toggle('monitor-grid-mode',id==='multiview');clearInterval(replayTimer);view=id;location.hash=id;root.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===view?'page':'false'));renderView();}
-function renderView(){const panel=$('monitorPanel');if(!panel)return;root.classList.toggle('monitor-grid-mode',view==='multiview');const f={resources:renderSchoolResources,live:renderLive,multiview:renderGrid,student:renderStudent,history:renderHistory,groups:renderGroups,reports:renderReports,export:renderExport,business:renderBusinessPricing,settings:renderSettings,account:renderAccount};(f[view]||renderLive)();}
+function renderView(){const panel=$('monitorPanel');if(!panel)return;root.classList.toggle('monitor-grid-mode',view==='multiview');const f={homeec:()=>renderHomeEcTeacher({panel:$('monitorPanel'),data,api,toast}),resources:renderSchoolResources,live:renderLive,multiview:renderGrid,student:renderStudent,history:renderHistory,groups:renderGroups,reports:renderReports,export:renderExport,business:renderBusinessPricing,settings:renderSettings,account:renderAccount};(f[view]||renderLive)();}
 function renderSchoolResources(){
  const panel=$('monitorPanel');if(!user||!data||!panel)return;
  panel.innerHTML='<p>Loading school resource library...</p>';

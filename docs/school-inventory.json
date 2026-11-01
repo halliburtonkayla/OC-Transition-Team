@@ -1,42 +1,7 @@
 {
-  "date": "2026-10-30",
+  "date": "2026-11-01",
   "scope": "All repository HTML pages and their literal local href/src and navigation URLs. External availability and dynamic URLs are not inferred.",
   "pages": [
-    {
-      "path": "letter-lane.html",
-      "title": "Letter Lane · Driving & Spelling · Transition Town School",
-      "room": "wow",
-      "links": [
-        {
-          "target": "assets/letter-lane/game.css",
-          "exists": true
-        },
-        {
-          "target": "assets/letter-lane/drive-game.mjs",
-          "exists": true
-        },
-        {
-          "target": "assets/classroom-monitor/student.js",
-          "exists": true
-        },
-        {
-          "target": "transition-town.html",
-          "exists": true
-        },
-        {
-          "target": "assets/letter-lane/car.webp",
-          "exists": true
-        },
-        {
-          "target": "assets/letter-lane/driving-voice.mp3",
-          "exists": true
-        }
-      ],
-      "externalLinks": [],
-      "fragmentReview": [],
-      "contentFlags": [],
-      "bytes": 9710
-    },
     {
       "path": "3k-tire-shop.html",
       "title": "3K Tire Shop • Owner Interviews",
@@ -706,6 +671,37 @@
       "bytes": 1780
     },
     {
+      "path": "candy-counter.html",
+      "title": "Candy Counter · Weekly Snack Shop · Transition Town School",
+      "room": "jobs",
+      "links": [
+        {
+          "target": "assets/candy-counter/counter.css",
+          "exists": true
+        },
+        {
+          "target": "assets/candy-counter/app.mjs",
+          "exists": true
+        },
+        {
+          "target": "school-directory.html",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "money-counting-game.html",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 1576
+    },
+    {
       "path": "career-adventures.html",
       "title": "Career Adventures",
       "room": "studio",
@@ -1010,6 +1006,18 @@
           "exists": true
         },
         {
+          "target": "home-economics.html",
+          "exists": true
+        },
+        {
+          "target": "candy-counter.html",
+          "exists": true
+        },
+        {
+          "target": "letter-lane.html",
+          "exists": true
+        },
+        {
           "target": "count-to-100.html",
           "exists": true
         },
@@ -1085,7 +1093,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 6003
+      "bytes": 6647
     },
     {
       "path": "cdc-cleaning.html",
@@ -1318,7 +1326,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 957
+      "bytes": 956
     },
     {
       "path": "cleanup-life-skills-game.html",
@@ -2212,6 +2220,10 @@
           "exists": true
         },
         {
+          "target": "letter-lane.html",
+          "exists": true
+        },
+        {
           "target": "transition-game-show.html",
           "exists": true
         },
@@ -2271,7 +2283,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3150
+      "bytes": 3389
     },
     {
       "path": "gaming_careers_presentation.html",
@@ -2380,6 +2392,10 @@
           "exists": true
         },
         {
+          "target": "home-economics.html",
+          "exists": true
+        },
+        {
           "target": "transition-town.html",
           "exists": true
         },
@@ -2400,6 +2416,10 @@
           "exists": true
         },
         {
+          "target": "assets/home-ec/grocery.mjs",
+          "exists": true
+        },
+        {
           "target": "assets/classroom-monitor/student.js",
           "exists": true
         }
@@ -2407,7 +2427,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 37879
+      "bytes": 40226
     },
     {
       "path": "grocery-trip.html",
@@ -2633,6 +2653,53 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 1018
+    },
+    {
+      "path": "home-economics.html",
+      "title": "Home Economics & Life Skills | Transition Town",
+      "room": "jobs",
+      "links": [
+        {
+          "target": "assets/town-visit.js",
+          "exists": true
+        },
+        {
+          "target": "assets/home-ec/center.css",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "printables/home-ec/rice-treat-level-1.pdf",
+          "exists": true
+        },
+        {
+          "target": "printables/home-ec/rice-treat-shopping-1.pdf",
+          "exists": true
+        },
+        {
+          "target": "assets/career-lab/business-avatars.js",
+          "exists": true
+        },
+        {
+          "target": "assets/career-lab/avatar.js",
+          "exists": true
+        },
+        {
+          "target": "assets/classroom-monitor/student.js",
+          "exists": true
+        },
+        {
+          "target": "assets/home-ec/app.mjs",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 5268
     },
     {
       "path": "house-01.html",
@@ -5158,7 +5225,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 881
+      "bytes": 882
     },
     {
       "path": "job-exploration.html",
@@ -5340,6 +5407,45 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 10298
+    },
+    {
+      "path": "letter-lane.html",
+      "title": "Letter Lane · Driving & Spelling · Transition Town School",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/letter-lane/game.css",
+          "exists": true
+        },
+        {
+          "target": "assets/letter-lane/drive-game.mjs",
+          "exists": true
+        },
+        {
+          "target": "assets/classroom-monitor/student.js",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "letter-lane.html",
+          "exists": true
+        },
+        {
+          "target": "assets/letter-lane/driving-voice.mp3",
+          "exists": true
+        },
+        {
+          "target": "assets/letter-lane/car.webp",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 9710
     },
     {
       "path": "life-stories.html",
@@ -6535,7 +6641,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5557
+      "bytes": 5556
     },
     {
       "path": "presentations.html",
@@ -7204,6 +7310,10 @@
           "exists": true
         },
         {
+          "target": "candy-counter.html",
+          "exists": true
+        },
+        {
           "target": "shop-floor.html",
           "exists": true
         },
@@ -7223,7 +7333,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3744
+      "bytes": 4048
     },
     {
       "path": "teacher_teacher_assistant_presentation.html",
@@ -7626,7 +7736,7 @@
       ],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 217647
+      "bytes": 217907
     },
     {
       "path": "transportation-to-work.html",
@@ -8117,4 +8227,3 @@
   ],
   "broken": []
 }
-
