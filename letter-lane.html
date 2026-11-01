@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#143d46">
+  <title>Letter Lane · Driving & Spelling · Transition Town School</title>
+  <meta name="description" content="An untimed picture-and-voice spelling adventure. Drive to letters, collect stars, and build familiar words at your own pace.">
+  <link rel="stylesheet" href="assets/letter-lane/game.css?v=20261101a">
+  <script type="module" src="assets/letter-lane/game.mjs?v=20261101a"></script>
+  <script src="assets/classroom-monitor/student.js?v=20261101letterlane" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="school-link" href="transition-town.html?school=1"><span aria-hidden="true">←</span><span>School</span></a>
+    <a class="brand" href="letter-lane.html" aria-label="Letter Lane home"><span class="brand-mark" aria-hidden="true">L<span>★</span></span><span>LETTER <b>LANE</b><small>TRANSITION TOWN SCHOOL</small></span></a>
+    <div class="tools"><button id="voice" class="tool" aria-pressed="true" aria-label="Voice on. Turn automatic voice off"><span aria-hidden="true">◖))</span><span class="tool-label">Voice</span></button><button id="settings" class="tool" aria-label="Practice settings and word pictures"><span aria-hidden="true">⚙</span><span class="tool-label">Options</span></button></div>
+  </header>
+  <audio id="recorded-voice" src="assets/letter-lane/voice.mp3" preload="auto" hidden></audio>
+  <main>
+    <section class="adventure" id="adventure" aria-label="Letter Lane driving adventure">
+      <canvas id="world" aria-hidden="true"></canvas>
+      <div class="scene-shade" aria-hidden="true"></div>
+      <div class="home" id="home">
+        <div class="home-copy"><p class="eyebrow"><span aria-hidden="true">✦</span> A LITTLE DRIVE. A BIG DISCOVERY.</p><h1>Every letter.<br>A new <em>adventure.</em></h1><p>Drive. Collect stars. Build a word.</p><button id="start" class="start"><span class="play-icon" aria-hidden="true">▶</span><span>Let’s drive!<small>Start with <b>jam</b></small></span><span aria-hidden="true">↗</span></button><button id="how" class="hear-home"><span aria-hidden="true">◖))</span> Hear how to play</button></div>
+        <div class="home-sticker" aria-hidden="true"><span>★</span><b>YOUR PACE.<br>YOUR ADVENTURE.</b></div>
+      </div>
+      <div id="hud" class="hud" hidden>
+        <button id="word-picture" class="word-picture" aria-label="Hear the word"></button>
+        <div class="word-mission"><span class="mission-label" id="mission-label">LET’S SPELL</span><div id="word-slots" class="word-slots" aria-label="Letters in the word"></div></div>
+        <div class="star-badge" aria-label="Stars collected"><span aria-hidden="true">★</span><b id="stars">0</b></div>
+      </div>
+      <div id="target-sign" class="target-sign" hidden><span id="target-prompt">Find</span><b id="target-letter">j</b><button id="hear" aria-label="Hear the word and next letter"><span aria-hidden="true">◖))</span></button></div>
+      <div id="pickups" class="pickups" role="group" aria-label="Letters on the road" hidden></div>
+      <div id="car" class="car" aria-hidden="true"><div class="car-shadow"></div><img src="assets/letter-lane/car.webp" alt="" id="car-art"><svg id="car-fallback" viewBox="0 0 190 230" hidden><defs><linearGradient id="paint" x2="1" y2="1"><stop stop-color="#ff8670"/><stop offset=".4" stop-color="#e93637"/><stop offset="1" stop-color="#a71931"/></linearGradient></defs><rect x="19" y="103" width="26" height="85" rx="13" fill="#152b35"/><rect x="145" y="103" width="26" height="85" rx="13" fill="#152b35"/><path d="M43 64Q46 22 95 22T147 64L165 159Q166 207 95 211Q23 207 25 159Z" fill="url(#paint)" stroke="#8f1c31" stroke-width="4"/><path d="M55 66Q95 44 136 66L143 120Q95 140 46 120Z" fill="#174a59" stroke="#ff8f7a" stroke-width="5"/><path d="M61 65L51 106Q81 85 130 82L129 65Z" fill="#b6e8ed" opacity=".45"/><rect x="37" y="157" width="28" height="16" rx="6" fill="#ffdbc4"/><rect x="125" y="157" width="28" height="16" rx="6" fill="#ffdbc4"/><rect x="72" y="184" width="46" height="14" rx="4" fill="#fff0d0"/><path d="M38 180Q95 200 152 180" fill="none" stroke="#ff9c83" stroke-width="4"/></svg></div>
+      <div id="sparkles" class="sparkles" aria-hidden="true"></div>
+      <div id="finish" class="finish-overlay" hidden><section class="finish-card" aria-labelledby="finish-title"><div class="finish-stars" aria-hidden="true">★ ★ ★</div><p class="eyebrow">LOOK WHAT YOU BUILT!</p><div id="finish-picture" class="finish-picture"></div><h2 id="finish-title" tabindex="-1"></h2><div id="finish-letters" class="finish-letters" aria-hidden="true"></div><p id="finish-caption">You collected every letter!</p><div class="finish-actions"><button id="next-word" class="primary"><span aria-hidden="true">▶</span> Next drive</button><button id="again" class="secondary"><span aria-hidden="true">↻</span> Again</button><button id="say-word" class="secondary"><span aria-hidden="true">◖))</span> Hear it</button></div></section></div>
+      <div id="pause-overlay" class="pause-overlay" hidden><button id="resume" class="start"><span aria-hidden="true">▶</span> Keep driving</button></div>
+    </section>
+    <section id="dashboard" class="dashboard" hidden aria-label="Driving controls">
+      <div class="drive-status"><span class="status-light" aria-hidden="true"></span><p id="feedback" role="status" aria-live="polite" aria-atomic="true">Find the glowing letter.</p></div>
+      <div class="controls"><button id="left" class="steer" aria-label="Steer to the left lane"><span aria-hidden="true">←</span><small>Left</small></button><button id="go" class="go" aria-label="Drive to the selected letter"><span aria-hidden="true">▲</span><b>Drive</b></button><button id="right" class="steer" aria-label="Steer to the right lane"><span aria-hidden="true">→</span><small>Right</small></button><span class="control-divider" aria-hidden="true"></span><button id="help" class="support"><span aria-hidden="true">✋</span><small>Show me</small></button><button id="pause" class="support" aria-label="Pause driving"><span aria-hidden="true">Ⅱ</span><small>Break</small></button></div>
+      <p class="control-tip">Tap a letter to drive to it · Or use ← → and Space · No timer</p>
+    </section>
+    <div class="below-game"><span><b aria-hidden="true">◉</b> Pictures + spoken words</span><span><b aria-hidden="true">★</b> Every try is welcome</span><button id="choose" class="text-button">Choose a word <span aria-hidden="true">↗</span></button></div>
+    <p id="save-notice" class="save-notice" role="status"></p>
+  </main>
+  <dialog id="options" aria-labelledby="options-title"><form method="dialog" class="dialog-head"><div><p class="eyebrow">YOUR ADVENTURE</p><h2 id="options-title">Make it your own</h2></div><button class="close" aria-label="Close options">×</button></form><p class="option-intro">Start with picture-guided matching. Explore the other modes when you are ready.</p><label class="select-label" for="mode">Letter support</label><select id="mode"><option value="guided">Follow me · glowing correct letter</option><option value="match">Find the letter · picture + letter clue</option><option value="spell">Spell it · picture + spoken word</option></select><label class="check-label"><input type="checkbox" id="uppercase"> Use CAPITAL letters</label><label class="check-label"><input type="checkbox" id="calm"> Less movement</label><p class="option-note">Changing letter support or letter case starts a fresh word. There are no time limits, crashes, or lost stars.</p><h3>Pick a picture</h3><div id="word-library" class="word-library" aria-label="Choose a word by its picture"></div><details class="history"><summary>Practice history on this device</summary><p>Practice records show the support used. A completed word does not by itself show independent spelling.</p><div id="history"></div></details><div class="dialog-foot"><button id="options-done" class="primary">Done <span aria-hidden="true">✓</span></button></div></dialog>
+  <noscript><p class="noscript">This game needs JavaScript. Turn it on to hear words and collect letters.</p></noscript>
+</body>
+</html>

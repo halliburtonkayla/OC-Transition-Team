@@ -3,6 +3,41 @@
   "scope": "All repository HTML pages and their literal local href/src and navigation URLs. External availability and dynamic URLs are not inferred.",
   "pages": [
     {
+      "path": "letter-lane.html",
+      "title": "Letter Lane · Driving & Spelling · Transition Town School",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/letter-lane/game.css",
+          "exists": true
+        },
+        {
+          "target": "assets/letter-lane/game.mjs",
+          "exists": true
+        },
+        {
+          "target": "assets/classroom-monitor/student.js",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "assets/letter-lane/car.webp",
+          "exists": true
+        },
+        {
+          "target": "assets/letter-lane/voice.mp3",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 8329
+    },
+    {
       "path": "3k-tire-shop.html",
       "title": "3K Tire Shop • Owner Interviews",
       "room": "town",
@@ -8082,3 +8117,4 @@
   ],
   "broken": []
 }
+
