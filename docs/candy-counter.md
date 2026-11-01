@@ -60,3 +60,50 @@ The student entry now shows a photographic library-table counter with a glass ca
 Artwork was made with the built-in image-generation tool and optimized as local WebP assets:
 - `assets/candy-counter/real-counter.webp`: photorealistic customer-eye view of a small library candy table, wrapped Dum-Dum-style suckers in a glass bowl, empty metal order tray, teal register, warm daylight, no people or interface panels.
 - `assets/candy-counter/wrapped-sucker.webp`: one realistic red-and-white wrapped small lollipop with a white stick, isolated on transparent background, used as a countable object.
+
+## Weekly CDC snack shop (November 1 development update)
+
+This extends the **same** `candy-counter.html` entry and draft PR #8. The original Candy Counter photographs, Dum-Dum activity and links remain. No main-branch change, merge, production deployment or new bank/business system is part of this work.
+
+### Choose the menu once per week
+
+1. Open **Teacher tools → This week's menu**. Enter a week/menu label and maximum items per ticket (1–5). Choose each product to edit; show or hide it on this week's menu. Products are hidden, never deleted.
+2. Dum-Dums, Rice Krispie treats and hot cocoa each have a saved price, practice quantity and optional teacher-counted physical quantity. Update the selected product under **Price & stock**. All prices remain whole cents from 1–500. Selecting another product never transfers stock between products.
+3. Add another snack without code changes (up to eight saved products). Enter its name, singular/plural unit words, price and practice quantity, then choose the closest of the supplied picture models. The pictures depict a wrapped sucker, cereal treat and cocoa cup; a custom label does not create a new photo. This is a menu for one product per ticket, not a mixed-product cart.
+4. **Use Rice pilot · 25¢ / 1 item** selects Rice Krispie treats, shows only that product, sets a 25-cent price, one-item orders and Count together support. It keeps all workers, previous events, reviewed observations and remaining quantities. Check/refill the selected product's practice stock yourself if needed.
+
+No weekly reset is needed. Changing week, labels, pictures or prices is locked during an unfinished order. Past tickets, events and sales retain the product, price and week in effect when the order started. Teacher observations retain their own current week/product context. The report can filter by Central Time date, worker and week/menu label; clear date to see the whole selected week.
+
+### Classmates are customers
+
+The student counter shows picture product choices. **Serve a practice customer** generates an order for the selected product; **Classmates: place an order** lets a real classmate choose a visible product and quantity. Optional customer numbers identify paper tickets without collecting customer names. Workers handle one ticket at a time on the same teacher-operated classroom device. Separate laptops do not share an order queue.
+
+The order ticket shows product pictures, quantity, unit price, total, the pretend payment to bring and change to check. **Print ticket** prints the current snapshot without completing the sale. **Print menu & order tickets** prints the current menu and four blank order tickets for an entirely paper-based shop. A classmate can point, speak or use a communication device instead of reading.
+
+Beginning support can limit every ticket to one item, show a one-to-one packing space and model one quarter for a 25-cent treat. Larger Count together orders still cap at three items. Independent readers can read/confirm tickets and explain each job; Exact payment and Make change keep the configured price. The Show me, I need a break and A different job buttons log the active worker's request without completing a step or claiming independence. Optional speech and existing Help me remain available.
+
+### First-week pilot & printables
+
+[Download the seven-page pilot packet](cdc-snack-shop-rice-krispie-pilot.pdf). It contains a two-day plan, six picture preparation cards, rotating jobs, a 25-cent menu and four tickets, a one-to-one item/quarter mat and request cards, a reusable individual Pre-ETS observation sheet, and a next-week planner. Blank student slots keep student information out of the public source. The on-screen **Rice Krispie preparation lesson** presents one short card at a time, with optional speech and more detail for an adult or independent reader. Moving through recipe cards never creates a student skill claim.
+
+Day 1: prepare a small teaching batch; practice measuring, asking for help, safe adult-led preparation and clean-up. Day 2: the teacher brings a larger prepared batch; classmates order with pretend money; workers rotate customer service → stock/packing → cashier every 2–3 customers. All learners retain the supports they need as jobs rotate. Check actual food labels, student food needs and school food guidance; adults handle heat and cutting. Keep wrapped food handling and pretend-money handling separate. Cocoa preparation and drink handling belong to the adult; empty cups can be used for practice.
+
+The [original Rice Krispies recipe](https://www.ricekrispies.us/original-treats-saucepan) supplies the ingredient amounts and adult preparation sequence. The PDF and classroom lesson paraphrase the recipe for instruction. Rebuild the blank packet with `python3 tools/snack-shop-printables.py` (ReportLab, Pillow, svglib and DejaVu Sans fonts required).
+
+Teacher tools also provide a **Print blank Pre-ETS observation** form independent of the sales report. Communication, counting and money practice are documented under workplace readiness; job exploration and self-advocacy have separate observable prompts. No app action establishes attendance, service minutes, mastery or billable time. Completed forms and exports belong in classroom records, never this repository.
+
+### Compatible local records & financial protections
+
+The storage key remains **`ttCandyCounter:v1`** so existing classrooms retain their records. The internal state is now version 2. On reading version-1 data, the app adds the weekly menu in memory and treats the original quantities, unfinished order, events and sales as Dum-Dums. Existing identifiers and record arrays remain intact; the original saved bytes are not replaced merely by opening the page. The next successful action saves the expanded state. An older app version cannot read version-2 backups; use this updated app for those records.
+
+The original Dum-Dum quantities remain in their original config fields; other products keep their own quantities. Practice completion deducts only that order's product practice stock. Optional physical handoff confirmation deducts that order's original product even if the menu has since switched. Single-use handoff confirmation, sufficient-stock checks, idempotent completion, per-worker attribution, stale-tab protection, corrupt-save preservation and denied/quota-storage warnings remain in force. The page never loads financial/session/monitor scripts or writes `ttWorld`, student bank balances, payroll or existing student-business records.
+
+Records remain local to one browser and origin. JSON backup download is an archive; import/merge and cross-device synchronization are not provided. Development-preview records do not transfer to the live site. Use codes on shared devices and print/export before clearing browser data.
+
+### Additional verification
+
+`tests/candy-counter-weekly.test.mjs` covers untouched version-1 reads and migration, unfinished-order continuation, independent product stocks, immutable ticket history after menu edits, earlier-product physical handoffs, one-item quarter matching, invalid classmate tickets, custom menu slots, support requests and safe printables. `tests/candy-counter-ui.test.mjs` also exercises real weekly settings, custom snack forms, the classmate order workflow, each print action, week filtering and all six preparation cards. Existing Candy Counter, Money Match, Count Quest, Job Missions and business regression suites remain part of review.
+
+The two added countable product photos were made with the built-in image-generation tool and optimized as local WebP assets. Prompts: a single clear-wrapped homemade cereal/marshmallow treat; a single teal paper cup of cocoa with two marshmallows. Both use realistic product photography on transparent backgrounds, with no hands, logos or text. Assets: `assets/candy-counter/rice-treat.webp` and `assets/candy-counter/cocoa.webp`. Preparation pictograms are editable local SVG files under `assets/candy-counter/prep/`.
+
+![Weekly snack shop classmate picture menu](cdc-snack-shop-weekly-preview.jpg)

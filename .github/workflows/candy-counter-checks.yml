@@ -10,6 +10,9 @@ on:
       - 'cdc-center.html'
       - 'student-businesses.html'
       - 'tests/candy-counter*'
+      - 'docs/candy-counter.md'
+      - 'docs/cdc-snack-shop-rice-krispie-pilot.pdf'
+      - 'tools/snack-shop-printables.py'
       - '.github/workflows/candy-counter-checks.yml'
 permissions:
   contents: read
@@ -22,7 +25,7 @@ jobs:
         with:
           node-version: '24'
       - name: Calculations, isolated records and existing activity regressions
-        run: node --test tests/candy-counter.test.mjs tests/money-match.test.mjs tests/count-quest.test.mjs tests/job-missions.test.mjs
+        run: node --test tests/candy-counter.test.mjs tests/candy-counter-weekly.test.mjs tests/money-match.test.mjs tests/count-quest.test.mjs tests/job-missions.test.mjs
       - name: Install isolated DOM test dependency
         run: npm install --prefix /tmp/candy-counter-qa --no-save jsdom@26.1.0
       - name: Student controls, report and teacher workflows
