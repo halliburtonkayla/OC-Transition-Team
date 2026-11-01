@@ -4,7 +4,7 @@ This branch adds `home-economics.html` to the original school hallway. It is a r
 
 ## What is implemented
 
-- A modeled classroom with two kitchen islands, raised cabinet doors, stone counters, French-door refrigerator, hinged microwave, sink/faucet, measuring utensils, ingredient packages, washer/dryer drums, baskets, clothing, folding table, household supplies, bed, and signage. Materials, warm lighting, reflections from a generated environment map, shadows, raycast targets, and camera transitions use a locally bundled Three.js 0.180.0. The approved image is not used as a clickable backdrop.
+- A modeled classroom with two kitchen islands, raised cabinet doors, stone counters, French-door refrigerator, hinged microwave, sink/faucet, measuring utensils, ingredient packages, washer/dryer drums, baskets, clothing, folding table, household supplies, bed, and signage. PBR materials, warm lighting, environment reflections, soft shadows, contact shading, raycast targets, and camera transitions use a locally bundled Three.js 0.180.0. The approved image is not used as a clickable backdrop.
 - Tap-to-explore and avatar walk-around share one activity state. Keyboard, held touch controls, camera turning, object highlighting, large equivalent action controls, read-aloud, pause/resume, support levels and larger projector text are provided. Existing avatar colors are used on a modeled character; the existing portrait renderer is retained in the identity area. The source avatars are 2D, not full-body 3D assets.
 - The individual recipe uses **½ cup cereal, ⅓ cup mini marshmallows, and ¾ teaspoon butter**. Fourteen supported practice steps break the twelve recipe directions into safety, handwashing, tools, measuring, preparation, supervised microwave practice, cooling and cleanup. Wrong amounts and ordering remain retryable. Handwashing requires 20 elapsed seconds. Microwave/cooling/laundry timers are explicitly game waits, not real appliance instructions.
 - Three recipe-writing PDFs, three shopping-list PDFs, an individual teacher checklist, and a snack-shop menu/cost/role planner. Eight files, eleven pages; no learner answers or student names are automatically filled. The recipe data is the generator's source of truth.
@@ -19,6 +19,14 @@ This branch adds `home-economics.html` to the original school hallway. It is a r
 
 Serve this static repository with a normal web server. Sign in through `transition-town.html`, choose School, then **Home Economics & Life Skills**. Direct entry uses the existing Town sign-in redirect. Teacher tools are in `classroom-monitor.html#homeec`, behind the existing teacher sign-in.
 
+For a private local review of the branch, run this from the repository root:
+
+```sh
+python3 -m http.server 4173
+```
+
+Open `http://localhost:4173/transition-town.html`, choose **Guest** for disposable practice, then enter **School → Home Economics & Life Skills**. Use a WebGL 2-enabled browser for the actual 3D room. Teacher-only controls remain behind the existing authenticated dashboard. No production deployment is needed for this preview.
+
 The development preview uses the managed preview service and a generated static copy. That copy and preview configuration are local-only and are not part of the PR. No production Site or GitHub Pages deployment was made.
 
 ## Persistence and evidence boundaries
@@ -31,7 +39,9 @@ There is no lesson cutoff. Local learning progress supports 30-minute, 50-minute
 
 ## Verification
 
-See [QA.md](QA.md) for the exact checks and limits. **Do not call the graphics accepted or the feature release-ready until a WebGL-enabled browser has rendered and reviewed it against the approved reference.** The available preview browser reports `GL_RENDERER = Disabled` and refuses a WebGL context. The accessible workflow was tested there; this is not proof of 3D camera quality or device performance.
+See [QA.md](QA.md) for checks, screenshots and limits. An isolated GitHub Actions Chromium runner rendered the actual scene through WebGL 2 / ANGLE SwiftShader and passed the walking, existing-grocery checkout/return, measuring, microwave-safety and responsive-layout checks. This verifies actual rendering and interactions, not physical-device frame rates. The manually operated preview browser has WebGL disabled; the complete accessible recipe and laundry workflows were exercised there.
+
+The build remains a draft for owner review against the approved glossy reference. Procedural 3D assets are implemented; photorealistic parity is not claimed. School-laptop/iPhone/tablet performance, touch feel, physical printing, authenticated production observation submission and supervised classroom use still need the review checks in QA.md. No merge or deployment has occurred.
 
 ## Rebuild and checks
 
@@ -41,6 +51,8 @@ SCHOOL_JSDOM="$PWD/tools/home-ec/node_modules/jsdom" node --test tests/home-ec*.
 node tests/student-shop-core.cjs
 node tests/business-workday.cjs
 node tests/classroom-monitor.cjs
+tools/home-ec/node_modules/.bin/playwright install --with-deps chromium
+NODE_PATH="$PWD/tools/home-ec/node_modules" node tests/home-ec-browser.cjs
 python3 tools/home-ec/build_printables.py
 ```
 
@@ -52,4 +64,4 @@ cd tools/softball
 ./node_modules/.bin/esbuild home-ec-three-entry.js --bundle --format=esm --minify --outfile=../../assets/home-ec/three.js
 ```
 
-Three.js/addon licensing remains MIT; see `assets/vendor/three-LICENSE` and bundled notices. Classroom meshes are original code, and snack photos reuse PR #8's existing assets. `tools/home-ec/export-scene.mjs` can export the exact meshes for independent inspection with optional `@napi-rs/canvas`; that export is a geometry artifact, not a screenshot or proof of WebGL rendering.
+Three.js/addon licensing remains MIT; see `assets/vendor/three-LICENSE` and bundled notices. Classroom meshes are original code, and snack photos reuse PR #8's existing assets. The outdoor window texture was generated with the built-in image tool and saved as `assets/home-ec/garden-view.webp`; its exact prompt and role are documented in [ART-ASSETS.md](ART-ASSETS.md). `tools/home-ec/export-scene.mjs` can export the exact meshes for independent inspection with optional `@napi-rs/canvas`; that export is a geometry artifact, not a screenshot or proof of WebGL rendering.
