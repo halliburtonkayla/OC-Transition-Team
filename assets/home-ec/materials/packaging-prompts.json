@@ -1,0 +1,17 @@
+{
+  "assets": [
+    {
+      "name": "cereal",
+      "prompt": "Use case: product-mockup. Asset type: a flat print-ready front-label texture to wrap onto a genuinely modeled cereal box in an educational 3D kitchen. Create only the rectangular packaging artwork, tall 2:3 aspect, edge to edge, perfectly straight orthographic front, no physical box, no perspective, no background, no shadow or border outside the label. Rich glossy royal blue cereal packaging, large crisp white words exactly 'RICE KRISPIES' and smaller 'CEREAL'. A detailed photorealistic bowl of crisp toasted rice cereal, a natural splash of milk, golden cereal kernels and a small silver spoon fill the lower half. Professional supermarket packaging with sophisticated highlights, delicious food photography and fine print-like graphic detail. No nutrition facts, no health claims, no weight or price, no characters, no watermark. The lettering must be readable and spelled correctly. This is a texture asset, not a scene or UI."
+    },
+    {
+      "name": "marshmallows",
+      "prompt": "Use case: product-mockup. Asset type: a flat rectangular front-label texture for a genuinely modeled mini marshmallow bag in an interactive 3D kitchen. Create only the packaging artwork, square 1:1 aspect, edge to edge, perfectly straight orthographic, no physical bag shape, no perspective, no outside background, no drop shadow. Attractive premium supermarket label in turquoise, cobalt blue and white. Large crisp lettering exactly 'MINI MARSHMALLOWS'. A beautiful photorealistic abundance of small soft white cylindrical marshmallows is clearly visible across the lower half, with subtle powdery sugar texture, dimensional highlights and soft contact shadows. Playful pink curved accent, polished professional typography. No nutrition facts, no health claims, no weight or price, no watermark. Texture asset only, no scene or UI."
+    },
+    {
+      "name": "butter",
+      "prompt": "Use case: product-mockup. Asset type: a flat horizontal front-label texture for a genuinely modeled butter carton in an interactive educational 3D kitchen. Create only the packaging artwork, wide 3:1 aspect, edge to edge, perfectly orthographic and straight, no physical box, no perspective, no outside background, no drop shadow. Golden yellow and warm cream foil-paper supermarket packaging with large crisp navy lettering exactly 'BUTTER', smaller text exactly 'CREAMERY'. Subtle farm meadow illustration at the sides and a small appetizing photorealistic curl of golden butter at the right. Elegant thin blue rules and fine realistic print texture. No nutrition facts, no health claims, no weight or price, no watermark. This is a label texture, not a scene or UI."
+    }
+  ],
+  "cerealEdit": "Preserve the blue RICE KRISPIES / CEREAL label. Replace large flat flakes with small golden puffed toasted rice crisps; preserve composition and typography. The final image is the committed project texture."
+}

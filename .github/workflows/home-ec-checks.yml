@@ -18,7 +18,7 @@ permissions:
 jobs:
   classroom:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -48,5 +48,29 @@ jobs:
         if: always()
         with:
           name: home-economics-browser-evidence
+          path: home-ec-browser-output/
+          if-no-files-found: ignore
+
+  art-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/home-ec/package-lock.json
+      - run: npm ci --prefix tools/home-ec --ignore-scripts --no-audit --no-fund
+      - run: tools/home-ec/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture the real revised room, laundry and counter art
+        env:
+          NODE_PATH: ${{ github.workspace }}/tools/home-ec/node_modules
+          HOME_EC_ART_REVIEW: '1'
+        run: node tests/home-ec-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: home-economics-art-review
           path: home-ec-browser-output/
           if-no-files-found: ignore
