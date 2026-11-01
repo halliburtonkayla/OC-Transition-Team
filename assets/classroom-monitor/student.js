@@ -1,7 +1,7 @@
 /* Approved-device activity recording. Browser-reported evidence is never teacher observation. */
 (function(){'use strict';if(window.TTMonitor?.installed)return;
 const ROOT=new URL('../../',document.currentScript.src),ENDPOINT='https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor';
-const allowed=/^(school-career-lab|transition-game-show|transition-town|count-to-100|money-counting-game|memory-match|laundry-weather-game|cdc-(?:center|sort-it|hygiene|hands-on|job-match|cooking-match|cleaning)|build-your-own-story|interactive-stories|watch-and-learn|job-description-detectives|job-missions|student-business|business-workday|shop-floor|cool-vibes|the-zoo|3k-tire-shop|guardian-angel|main-attraction(?:-service|-appointments|-workstations|-studio)?|student-businesses|business-startup-marketplace|bank|grocery-(?:store|employee|trip)|pizza-(?:shop|employee)|coffee-(?:shop|employee)|transition-life|independent-living|housing-office|fire-department|salon-simulator|childcare-career-center)\.html$/;
+const allowed=/^(school-career-lab|transition-game-show|transition-town|letter-lane|count-to-100|money-counting-game|memory-match|laundry-weather-game|cdc-(?:center|sort-it|hygiene|hands-on|job-match|cooking-match|cleaning)|build-your-own-story|interactive-stories|watch-and-learn|job-description-detectives|job-missions|student-business|business-workday|shop-floor|cool-vibes|the-zoo|3k-tire-shop|guardian-angel|main-attraction(?:-service|-appointments|-workstations|-studio)?|student-businesses|business-startup-marketplace|bank|grocery-(?:store|employee|trip)|pizza-(?:shop|employee)|coffee-(?:shop|employee)|transition-life|independent-living|housing-office|fire-department|salon-simulator|childcare-career-center)\.html$/;
 if(!allowed.test(location.pathname.split('/').pop()))return;
 const canon=n=>({Max:'Bradley',Nick:'Nicholas',Aubry:'Aubrey',Jayden:'Jaden'})[n]||n;
 const name=()=>canon(sessionStorage.ttCurrent||localStorage.ttCurrent||'');
@@ -67,3 +67,4 @@ const mirrorScript=document.createElement('script');mirrorScript.src=new URL('as
 setInterval(()=>{identity();bridge();},1000);setInterval(()=>{if(session){flush();worldChanges();}else if(student&&!stopped&&!joining)join();},7000);setInterval(()=>{if(session)heartbeat().catch(e=>draw(e.message));},15000);setInterval(signals,2500);setInterval(async()=>{if(!snapshotTarget||snapshotBusy||!session||!mirror||paused||document.hidden||!window.TTTownMirror)return;snapshotBusy=true;try{const payload=await TTTownMirror.pack(TTTownMirror.snapshot());await api('publish_snapshot',{session_id:session.id,channel:snapshotTarget.channel,payload});}catch(e){draw(e.message);if(e.status===403||e.status===429)snapshotTarget=null;}finally{snapshotBusy=false}},3000);
 identity();bridge();
 })();
+
