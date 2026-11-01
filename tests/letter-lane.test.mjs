@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {WORDS,MODES,letterChoices,newDrive,chooseLetter,withHelp,driveSummary,restoreDrive} from '../assets/letter-lane/core.mjs';
 import {learningStore} from '../assets/learning/progress.mjs';
+import {narrationPlayer} from '../assets/letter-lane/voice.mjs';
+import {VOICE_CUES} from '../assets/letter-lane/voice-cues.mjs';
 const read=p=>fs.readFileSync(new URL('../'+p,import.meta.url),'utf8');
 test('all picture words have three collectable letters; shuffled choices always include the target once',()=>{
  assert.equal(WORDS.length,12);assert.equal(WORDS[0].word,'jam');assert.equal(new Set(WORDS.map(w=>w.id)).size,12);
@@ -37,4 +39,34 @@ test('the school, CDC center, game zone, full catalogue and approved-device moni
  assert.ok(read('assets/classroom-monitor/student.js').includes('|letter-lane|'));
  const html=read('letter-lane.html');for(const p of ['game.css','game.mjs','car.webp'])assert.ok(html.includes('assets/letter-lane/'+p));
  for(const p of ['game.css','game.mjs','core.mjs','pictures.mjs','landscape.webp','car.webp'])assert.ok(fs.statSync(new URL('../assets/letter-lane/'+p,import.meta.url)).size>0);
+});
+
+function voiceHarness(deviceVoice=false){
+ const timers=new Map(),played=[],sources=[],utterances=[];let id=0;
+ const host={setTimeout:fn=>{timers.set(++id,fn);return id;},clearTimeout:key=>timers.delete(key)};
+ if(deviceVoice){host.SpeechSynthesisUtterance=function(text){this.text=text;};host.speechSynthesis={cancel(){},speak:u=>utterances.push(u)};}
+ const audio={currentTime:0,paused:true,pause(){this.paused=true;},play(){this.paused=false;played.push(this.currentTime);return Promise.resolve();}};
+ const player=narrationPlayer({audio,host,onSource:source=>sources.push(source),onUnavailable:()=>assert.fail('Recorded voice unexpectedly unavailable')});
+ const advance=()=>{const [key,fn]=timers.entries().next().value;timers.delete(key);fn();};
+ return {player,audio,played,sources,utterances,timers,advance};
+}
+test('recorded voice covers every picture word and letter with separate, ordered audio cues',()=>{
+ assert.equal(Object.keys(VOICE_CUES).length,47);let end=-.45;
+ for(const cue of Object.values(VOICE_CUES)){assert.ok(cue.start>=end+.4);assert.ok(cue.end>cue.start);assert.ok(cue.text);end=cue.end;}
+ for(const w of WORDS)assert.ok(VOICE_CUES['word-'+w.id]);for(const letter of 'abcdefghijklmnopqrstuvwxyz')assert.ok(VOICE_CUES['letter-'+letter]);
+ assert.ok(fs.statSync(new URL('../assets/letter-lane/voice.mp3',import.meta.url)).size>10000);
+ assert.ok(read('letter-lane.html').includes('id="recorded-voice"'));
+});
+test('without device speech, recorded prompts play in order and a break cancels queued speech',async()=>{
+ const h=voiceHarness();h.player.speak('Jam. Find j.',['word-jam','find-letter','letter-j']);await Promise.resolve();
+ assert.deepEqual(h.played,[VOICE_CUES['word-jam'].start]);assert.deepEqual(h.sources,['recorded']);h.advance();await Promise.resolve();assert.equal(h.played[1],VOICE_CUES['find-letter'].start);
+ h.player.cancel();assert.equal(h.timers.size,0);assert.equal(h.audio.paused,true);assert.equal(h.played.length,2);
+});
+test('a device voice failure falls back, and errors from an interrupted old prompt cannot restart it',async()=>{
+ const h=voiceHarness(true);h.player.speak('Jam.',['word-jam']);const old=h.utterances[0];h.player.speak('Cat.',['word-cat']);old.onerror({error:'network'});await Promise.resolve();assert.equal(h.played.length,0);
+ h.utterances[1].onerror({error:'synthesis-unavailable'});await Promise.resolve();assert.equal(h.played[0],VOICE_CUES['word-cat'].start);assert.equal(h.sources[0],'recorded');
+ h.player.speak('Sun.',['word-sun']);await Promise.resolve();assert.equal(h.utterances.length,2);assert.equal(h.played[1],VOICE_CUES['word-sun'].start);
+});
+test('a silent device speech queue falls back instead of leaving a nonreader without a spoken prompt',async()=>{
+ const h=voiceHarness(true);h.player.speak('Jam.',['word-jam']);h.advance();await Promise.resolve();assert.equal(h.sources[0],'recorded');assert.equal(h.played[0],VOICE_CUES['word-jam'].start);h.player.cancel();
 });

@@ -23,3 +23,5 @@ jobs:
           node --check assets/letter-lane/game.mjs
           node --check assets/letter-lane/core.mjs
           node --check assets/letter-lane/pictures.mjs
+          node --check assets/letter-lane/voice.mjs
+          node --check assets/letter-lane/voice-cues.mjs

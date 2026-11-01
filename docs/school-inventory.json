@@ -26,12 +26,16 @@
         {
           "target": "assets/letter-lane/car.webp",
           "exists": true
+        },
+        {
+          "target": "assets/letter-lane/voice.mp3",
+          "exists": true
         }
       ],
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 8234
+      "bytes": 8329
     },
     {
       "path": "3k-tire-shop.html",

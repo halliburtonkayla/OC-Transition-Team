@@ -1,8 +1,10 @@
 import {WORDS,MODES,LETTER_NAMES,letterChoices,newDrive,chooseLetter,withHelp,driveSummary,restoreDrive} from './core.mjs';
 import {picture} from './pictures.mjs';
+import {narrationPlayer} from './voice.mjs';
 import {learningStore,learningId,escapeHTML as esc} from '../learning/progress.mjs';
 
 const $=id=>document.getElementById(id),stage=$('adventure'),canvas=$('world'),ctx=canvas.getContext('2d');
+const narrator=narrationPlayer({audio:$('recorded-voice'),onSource:source=>{stage.dataset.voiceSource=source;},onUnavailable:()=>{$('save-notice').textContent='Tap the speaker to try voice again, or ask an adult to read the word. Picture and letter clues still work.';}});
 const motionQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');
 let store=learningStore('letter-lane'),drive=null,phase='home',lane=1,choices=[],voice=true,calm=!!motionQuery?.matches,motion=0,frame=0,lastFrame=0,pending=null,optionsWerePaused=false,forcedHelp=false;
 let preferences={mode:'guided',uppercase:false};
@@ -11,17 +13,12 @@ const landscape=new Image();landscape.onload=()=>{landscapeReady=true;drawWorld(
 const actor=()=>{try{return sessionStorage.getItem('ttCurrent')||localStorage.getItem('ttCurrent')||'Guest';}catch{return 'Guest';}};
 function ensurePlayer(){
  if(actor()===store.student)return true;
- clearTimeout(pending);pending=null;window.speechSynthesis?.cancel();drive=null;phase='home';store=learningStore('letter-lane');
+ clearTimeout(pending);pending=null;narrator.cancel();drive=null;phase='home';store=learningStore('letter-lane');
  stage.classList.remove('playing');$('home').hidden=false;for(const id of ['hud','pickups','target-sign','dashboard','finish','pause-overlay'])$(id).hidden=true;
  $('car').style.left='67%';$('car').classList.remove('driving');$('start').querySelector('small').innerHTML='Start with <b>jam</b>';
  $('save-notice').textContent='Player changed. Start a new drive for this player.';return false;
 }
-function say(text,manual=false){
- if(!manual&&!voice)return;
- try{if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)throw Error('unavailable');
-  window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=.78;u.pitch=1.04;window.speechSynthesis.speak(u);
- }catch{$('save-notice').textContent='This browser has no spoken voice. Picture clues and letter matching still work. An adult can read the word aloud.';}
-}
+function say(text,manual=false,clips=promptClips()){if(!manual&&!voice)return;narrator.speak(text,clips);}
 function tone(success=true){
  if(!voice)return;
  try{const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;tone.ctx??=new Audio();const a=tone.ctx;if(a.state==='suspended')a.resume().catch(()=>{});
@@ -36,6 +33,13 @@ function promptText(help=false){
  if(drive.complete)return `${w.word}. You built ${w.word}! ${w.word.split('').map(c=>LETTER_NAMES[c]).join(', ')}. ${w.word}.`;
  if(drive.mode==='spell'&&!help)return `${w.word}. ${drive.index?'Which letter comes next?':'Which letter comes first?'} Tap a letter, or steer and press Drive. Use Show me if you want a clue.`;
  return `${w.word}. Find the letter ${name}. ${drive.index===0?'Tap the letter to drive to it.':''}`;
+}
+function promptClips(help=false){
+ if(!drive)return ['how'];
+ const word=currentWord();
+ if(drive.complete)return [...word.word.split('').map(c=>'letter-'+c),'word-'+word.id,'complete'];
+ if(drive.mode==='spell'&&!help)return ['word-'+word.id,drive.index?'which-next':'which-first',...(drive.index===0?['help-tip']:[])];
+ return ['word-'+word.id,'find-letter','letter-'+word.word[drive.index],...(drive.index===0?['tap-letter']:[])];
 }
 function renderHUD(){
  const w=currentWord();$('word-picture').innerHTML=picture(w.id);$('word-picture').setAttribute('aria-label',`Hear ${w.word}`);
@@ -95,7 +99,7 @@ function settle(result){
  }else{
   phase='choose';const selected=$('pickups').querySelector(`[data-lane="${lane}"]`);selected?.classList.remove('approaching');selected?.classList.add('miss');enableControls();
   $('feedback').textContent=`That was ${displayLetter(a.letter)}. Try again. Your stars are safe.`;
-  say(`That is ${LETTER_NAMES[a.letter]}. Let's try again. ${drive.mode==='spell'&&!forcedHelp?currentWord().word:promptText()}`);
+  say(`That is ${LETTER_NAMES[a.letter]}. Let's try again. ${drive.mode==='spell'&&!forcedHelp?currentWord().word:promptText()}`,false,['try-again',...promptClips(forcedHelp)]);
  }
 }
 function showFinish(speakIt=true){
@@ -108,7 +112,7 @@ function showFinish(speakIt=true){
 function giveHelp(){
  if(phase!=='choose'||!ensurePlayer())return;drive=withHelp(drive);forcedHelp=true;persist();
  const target=currentWord().word[drive.index];$('pickups').querySelectorAll('button').forEach(b=>{if(b.dataset.letter===target){b.classList.add('guided');if(!b.querySelector('.guide-arrow'))b.insertAdjacentHTML('afterbegin','<span class="guide-arrow" aria-hidden="true">↓</span>');}});
- renderHUD();$('feedback').textContent=`Follow the arrow to ${displayLetter(target)}.`;say(promptText(true),true);
+ renderHUD();$('feedback').textContent=`Follow the arrow to ${displayLetter(target)}.`;say(promptText(true),true,promptClips(true));
  store.event('help','Asked for a letter clue in Letter Lane',{task:drive.wordId,step:drive.index+1,mode:drive.mode});
 }
 function pauseGame(){
@@ -116,7 +120,7 @@ function pauseGame(){
  clearTimeout(pending);pending=null;
  // A drive is committed only when the pickup arrives. Pausing before arrival leaves it unrecorded.
  phase='paused';$('car').classList.remove('driving');$('pickups').querySelectorAll('.approaching').forEach(b=>b.classList.remove('approaching'));
- $('pause-overlay').hidden=false;enableControls();window.speechSynthesis?.cancel();$('feedback').textContent='Take a break. Your letters and stars are here.';$('resume').focus({preventScroll:true});drawWorld();
+ $('pause-overlay').hidden=false;enableControls();narrator.cancel();$('feedback').textContent='Take a break. Your letters and stars are here.';$('resume').focus({preventScroll:true});drawWorld();
 }
 function resumeGame(){if(!ensurePlayer()||phase!=='paused')return;phase='choose';$('pause-overlay').hidden=true;enableControls();$('feedback').textContent='Ready when you are. Choose a letter.';say(promptText());$('hear').focus({preventScroll:true});requestFrame();}
 function openOptions(){
@@ -161,12 +165,12 @@ function drawWorld(){
 }
 
 $('start').addEventListener('click',()=>{const saved=restoreDrive(store.read().checkpoint);startDrive(saved?.wordId||'jam',saved&&!saved.complete?saved:null);});
-$('how').addEventListener('click',()=>say('Welcome to Letter Lane. We will build the word jam. Look at the picture. Listen to the word. Tap the glowing letter to drive your car to it and collect stars. Take your time. Tap Let’s drive to begin.',true));
-$('voice').addEventListener('click',()=>{voice=!voice;$('voice').setAttribute('aria-pressed',String(voice));$('voice').setAttribute('aria-label',voice?'Voice on. Turn automatic voice off':'Voice off. Turn automatic voice on');if(!voice)window.speechSynthesis?.cancel();else say('Voice on.',true);});
+$('how').addEventListener('click',()=>say('Welcome to Letter Lane. We will build the word jam. Look at the picture. Listen to the word. Tap the glowing letter to drive your car to it and collect stars. Take your time. Tap Let’s drive to begin.',true,['how']));
+$('voice').addEventListener('click',()=>{voice=!voice;$('voice').setAttribute('aria-pressed',String(voice));$('voice').setAttribute('aria-label',voice?'Voice on. Turn automatic voice off':'Voice off. Turn automatic voice on');if(!voice)narrator.cancel();else say('Voice on.',true,['voice-on']);});
 $('pickups').addEventListener('click',e=>{const b=e.target.closest('[data-lane]');if(b&&!b.disabled)collect(Number(b.dataset.lane));});
 $('left').addEventListener('click',()=>steer(lane-1));$('right').addEventListener('click',()=>steer(lane+1));$('go').addEventListener('click',()=>collect());
 $('help').addEventListener('click',giveHelp);$('pause').addEventListener('click',pauseGame);$('resume').addEventListener('click',resumeGame);
-$('hear').addEventListener('click',()=>say(promptText(forcedHelp),true));$('word-picture').addEventListener('click',()=>say(currentWord().word,true));
+$('hear').addEventListener('click',()=>say(promptText(forcedHelp),true,promptClips(forcedHelp)));$('word-picture').addEventListener('click',()=>say(currentWord().word,true,['word-'+currentWord().id]));
 $('settings').addEventListener('click',openOptions);$('choose').addEventListener('click',openOptions);$('options-done').addEventListener('click',closeOptions);
 $('options').addEventListener('close',()=>{if(phase==='paused'&&!optionsWerePaused)resumeGame();requestFrame();});
 $('word-library').addEventListener('click',e=>{const b=e.target.closest('[data-word]');if(!b)return;closeOptions();startDrive(b.dataset.word);});
@@ -181,7 +185,7 @@ document.addEventListener('keydown',e=>{
  if(e.key==='ArrowLeft'){e.preventDefault();steer(lane-1);$('go').focus({preventScroll:true});}else if(e.key==='ArrowRight'){e.preventDefault();steer(lane+1);$('go').focus({preventScroll:true});}else if(/^[123]$/.test(e.key)){e.preventDefault();collect(Number(e.key)-1);}else if(e.code==='Space'&&e.target.tagName!=='BUTTON'){e.preventDefault();collect();}
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseGame();else requestFrame();});
-window.addEventListener('pagehide',()=>{clearTimeout(pending);window.speechSynthesis?.cancel();if(drive)persist();});
+window.addEventListener('pagehide',()=>{clearTimeout(pending);narrator.cancel();if(drive)persist();});
 window.addEventListener('resize',()=>{drawWorld();requestFrame();});
 if(window.ResizeObserver)new ResizeObserver(()=>{drawWorld();requestFrame();}).observe(stage);
 $('car-art').addEventListener('error',()=>{$('car-art').hidden=true;$('car-fallback').hidden=false;});

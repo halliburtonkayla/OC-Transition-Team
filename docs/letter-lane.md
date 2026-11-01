@@ -22,7 +22,7 @@ An adult can begin by modeling a word, saying its sounds with the student, and u
 - Left/right arrow keys steer; Space on Drive collects. Number keys 1–3 select the matching road lane. Letter buttons also work with Tab and Enter/Space.
 - Picture and speaker buttons repeat the word or instruction. Show me supplies the next-letter clue. Break pauses play; leaving the tab pauses it too.
 - The driving world is decorative canvas. Letters, prompts, controls, counters, and picture choices are accessible DOM elements. Progress announcements are event-based, with no per-frame screen-reader updates.
-- Browser text-to-speech is used without an API key or paid service. Voice quality/availability depends on the device and installed voices. When speech is unavailable, picture/letter cues remain, with an adult-read-aloud notice. Actual audio output on the user’s iPhone has not been verified in this build.
+- Device text-to-speech is preferred. If it fails or never starts, 47 bundled voice clips supply word names, letter names, directions and celebrations, without an API key or paid service. The backup uses a single local MP3 sprite with explicit cue times; cancellation prevents an old prompt from restarting after a break or another prompt. Browser autoplay settings still apply. Actual speaker output on the user’s iPhone has not been verified; browser playback of the backup was verified.
 
 ## Records and classroom connection
 
@@ -32,12 +32,12 @@ Each actual attempted pickup records the response, expected letter, correctness,
 
 ## Verification
 
-- `node --test tests/letter-lane.test.mjs tests/count-quest.test.mjs`: 15 passed.
+- `node --test tests/letter-lane.test.mjs tests/count-quest.test.mjs`: 19 passed.
 - `node tests/classroom-monitor.cjs`: 85 report-evidence, identity, access, signaling, session and concurrency assertions passed.
 - `node tests/classroom-multiview.cjs`: existing multiview checks passed.
 - New scripts pass `node --check`.
 - Browser: wrong-letter retry with no lost stars; complete JAM with 9 stars; capital CAT in Spell it with one clue recorded; support/case changes after completion; steering, Break/resume; reload at 1/3 letters resumes at 1/3 and 3 stars.
-- Responsive browser frames: 320×760, 390×844, and 768×1024, plus desktop. Narrow-phone overflow was corrected; the checked 320 frame has equal document/client widths. Browser checks use Guest practice, with no real student identities or production classroom records.
+- Responsive browser frames: 320×760, 390×844, and 768×1024, plus desktop and an 1180×800 classroom laptop frame (controls end at y=747). Narrow-phone overflow was corrected; the checked 320 frame has equal document/client widths. Browser verified the recorded voice playing with media ready-state 4, stopping on Break, and continuing through completion when device speech was unavailable. Browser checks use Guest practice, with no real student identities or production classroom records.
 
 ![Verified gameplay](letter-lane-game-20261101.jpg)
 
@@ -52,3 +52,7 @@ Background prompt:
 Car prompt:
 
 > Use case: stylized-concept. Asset type: a single high quality transparent game vehicle sprite. One adorable but age-respectful detailed glossy cherry-red compact sporty hatchback seen DIRECTLY FROM BEHIND AND SLIGHTLY ABOVE, symmetrical centered, car pointed AWAY from viewer as though driving down a road. Three-quarter elevated REAR view shows roof and wide rear window, no front or side face. Beautiful 3D game asset, convincing rounded automobile body, glossy red paint, black rubber tires, silver wheel rims, rear red taillights with amber indicators, rounded rear bumper, wide dark teal rear window with subtle sky reflection, rear license plate blank. Full vehicle clearly contained in image with generous transparent margin, no ground plane, no surroundings, no road, no person. Real transparent alpha background, no checkerboard drawn, no text, no watermark. Single car only, polished family video game quality.
+
+## Rebuild the voice backup
+
+Run `python tools/build-letter-lane-audio.py` with FFmpeg and its libflite filter installed. It uses the built-in CMU SLT synthetic voice to create `assets/letter-lane/voice.mp3` and `voice-cues.mjs`. No network service or voice cloning is used. The MP3 contains 47 separated clips (about 81 seconds total, 484 KB).
