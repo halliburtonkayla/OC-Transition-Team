@@ -1,6 +1,6 @@
 import {WORDS,newDrive,chooseLetter,restoreDrive,driveSummary,letterChoices} from './core.mjs';
 
-export const ROAD={far:300,jumpDuration:1.2,slow:25,cruise:37,boost:1.7,collisionWidth:.43};
+export const ROAD={far:300,jumpDuration:1.2,slow:40,cruise:60,boost:1.7,collisionWidth:.43};
 const KINDS=new Set(['star','coin','jump','boost','cone','letter']);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const finite=(v,a,b)=>Number.isFinite(v)&&v>=a&&v<=b;

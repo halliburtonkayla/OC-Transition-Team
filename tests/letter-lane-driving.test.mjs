@@ -24,7 +24,7 @@ test('a wrong letter and a missed row retain the target and all earned stars',()
  r.entities=[{id:'miss',kind:'letter',at:r.distance+2,lane:0,letter:'j',slot:0,row:1}];advanceRunner(r,.2);assert.equal(r.drive.index,0);assert.equal(r.drive.answers.length,1);assert.equal(r.misses,1);assert.equal(r.stars,1);
 });
 test('jump coins grant charges and a well-timed jump physically clears a cone',()=>{
- const r=createRunner();r.entities=[{id:'power',kind:'jump',at:1,lane:1},{id:'cone',kind:'cone',at:25,lane:1}];
+ const r=createRunner();r.entities=[{id:'power',kind:'jump',at:1,lane:1},{id:'cone',kind:'cone',at:ROAD.slow,lane:1}];
  advanceRunner(r,.05);assert.equal(r.jumpCharges,2);assert.equal(r.coins,1);advanceRunner(r,.35);assert.equal(jumpRunner(r),true);assert.equal(r.jumpCharges,1);assert.equal(jumpRunner(r),false);
  advanceRunner(r,.35);assert.ok(jumpHeight(r)>.7);const e=advanceRunner(r,.8);assert.ok(e.some(e=>e.type==='cone-cleared'));assert.equal(r.coneHits,0);assert.equal(r.jumps,1);
 });
@@ -47,7 +47,7 @@ test('every word is collectable by driving and the completed word cannot award d
  for(const w of WORDS){const r=createRunner({wordId:w.id,id:w.id,autoJump:true});const events=until(r,r=>r.drive.complete,guide);assert.equal(r.drive.answers.length,3);assert.equal(r.drive.answers.every(a=>a.correct),true);assert.equal(events.filter(e=>e.type==='word-complete').length,1);const frozen=JSON.stringify(r);assert.deepEqual(advanceRunner(r,1),[]);assert.equal(JSON.stringify(r),frozen);assert.equal(r.stars,r.collected.filter(e=>e.kind==='star').length);}
 });
 test('optional jump assistance is recorded separately from independent jump use',()=>{
- const r=createRunner({autoJump:true});r.entities=[{id:'power',kind:'jump',at:1,lane:1},{id:'cone',kind:'cone',at:25,lane:1}];const e=advanceRunner(r,2);assert.equal(r.autoJumps,1);assert.equal(r.jumps,1);assert.equal(r.coneHits,0);assert.ok(e.some(e=>e.type==='jump-used'&&e.automatic));assert.equal(runnerSummary(r).autoJumps,1);
+ const r=createRunner({autoJump:true});r.entities=[{id:'power',kind:'jump',at:1,lane:1},{id:'cone',kind:'cone',at:ROAD.slow,lane:1}];const e=advanceRunner(r,2);assert.equal(r.autoJumps,1);assert.equal(r.jumps,1);assert.equal(r.coneHits,0);assert.ok(e.some(e=>e.type==='jump-used'&&e.automatic));assert.equal(runnerSummary(r).autoJumps,1);
 });
 test('resume keeps earned pickups and rejects duplicate credits, impossible power balances and corrupt progress',()=>{
  const r=createRunner();until(r,r=>r.distance>80);const snapshot=runnerCheckpoint(r),restored=restoreRunner(snapshot);assert.ok(restored);assert.equal(restored.stars,r.stars);assert.equal(restored.coins,r.coins);assert.equal(restored.jumpCharges,r.jumpCharges);assert.equal(restored.distance,r.distance);

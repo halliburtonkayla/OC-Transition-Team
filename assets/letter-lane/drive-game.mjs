@@ -1,5 +1,5 @@
 import {WORDS,MODES,LETTER_NAMES,restoreDrive,withHelp} from './core.mjs';
-import {createRunner,advanceRunner,steerRunner,jumpRunner,toggleBoost,nextLetter,speedOf,jumpHeight,runnerCheckpoint,restoreRunner,runnerSummary} from './runner.mjs?v=drive2';
+import {createRunner,advanceRunner,steerRunner,jumpRunner,toggleBoost,nextLetter,speedOf,jumpHeight,runnerCheckpoint,restoreRunner,runnerSummary} from './runner.mjs?v=speed3';
 import {createRoadView} from './road-view.mjs?v=drive2';
 import {picture} from './pictures.mjs';
 import {narrationPlayer} from './voice.mjs?v=drive2';
