@@ -671,6 +671,37 @@
       "bytes": 1780
     },
     {
+      "path": "candy-counter.html",
+      "title": "Candy Counter · Transition Town School",
+      "room": "jobs",
+      "links": [
+        {
+          "target": "assets/candy-counter/counter.css",
+          "exists": true
+        },
+        {
+          "target": "assets/candy-counter/app.mjs",
+          "exists": true
+        },
+        {
+          "target": "school-directory.html",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "money-counting-game.html",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 1543
+    },
+    {
       "path": "career-adventures.html",
       "title": "Career Adventures",
       "room": "studio",
@@ -1045,12 +1076,16 @@
         {
           "target": "session.js",
           "exists": true
+        },
+        {
+          "target": "candy-counter.html",
+          "exists": true
         }
       ],
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 6003
+      "bytes": 6206
     },
     {
       "path": "cdc-cleaning.html",
@@ -7183,12 +7218,16 @@
         {
           "target": "session.js",
           "exists": true
+        },
+        {
+          "target": "candy-counter.html",
+          "exists": true
         }
       ],
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3744
+      "bytes": 4096
     },
     {
       "path": "teacher_teacher_assistant_presentation.html",
