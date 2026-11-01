@@ -1,4 +1,4 @@
-import {ROOMS,FEATURED} from './catalogue.mjs';
+import {ROOMS,FEATURED} from './catalogue.mjs?v=20261101-prism';
 import {icon,esc} from '../job-missions/art.mjs';
 let cataloguePromise;
 const loadCatalogue=()=>cataloguePromise??=fetch('docs/school-inventory.json').then(r=>{if(!r.ok)throw Error('Catalogue unavailable');return r.json();});
