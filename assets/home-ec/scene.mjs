@@ -3,7 +3,7 @@ import * as T from './three.js';
 // All classroom objects are real meshes. Shared materials, instanced small parts,
 // static mesh batching, capped resolution and idle rendering keep school devices viable.
 export const VIEWS={
- classroom:{eye:[6.2,4.35,11.8],at:[0,1.45,-1.4]},
+ classroom:{eye:[.3,2.6,5.5],at:[0,1.5,-2.5]},
  kitchen:{eye:[-1.0,3.2,4.15],at:[-2.45,1.3,.15]},
  recipes:{eye:[-6.1,2.8,3.8],at:[-3.65,1.3,.3]},
  fridge:{eye:[-4.8,2.15,-1.65],at:[-6.2,1.5,-4.6]},
@@ -35,7 +35,8 @@ export function createClassroom(canvas,{onObject=()=>{},onReady=()=>{},onError=(
  const scene=new T.Scene();scene.background=new T.Color('#ede9df');scene.fog=new T.Fog('#ede9df',25,65);
  const camera=new T.PerspectiveCamera(49,1,.05,90);let env;if(!offline){const environment=new T.RoomEnvironment(),pmrem=new T.PMREMGenerator(renderer);env=pmrem.fromScene(environment,.04);scene.environment=env.texture;scene.environmentIntensity=.58;environment.dispose();pmrem.dispose();}
  const mat=(color,roughness=.45,metalness=0,extra={})=>new T.MeshStandardMaterial({color,roughness,metalness,...extra});
- const M={wall:mat('#cfc2ae',.85),ceiling:mat('#f7f0dd',.85),navy:mat('#36444b',.22,.12),inset:mat('#2c3e46',.3,.12),oak:mat('#bc8b56',.4,0,{map:wood()}),stone:mat('#eee9df',.18,.06,{map:marble()}),steel:mat('#afbabd',.24,.86),steelDark:mat('#454f55',.3,.7),brass:mat('#ad834d',.25,.8),black:mat('#111b20',.17,.4),white:mat('#f4f2e8',.23,.08),pink:mat('#eaa9be',.25,.08),blue:mat('#82b9e3',.28,.1),green:mat('#375647',.5),leaf:mat('#3f653b',.65),leafLight:mat('#7c985a',.55),terra:mat('#b17a52',.65),water:new T.MeshPhysicalMaterial({color:'#94c7da',roughness:.08,metalness:0,transparent:true,opacity:.5,transmission:.35}),glass:new T.MeshPhysicalMaterial({color:'#d5edf3',roughness:.06,metalness:.05,transparent:true,opacity:.36,transmission:.65,thickness:.08}),cloth:mat('#adc5ca',.92),cream:mat('#f7ead0',.8),food:mat('#d6a75b',.68),butter:mat('#f0d775',.38),light:mat('#fff5d3',.25,0,{emissive:'#ffd78b',emissiveIntensity:2.3})};
+ const M={wall:mat('#cfc2ae',.85),ceiling:mat('#f7f0dd',.85),navy:mat('#36444b',.22,.12),inset:mat('#2c3e46',.3,.12),oak:mat('#bc8b56',.4,0,{map:wood()}),stone:mat('#eee9df',.18,.06,{map:marble()}),steel:mat('#afbabd',.24,.86),steelDark:mat('#454f55',.3,.7),brass:mat('#ad834d',.25,.8),black:mat('#111b20',.17,.4),white:mat('#f4f2e8',.23,.08),pink:mat('#eaa9be',.25,.08),blue:mat('#82b9e3',.28,.1),green:mat('#375647',.5),leaf:mat('#3f653b',.65),leafLight:mat('#7c985a',.55),terra:mat('#b17a52',.65),water:new T.MeshPhysicalMaterial({color:'#94c7da',roughness:.08,metalness:0,transparent:true,opacity:.5,transmission:.35}),glass:new T.MeshPhysicalMaterial({color:'#d5edf3',roughness:.06,metalness:.05,transparent:true,opacity:.78,transmission:.62,thickness:.04,ior:1.45}),cloth:mat('#adc5ca',.92),cream:mat('#f7ead0',.8),food:mat('#d6a75b',.68),butter:mat('#f0d775',.38),light:mat('#fff5d3',.25,0,{emissive:'#ffd78b',emissiveIntensity:2.3})};
+ M.leaf.side=T.DoubleSide;M.leafLight.side=T.DoubleSide;const leafGeometry=new T.PlaneGeometry(.22,.52,6,10),leafVertices=leafGeometry.getAttribute('position');for(let i=0;i<leafVertices.count;i++){const y=leafVertices.getY(i),t=(y+.26)/.52;leafVertices.setX(i,leafVertices.getX(i)*Math.pow(Math.max(.001,Math.sin(Math.PI*t)),.65));leafVertices.setZ(i,.055*Math.sin(Math.PI*t)+.09*t*t);}leafGeometry.computeVertexNormals();
  const root=new T.Group();scene.add(root);const targets=new Map(),moving={},geoms=new Map(),selectable=[],colliders=[];
  const g=new T.Group();root.add(g);
  function mesh(geometry,material,parent=g){const o=new T.Mesh(geometry,material);o.castShadow=!material.transparent;o.receiveShadow=true;parent.add(o);return o;}
@@ -46,7 +47,7 @@ export function createClassroom(canvas,{onObject=()=>{},onReady=()=>{},onError=(
  function tube(points,r,m,parent=g){return mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(a=>new T.Vector3(...a))),20,r,6,false),m,parent);}
  function target(id,build,parent=g){const o=new T.Group();parent.add(o);o.userData.target=id;build(o);targets.set(id,o);selectable.push(o);return o;}
  function sign(lines,p,s,style={},parent=g){const t=label(lines,style),o=mesh(new T.PlaneGeometry(...s),new T.MeshStandardMaterial({map:t,roughness:.52,metalness:.02}),parent);o.position.set(...p);o.castShadow=false;return o;}
- function plant(x,y,z,scale=.7,parent=g){const p=new T.Group();p.position.set(x,y,z);p.scale.setScalar(scale);parent.add(p);cyl([0,.17,0],.2,.33,M.terra,p,.24);cyl([0,.335,0],.22,.018,mat('#3e3020'),p);for(let i=0;i<17;i++){const a=i*2.399,r=.17+random()*.18,yy=.35+random()*.55;tube([[0,.32,0],[Math.sin(a)*r*.6,yy*.8,Math.cos(a)*r*.6],[Math.sin(a)*r,yy,Math.cos(a)*r]],.008,M.green,p);const leaf=sphere([Math.sin(a)*r,yy,Math.cos(a)*r],[.1,.035,.24],i%2?M.leaf:M.leafLight,p);leaf.rotation.set(-.3,a,.3);}return p;}
+ function plant(x,y,z,scale=.7,parent=g){const p=new T.Group();p.position.set(x,y,z);p.scale.setScalar(scale);parent.add(p);cyl([0,.17,0],.2,.33,M.terra,p,.24);cyl([0,.335,0],.22,.018,mat('#3e3020'),p);for(let i=0;i<17;i++){const a=i*2.399,r=.17+random()*.18,yy=.35+random()*.55;tube([[0,.32,0],[Math.sin(a)*r*.6,yy*.8,Math.cos(a)*r*.6],[Math.sin(a)*r,yy,Math.cos(a)*r]],.008,M.green,p);const leaf=mesh(leafGeometry,i%2?M.leaf:M.leafLight,p);leaf.position.set(Math.sin(a)*r,yy,Math.cos(a)*r);leaf.rotation.set(-1.0,a,.2);}return p;}
  function handle(x,y,z,w=.35,parent=g){tube([[x-w/2,y,z+.018],[x-w/2,y,z+.07],[x+w/2,y,z+.07],[x+w/2,y,z+.018]],.014,M.brass,parent);}
  function cabinet(x,z,w=.94,h=1.1,parent=g,interactive=false){
   if(interactive){box([x,h/2,z-.49],[w,h,.055],M.navy,parent);for(const side of [-1,1])box([x+side*(w/2-.03),h/2,z],[.055,h,1.04],M.navy,parent);for(const yy of [.1,.58,1.05])box([x,yy,z],[w-.07,.045,1.0],M.oak,parent);}else box([x,h/2,z],[w,h,1.04],M.navy,parent,.035);box([x,.085,z+.04],[w-.07,.12,.97],M.black,parent,.012);
@@ -81,6 +82,9 @@ export function createClassroom(canvas,{onObject=()=>{},onReady=()=>{},onError=(
  if(!groceryProducts){
   // Stone tile floor, room shell, architectural trim and glazing.
   box([0,-.14,0],[16.4,.25,13],M.wall);
+  const ceiling=mesh(new T.PlaneGeometry(16,12.5),M.ceiling);ceiling.rotation.x=Math.PI/2;ceiling.position.set(0,4.02,0);ceiling.castShadow=false;
+  for(const z of [-4,-1,2,5])box([0,3.99,z],[15.9,.025,.025],M.white);for(const x of [-6,-3,0,3,6])box([x,3.99,0],[.025,.025,12.4],M.white);
+  for(const x of [-4,4])for(const z of [-3,2])box([x,3.98,z],[1.1,.025,.5],M.light);
   for(let row=0;row<10;row++)for(let col=0;col<13;col++){const f=box([-7.4+col*1.23,-.005,-5.8+row*1.23],[1.215,.055,1.215],M.stone,g,.008);if((row+col)%2)f.rotation.y=Math.PI/2;}
   box([0,2.1,-6],[16,.15,.16],M.oak);box([0,3.95,-6],[16,.14,.18],M.ceiling);box([0,1.0,-6],[16,2,.15],M.wall);box([-7.95,2,-1],[.14,4,10],M.wall);box([7.95,2,-1],[.14,4,10],M.wall);
   // Real framed windows; a photographic outdoor texture stays beyond the room.
@@ -125,7 +129,7 @@ export function createClassroom(canvas,{onObject=()=>{},onReady=()=>{},onError=(
   for(let j=0;j<3;j++)target('measure'+[1,2,4][j],p=>{const sp=spoon(-1.82+j*.21,1.3,.45,p);sp.scale.setScalar(.85+j*.07);sign(['¼ tsp','½ tsp','1 tsp'].slice(j,j+1),[-1.82+j*.21,1.29,.74],[.16,.07],{w:256,h:128},p).rotation.x=-Math.PI/2;});
   moving.spills=[];for(let i=0;i<5;i++){const spill=sphere([-3.9+i*.47,1.249,.7],[.12,.002,.07],mat('#bc9f6d',.85));moving.spills.push(spill);}
   target('container',p=>{box([-2.92,1.28,.57],[.6,.09,.4],M.white,p);box([-2.92,1.335,.57],[.53,.008,.33],M.cream,p);});
-  box([-2.75,1.23,-4.92],[.73,.04,.58],M.oak);
+  box([-2.75,1.23,-4.92],[.73,.04,.58],M.oak);moving.spoonRest=spoon(-2.55,1.29,-4.72,g);moving.spoonRest.visible=false;
   target('mitts',p=>{box([-4.55,1.22,-4.9],[.3,.06,.42],M.pink,p,.08);box([-4.35,1.22,-4.84],[.16,.06,.2],M.pink,p,.05);});
   // Preparation props, serving area and utensils.
   for(const x of [1.65,3.48]){cyl([x,1.36,-.28],.14,.3,M.white);for(let j=0;j<5;j++){const sp=spoon(x+(random()-.5)*.13,1.68,-.28+(random()-.5)*.1,g,M.oak);sp.rotation.x=1.1;sp.rotation.z=(random()-.5)*.8;}}
@@ -148,7 +152,7 @@ export function createClassroom(canvas,{onObject=()=>{},onReady=()=>{},onError=(
   for(const [x,z,w,d]of [[-2.65,.18,4.25,2.5],[2.55,.18,4.25,2.5],[-6.2,-4.84,2,1.75],[5.7,-4.5,3.3,1.75],[5.65,-.6,3.6,1.7],[5.5,3.5,2.15,2.8]]){const shadow=mesh(new T.PlaneGeometry(w,d),contactMaterial);shadow.rotation.x=-Math.PI/2;shadow.position.set(x,.026,z);shadow.castShadow=false;shadow.receiveShadow=false;}
   // Natural room signage, classroom table, planner and student portfolio.
   sign(['HOME ECONOMICS & LIFE SKILLS','COOK   ·   SHOP   ·   CLEAN   ·   PLAN   ·   LIVE'],[0,3.51,-5.46],[8.8,.65],{bg:'#f0bac9',accent:'#ffdfde',w:2048,h:256});
-  for(const x of [-7.1,7.1])plant(x,0,-2.4,1.9);
+  plant(-7.1,0,-2.4,1.6);plant(7.4,0,-4.9,1.3);
   sign(['Good food.','Good skills.','Bright futures.'],[-4.2,2.8,-5.13],[1.15,1.0],{bg:'#263d3f',fg:'#f8eacb',accent:'#bd8e55'});
   target('progress',p=>{box([.7,1.27,.54],[.63,.08,.43],M.blue,p);sign(['MY PROGRESS'],[.7,1.32,.54],[.57,.35],{bg:'#e0edf8',accent:'#72aad6'},p).rotation.x=-Math.PI/2;});
   target('shopping',p=>{box([-6.05,1.75,-3.7],[.65,.8,.07],M.oak,p);sign(['GROCERY PLAN','LIST · BUDGET','SHOP · RETURN'],[-6.05,1.76,-3.65],[.59,.72],{bg:'#f6e5c6',w:512,h:512},p);});
@@ -198,6 +202,7 @@ export function createClassroom(canvas,{onObject=()=>{},onReady=()=>{},onError=(
   if(targets.get('cloth')){targets.get('cloth').position.x=houseActive&&house==='counters'&&hstep>=3?-.5:0;}
   if(moving.microwaveDoor)moving.microwaveDoor.rotation.y+=((state?.work?.microwave?.open?-1.7:0)-moving.microwaveDoor.rotation.y)*t;
   if(moving.water)moving.water.visible=!!state?.work?.hands?.water&&!state?.work?.hands?.dried&&station==='sink';
+  if(moving.spoonRest)moving.spoonRest.visible=state?.step===7&&!!state?.work?.microwave?.in;
   if(moving.spoon){moving.spoon.visible=!(state?.step===7&&state?.work?.microwave?.in);rotation+=(turn-rotation)*t;moving.spoon.rotation.y=rotation;moving.spoon.position.x=.16*Math.cos(rotation);moving.spoon.position.z=.16*Math.sin(rotation);}
   if(moving.mixture){moving.mixture.visible=!!state?.work?.butter||!!state?.work?.marshmallows;moving.mixture.scale.y=state?.work?.microwave?.intervals?1.2:1;}
   if(moving.food){moving.food.visible=!!state?.work?.cereal;moving.food.position.lerp(new T.Vector3(state?.work?.transferred?-.67:0,state?.work?.transferred ? .08 : 0,state?.work?.transferred ? .37 : 0),t);}
