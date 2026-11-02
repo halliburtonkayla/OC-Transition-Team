@@ -30,6 +30,8 @@ The November 2 art-review run [41475368237](https://github.com/halliburtonkayla/
 
 The manually operated cloud preview has WebGL disabled. Its school entrance, existing-store checkout/receipt/return, supported controls, work-skills responses, hints and populated report were inspected directly. This fallback run is not claimed as proof of rendered 3D.
 
+The long lesson test selects the real lower-graphics setting through the settings dialog. Full-quality art is verified separately; a slow software GPU is not used to certify interactive frame rates at balanced quality. Lower graphics keeps the same geometry, materials and controls, reduces render resolution, and disables live floor reflection/dynamic shadows.
+
 All automated rendered images use a software GPU (ANGLE SwiftShader). They demonstrate real rendering and controls; they do not certify physical device frame rate or Safari behavior. The actual scene captures are linked from the PR and the workflow artifacts.
 
 ## Review before publishing

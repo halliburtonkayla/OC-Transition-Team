@@ -29,6 +29,10 @@ Open `http://localhost:4173/transition-town.html`, choose **Guest** for disposab
 
 The development preview uses the managed preview service and a generated static copy. That copy and preview configuration are local-only and are not part of the PR. No production Site or GitHub Pages deployment was made.
 
+## Graphics modes
+
+Balanced mode retains the full room's live floor reflection, dynamic shadows, photographic materials and modeled detail. The user-selectable lower graphics setting persists for the kitchen and its grocery shelf: it lowers rendering resolution and turns off live floor reflection and dynamic shadows while retaining the same objects, materials, activity controls and progress. This provides a usable option for slower classroom devices without replacing the room or lesson. The long software-GPU test uses this real setting; full-quality room views are checked separately.
+
 ## Questions and individual reports
 
 The Work skills practice station presents one question at a time: help-seeking, sequence, microwave safety, missing ingredients, cleanup, food-service careers, care labels and detergent. Independent level adds budgeting, customer allergy communication and time management. Beginning level has two large picture choices; other levels have three. Read-aloud, explicit hints and retries are available. Each response records the actual level, date, choice, correctness and requested hint. The report does not infer independence from correct answers.
