@@ -30,3 +30,19 @@ body[data-support=beginning] .prompt{font-size:18px;line-height:1.45}
 @media print{body{color:black}#render-status,.skip,.lesson-panel>button,.lesson-panel>details,.lesson-panel>.primary,.lesson-panel>.micro,.lesson-panel>.panel-top,.lesson-panel>h2{display:none!important}.practice-report{font-family:Arial,sans-serif;color:#000}.practice-report h1{font-size:22px}.practice-report h2{font-size:16px;break-after:avoid}.practice-report table{font-size:11px}.practice-report tr{break-inside:avoid}.practice-report thead{display:table-header-group}.practice-report th,.practice-report td{border-color:#777}.practice-report p,.practice-report li{font-size:11px;line-height:1.5}#center[data-paused=true]:after{display:none!important}@page{size:letter;margin:15mm}}
 
 .ingredient-checks .object-action{margin:7px 0}.ingredient-checks img{width:64px;height:64px;object-fit:contain;border-radius:8px;background:white}.ingredient-checks small{display:block;margin-top:5px;font-size:12px;font-weight:normal}
+
+/* Printing uses the entire sheet regardless of projector or graphics settings. */
+@media print{
+ html,body{background:#fff!important;color:#000!important;width:auto!important;height:auto!important;overflow:visible!important;font:10pt/1.4 Arial,sans-serif!important}
+ #center{position:static!important;display:block!important;width:auto!important;min-height:0!important;height:auto!important;padding:0!important;margin:0!important;overflow:visible!important;isolation:auto!important;background:#fff!important}
+ #lesson,.lesson-panel,body.projector .lesson-panel{position:static!important;width:100%!important;max-width:none!important;min-height:0!important;max-height:none!important;height:auto!important;padding:0!important;margin:0!important;overflow:visible!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;backdrop-filter:none!important;transform:none!important}
+ #lesson>*:not(#report-content){display:none!important}
+ .practice-report{width:100%!important;color:#000!important;background:#fff!important}
+ .practice-report h1{font:700 18pt/1.25 Arial,sans-serif!important;margin:0 0 9pt!important}
+ .practice-report h2{font:700 12pt/1.3 Arial,sans-serif!important;margin:14pt 0 6pt!important;break-after:avoid}
+ .practice-report p,body.projector .lesson-panel .practice-report p,.practice-report li{font:10pt/1.4 Arial,sans-serif!important}
+ .practice-report table{width:100%!important;font:9pt/1.4 Arial,sans-serif!important;table-layout:fixed!important}
+ .practice-report th,.practice-report td{padding:6pt!important;border:1px solid #777!important}
+ .practice-report .report-note{font:9pt/1.35 Arial,sans-serif!important;padding:7pt!important}
+ .practice-report tr{break-inside:avoid}.practice-report thead{display:table-header-group}
+}
