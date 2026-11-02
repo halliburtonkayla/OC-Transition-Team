@@ -1,15 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {makeLevel,applyPour,isWon,solve,pourInfo,clone} from '../assets/prism-pour/engine.mjs';
+import {makeLevel,applyPour,isWon,solve,pourInfo,clone,canonical} from '../assets/prism-pour/engine.mjs';
+
+import {TOTAL_LEVELS,LEVEL_TITLES,nextLevel,sortingOnlyStudent} from '../assets/prism-pour/levels.mjs';
 
 test('every level has a legal, color-conserving route to completion',()=>{
  const identities=new Set();
- for(let level=1;level<=30;level++){
+ for(let level=1;level<=TOTAL_LEVELS;level++){
   const puzzle=makeLevel(level);let board=puzzle.board;
   const colors=board.flat().sort().join(',');
   assert.equal(board.length,9);assert.ok(!isWon(board));
   assert.equal(board.flat().length,level>20?28:24);
-  identities.add(JSON.stringify(board));
+  identities.add(canonical(board));
   for(const [from,to] of puzzle.solution){
    const before=clone(board),next=applyPour(board,from,to);
    assert.ok(next,`Level ${level}, ${from} → ${to}`);
@@ -21,11 +23,11 @@ test('every level has a legal, color-conserving route to completion',()=>{
   assert.ok(isWon(board),`Level ${level} completes`);
   assert.deepEqual(makeLevel(level).board,puzzle.board,'Restart is deterministic');
  }
- assert.equal(identities.size,30);
+ assert.equal(identities.size,TOTAL_LEVELS);
 });
 
-test('hint solver finds and returns valid solutions for all 30 starting boards',()=>{
- for(let level=1;level<=30;level++){
+test('hint solver finds and returns valid solutions for all 100 starting boards',()=>{
+ for(let level=1;level<=TOTAL_LEVELS;level++){
   let board=makeLevel(level).board;const solution=solve(board);
   assert.ok(solution?.length,`Level ${level} has a hint`);
   for(const [from,to] of solution){const next=applyPour(board,from,to);assert.ok(next);board=next.board;}
@@ -47,4 +49,21 @@ test('winning requires full, single-color bottles',()=>{
  assert.equal(isWon([[0,0],[1,1,1,1],[]]),false);
  assert.equal(isWon([[0,0,0,1],[],[]]),false);
  assert.equal(isWon([[0,0,0,0],[1,1,1,1],[]]),true);
+});
+
+
+test('100 named levels advance beyond the original collection and wrap after the final shelf',()=>{
+ assert.equal(TOTAL_LEVELS,100);
+ assert.equal(new Set(LEVEL_TITLES).size,TOTAL_LEVELS);
+ assert.ok(LEVEL_TITLES.every(title=>typeof title==='string'&&title.trim()));
+ assert.equal(LEVEL_TITLES[0],'The first pour');
+ assert.equal(LEVEL_TITLES[29],'Your true colors');
+ assert.equal(nextLevel(30),31);
+ assert.equal(nextLevel(99),100);
+ assert.equal(nextLevel(100),1);
+});
+
+test('Noah and Clark use sorting only; other profiles keep the option of transition lessons',()=>{
+ for(const name of ['Noah','Noah Webb','Clark',' clark ','NOAH WEBB'])assert.equal(sortingOnlyStudent(name),true,name);
+ for(const name of ['Olivia','Miss Kayla','Guest','Noahson','Clarke','',null])assert.equal(sortingOnlyStudent(name),false,name);
 });
