@@ -35,6 +35,7 @@ export function cookReady(s,now=Date.now()){
 export function cookAction(s,a,now=Date.now()){
  const d=clone(s),w=d.work,id=COOK_STEPS[d.step].id;let message='Keep going. You can repeat or ask for a hint.';let ok=false;
  if(d.paused||d.phase!=='cook')return {state:s,ok:false,message:d.paused?'Resume when you are ready.':'Complete your shopping trip first.'};
+ if(d.step>=3&&!d.shopping.receipt)return {state:s,ok:false,message:'Check ingredients and complete your grocery trip before measuring.'};
  const yes=(text)=>{ok=true;message=text;};const list=(key,value)=>{w[key]=[...new Set([...(w[key]||[]),value])];};
  if(id==='safety'&&a.type==='safety'&&['allergies','adult','hot'].includes(a.value)){list('safety',a.value);yes('Safety reminder reviewed. Ask your teacher before real cooking.');}
  if(id==='hands'){
