@@ -5,7 +5,7 @@ import {ACTIVITY,initialState,restoreState,beginTrip,cookAction,cookReady,advanc
 import {ensureEvidence,bindPracticeClock,questionsFor,answerQuestion,practiceReport} from './evidence.mjs';
 import {reportHTML,duration} from './report.mjs';
 
-const $=id=>document.getElementById(id),store=learningStore(ACTIVITY);let state=restoreState(store.read().checkpoint),audioContext=null,viewer=null,toastTimer,renderFailed=false,practiceClock=null;
+const $=id=>document.getElementById(id),store=learningStore(ACTIVITY);let state=restoreState(store.read().checkpoint),audioContext=null,viewer=null,toastTimer,renderFailed=false,practiceClock=null,viewedReport=null;
 ensureEvidence(state,learningId());
 const paths={classroom:'M3 10 12 3l9 7v11H3Z M9 21v-7h6v7',recipes:'M3 4h7l2 2 2-2h7v16h-7l-2 2-2-2H3Z M12 6v16',shopping:'m3 4 2 0 3 12h11l2-9H6 M10 20h.01 M18 20h.01',kitchen:'M4 10h16v4a8 8 0 0 1-16 0Z M8 5v2 M12 3v4 M16 5v2',laundry:'M4 2h16v20H4Z M7 5h.01 M11 5h6 M17 14a5 5 0 1 1-10 0 5 5 0 0 1 10 0',cleaning:'M8 8h8l2 13H6Z M10 8V3h8 M12 3v5 M9 14h6',clothing:'m3 5 5-3 4 2 4-2 5 3-3 5-2-1v13H8V9l-2 1Z',challenge:'M4 8h16l-2 13H6Z M8 8V6a4 4 0 0 1 8 0v2 M9 14l2 2 4-4',progress:'M4 21V10h4v11 M10 21V4h4v17 M16 21V7h4v14',snack:'M4 7h16v14H4Z M2 7l3-5h14l3 5 M8 12h8 M8 17h5',spoon:'M8 4c-4 0-4 8 0 8h1v9h3V11c4-3 2-7-1-7Z',bowl:'M3 10h18c0 7-4 10-9 10S3 17 3 10Z M8 3v4 M12 2v5 M16 3v4',tap:'M3 13h16v6 M7 13V7h8 M11 7V3 M7 3h8 M19 21h.01',safety:'M12 2 3 6v7c0 5 9 9 9 9s9-4 9-9V6Z M8 12l3 3 5-6',cabinet:'M3 3h18v18H3Z M12 3v18 M9 11v3 M15 11v3',hand:'M6 11V5h3v5V3h3v7-6h3v7-5h3v10c0 4-3 6-6 6-4 0-6-3-8-6l-2-4 2-1 3 3',cloth:'m3 4 16 1 2 15-16 1Z M7 8l10 8 M8 15l8-6',shirt:'m3 5 5-3 4 2 4-2 5 3-3 5-2-1v13H8V9l-2 1Z',clock:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M12 6v6l4 3'};
 const icon=id=>`<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[id]||paths.bowl}"/></svg>`;
@@ -68,7 +68,7 @@ function skills(){
  const answers=state.practice.answers.filter(a=>a.id===q.id),last=answers.at(-1),choices=state.support==='beginning'?q.choices.slice(0,2):q.choices;
  return header('WORK SKILLS · '+(i+1)+' OF '+questions.length,esc(q.skill))+`<p class="prompt">${esc(q.prompt)}</p><div class="actions question-choices">${choices.map(([value,label,picture])=>obj(label,'answer',q.id+':'+value,picture,false,`aria-pressed="${last?.choice===value}"`)).join('')}</div>${last?`<p class="answer-feedback" role="status">${last.correct?'That is a safe work choice. You can continue.':'Let’s try again. '+esc(q.hint)}</p>`:''}${primary(i===questions.length-1?'View my practice report':'Next work-skills question','next-question',!last?.correct?'disabled':'',true)}${primary('Read question and choices aloud','read')}<button class="soft" data-action="question-hint" data-value="${q.id}">Show me a hint</button><p class="micro">Practice answers and retries are recorded. You can ask your teacher or use a communication device.</p>`;
 }
-function progress(){practiceClock?.flush();const report=practiceReport(state,store.student),archives=store.read().records.filter(r=>r.details?.report);
+function progress(){viewedReport=null;practiceClock?.flush();const report=practiceReport(state,store.student),archives=store.read().records.filter(r=>r.details?.report);
  return header('INDIVIDUAL PRE-ETS PRACTICE','My lesson report')+`<button class="primary blue" data-action="print-progress">Print my practice report</button>${primary('Practice my work-skills questions','station','data-value="skills"')}<details><summary>Earlier completed practice reports (${archives.length})</summary>${archives.map(r=>`<button class="soft" data-action="archive-report" data-value="${esc(r.id)}">${esc(new Date(r.at).toLocaleDateString())} · ${esc(r.details.report.status)}</button>`).join('')}</details><p class="micro">${esc(store.notice())}</p><div id="report-content">${reportHTML(report)}</div>`;
 }
 function applyBeginningSupport(){
@@ -78,14 +78,15 @@ function applyBeginningSupport(){
   if(id==='safety')next=['safety:'+(['allergies','adult','hot'].find(x=>!w.safety?.includes(x))||'')];
   if(id==='hands'){const h=w.hands||{};next=[!h.water?'tap':!h.soap?'soap':!h.rubbing?'rub':!h.rinsed?'rinse':!h.dried?'dry':''];}
   if(id==='tools')next=[!w.cabinetOpen?'cabinet':'tool:'+(recipe().equipment.find(t=>!w.tools?.includes(t.id))?.id||'')];
-  if(['butter','marshmallows','cereal'].includes(id)&&!cookReady(state))next=w.scooped?['pour','empty']:w.selected?['scoop','empty']:[];
+  if(['butter','marshmallows','cereal'].includes(id)&&!cookReady(state))next=w.scooped?['pour','empty']:w.selected?['scoop','empty']:(id==='butter'?[1,2,4]:[3,4,6,12]).map(v=>'measure-select:'+v);
   if(id==='supervision')next=[!w.adultRequested?'adult':!w.mitts?'mitts':''];
+  if(id==='microwave'){const m=w.microwave||{open:false,in:false,intervals:0,stirred:true};next=[m.open?(m.in?(m.stirred?'door':'bowl'):m.intervals&&!m.stirred?'stir':'bowl'):m.in&&m.stirred?'heat':'door'];}
   if(id==='dishes')next=['wash:'+(['bowl','cups','spoons','spoon'].find(x=>!w.dishes?.includes(x))||'')];
   if(id==='wipe')next=[!w.cloth?'cloth':(w.wipes||0)<5?'wipe':!w.stored?'store':''];
   const actions=[...$('lesson').querySelectorAll('[data-action="cook"]')];
   if(next.length)for(const b of actions)b.hidden=!next.includes(b.dataset.value);
   if(cookReady(state))for(const b of actions)b.hidden=true;
-  const visible=actions.find(b=>!b.hidden);if(visible){const prompt=$('lesson').querySelector('.prompt');if(prompt)prompt.textContent=visible.textContent.trim();}
+  const visible=actions.find(b=>!b.hidden);if(visible){const prompt=$('lesson').querySelector('.prompt');if(prompt)prompt.textContent=['butter','marshmallows','cereal'].includes(id)&&!w.selected&&!w.scooped?'Choose '+({butter:'a ¼ teaspoon',marshmallows:'the ⅓ cup',cereal:'the ½ cup'})[id]+' measure.':visible.textContent.trim();}
  }
  if(state.station==='laundry'&&!state.laundry.completed){
   const work=state.laundry.work,id=LAUNDRY_STEPS[state.laundry.step].id,actions=[...$('lesson').querySelectorAll('[data-action="laundry"]')];let next=[];
@@ -151,7 +152,7 @@ $('center').addEventListener('click',e=>{const b=e.target.closest('[data-action]
  if(action==='review-recipe'){state.planning.recipeReviewed=true;save();evidence('choice','Reviewed the individual recipe before gathering tools',{task:'recipe-reading'});return setStation('kitchen');}
  if(action==='ingredient-check'){if(state.paused)return notice('Resume first.');if(!recipe().ingredients.some(i=>i.id===value))return;state.ingredientChecks={...state.ingredientChecks,[value]:true};save();evidence('choice','Checked a recipe ingredient against classroom supplies',{task:'ingredient-identification',item:value});notice(state.shopping.receipt?'This ingredient is in your purchased supplies.':'This ingredient is missing. It is already on your shopping list.');render();return;}
  if(action==='inspect'){viewer?.focus(value);viewer?.animate(value);return notice(value==='pantry'?'Check cereal and marshmallows on the pantry shelves.':'Check the butter label and refrigerator supplies.');}
- if(action==='archive-report'){const report=store.read().records.find(r=>r.id===value)?.details?.report;if(report){$('report-content').innerHTML=reportHTML(report);notice('Showing this saved completion report. Return to My progress for current practice.');}return;}
+ if(action==='archive-report'){const report=store.read().records.find(r=>r.id===value)?.details?.report;if(report){viewedReport=report;$('report-content').innerHTML=reportHTML(report);notice('Showing this saved completion report. Return to My progress for current practice.');}return;}
  if(action==='answer'){const [id,choice]=value.split(':'),r=answerQuestion(state,id,choice);if(r.ok){save();evidence('choice','Work-skills question: '+r.question.skill,{task:'work-skills',question:id,answer:choice,correct:r.answer.correct,hint:r.answer.hintUsed});render();if(state.autoRead)speak(r.answer.correct?'That is a safe work choice.':r.question.hint);}return;}
  if(action==='next-question'){const list=questionsFor(state.support),q=list[Math.min(state.questionIndex||0,list.length-1)];if(!state.practice.answers.filter(a=>a.id===q.id).at(-1)?.correct)return;if((state.questionIndex||0)>=list.length-1)return setStation('progress');state.questionIndex=(state.questionIndex||0)+1;save();render();if(state.autoRead)speakDirections();return;}
  if(action==='question-hint'){const q=questionsFor(state.support).find(q=>q.id===value);if(q){state.questionHints={...state.questionHints,[value]:true};state.help++;state.practice.assistance.push({kind:'Question hint',context:q.prompt,support:state.support,at:new Date().toISOString()});save();notice(q.hint);speak(q.hint);}return;}
@@ -170,7 +171,7 @@ $('center').addEventListener('click',e=>{const b=e.target.closest('[data-action]
  if(action==='house-back'){delete state.activeHousehold;save();render();return;}
  if(action==='house')return runHouse(value);
  if(action==='print'){const {kind,level}=b.dataset,file=kind==='shopping'?'rice-treat-shopping-':'rice-treat-level-';window.open('printables/home-ec/'+file+level+'.pdf','_blank','noopener');const key=kind==='shopping'?'listPrinted':'recipePrinted';state.planning[key]=[...new Set([...state.planning[key],Number(level)])];save();evidence('action','Requested printable '+kind+' worksheet level '+level,{task:'handwriting',item:kind,status:'print-request'});return;}
- if(action==='print-progress'){if(!document.querySelector('.practice-report'))setStation('progress');practiceClock?.flush();window.print();}
+ if(action==='print-progress'){if(!document.querySelector('.practice-report'))setStation('progress');practiceClock?.flush();if(!viewedReport)$('report-content').innerHTML=reportHTML(practiceReport(state,store.student));window.print();}
 });
 $('walk-pad').addEventListener('pointerdown',e=>{const b=e.target.closest('[data-value]');if(!b)return;b.setPointerCapture(e.pointerId);viewer?.startMove(b.dataset.value);});for(const event of ['pointerup','pointercancel','lostpointercapture'])$('walk-pad').addEventListener(event,()=>viewer?.stopMove());
 $('settings').addEventListener('close',()=>{practiceClock?.flush();if(state.support!==$('support').value){state.practice.supportChanges.push({from:state.support,to:$('support').value,at:new Date().toISOString()});state.questionIndex=0;}state.autoRead=$('auto-read').checked;state.sound=$('sound').checked;state.support=$('support').value;state.mode=$('navigation').value;state.sessionMinutes=Number($('session-minutes').value);save();render();viewer?.setQuality?.($('graphics').value);});

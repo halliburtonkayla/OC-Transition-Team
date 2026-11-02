@@ -3,31 +3,29 @@
     "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
     "stats": {
-      "calls": 341,
-      "triangles": 474718,
+      "calls": 371,
+      "triangles": 413576,
       "width": 1440,
       "height": 900
-    }
+    },
+    "art": {
+      "ready": true,
+      "loaded": 10,
+      "total": 10
+    },
+    "plants": 4
   },
   "views": [
     "classroom-3d.jpg",
     "walk-around-3d.jpg",
     "laundry-3d.jpg",
-    "grocery-shelf-cart-3d.jpg",
-    "measuring-counter-3d.jpg",
-    "layout-390.jpg",
-    "layout-768.jpg",
-    "layout-1366.jpg",
-    "projector-text.jpg",
-    "microwave-safety-3d.jpg"
+    "kitchen-art-3d.jpg"
   ],
   "checks": [
     "Actual WebGL rendering and keyboard avatar movement",
-    "Existing grocery 3D shelf, cart packages, item scan, isolated receipt and return checkpoint",
-    "390/768/1366px layouts and actual projector text control",
-    "Microwave practice keeps the modeled metal spoon outside",
-    "No uncaught application errors"
+    "Photographic materials, real floor reflection, scanned foliage and actual 3D art views"
   ],
-  "sourceCommit": "13406dc1ba21cf98bfa8b8a9bd66cedba93283e6",
-  "workflowRun": 41347979318
+  "sourceRevision": "6e67d3d939a556eeb732fabf3e68832ef68240bd",
+  "workflowRun": "https://github.com/halliburtonkayla/OC-Transition-Team/actions/runs/41475368237",
+  "scope": "Successful art-review rendering. Full recipe journey is a separate workflow job."
 }
