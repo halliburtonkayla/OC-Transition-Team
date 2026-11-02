@@ -3,13 +3,15 @@
 import {learningStore,learningId,escapeHTML as esc} from '../learning/progress.mjs';
 import {ACTIVITY,restoreState,validateCheckout,acceptReceipt,money} from './core.mjs';
 import {recipeById} from './recipes.mjs';
+import {ensureEvidence,bindPracticeClock} from './evidence.mjs';
 const shop=window.TTGroceryLesson;if(!shop?.isLesson){}else{
- const store=learningStore(ACTIVITY);let state=restoreState(store.read().checkpoint),viewer=null,generation=0;
+ const store=learningStore(ACTIVITY);let state=restoreState(store.read().checkpoint),viewer=null,generation=0,practiceClock=null;
+ ensureEvidence(state,learningId());
  const recipe=()=>recipeById(state.recipeId),owner=store.student;
  const unchanged=()=>owner===(sessionStorage.ttCurrent||localStorage.ttCurrent||'Guest')&&shop.owner===owner;
  const valid=()=>unchanged()&&!!state.shopping.tripId;
  function record(kind,summary,details){store.append({id:learningId(),kind,summary,details:{scope:'simulation',...details}});store.event(kind,summary,{scope:'simulation',...details});}
- function checkoutValidation(){state=restoreState(store.read().checkpoint);if(!valid())return {ok:false,message:'Start this shopping trip from your Home Economics recipe first.'};return validateCheckout(shop.cart,shop.catalog,recipe(),state.shopping.budgetCents);}
+ function checkoutValidation(){practiceClock?.flush();if(valid())store.checkpoint(state);state=restoreState(store.read().checkpoint);if(!valid())return {ok:false,message:'Start this shopping trip from your Home Economics recipe first.'};return validateCheckout(shop.cart,shop.catalog,recipe(),state.shopping.budgetCents);}
  const previous=shop.cartStorage.getItem(shop.cartKey+':trip');if(previous!==state.shopping.tripId){shop.cartStorage.removeItem(shop.cartKey);shop.clearCart();if(state.shopping.tripId)shop.cartStorage.setItem(shop.cartKey+':trip',state.shopping.tripId);}
  shop.budget=state.shopping.budgetCents/100;
  const style=document.createElement('style');style.textContent=`.homeec-store-banner{background:linear-gradient(110deg,#2c586e,#846178);color:white;max-width:1360px;margin:12px auto;padding:18px;border-radius:15px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}.homeec-store-banner a{color:white;font-weight:bold}.homeec-store-banner small{display:block;margin-top:6px}.homeec-store-list{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.homeec-store-list button{border:1px solid #c1ccd0;border-radius:12px;padding:12px;background:#fffef5;color:#203f4c;min-height:48px}.homeec-shelf canvas{width:100%;height:min(52vw,430px);touch-action:none;border-radius:14px;display:block}.homeec-shelf h2{margin:4px 0 10px}.homeec-shelf p{font-size:13px}.homeec-receipt{white-space:normal;line-height:1.6}`;document.head.append(style);
@@ -34,5 +36,6 @@ const shop=window.TTGroceryLesson;if(!shop?.isLesson){}else{
  if(!valid())window.TTHomeEcGrocery.open();else if(state.shopping.receipt)shop.showComplete(receiptHTML(state.shopping.receipt));else{
   const start=document.createElement('button');start.textContent='Start my recipe shopping';start.className='action primary';start.onclick=()=>{window.TTHomeEcGrocery.open();if(localStorage.ttGroceryMusic!=='off')shop.radio.play().catch(()=>{});};document.getElementById('view').prepend(start);
  }
- window.addEventListener('pagehide',()=>viewer?.dispose());
+ practiceClock=bindPracticeClock({getState:()=>state,area:()=>"grocery-shopping",save:()=>{if(valid())store.checkpoint(state);},id:learningId});
+ window.addEventListener('pagehide',()=>{practiceClock?.dispose();viewer?.dispose();});
 }

@@ -53,8 +53,8 @@ export function cookAction(s,a,now=Date.now()){
   const allowed=id==='butter'?[1,2,4]:[3,4,6,12],target=id==='butter'?3:id==='marshmallows'?4:6;
   if(a.type==='measure-select'&&allowed.includes(a.value)){w.selected=a.value;w.scooped=false;yes('Measuring tool selected. Scoop the ingredient.');}
   if(a.type==='scoop'&&allowed.includes(w.selected)){w.scooped=true;yes('Scoop filled and leveled. Pour it into the bowl.');}
-  if(a.type==='pour'&&w.scooped){const amount=(w[id]||0)+w.selected;if(amount>target){message='That would be too much. Empty the measure and choose a smaller one. Your bowl has not changed.';w.scooped=false;}else{w[id]=amount;w.scooped=false;yes(amount===target?'Exactly right. Your ingredient is measured.':'Added. Measure a little more to reach the recipe amount.');}}
-  if(a.type==='empty'){w.scooped=false;w[id]=0;yes('Measure emptied. Try again with no penalty.');}
+  if(a.type==='pour'&&w.scooped){const amount=(w[id]||0)+w.selected;if(amount>target){message='That would be too much. Empty the measure and choose a smaller one. Your bowl has not changed.';w.scooped=false;}else{w[id]=amount;w.scooped=false;yes(amount===target?'Exactly right. Your ingredient is measured.':'Added. Measure a little more to reach the recipe amount.');}delete w.selected;}
+  if(a.type==='empty'){w.scooped=false;w[id]=0;delete w.selected;yes('Measure emptied. Try again with no penalty.');}
  }
  if((id==='combine'||id==='stir')&&a.type==='stir'){w[id]=(w[id]||0)+1;yes('Gentle stir '+w[id]+'.');}
  if(id==='supervision'){

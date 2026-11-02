@@ -42,7 +42,7 @@ window.schoolDirectoryDialog = function () {
   dialog.querySelector('.directory-close').onclick=close;
   dialog.addEventListener('close',()=>{try{window.speechSynthesis?.cancel();}catch{}dialog.remove();trigger?.focus();},{once:true});
   dialog.showModal();
-  import('../school-directory/directory.mjs?v=20261028hall-directory').then(m=>{
+  import('../school-directory/directory.mjs?v=20261101-prism').then(m=>{
     if(dialog.isConnected)m.renderSchool(dialog.querySelector('.school-directory-dialog-content'),false,{compact:true,onBack:close});
   }).catch(()=>{
     dialog.querySelector('.school-directory-dialog-content').innerHTML='<p>The directory could not load. You can still use the school doors.</p><a href="school-directory.html">Open the directory page</a>';

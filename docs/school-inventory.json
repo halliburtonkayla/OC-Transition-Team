@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-01",
+  "date": "2026-11-02",
   "scope": "All repository HTML pages and their literal local href/src and navigation URLs. External availability and dynamic URLs are not inferred.",
   "pages": [
     {
@@ -2220,6 +2220,10 @@
           "exists": true
         },
         {
+          "target": "prism-pour.html",
+          "exists": true
+        },
+        {
           "target": "letter-lane.html",
           "exists": true
         },
@@ -2283,7 +2287,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 3389
+      "bytes": 3603
     },
     {
       "path": "gaming_careers_presentation.html",
@@ -2699,7 +2703,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 5268
+      "bytes": 5377
     },
     {
       "path": "house-01.html",
@@ -6719,6 +6723,41 @@
       "bytes": 4917
     },
     {
+      "path": "prism-pour.html",
+      "title": "Prism Pour · Transition Town School",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/prism-pour/icon.svg",
+          "exists": true
+        },
+        {
+          "target": "assets/prism-pour/style.css",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "school-directory.html",
+          "exists": true
+        },
+        {
+          "target": "assets/prism-pour/app.mjs",
+          "exists": true
+        },
+        {
+          "target": "assets/classroom-monitor/student.js",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 14486
+    },
+    {
       "path": "read-work-schedule.html",
       "title": "Read a Work Schedule | Transition Team",
       "room": "watch",
@@ -6955,7 +6994,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 628
+      "bytes": 627
     },
     {
       "path": "self-advocacy.html",
@@ -7736,7 +7775,7 @@
       ],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 217907
+      "bytes": 218238
     },
     {
       "path": "transportation-to-work.html",

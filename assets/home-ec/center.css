@@ -13,3 +13,20 @@
 .primary{background:linear-gradient(#f06dad,#c72f75);box-shadow:inset 0 1px 2px #ffcce6,0 5px 13px #a51a5538;border:1px solid #c74e81}.primary.blue{background:linear-gradient(#4ba6ff,#2261d0);border-color:#2b6bc1;box-shadow:inset 0 1px 2px #c9e8ff,0 5px 13px #164b9438}
 .bottom-ribbon{background:linear-gradient(110deg,#272e2aee,#3f3931eb);border-color:#fff4d27a}
 @media(min-width:761px){.topbar{background:linear-gradient(#222925df,#222925b0 65%,transparent);color:#fff9ef}.brand small{color:#f0e3cb}.brand h1{font-family:Arial,Helvetica,sans-serif;font-weight:800;text-shadow:0 2px 3px #0007}.brand h1 span{color:#ffc3df}.scene-caption{box-shadow:0 5px 18px #1c191e28}#station-nav button{font-size:13px}}
+
+/* Picture-supported, single-action beginner view and readable report printing. */
+.object-action[hidden]{display:none!important}
+body[data-support=beginning] .object-action{min-height:78px;font-size:16px;line-height:1.4}
+body[data-support=beginning] .object-action .object-icon{width:52px;height:52px}
+body[data-support=beginning] .object-action svg{width:38px;height:38px}
+body[data-support=beginning] .prompt{font-size:18px;line-height:1.45}
+.practice-report h1{font-size:21px;line-height:1.2;margin:20px 0 8px}
+.practice-report h2{font:700 18px/1.4 Arial;letter-spacing:0;margin:20px 0 8px}
+.practice-report table{border-collapse:collapse;width:100%;font-size:11px;line-height:1.45;table-layout:fixed;overflow-wrap:anywhere}
+.practice-report th,.practice-report td{border:1px solid #cad5d5;padding:9px;text-align:left;vertical-align:top}
+.practice-report th{background:#edf2f2;font-weight:bold}.practice-report table:first-of-type th{width:43%}
+.practice-report .report-note{font-size:11px;padding:10px;border:1px solid #cad5d5;border-radius:8px}
+.answer-feedback{border:1px solid #8ba895;background:#edf6ed;padding:12px;border-radius:10px}
+@media print{body{color:black}#render-status,.skip,.lesson-panel>button,.lesson-panel>details,.lesson-panel>.primary,.lesson-panel>.micro,.lesson-panel>.panel-top,.lesson-panel>h2{display:none!important}.practice-report{font-family:Arial,sans-serif;color:#000}.practice-report h1{font-size:22px}.practice-report h2{font-size:16px;break-after:avoid}.practice-report table{font-size:11px}.practice-report tr{break-inside:avoid}.practice-report thead{display:table-header-group}.practice-report th,.practice-report td{border-color:#777}.practice-report p,.practice-report li{font-size:11px;line-height:1.5}#center[data-paused=true]:after{display:none!important}@page{size:letter;margin:15mm}}
+
+.ingredient-checks .object-action{margin:7px 0}.ingredient-checks img{width:64px;height:64px;object-fit:contain;border-radius:8px;background:white}.ingredient-checks small{display:block;margin-top:5px;font-size:12px;font-weight:normal}

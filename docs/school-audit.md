@@ -1,8 +1,8 @@
 # Transition Town School activity and navigation audit
 
-Audited 2026-11-01. Existing files, Town records, business pages and game URLs are preserved.
+Audited 2026-11-02. Existing files, Town records, business pages and game URLs are preserved.
 
-207 existing HTML pages inspected. 0 literal local references still point to absent repository files. The remaining references are listed below. External URLs, dynamic destinations, playback and game behavior require separate checks.
+208 existing HTML pages inspected. 0 literal local references still point to absent repository files. The remaining references are listed below. External URLs, dynamic destinations, playback and game behavior require separate checks.
 
 ## Navigation decisions
 
@@ -105,7 +105,7 @@ Audited 2026-11-01. Existing files, Town records, business pages and game URLs a
 | firefighter_emt_presentation.html | Firefighter &amp; EMT Careers \| Transition Team | studio | 2 | 0 |
 | first-day-work-checklist.html | First Day at Work Checklist \| Transition Team | watch | 3 | 0 |
 | first-paycheck-budget.html | First Paycheck Budget \| Transition Team | watch | 3 | 0 |
-| game-zone.html | Digital Game Zone | wow | 18 | 0 |
+| game-zone.html | Digital Game Zone | wow | 19 | 0 |
 | gaming_careers_presentation.html | Gaming Careers \| Transition Team | studio | 2 | 0 |
 | grocery-budget-meal-plan.html | Grocery Budget &amp; Meal Plan \| Transition Team | watch | 3 | 0 |
 | grocery-employee.html | Transition Town Grocery Employee Center | jobs | 7 | 0 |
@@ -187,6 +187,7 @@ Audited 2026-11-01. Existing files, Town records, business pages and game URLs a
 | postsecondary.html | Postsecondary Education \| OC Transition Team | studio | 5 | 0 |
 | pre-ets-session-reports.html | Transition Town \| Pre-ETS Session Reports | teacher | 4 | 0 |
 | presentations.html | Career Presentations | studio | 16 | 0 |
+| prism-pour.html | Prism Pour · Transition Town School | wow | 6 | 0 |
 | read-work-schedule.html | Read a Work Schedule \| Transition Team | watch | 3 | 0 |
 | real-life-simulator.html | Real Life Simulator \| Transition Team | jobs | 4 | 0 |
 | relax-color.html | Relax & Tap Color \| Transition Team | kindness | 2 | 0 |
