@@ -44,7 +44,7 @@ function cookingControls(){const w=state.work,id=step().id;switch(id){
 function kitchen(){if(state.phase==='reflection')return reflection();if(state.phase==='complete')return challenge();if(!state.shopping.receipt&&!(state.phase==='cook'&&state.step<3))return header('KITCHEN & COOKING LAB','Your station is ready.')+`<p class="lead">Start with safety, wash your hands, read the recipe and collect your tools. Then check the ingredients and shop for what is missing.</p>${state.phase==='plan'?primary('Wash hands & begin','start-prep','',true):primary('Check ingredients & visit the store','station','data-value="shopping"',true)}${primary('Open my recipe','station','data-value="recipes"')}<p class="micro">Measuring begins after checkout at the existing grocery store. Wash hands again after real shopping and before handling food.</p>`;
  const t=step();return header('VIRTUAL PRACTICE · STEP '+(state.step+1)+' OF '+COOK_STEPS.length,esc(t.title))+`<div class="step-progress" aria-label="${state.completedSteps.length} of ${COOK_STEPS.length} cooking steps completed">${COOK_STEPS.map((x,i)=>`<span class="${state.completedSteps.includes(x.id)?'done':i===state.step?'active':''}"></span>`).join('')}</div><p class="prompt">${esc(t.prompt)}</p>${cookingControls()}${primary(state.step===COOK_STEPS.length-1?'Finish cleanup & reflect':'Continue to the next step','next-cook',`id="next-cook" ${!cookReady(state)||state.paused?'disabled':''}`,true)}<button class="soft" data-action="hint">Give me a hint</button><p class="micro">Support: ${esc(state.support)} · mistakes and repetition have no penalty.</p>`;}
 function laundryControls(){const w=state.laundry.work,id=LAUNDRY_STEPS[state.laundry.step].id;switch(id){
- case 'sort':return ['shirt','jeans','towel'].map((item,i)=>`<h3>${['White shirt','Blue jeans','Pink towel'][i]}</h3><div class="two-col">${['lights','darks','colors'].map(v=>obj(v[0].toUpperCase()+v.slice(1),'laundry',`sort:${item}:${v}`,'shirt',w.sorted?.includes(item)&&['lights','darks','colors'][i]===v)).join('')}</div>`).join('');
+ case 'sort':return ['shirt','jeans','towel'].map((item,i)=>`<div data-garment="${item}"><h3>${['White shirt','Blue jeans','Pink towel'][i]}</h3><div class="two-col">${['lights','darks','colors'].map(v=>obj(v[0].toUpperCase()+v.slice(1),'laundry',`sort:${item}:${v}`,'shirt',w.sorted?.includes(item)&&['lights','darks','colors'][i]===v)).join('')}</div></div>`).join('');
  case 'labels':return `<p class="safety-note">These three practice care labels say machine wash cold, normal cycle, tumble dry low. Always read the label on real clothing.</p><div class="actions">${['shirt','jeans','towel'].map(v=>obj('Read '+v+' care label: COLD / LOW','laundry','label:'+v,'shirt',w.labels?.includes(v))).join('')}</div>`;
  case 'load':return `<p class="timer-value">${w.loaded||0}<small> of 3 items loaded</small></p>${obj('Move one item into washer','laundry','load','laundry')}`;
  case 'settings':return `<h3>Water temperature</h3><div class="actions">${['cold','warm','hot'].map(v=>obj(v.toUpperCase(),'laundry','temp:'+v,'laundry',false,`aria-pressed="${w.temp===v}"`)).join('')}</div><h3>Wash cycle</h3><div class="actions">${['normal','delicate','heavy'].map(v=>obj(v.toUpperCase(),'laundry','cycle:'+v,'laundry',false,`aria-pressed="${w.cycle===v}"`)).join('')}</div>`;
@@ -87,6 +87,18 @@ function applyBeginningSupport(){
   if(cookReady(state))for(const b of actions)b.hidden=true;
   const visible=actions.find(b=>!b.hidden);if(visible){const prompt=$('lesson').querySelector('.prompt');if(prompt)prompt.textContent=visible.textContent.trim();}
  }
+ if(state.station==='laundry'&&!state.laundry.completed){
+  const work=state.laundry.work,id=LAUNDRY_STEPS[state.laundry.step].id,actions=[...$('lesson').querySelectorAll('[data-action="laundry"]')];let next=[];
+  if(id==='sort'){const item=['shirt','jeans','towel'].find(x=>!work.sorted?.includes(x));for(const group of $('lesson').querySelectorAll('[data-garment]'))group.hidden=group.dataset.garment!==item;}
+  if(id==='labels')next=['label:'+(['shirt','jeans','towel'].find(x=>!work.labels?.includes(x))||'')];
+  if(id==='settings')next=work.temp!=='cold'?['temp:cold','temp:warm','temp:hot']:['cycle:normal','cycle:delicate','cycle:heavy'];
+  if(id==='detergent')next=!work.cap?['cap']:work.cap===1?['detergent','empty']:['empty'];
+  if(id==='dryer')next=!work.moved?['move']:!work.lint?['lint']:['heat:low','heat:high'];
+  if(id==='away')next=['away:'+(['shirt','jeans','towel'].find(x=>!work.away?.includes(x))||'')];
+  if(next.length)for(const b of actions)b.hidden=!next.includes(b.dataset.value);
+  if(laundryReady(state))for(const b of actions)b.hidden=true;
+ }
+
 }
 
 function render(){const active=document.activeElement?.closest('[data-action]'),a=active?.dataset.action,v=active?.dataset.value,scroll=$('lesson').scrollTop;

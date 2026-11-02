@@ -33,9 +33,11 @@ test('leveled work questions record retries, hints and actual difficulty without
 });
 
 test('printable individual evidence has name, date, level, status, time, responses and assistance, with escaped text',()=>{
- const s=initialState();s.practice=newEvidence('r','2026-11-02T16:00:00Z');s.practice.activeMs=61500;s.help=1;s.practice.assistance.push({kind:'Hint',context:'Wash hands',support:'beginning',at:'2026-11-02T16:01:00Z'});answerQuestion(s,'help','ask');
+ const s=initialState();s.practice=newEvidence('r','2026-11-02T16:00:00Z');s.practice.activeMs=61500;s.help=1;s.completedSteps=['hands'];s.practice.assistance.push({kind:'Hint',context:'Wash hands',support:'beginning',at:'2026-11-02T16:01:00Z'});answerQuestion(s,'help','ask');
  const report=practiceReport(s,'<script>student</script>','2026-11-02T16:02:00Z'),html=reportHTML(report);
  for(const phrase of ['Student','Report created','Difficulty','Completion status','1 min 1 sec','Questions answered','Ask my teacher for help','Hint','Workplace readiness','Teacher verification'])assert.ok(html.includes(phrase),phrase);
  assert.equal(html.includes('<script>student</script>'),false);assert.ok(html.includes('&lt;script&gt;student'));
  assert.ok(html.includes('not verified attendance'));assert.ok(html.includes('Central'));
 });
+
+test('opening a fresh lesson does not invent skills, assistance or completed activities',()=>{const s=initialState();ensureEvidence(s,'fresh');const r=practiceReport(s,'Student');assert.deepEqual(r.skills,[]);assert.equal(r.activeMs,0);assert.equal(r.helpRequests,0);assert.equal(r.cookingSteps.length,0);});

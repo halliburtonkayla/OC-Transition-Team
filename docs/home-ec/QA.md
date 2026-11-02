@@ -1,69 +1,42 @@
-# Home Economics review-build verification
+# Home Economics implementation and release review
 
-Test date: November 1, 2026, America/Chicago. Development branch: `feature/home-economics-3d-center`. Main inspected at `7775dce`; draft PR #11 at `3bce6b2`. Candy Counter reuse is from draft PR #8 at `3ab3abb`.
+Updated November 2, 2026 (America/Chicago). Review branch: `feature/home-economics-3d-center`, pull request #13. The original flat pilot in PR #11 remains separate and unmerged. Main was reconciled at `7c7b0a0`, including the released Prism Pour activity.
 
-## Verified
+## Implemented and checked locally
 
 | Area | Evidence |
 | --- | --- |
-| Original school | Browser entry through the original Town and hallway; new additive door visible. Original map, hallway image bytes and other doors retained. Only asset-version references change in the Town page. |
-| Browser recipe workflow | Guest entry, individual ingredients/tools, recipe book, instructional trip, cereal/marshmallow/butter selection in the existing store, item-by-item checkout, $11.27 payment from a $20 lesson budget, receipt and return to the cooking checkpoint. |
-| Browser cooking | Safety reminders, 20-second handwashing, cabinet/tool controls, a rejected over-measurement, correct ¾ tsp butter, ⅓ cup marshmallows, combine, adult-help request/mitts, two short heat-and-stir sequences, ½ cup cereal, eight stirs, transfer, cooling, four washed tools, five wiped sections, supply storage, reflection and real-life challenge. |
-| Resume / modes | Refresh retained 14/14 cooking steps, completed recipe, receipt and support. Mode controls share that checkpoint. A separate isolated WebGL browser test verified actual avatar displacement from keyboard input; the same learning checkpoint is retained across modes. |
-| Grocery isolation | DOM tests execute the actual original register plus the bridge. Banks, businesses, ordinary cart, grocery budget/mode and original purchasing path are checked separately. Duplicate payment, changed identity, incomplete list and malformed/mispriced/over-budget products are rejected. |
-| Music | Browser showed the blocked-autoplay entry button on first store entry and allowed the existing radio after a user entrance interaction. DOM tests verify fallback, one audio element and no replacement player. Sound quality and all mobile autoplay policies remain unverified. |
-| Teacher records | DOM test sends one confirmed, individually supported real-world checklist through the existing protected observation action. Existing service tests cover role checks and rejection of student-forged observations. No live teacher record was written in QA. |
-| Laundry / household | Automated full routines cover all ten laundry stages and all seven household sequences, including incorrect settings/amounts and ordered completion. Browser practice also completed sorting, labels, loading, detergent retry, washing, lint/low heat, drying, folding and storage, followed by a separate bed-making routine. Pause survived a refresh and resumed without losing progress. |
-| PDFs | All 8 files / 11 pages rendered with Poppler and visually inspected; the independent directions page was re-rendered after expanding to twelve writing lines. No completed student answers embedded. |
-| 3D construction | Real Three.js geometry tests construct the classroom and grocery shelf, check finite coordinates, bounded mesh/triangle counts, required pickable objects, camera presets, separate microwave door and bowl raycasting. Separate browser evidence below records actual WebGL rendering, keyboard movement, the microwave model and responsive scenes. |
-| Regression | Existing school learning, Candy Counter, five-business bank/workday and classroom evidence/access suites run without production writes. |
+| School integration | The original school hallway has an additive Home Economics & Life Skills entrance and a working return route. Original art and doors remain. The newer Prism Pour and Letter Lane entries are retained. |
+| Real 3D classroom | Modeled cabinets, two islands, refrigerator, hinged pantry, stove/oven, microwave, sink, bowls, measuring tools, product packages, laundry appliances and clothing. Bundled photographic material maps, HDR lighting, actual floor reflections and scanned plants render on real meshes. Geometry/raycast/camera tests pass. |
+| Main lesson order | Safety and handwashing → recipe review → tool collection → ingredient checks → existing store → return at measuring. Missing supplies block measuring. The grocery-first option also retains its cooking checkpoint. |
+| Recipe | Exact individual serving: ½ cup cereal, ⅓ cup mini marshmallows and ¾ teaspoon butter. Real elapsed 20-second handwashing, exact measures, retries, supervision/mitts, no metal spoon inside microwave, heat/stir sequence, transfer, cooling, dishes and counter cleanup. Short appliance waits are game practice, not real appliance timing instructions. |
+| Existing grocery | Actual shared catalog/register/scanner/receipt handlers run in DOM tests. Missing ingredients, altered prices/quantities, over-budget carts, identity changes and duplicate payment are checked. The ordinary grocery payment/inventory path is tested separately. |
+| Financial preservation | Kitchen purchases use an instructional budget. Existing bank, business, ordinary cart and grocery settings remain unchanged during the lesson. No new ledger or backend is introduced. |
+| Laundry | All ten stages pass rule tests: sorting, labels, loading, settings, detergent line, wash, transfer/lint/low heat, dry, fold and put away. Beginning mode presents one item or sub-action at a time; other levels retain the larger guided activity. |
+| Pre-ETS questions | Eight picture/audio questions plus three independent-level budgeting/customer/time questions. One question at a time, actual choices, dates, levels, hints, retries and safe feedback are saved. Wrong answers do not prevent retry. |
+| Reports | Individual name, date, lesson/status, difficulty, measured active time, completed steps, actual skills practiced, response history and requested assistance. Completion snapshots are append-only in the existing learning history. Opening the lesson invents no activity, skills or elapsed time. |
+| Time measurement | Focused, visible, unpaused practice only, with a 60-second input idle limit. Kitchen and lesson shopping are included. Reload never reconstructs elapsed time. Pure clock tests cover idle/background/paused gaps; reports distinguish this from attendance and service minutes. |
+| Teacher tools | Existing protected dashboard supports assignment links and individually confirmed real-world observations through the existing endpoint. DOM/service fixtures verify authorization and evidence separation; no real learner observation was written. |
+| Profiles and resume | Uses the existing profile learning-store identity. Guest practice stays in session storage. Profiles remain isolated; writes after an identity change fail. Current checkpoints and earlier reports remain separate. |
+| Accessibility | Large equivalent station/object controls, single-sub-action beginner view, read-aloud/hints, keyboard navigation, touch walking pad, reduced motion, projector text, pause/resume and a disclosed WebGL-unavailable fallback. |
 
-Automated result: **58 tests passed** across Home Economics, its actual DOM integrations, Three geometry, Candy Counter and school learning. Existing business/bank/workday and classroom monitor suites also passed **241 assertions** (59 + 97 + 85). Static audit: **207 HTML pages, zero missing local references**.
+Local verification: **81 tests passed** across Home Economics, Candy Counter, existing school activities and Prism Pour, plus **241 existing bank/business/workday/classroom assertions** (59 + 97 + 85). The static audit checks **208 HTML pages with zero missing local references**. The release audit checks 397 source files / 2,339 references with no script syntax failures or missing references.
 
-## Rendered browser verification
+## Rendered browser evidence
 
-`tests/home-ec-browser.cjs` runs against this checkout in isolated GitHub Actions Chromium with production Supabase endpoints blocked. It enters through the original Town and school hallway as Guest, renders real Three meshes in WebGL 2, checks actual keyboard movement, visits laundry, shops using the existing catalog and scanner, confirms unchanged bank/business bytes, returns to the saved cooking step, and reaches measuring through the real safety/20-second handwashing/tool controls. It also checks 390, 768 and 1366 pixel layouts, projector text, the absence of a metal spoon inside the microwave and uncaught application errors. Ten genuine screenshots and renderer metadata are saved as the `home-economics-browser-evidence` workflow artifact.
+The browser workflow runs this branch in isolated GitHub Actions Chromium with production service endpoints blocked and disposable Guest data. It verifies actual WebGL rendering, avatar displacement, photographic materials/reflections/plants, original-school entry, the existing store, saved return, measuring and microwave safety, 390/768/1366px layouts, projector text, and uncaught errors. The extended journey exercises the full preparation/recipe/cleanup/reflection path, question retries/hints, measured practice time, PDF print layout and reload.
 
-The rendered-scene verification passed in [workflow run 41347979318](https://github.com/halliburtonkayla/OC-Transition-Team/actions/runs/41347979318), source `13406dc`. The [renderer report](graphics-report.json) records the exact environment.
+The November 2 art-review run [41475368237](https://github.com/halliburtonkayla/OC-Transition-Team/actions/runs/41475368237) successfully rendered the revised room, walking, laundry and counter. That run's separate journey failed its initial five-second return-heading assertion; it is not presented as a passed full journey. The return works in the manual accessible preview. The new browser journey waits explicitly for the resumed measuring step with a bounded WebGL initialization deadline and captures failure state/screenshots if a problem remains. Current final-run results are recorded in the PR.
 
-The renderer is **ANGLE SwiftShader, a software GPU**. The test does not certify physical graphics hardware, fluid frame rates or iPhone Safari. Screenshot capture can be slow on that software renderer; browser actions have bounded timeouts and retain incremental evidence.
+The manually operated cloud preview has WebGL disabled. Its school entrance, existing-store checkout/receipt/return, supported controls, work-skills responses, hints and populated report were inspected directly. This fallback run is not claimed as proof of rendered 3D.
 
-## Release limits
+All automated rendered images use a software GPU (ANGLE SwiftShader). They demonstrate real rendering and controls; they do not certify physical device frame rate or Safari behavior. The actual scene captures are linked from the PR and the workflow artifacts.
 
-- **Owner visual acceptance remains pending.** This is a procedural mesh-based 3D classroom, not the approved illustration used as a backdrop. The reference guided the kitchen islands, cabinetry, appliances, signage, window, laundry area and pink/blue interface. Photorealistic parity with the reference is not claimed.
-- Smooth camera feel, collision edge cases, object highlighting, stirring gestures, reflections, loading time, context-loss recovery and long-session GPU stability need a hands-on review with WebGL 2 enabled. The automated run uses reduced motion for stable captures.
-- Real iPhones, tablets, school laptops and projectors have not been physically certified. Responsive browser layouts, capped resolution, large equivalent controls and projector text passed automated checks; real touch and hardware performance still need a device trial.
-- Private production teacher sign-in and observation submission need a teacher-approved classroom trial. QA used isolated DOM/service fixtures and Guest practice, never real learner records.
-- Physical printers, native PDF print dialogs, actual handwriting, food preparation, real appliance safety and observed individual performance require classroom validation.
-- Additional recipes are labeled future content. Only the individual Rice Krispie treat has a complete cooking sequence in this build.
-- Local checkpoints do not sync between student devices. Existing approved-device events use the existing monitor; extended connected logging uses its group workflow. No replacement database or service is introduced.
-- The manual preview browser reports disabled WebGL. Its later receipt-to-classroom click was blocked by the browser's URL policy; the isolated browser suite independently verified that return route successfully.
+## Review before publishing
 
-## Review gates
+1. Compare the actual 3D room, appliances, counter and laundry views with the approved glossy artwork. The room uses the reference's composition, warm materials, reflective floor, kitchen islands, cabinetry, appliances and pink/blue controls; owner acceptance of the final visual design is pending.
+2. Trial the complete loop on an actual school laptop, iPad and phone. Check touch feel, keyboard/screen-reader use, audio, long-session graphics stability and native printing. Automated viewport checks are not physical-device certification.
+3. On an approved classroom device, verify teacher sign-in, connected practice records and one individually confirmed observation. Existing authorization is preserved; production learner writes were deliberately excluded from QA.
+4. Approve merge and publishing after review. No main update, deployment, auto-merge, bank change, database migration or backend release has been performed.
 
-1. Review the PR and run the branch locally in a WebGL-enabled browser. Compare the actual classroom, counter close-ups, grocery shelves and laundry room against the approved glossy reference.
-2. Test the full loop in both navigation modes and at phone/tablet/laptop/projector sizes. Check a second student profile and a paused multi-day lesson.
-3. On an approved classroom device, verify the teacher checklist and Pre-ETS evidence separation. Print each learner level once.
-4. Approve merging and deployment separately. This branch has neither been merged nor deployed.
-
-## Browser evidence
-
-These are screenshots of the implementation, not image-generation mockups. Workflow artifacts retain the exact tested source revision and renderer report.
-
-![Actual 3D classroom](classroom-3d.jpg)
-
-![Actual measuring counter and shared controls](measuring-counter-3d.jpg)
-
-![Actual laundry station](laundry-3d.jpg)
-
-![Existing grocery store with supplemental recipe shelf and cart](grocery-shelf-cart-3d.jpg)
-
-![Phone layout](phone-layout.jpg)
-
-![Microwave safety practice](microwave-safety-3d.jpg)
-
-The earlier manual workflow evidence documents a full recipe completion and the instructional receipt:
-
-![Completed accessible practice](workflow-review-1793563755086.jpg)
-
-![Instructional grocery receipt](grocery-receipt-review-1793563819233.jpg)
+Only the individual Rice Krispie recipe is fully playable. Future recipe names are explicitly labeled. Local lesson checkpoints remain on the same device/origin, consistent with existing activities; approved connected classroom reporting continues through the existing monitor/group-session workflow. These implementation limits are disclosed rather than replaced with invented progress or an additional student database.
