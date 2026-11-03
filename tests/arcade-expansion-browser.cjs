@@ -537,14 +537,26 @@ function findPaths(grid, words) {
   });
   await touchSession.detach();
   assert.equal(await phone.locator("[data-ui=count]").textContent(), "2");
+  const beforePan = await phone.locator(".letter-scroll").evaluate((el) => ({
+    left: el.scrollLeft,
+    width: el.clientWidth,
+    range: el.scrollWidth - el.clientWidth,
+  }));
+  assert.ok(beforePan.range > 0, "The phone grid must have room to pan");
   await phone.locator("[data-grid-pan=left]").tap();
+  // Touch scrolling is committed by Chromium's compositor. Observe its result
+  // before testing the reverse control; two immediate offset reads can race it.
+  await phone.waitForFunction(
+    (target) => document.querySelector(".letter-scroll").scrollLeft <= target + 1,
+    Math.max(0, beforePan.left - beforePan.width * 0.65),
+  );
   const scrollLeft = await phone
     .locator(".letter-scroll")
     .evaluate((el) => el.scrollLeft);
   await phone.locator("[data-grid-pan=right]").tap();
-  assert.ok(
-    (await phone.locator(".letter-scroll").evaluate((el) => el.scrollLeft)) >
-      scrollLeft,
+  await phone.waitForFunction(
+    (left) => document.querySelector(".letter-scroll").scrollLeft > left + 1,
+    scrollLeft,
   );
   assert.equal(await phone.locator("[data-ui=count]").textContent(), "2");
 

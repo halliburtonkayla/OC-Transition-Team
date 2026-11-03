@@ -21,7 +21,8 @@ Learning Arcade, Classroom Release, Prism Pour, and Letter Lane.
   checked. No clipping, broken grids or blank cover page remains.
 - The screenshots and print examples in [evidence/](evidence/) are unmodified
   artifacts from this source revision. They contain only guest / fictional QA
-  learners. The code after this revision changes documentation/evidence only.
+  learners. The game source after this revision is unchanged; subsequent updates
+  cover test synchronization, documentation and evidence only.
 
 ## Automated coverage
 
