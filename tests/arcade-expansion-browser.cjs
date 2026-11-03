@@ -110,6 +110,25 @@ function findPaths(grid, words) {
     }
   await page.locator("[data-ui=difficulty]").selectOption("1");
   await page.locator("[data-book=careers]").click();
+  const standardFont = await page
+    .locator(".letter-glyph")
+    .first()
+    .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  await page.locator(".premium-settings summary").click();
+  await page.locator("[data-ui=text]").selectOption("1.35");
+  assert.ok(
+    (await page
+      .locator(".letter-glyph")
+      .first()
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize))) >
+      standardFont,
+  );
+  await page.locator("[data-ui=text]").selectOption("1");
+  await page.locator(".premium-settings summary").click();
+  await page.locator("[data-ui=fullscreen]").click();
+  await page.waitForFunction(() => !!document.fullscreenElement);
+  await page.locator("[data-ui=fullscreen]").click();
+  await page.waitForFunction(() => !document.fullscreenElement);
   const grid = await page.locator("[data-cell]").allTextContents(),
     words = await page
       .locator("[data-read-word]")
@@ -321,6 +340,10 @@ function findPaths(grid, words) {
   assert.ok(
     !(await canvas.getAttribute("data-garments")).split(",").includes("tee"),
   );
+  assert.equal(
+    await page.evaluate(() => document.activeElement.dataset.wear),
+    "polo",
+  );
   const changedImage = await canvas.screenshot();
   assert.ok(
     !initialImage.equals(changedImage),
@@ -479,6 +502,41 @@ function findPaths(grid, words) {
   await phone.locator('[data-cell="' + mp.path[0] + '"]').tap();
   await phone.locator('[data-cell="' + mp.path.at(-1) + '"]').tap();
   assert.equal(await phone.locator("[data-ui=count]").textContent(), "1");
+  const touchPath = findPaths(mg, mw).find(
+    (f) => f.dr === 0 && f.word !== mp.word && f.word.length <= 7,
+  );
+  assert.ok(touchPath);
+  const touchStart = phone.locator('[data-cell="' + touchPath.path[0] + '"]'),
+    touchEnd = phone.locator('[data-cell="' + touchPath.path.at(-1) + '"]');
+  await touchStart.scrollIntoViewIfNeeded();
+  await touchEnd.scrollIntoViewIfNeeded();
+  const ta = await touchStart.boundingBox(),
+    tb = await touchEnd.boundingBox(),
+    touchSession = await mobile.newCDPSession(phone);
+  await touchSession.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: [{ x: ta.x + ta.width / 2, y: ta.y + ta.height / 2, id: 1 }],
+  });
+  for (let i = 1; i <= touchPath.path.length; i++) {
+    const f = i / touchPath.path.length;
+    await touchSession.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [
+        {
+          x: ta.x + ta.width / 2 + (tb.x - ta.x) * f,
+          y: ta.y + ta.height / 2 + (tb.y - ta.y) * f,
+          id: 1,
+        },
+      ],
+    });
+  }
+  await touchSession.send("Input.dispatchTouchEvent", {
+    type: "touchEnd",
+    touchPoints: [],
+  });
+  await touchSession.detach();
+  assert.equal(await phone.locator("[data-ui=count]").textContent(), "2");
+
   assert.ok(
     await phone.evaluate(
       () =>

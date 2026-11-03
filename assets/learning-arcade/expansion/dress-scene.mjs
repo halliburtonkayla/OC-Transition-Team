@@ -181,7 +181,7 @@ export function createCharacter(
   const head = new T.Group();
   rig.add(head);
   head.position.set(0, 1.91, 0);
-  head.scale.x = [1, 1.08, 0.94][config.face];
+  head.scale.x = [1, 1.08, 0.94][config.face] / [0.9, 1, 1.17][config.body];
   ball(head, 0, 0, 0, 0.158, 0.204, 0.143, skin);
   ball(head, -0.159, -0.006, 0, 0.024, 0.043, 0.025, skin);
   ball(head, 0.159, -0.006, 0, 0.024, 0.043, 0.025, skin);

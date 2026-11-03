@@ -450,6 +450,9 @@ export async function mount(root, host) {
           ui.preferences.reduced ? 120 : 330,
         );
         closetPanel();
+        panel()
+          .querySelector('[data-wear="' + b.dataset.wear + '"]')
+          ?.focus({ preventScroll: true });
         $(root, "wardrobe-feedback").textContent =
           "Now wearing " +
           garmentById(b.dataset.wear).label +

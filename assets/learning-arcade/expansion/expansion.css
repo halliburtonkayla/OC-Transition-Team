@@ -1776,6 +1776,41 @@
   -webkit-text-stroke: 0.15px
     color-mix(in srgb, var(--letter-color) 80%, #3a294c);
 }
+
+/* Scale the actual instructional content, including explicitly sized controls. */
+.premium-shell .word-directions {
+  font-size: calc(11px * var(--game-text));
+}
+.premium-shell .bank-word {
+  font-size: calc(11px * var(--game-text));
+}
+.premium-shell .letter-glyph {
+  font-size: calc(1em * var(--game-text));
+}
+.premium-shell .letter-grid {
+  min-width: calc(var(--grid-size) * 27px * var(--game-text));
+}
+.premium-shell .challenge-card > p,
+.premium-shell .panel-intro > p,
+.premium-shell .result-heading > p {
+  font-size: calc(12px * var(--game-text));
+}
+.premium-shell .outfit-checks p,
+.premium-shell .clothing-card b,
+.premium-shell .dress-reflection {
+  font-size: calc(11px * var(--game-text));
+}
+.premium-shell .word-feedback,
+.premium-shell .vocab-options button {
+  font-size: calc(12px * var(--game-text));
+}
+.premium-shell .wardrobe-feedback,
+.premium-shell .avatar-selects label {
+  font-size: calc(10px * var(--game-text));
+}
+.premium-shell .clothing-card span {
+  font-size: calc(9px * var(--game-text));
+}
 @media print {
   @page {
     size: letter;
