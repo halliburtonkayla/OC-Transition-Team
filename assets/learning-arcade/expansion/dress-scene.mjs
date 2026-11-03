@@ -1168,6 +1168,7 @@ export function createDressScene(
     onInteract = () => {},
   } = {},
 ) {
+  let needsRender = true;
   let renderer,
     software = false,
     disposed = false,
@@ -1253,6 +1254,7 @@ export function createDressScene(
   character = createCharacter(config, outfit);
   scene.add(character.root);
   function reflect() {
+    needsRender = true;
     if (reflection) {
       reflection.removeFromParent();
     }
@@ -1283,6 +1285,7 @@ export function createDressScene(
   const raycaster = new T.Raycaster();
   let pointer = null;
   function resize() {
+    needsRender = true;
     const r = canvas.getBoundingClientRect();
     if (!r.width || !r.height) return;
     renderer.setSize(r.width, r.height, false);
@@ -1301,6 +1304,7 @@ export function createDressScene(
     const dx = e.clientX - pointer.x;
     if (Math.abs(dx) > 1) pointer.moved = true;
     rotation += dx * 0.012;
+    needsRender = true;
     pointer.x = e.clientX;
   };
   const up = (e) => {
@@ -1334,6 +1338,7 @@ export function createDressScene(
     if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
       e.preventDefault();
       rotation += (e.key === "ArrowLeft" ? -1 : 1) * 0.18;
+      needsRender = true;
     }
   };
   canvas.addEventListener("keydown", key);
@@ -1348,6 +1353,7 @@ export function createDressScene(
       return;
     const delta = Math.min(0.1, (now - last) / 1000);
     last = now;
+    if (!motion && !walking && !transition && !needsRender) return;
     const t = motion ? now / 1000 : 0;
     if (transition) {
       const f = motion
@@ -1376,6 +1382,7 @@ export function createDressScene(
         (d) => (d.position.y = 3 - ((t * 1.4 + d.userData.phase) % 3)),
       );
     renderer.render(scene, camera);
+    needsRender = false;
     frames++;
     totalMs += performance.now() - lastTime;
     lastTime = performance.now();
@@ -1409,6 +1416,7 @@ export function createDressScene(
     },
     rotate(n) {
       rotation += n;
+      needsRender = true;
     },
     view(mode) {
       viewMode = mode;
@@ -1516,15 +1524,18 @@ export function createDressScene(
     },
     mood(v) {
       mood = v;
+      needsRender = true;
     },
     talk(v) {
       npcTalking = v;
     },
     pause(v) {
       active = !v;
+      needsRender = true;
     },
     motion(v) {
       motion = v;
+      needsRender = true;
     },
     quality(v) {
       low = v;

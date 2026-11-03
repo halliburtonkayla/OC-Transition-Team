@@ -442,6 +442,8 @@ function findPaths(grid, words) {
   console.log(
     "PASS actual WebGL avatar, fitting, immediate red-shirt replacement, rotation, mirror, travel, safety retry, destination, reflections, private saving, reload, lower graphics and shared-device isolation",
   );
+  // Release desktop graphics before the isolated phone acquires a context.
+  await context.close();
   // Real phone touch endpoints and responsive game controls.
   const mobile = await browser.newContext({
     viewport: { width: 390, height: 844 },
@@ -453,7 +455,12 @@ function findPaths(grid, words) {
   await mobile.route("**/*.supabase.co/**", (r) => r.abort());
   const phone = await mobile.newPage();
   phone.on("pageerror", (e) => errors.push(e.message));
+  await phone.bringToFront();
   await phone.goto(base + "learning-arcade.html");
+  await phone.waitForFunction(() => document.visibilityState === "visible");
+  await phone
+    .locator("#arcade-room[data-rendered=true]")
+    .waitFor({ timeout: 60000 });
   await phone.locator("[data-launch=wordquest]").tap();
   await phone.locator("[data-book=money]").tap();
   const mg = await phone.locator("[data-cell]").allTextContents(),

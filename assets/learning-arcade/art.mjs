@@ -25,7 +25,15 @@ export function picture(id, label = "") {
   let shape = "",
     bg = "#e8f4f5";
   const stroke = 'stroke="#34516b" stroke-width="3" stroke-linejoin="round"';
-  if (colors[id]) {
+  if (id === "book") {
+    bg = "#ece1f3";
+    shape =
+      '<defs><linearGradient id="quest-cover" x2="1" y2="1"><stop stop-color="#d59aea"/><stop offset="1" stop-color="#7750a7"/></linearGradient><linearGradient id="quest-paper"><stop stop-color="#fffcf0"/><stop offset=".5" stop-color="#ddd1c1"/><stop offset="1" stop-color="#fffcf0"/></linearGradient></defs><path d="M12 38Q37 24 64 37Q92 24 116 38V105Q89 94 64 108Q38 95 12 106Z" fill="url(#quest-cover)"/><path d="M17 30Q38 21 64 35Q92 20 111 30V98Q88 89 64 103Q40 91 17 99Z" fill="url(#quest-paper)" stroke="#e8d8ed" stroke-width="2"/><path d="M64 36V102" stroke="#c1a5c5" stroke-width="2"/><text x="39" y="64" fill="#ae63b2" font-family="Arial,sans-serif" font-weight="900" font-size="26">A</text><text x="76" y="73" fill="#32999c" font-family="Arial,sans-serif" font-weight="900" font-size="26">B</text><path d="M31 74L48 74M31 82H50M77 84H97" stroke="#c5aad4" stroke-width="3"/><path d="M99 9L102 19L112 22L102 25L99 35L96 25L86 22L96 19Z" fill="#efca6a"/>';
+  } else if (id === "wardrobe") {
+    bg = "#e0ece4";
+    shape =
+      '<defs><linearGradient id="style-closet" x2="1" y2="1"><stop stop-color="#75aaa3"/><stop offset="1" stop-color="#315d62"/></linearGradient></defs><rect x="16" y="14" width="96" height="103" rx="10" fill="url(#style-closet)" stroke="#d3b878" stroke-width="3"/><rect x="24" y="23" width="43" height="86" rx="5" fill="#f1e6d8"/><path d="M28 40H62" stroke="#c6a975" stroke-width="3"/><path d="M37 48L30 55L34 64L39 60V85H56V60L61 64L64 55L56 48L50 52L43 52Z" fill="#cf8392"/><rect x="74" y="24" width="28" height="83" rx="6" fill="#a5c4c0" stroke="#dcc28e" stroke-width="2"/><circle cx="88" cy="45" r="10" fill="#b3815b"/><path d="M76 60Q88 53 99 60L97 80H79Z" fill="#f0d18c"/><path d="M80 81V99M94 81V99" stroke="#486c89" stroke-width="8"/>';
+  } else if (colors[id]) {
     bg = colors[id] + "25";
     shape = `<circle cx="64" cy="60" r="35" fill="${colors[id]}"/><ellipse cx="54" cy="44" rx="17" ry="8" fill="white" opacity=".3"/>`;
   } else if (/^(letter|word|number|cent)-/.test(id)) {

@@ -70,7 +70,7 @@ export const GAMES = [
     subtitle: "Your look. Your choices. Your next step.",
     skill: "Workplace attire · Weather · Safety · Planning",
     color: "#438b85",
-    icon: "shirt",
+    icon: "wardrobe",
     levels: 4,
     premium: true,
   },
