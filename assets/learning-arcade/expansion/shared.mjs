@@ -149,7 +149,7 @@ export function shell(root, host, { title, kicker, description, onPrint }) {
     async () => {
       try {
         if (document.fullscreenElement) await document.exitFullscreen();
-        else await root.closest("dialog").requestFullscreen();
+        else await document.documentElement.requestFullscreen();
       } catch {
         api.status(
           "Use the browser’s full-screen menu on this device. The game already fills the available screen.",
