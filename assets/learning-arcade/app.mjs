@@ -44,6 +44,7 @@ let mode = "cdc",
   profile = null,
   records = [],
   guestRecords = [],
+  transientByStudent = new Map(),
   saving = false,
   dirty = false,
   clock = new ActiveClock(performance.now()),
@@ -162,6 +163,7 @@ $("setup-form").onsubmit = async (e) => {
   }
   setMode(o.mode);
   run = newRun(selectedGame, o);
+  run.ownerId = profile?.id || null;
   round = 0;
   clock = new ActiveClock(performance.now());
   dirty = false;
@@ -648,7 +650,7 @@ function updateSaveNotice() {
     ? dirty
       ? "Your latest practice is waiting to save."
       : "Connected learning · practice record. Your teacher reviews official services separately."
-    : "Guest practice · this practice report stays in this open page. Print before leaving.";
+    : `${profile ? "Unrecorded practice" : "Guest practice"} · this practice report stays in this open page. Print before leaving.`;
 }
 async function save() {
   if (!run?.options.record || !profile || !token || saving || !dirty) return;
@@ -690,8 +692,20 @@ async function endRun(reason = "finished") {
     $("connection-status").textContent =
       "This activity could not be saved. Keep this page open and print the practice report before leaving.";
   }
-  if (run.options.record && profile) {
+  if (run.options.record && profile && !dirty) {
     records = records.filter((r) => r.id !== run.id).concat(copy);
+    transientByStudent.set(
+      run.ownerId,
+      (transientByStudent.get(run.ownerId) || []).filter(
+        (r) => r.id !== run.id,
+      ),
+    );
+  } else if (run.ownerId) {
+    const own = transientByStudent.get(run.ownerId) || [];
+    transientByStudent.set(
+      run.ownerId,
+      own.filter((r) => r.id !== run.id).concat(copy),
+    );
   } else guestRecords.push(copy);
   run = null;
   dirty = false;
@@ -767,6 +781,11 @@ window.addEventListener("beforeunload", (e) => {
   }
 });
 function connectionUI() {
+  // Clear the previous learner's rendered evidence before changing identities.
+  printRecords = [];
+  $("progress-content").replaceChildren();
+  $("print-area").replaceChildren();
+  if ($("progress-dialog").open) $("progress-dialog").close();
   let recommend = $("recommended-button");
   if (profile?.learning?.recommendedGame) {
     if (!recommend) {
@@ -831,9 +850,22 @@ $("disconnect-button").onclick = async () => {
   connectionUI();
 };
 function allRecords() {
-  return [...records, ...guestRecords, ...(run ? [run] : [])].filter(
-    (r, i, a) => a.findIndex((x) => x.id === r.id) === i,
-  );
+  const own = profile
+    ? [...records, ...(transientByStudent.get(profile.id) || [])]
+    : guestRecords;
+  const unique = new Map();
+  for (const candidate of own) {
+    const previous = unique.get(candidate.id);
+    if (
+      !previous ||
+      (candidate.rounds.length >= previous.rounds.length &&
+        candidate.activeMs >= previous.activeMs &&
+        !(previous.endedAt && !candidate.endedAt))
+    )
+      unique.set(candidate.id, candidate);
+  }
+  if (run && run.ownerId === (profile?.id || null)) unique.set(run.id, run);
+  return [...unique.values()];
 }
 function showProgress() {
   tick();
@@ -847,9 +879,10 @@ function showProgress() {
 $("progress-content").addEventListener("click", (e) => {
   const b = e.target.closest("[data-resume]");
   if (!b || run) return;
-  const saved = records.find((r) => r.id === b.dataset.resume);
+  const saved = allRecords().find((r) => r.id === b.dataset.resume);
   if (!saved) return;
   run = structuredClone(saved);
+  run.ownerId = profile.id;
   round =
     Math.max(
       -1,
