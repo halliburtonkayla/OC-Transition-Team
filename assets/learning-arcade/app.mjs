@@ -941,6 +941,7 @@ import("./room.mjs")
       },
     });
     setReduced();
+    room?.setPaused($("play-dialog").open);
   })
   .catch((error) => {
     console.error("Arcade room:", error);

@@ -263,6 +263,7 @@ let browser;
       "Other School Learner",
     ),
   );
+  await context.close();
   for (const width of [390, 768]) {
     const phone = await browser.newContext({
       viewport: { width, height: 844 },
@@ -272,8 +273,28 @@ let browser;
     });
     await phone.route("**/*.supabase.co/**", (r) => r.abort());
     const p = await phone.newPage();
+    p.on("pageerror", (e) => errors.push("touch-" + width + ": " + e.message));
+    await p.bringToFront();
+    console.log("Checking active touch viewport", width);
     await p.goto("http://127.0.0.1:4173/learning-arcade.html");
-    await p.locator("#arcade-room[data-rendered=true]").waitFor();
+    await p.waitForFunction(() => document.visibilityState === "visible");
+    try {
+      await p
+        .locator("#arcade-room[data-rendered=true]")
+        .waitFor({ timeout: 60000 });
+    } catch (error) {
+      console.log(
+        "Touch room diagnostics",
+        width,
+        await p.evaluate(() => ({
+          visibility: document.visibilityState,
+          ready: document.querySelector("#arcade-room").dataset.ready,
+          renderer: document.querySelector("#arcade-room").dataset.renderer,
+          status: document.querySelector("#room-status").textContent,
+        })),
+      );
+      throw error;
+    }
     assert.ok(
       await p.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth + 1,
@@ -303,6 +324,7 @@ let browser;
   });
   await locked.route("**/*.supabase.co/**", (r) => r.abort());
   const fallback = await locked.newPage();
+  await fallback.bringToFront();
   await fallback.goto("http://127.0.0.1:4173/learning-arcade.html");
   await fallback.locator("#arcade-room[data-rendered=true]").waitFor();
   assert.equal(
