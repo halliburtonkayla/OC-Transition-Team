@@ -55,7 +55,7 @@ export const clockCode=stage=>String(4100+stage*37);
 export function finishStage(s){if(s.gate!==4||s.position<WORLD_END-65||s.completed.some(c=>c.stage===s.stage))return false;const events=s.events.filter(e=>e.stage===s.stage);s.completed.push({stage:s.stage,career:CAREERS[s.stage].id,at:new Date().toISOString(),attempts:events.length,retries:events.filter(e=>!e.correct).length,helped:events.filter(e=>e.help&&e.correct).length});s.stats.points+=500;s.lives=3;s.view=s.stage===29?'complete':'celebration';return true;}
 export function nextStage(s){if(!['celebration','map'].includes(s.view)||s.stage>=29||s.completed.length!==s.stage+1)return false;s.stage++;s.gate=0;s.task=0;s.assigned=false;s.offered=false;s.lives=3;s.position=80;s.checkpoint=80;s.collected=[];s.defeated=[];s.scanned=[];s.view='run';return true;}
 export function createWorld(stage=0){
- const gaps=[],platforms=[],coins=[],stars=[],enemies=[],crates=[];const nearPortal=x=>PORTALS.some(p=>Math.abs(p.x-x)<380)||Math.abs(x-WORLD_END)<500;
+ const gaps=[],platforms=[],coins=[],stars=[],enemies=[],crates=[];const nearPortal=x=>PORTALS.some(p=>Math.abs(p.x-x)<650)||Math.abs(x-WORLD_END)<650;
  for(let base=900,i=0;base<WORLD_END-500;base+=680,i++){
   const x=base+((stage*29+i*17)%90);if(!nearPortal(x)){gaps.push({x:x+270,w:96});platforms.push({id:'p'+i,x:x+70,y:353,w:190,h:22});if(i%3===0)platforms.push({id:'upper'+i,x:x+195,y:255,w:150,h:22});
    if(i%2===0)enemies.push({id:'enemy'+i,x:x-80,y:438,home:x-80,range:75,w:42,h:32,dead:false});else crates.push({id:'crate'+i,x:x-60,y:419,w:44,h:51});
