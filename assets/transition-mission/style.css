@@ -8,3 +8,4 @@
 .report-detail-option{display:flex;gap:8px;align-items:center;font-size:12px;margin:16px 0;color:#456f61}.report-detail-option input{accent-color:#338079;width:16px;height:16px}
 
 .character-face{display:block;width:100%;height:138px;background-image:url('./characters.webp');background-size:400% 200%;border-radius:11px 11px 5px 5px;margin-bottom:8px}@media(max-width:640px){.character-face{height:110px}}
+.world-shell{width:100%;min-width:0;max-width:100%}
