@@ -1,0 +1,41 @@
+name: Learning Arcade checks
+on:
+  pull_request:
+    paths: ['learning-arcade.html','assets/learning-arcade/**','assets/vendor/three-0.180.0.js','assets/classroom-monitor/teacher.js','assets/school/**','assets/school-directory/**','supabase/functions/classroom-monitor/**','tests/learning-arcade-*','docs/learning-arcade/**','.github/workflows/learning-arcade-checks.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install isolated QA dependencies
+        run: npm install --prefix /tmp/learning-arcade-qa --no-save jsdom@26.1.0 @electric-sql/pglite@0.3.14 @playwright/test@1.51.1
+      - name: Curriculum, actual DOM, authorization and real PostgreSQL privacy/migration tests
+        run: node --test tests/learning-arcade-*.test.mjs
+      - name: Original games, accounts, balances, workdays and classroom reports
+        env:
+          SCHOOL_JSDOM: /tmp/learning-arcade-qa/node_modules/jsdom
+        run: |
+          node --test tests/prism-pour-*.test.mjs tests/school-release.test.mjs
+          node tests/classroom-monitor.cjs
+          node tests/student-shop-core.cjs
+          node tests/business-workday.cjs
+          node tools/release-audit.mjs
+      - name: Install Chromium for isolated CI browser tests
+        run: /tmp/learning-arcade-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Real 3D room, six games, keyboard/touch, PDF and teacher workflow
+        env:
+          NODE_PATH: /tmp/learning-arcade-qa/node_modules
+        run: node tests/learning-arcade-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: learning-arcade-review-evidence
+          path: arcade-test-output/
+          if-no-files-found: ignore

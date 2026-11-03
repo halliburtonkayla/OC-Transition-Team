@@ -6834,7 +6834,7 @@
     },
     {
       "path": "school-directory.html",
-      "title": "Six Rooms · Transition Town School",
+      "title": "School Directory · Transition Town School",
       "room": "wow",
       "links": [
         {
@@ -6853,7 +6853,7 @@
       "externalLinks": [],
       "fragmentReview": [],
       "contentFlags": [],
-      "bytes": 627
+      "bytes": 635
     },
     {
       "path": "self-advocacy.html",
@@ -8156,8 +8156,43 @@
       "fragmentReview": [],
       "contentFlags": [],
       "bytes": 14486
+    },
+    {
+      "path": "learning-arcade.html",
+      "title": "The Learning Arcade · Transition Town School",
+      "room": "arcade",
+      "links": [
+        {
+          "target": "assets/learning-arcade/arcade.css",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        },
+        {
+          "target": "classroom-monitor.html",
+          "exists": true
+        },
+        {
+          "target": "prism-pour.html",
+          "exists": true
+        },
+        {
+          "target": "school-directory.html",
+          "exists": true
+        },
+        {
+          "target": "assets/learning-arcade/app.mjs",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 11320
     }
   ],
   "broken": [],
-  "updated": "2026-11-01"
+  "updated": "2026-11-02"
 }

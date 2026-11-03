@@ -18,7 +18,7 @@ window.schoolBuildingScene = function () {
       <a class="hall-door hall-workcrew" href="work-crew-lab.html"><small>CDC WORK LAB</small><strong>Work Crew Lab</strong><span>Practice a shift →</span></a>
     </div></div>
     <nav class="school-hall-nav" aria-label="School navigation"><button onclick="document.querySelector('#centerScene')?.remove()">← Town Map</button><div><small>TRANSITION TOWN SCHOOL</small><h1>Main hallway</h1></div><div class="school-hall-tools"><button class="school-directory-trigger" onclick="schoolDirectoryDialog()">School Directory</button><a href="pre-ets-session-reports.html">Teacher Reports</a></div></nav>
-    <div class="school-hall-directory school-hall-shortcuts"><span>Choose a door · Swipe to look around</span><div><a class="hall-job-missions-link" href="job-missions.html">JOB MISSIONS — READY FOR WORK!</a><a href="watch-and-learn.html">Watch &amp; Learn</a></div></div>`;
+    <div class="school-hall-directory school-hall-shortcuts"><span>Choose a door · Swipe to look around</span><div><a class="hall-job-missions-link" href="job-missions.html">JOB MISSIONS — READY FOR WORK!</a><a href="watch-and-learn.html">Watch &amp; Learn</a><a class="hall-learning-arcade" href="learning-arcade.html">THE LEARNING ARCADE →</a></div></div>`;
   document.body.appendChild(scene);
   const pan=scene.querySelector('.school-hall-pan');
   requestAnimationFrame(()=>{pan.scrollLeft=(pan.scrollWidth-pan.clientWidth)/2;});
@@ -41,7 +41,7 @@ window.schoolDirectoryDialog = function () {
   dialog.querySelector('.directory-close').onclick=close;
   dialog.addEventListener('close',()=>{try{window.speechSynthesis?.cancel();}catch{}dialog.remove();trigger?.focus();},{once:true});
   dialog.showModal();
-  import('../school-directory/directory.mjs?v=20261101-prism').then(m=>{
+  import('../school-directory/directory.mjs?v=20261102-arcade').then(m=>{
     if(dialog.isConnected)m.renderSchool(dialog.querySelector('.school-directory-dialog-content'),false,{compact:true,onBack:close});
   }).catch(()=>{
     dialog.querySelector('.school-directory-dialog-content').innerHTML='<p>The directory could not load. You can still use the school doors.</p><a href="school-directory.html">Open the directory page</a>';
