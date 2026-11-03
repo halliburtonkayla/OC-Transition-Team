@@ -20,6 +20,7 @@ import { escapeHTML as esc, speak } from "../learning/progress.mjs";
 import { request, existingDevice, connectionKey } from "./service.mjs";
 import { reportHTML, runReport } from "./report.mjs";
 const $ = (id) => document.getElementById(id);
+let premium = null, premiumClosing = false, premiumLoading = false, connectionAttempt = null;
 let mode = "cdc",
   selectedGame = "match",
   run = null,
@@ -84,6 +85,8 @@ $("setup-category").innerHTML = CATEGORIES.map(
   (c) => `<option value="${c.id}">${esc(c.title)}</option>`,
 ).join("");
 function setup(game, fromRun = false) {
+  if (premiumLoading) return;
+  if (gameById(game)?.premium) { launchPremium(game); return; }
   selectedGame = game;
   settingsFromRun = fromRun;
   const g = gameById(game);
@@ -175,6 +178,69 @@ $("setup-form").onsubmit = async (e) => {
   room?.setPaused(true);
   newTask();
 };
+
+async function launchPremium(game, resume = null) {
+  if (run || premiumLoading) return;
+  premiumLoading = true;
+  try {
+    if (connectionAttempt) await connectionAttempt;
+    const module = await import(game === "wordquest" ? "./expansion/word-app.mjs" : "./expansion/dress-app.mjs");
+    const prior = resume || allRecords().filter(r => r.game === game && r.checkpoint && r.status === "playing" && !r.endedAt).at(-1);
+    run = prior ? structuredClone(prior) : newRun(game, {mode, level: 1, record: !!profile});
+    run.ownerId = profile?.id || null;
+    if (!run.checkpoint) run.checkpoint = game === "wordquest" ? module.initialWord() : module.initialDress();
+    run.checkpointRevision ||= 0;
+    run.options.level = run.checkpoint.level;
+    clock = new ActiveClock(performance.now());
+    paused = false;
+    dirty = !prior;
+    room?.setPaused(true);
+    $("premium-dialog").showModal();
+    const host = {
+      get: () => run,
+      connected: () => !!profile,
+      identity: () => profile ? profile.displayName + " · " + profile.schoolLabel + " · ID " + profile.id : "Guest practice · no student identity recorded",
+      notice: () => run?.options.record && profile ? "Connected private practice · use Save progress before leaving. Official services require teacher review." : "Guest / unrecorded practice stays in this open page. Print your report before closing this tab.",
+      changed: () => { if (run) { run.checkpointRevision = (run.checkpointRevision || 0) + 1; dirty = true; } },
+      attempt: (a) => { if (!run) return; recordAttempt(run, {kind:a.kind,correct:a.correct,choice:a.choice,task:{level:a.level,round:a.round,objective:a.objective}});host.changed(); },
+      help: (kind) => { run.assistance.push({at:new Date().toISOString(),kind});host.changed(); },
+      save,
+      pause: (v) => { tick(); paused = v; clock.touch(performance.now()); },
+      print: (kind) => {
+        tick(); const custom = premium?.print(kind);
+        $("print-area").innerHTML = custom || reportHTML([run], {name:profile?.displayName || "Guest practice",school:profile?.schoolLabel || "Not connected",studentId:profile?.id || "Not recorded",title:gameById(game).title});
+        const previous = paused; paused = true; window.print(); paused = previous;
+      },
+      exit: suspendPremium,
+    };
+    premium = await module.mount($("premium-root"),host);
+    $("premium-root").querySelector("button")?.focus();
+  } catch(e) {
+    premium?.dispose(); premium = null; run = null; dirty = false;
+    $("premium-dialog").close(); room?.setPaused(false);
+    $("connection-status").textContent = "This station could not load: " + e.message + ". Your existing learning records are preserved.";
+  } finally { premiumLoading = false; }
+}
+async function suspendPremium() {
+  if (!premium || premiumClosing) return;
+  premiumClosing = true;
+  tick(); paused = true;
+  while (saving) await new Promise(resolve => setTimeout(resolve,50));
+  await save();
+  const copy = structuredClone(run);
+  if (run.options.record && dirty) copy.unsaved = true;
+  if (run.options.record && profile && !dirty) records = records.filter(r=>r.id!==run.id).concat(copy);
+  else if (run.ownerId) transientByStudent.set(run.ownerId,(transientByStudent.get(run.ownerId)||[]).filter(r=>r.id!==run.id).concat(copy));
+  else guestRecords = guestRecords.filter(r=>r.id!==run.id).concat(copy);
+  premium.dispose(); premium = null;
+  $("premium-dialog").close(); $("premium-root").replaceChildren();
+  if (document.fullscreenElement) { try { await document.exitFullscreen(); } catch {} }
+  run = null; dirty = false; paused = false; premiumClosing = false;
+  room?.setPaused(false);
+  $("station-cards").querySelector("button")?.focus();
+}
+$("premium-dialog").addEventListener("cancel", (e) => { e.preventDefault(); suspendPremium(); });
+
 function newTask() {
   if (!run) return;
   task = makeTask(run.game, run.options, round, 42 + round * 17);
@@ -653,7 +719,9 @@ function updateSaveNotice() {
     : `${profile ? "Unrecorded practice" : "Guest practice"} · this practice report stays in this open page. Print before leaving.`;
 }
 async function save() {
-  if (!run?.options.record || !profile || !token || saving || !dirty) return;
+  if (!run?.options.record || !profile || !token) return false;
+  if (saving) return false;
+  if (!dirty) return true;
   const snapshot = structuredClone(run);
   saving = true;
   try {
@@ -667,16 +735,21 @@ async function save() {
       dirty = false;
     $("save-status").textContent =
       "Practice saved to your connected learning profile.";
+    premium?.ui.status("Practice saved to your connected private learning profile.");
+    return true;
   } catch (e) {
     $("save-status").textContent =
       "Could not save: " +
       e.message +
       " Keep this page open or print your report.";
+    premium?.ui.status($("save-status").textContent);
+    return false;
   } finally {
     saving = false;
   }
 }
 async function endRun(reason = "finished") {
+  if (premium) { await suspendPremium(); return; }
   if (!run) return;
   tick();
   run.endedAt = new Date().toISOString();
@@ -726,11 +799,12 @@ function tick() {
     delta = clock.tick(now, {
       visible: !document.hidden,
       paused:
-        paused || !run || !$("play-dialog").open || $("setup-dialog").open,
+        paused || !run || (!$("play-dialog").open && !$("premium-dialog").open) || $("setup-dialog").open || !!$("premium-root").querySelector(".premium-print-dialog[open]"),
     });
   if (!run) return;
   if (delta > 0) {
     run.activeMs += delta;
+    if (run.checkpoint) run.checkpointRevision = (run.checkpointRevision || 0) + 1;
     dirty = true;
   }
   const sec = Math.floor(run.activeMs / 1000);
@@ -810,6 +884,7 @@ function connectionUI() {
 async function connect(key) {
   if (run) throw Error("Finish the current game before changing learners.");
   const d = await request("arcade_me", { token: key });
+  if (run) throw Error("Finish the current game before connecting a learner.");
   token = key;
   profile = d.profile;
   records = d.records || [];
@@ -881,6 +956,7 @@ $("progress-content").addEventListener("click", (e) => {
   if (!b || run) return;
   const saved = allRecords().find((r) => r.id === b.dataset.resume);
   if (!saved) return;
+  if (gameById(saved.game)?.premium) { $("progress-dialog").close(); launchPremium(saved.game, saved); return; }
   run = structuredClone(saved);
   run.ownerId = profile.id;
   round =
@@ -950,11 +1026,11 @@ document.querySelectorAll("[data-move]").forEach((b) => {
 });
 setReduced();
 if (token)
-  connect(token).catch(() => {
+  connectionAttempt = connect(token).catch(() => {
     token = "";
     sessionStorage.removeItem("ttArcadeDevice");
     connectionUI();
-  });
+  }).finally(() => { connectionAttempt = null; });
 import("./room.mjs")
   .then((m) => {
     room = m.createArcadeRoom($("arcade-room"), {
@@ -974,7 +1050,7 @@ import("./room.mjs")
       },
     });
     setReduced();
-    room?.setPaused($("play-dialog").open);
+    room?.setPaused($("play-dialog").open || $("premium-dialog").open);
   })
   .catch((error) => {
     console.error("Arcade room:", error);

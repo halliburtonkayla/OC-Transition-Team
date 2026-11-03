@@ -1,0 +1,86 @@
+// All clothing is original parametric 3D geometry. Prices are fictional practice
+// prices; this game has no connection to student money or a shop ledger.
+const garment=(id,label,slot,cut,price,tags=[],warmth=1)=>({id,label,slot,cut,price,tags,warmth});
+export const GARMENTS=[
+ garment('tee','Everyday T-shirt','top','tee',8,['casual','neat'],1),
+ garment('polo','Classic polo','top','polo',12,['smart','neat','uniform'],1),
+ garment('button','Button-down shirt','top','button',16,['smart','formal','neat'],1),
+ garment('blouse','Soft blouse','top','blouse',16,['smart','formal','neat'],1),
+ garment('sweater','Knit sweater','top','sweater',18,['smart','neat'],2),
+ garment('hoodie','Relaxed hoodie','top','hoodie',20,['casual','loose'],2),
+ garment('uniform','Work uniform shirt','top','uniform',14,['uniform','smart','neat'],1),
+ garment('sport','Athletic jersey','top','sport',12,['sport','casual'],0),
+ garment('jeans','Straight-leg jeans','bottom','pants',15,['casual','long','neat'],1),
+ garment('trousers','Tailored dress pants','bottom','trousers',18,['smart','formal','long','neat'],1),
+ garment('shorts','Everyday shorts','bottom','shorts',10,['casual','short'],0),
+ garment('skirt','Midi skirt','bottom','skirt',16,['smart','formal','neat'],1),
+ garment('joggers','Soft joggers','bottom','pants',13,['casual','sport','long'],1),
+ garment('workpants','Utility work pants','bottom','trousers',18,['uniform','long','neat'],2),
+ garment('daydress','Day dress','dress','dress',22,['smart','neat'],2),
+ garment('formal','Occasion dress','dress','formal',30,['formal','smart','neat'],2),
+ garment('sneakers','Everyday sneakers','feet','sneakers',14,['closed','grip','neat','sport'],1),
+ garment('dressshoes','Polished shoes','feet','dressshoes',22,['closed','smart','formal','neat'],1),
+ garment('boots','Weather boots','feet','boots',24,['closed','grip','waterproof','insulated','neat'],3),
+ garment('workshoes','Non-slip work shoes','feet','workshoes',20,['closed','grip','work','neat'],1),
+ garment('workboots','Protective work boots','feet','workboots',28,['closed','grip','protective','waterproof','insulated'],3),
+ garment('sandals','Open sandals','feet','sandals',10,['open','casual'],0),
+ garment('jacket','Light jacket','outer','jacket',18,['neat'],1),
+ garment('coat','Insulated winter coat','outer','coat',30,['insulated'],3),
+ garment('raincoat','Hooded raincoat','outer','raincoat',24,['waterproof','rainhood'],1),
+ garment('blazer','Tailored blazer','outer','blazer',24,['smart','formal','neat'],1),
+ garment('vest','High-visibility work vest','outer','vest',14,['hivis','neat'],0),
+ garment('cap','Baseball cap','head','cap',8,['casual'],0),
+ garment('beanie','Warm knit hat','head','beanie',7,['insulated'],1),
+ garment('helmet','Safety helmet','head','helmet',12,['protective'],0),
+ garment('hairnet','Food-service hair covering','head','hairnet',3,['hairrestraint'],0),
+ garment('scarf','Knit scarf','neck','scarf',8,['loose','insulated'],1),
+ garment('gloves','Warm gloves','hands','gloves',6,['insulated'],1),
+ garment('watch','Wristwatch','accessory','watch',8,['neat'],0),
+ garment('umbrella','Travel umbrella','accessory','umbrella',10,['raincover'],0),
+ garment('bag','Everyday bag','accessory','bag',12,['casual'],0)
+];
+export const COLORS=['#d54b55','#e6a7be','#7958af','#209e9e','#4175b7','#e2b84d','#428868','#eeeeea','#242c3c','#a97852','#705640','#aab9cc'];
+export const PATTERNS=['solid','stripe','check','texture'];
+export const SKINS=['#f5d8bf','#e6b99b','#c99472','#ad7756','#8e5d40','#70442f','#523427','#3b271e'];
+export const HAIRCOLORS=['#201a19','#493326','#875b38','#b88d5b','#d9c092','#ac6746','#797583','#552f67'];
+export const EYES=['#493b2c','#72927b','#6083ab','#7c6854','#3b2b22'];
+export const HAIRSTYLES=['Short crop','Side part','Coils','Long waves','Braids','Ponytail','Bun','Close cut'];
+export const BODYTYPES=['Lean','Balanced','Broad'];
+export const WEATHER={
+ sunny:{label:'Sunny · 72°F',temperature:22,sky:'#b3dcf0',icon:'☀',warm:0},
+ hot:{label:'Hot · 91°F',temperature:33,sky:'#efd9a0',icon:'☀',warm:0},
+ cloudy:{label:'Cloudy · 64°F',temperature:18,sky:'#b9c5ce',icon:'☁',warm:0},
+ cold:{label:'Cold · 37°F',temperature:3,sky:'#a8bfda',icon:'❄',warm:4},
+ rainy:{label:'Rainy · 54°F',temperature:12,sky:'#8295ab',icon:'☂',warm:0,rain:true},
+ snowy:{label:'Snowy · 27°F',temperature:-3,sky:'#d4dfe8',icon:'❄',warm:5,snow:true},
+ windy:{label:'Windy · 46°F',temperature:8,sky:'#b9cfdf',icon:'≋',warm:3,wind:true},
+ freezing:{label:'Freezing · 14°F',temperature:-10,sky:'#aebfd7',icon:'❄',warm:6,snow:true}
+};
+const scene=(id,label,destination,person,requirements,description)=>({id,label,destination,person,requirements,description});
+export const SCENARIOS=[
+ scene('grocerywork','A grocery-store shift','grocery','Shift supervisor',['uniform','closed','grip'],'The store asks for a polo or uniform shirt and closed, non-slip shoes.'),
+ scene('interview','A job interview','office','Interviewer',['smart','closed'],'The employer asks for neat business-casual clothing and closed shoes. Several styles are welcome.'),
+ scene('school','A school day','school','School mentor',[],'Choose a complete, comfortable outfit for your school day.'),
+ scene('church','A church gathering','church','Community host',[],'Your host welcomes comfortable, respectful clothing. There is no special dress code for this gathering.'),
+ scene('friend','Visiting a friend','house','Your friend',[],'Your friend invites you over to spend time together. Choose clothing that works for the weather.'),
+ scene('memorial','A memorial gathering','memorial','Gathering host',['neat'],'The family asks guests to wear clean, neat clothing. Their custom welcomes any color or style; ask if unsure.'),
+ scene('daycare','Volunteering at daycare','daycare','Daycare mentor',['closed','grip'],'You will move around play areas. Choose closed, non-slip shoes and secure clothing.'),
+ scene('shopping','Grocery shopping','grocery','Store colleague',[],'Choose a complete outfit for your shopping trip and the weather outside.'),
+ scene('park','Meeting friends at the park','park','Park guide',['grip'],'You will walk on a park path. Choose footwear with a secure grip.'),
+ scene('relax','A relaxing day at home','living','Housemate',[],'Choose a comfortable, complete outfit. You will stay indoors today.'),
+ scene('restaurant','Dinner at a restaurant','restaurant','Restaurant host',['neat'],'This restaurant asks for neat clothing. There is no required color or gendered clothing rule.'),
+ scene('celebration','A family celebration','celebration','Family host',[],'Your family welcomes your personal style. Plan for the trip and weather.'),
+ scene('basketball','Watching a basketball game','school','Game host',[],'Choose comfortable clothing for the game and your trip to the gym.'),
+ scene('outdoor','An outdoor work shift','workplace','Site supervisor',['long','protective','hivis','helmet'],'This site requires long pants, protective work boots, a safety helmet and a high-visibility vest.'),
+ scene('presentation','A school presentation','school','Presentation mentor',['smart'],'Your group agreed on neat business-casual clothing for the presentation.'),
+ scene('shelter','An animal-shelter shift','workplace','Shelter supervisor',['long','closed','grip'],'For this task, wear long pants and closed shoes with grip. Avoid loose accessories around equipment.'),
+ scene('doctor','A doctor’s appointment','office','Clinic receptionist',[],'Choose a complete, comfortable outfit for the appointment and trip.'),
+ scene('formal','A formal community event','celebration','Event host',['formal'],'The invitation asks for formal clothing. Dress pants and a formal top, or an occasion dress, are both welcome.'),
+ scene('kitchenwork','A food-service shift','restaurant','Kitchen supervisor',['uniform','closed','grip','hairrestraint'],'Wear a polo or uniform, closed non-slip shoes, and the required food-service hair covering.'),
+ scene('jobvisit','A workplace visit','office','Workplace mentor',['neat','closed'],'The visitor instructions ask for neat clothing and closed shoes.')
+];
+export const defaultAvatar=()=>({skin:4,face:0,features:0,eye:0,hair:2,hairColor:0,body:1,height:1,glasses:false});
+export const item=(id,color=8,pattern='solid')=>({id,color,pattern});
+export const defaultOutfit=()=>({top:item('tee',4),bottom:item('jeans',8),feet:item('sneakers',7),dress:null,outer:null,head:null,neck:null,hands:null,accessory:null});
+export const garmentById=id=>GARMENTS.find(g=>g.id===id);
+export const SLOTS=['top','bottom','feet','dress','outer','head','neck','hands','accessory'];

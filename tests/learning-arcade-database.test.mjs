@@ -305,3 +305,16 @@ test("Partial schedule drafts never overwrite an existing verified schedule duri
     await db.close();
   }
 });
+
+test('Checkpoint revisions reject concurrent outfit/page overwrites, permit exact retries, and preserve finances and older games',async()=>{
+ const db=await setup();try{
+  await reconcile(db,[{action:'create',student:row()}]);const id=(await db.query('select id from student_accounts')).rows[0].id;
+  const legacy={balance:4567,business:{orders:[1]},arcade:{old:{id:'old',rounds:[]}}};await db.query('insert into student_state(student_id,state)values($1,$2::jsonb)',[id,JSON.stringify(legacy)]);
+  const r={id:'expansion-fixture',activeMs:1000,rounds:[],endedAt:null,checkpointRevision:1,checkpoint:{avatar:{skin:2}}};
+  const save=async r=>(await db.query('select tt_arcade_save_run($1::uuid,$2::jsonb) result',[id,JSON.stringify(r)])).rows[0].result;
+  assert.equal((await save(r)).saved,true);assert.equal((await save(r)).saved,true);
+  assert.equal((await save({...r,checkpoint:{avatar:{skin:5}}})).saved,false);
+  const newer={...r,checkpointRevision:2,checkpoint:{avatar:{skin:4}}};assert.equal((await save(newer)).saved,true);assert.equal((await save(r)).saved,false);
+  const state=(await db.query('select state from student_state')).rows[0].state;assert.equal(state.balance,4567);assert.deepEqual(state.business,legacy.business);assert.deepEqual(state.arcade.old,legacy.arcade.old);assert.equal(state.arcade[r.id].checkpoint.avatar.skin,4);
+ }finally{await db.close();}
+});

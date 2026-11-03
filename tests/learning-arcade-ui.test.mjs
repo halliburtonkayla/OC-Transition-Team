@@ -104,7 +104,7 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
   try {
     await import("../assets/learning-arcade/app.mjs?dom-test=1");
     await flush();
-    assert.equal(w.document.querySelectorAll("[data-launch]").length, 6);
+    assert.equal(w.document.querySelectorAll("[data-launch]").length, 8);
     const start = (
       id,
       { mode = "cdc", level = 1, questions = false, record } = {},

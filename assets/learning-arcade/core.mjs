@@ -93,6 +93,7 @@ export function makeTask(game, opts = {}, round = 0, seed = 41) {
     spoken: "",
     answer: null,
   };
+  if (gameById(game)?.premium) return { ...t, kind: "premium", objective: game === "wordquest" ? "Recognize career and life-skills vocabulary in a twenty-word puzzle." : "Plan practical clothing for weather, safety and stated dress requirements.", prompt: "Open the complete game station.", spoken: "Choose your difficulty and play at your own pace.", options: [choice("Open game", "star", "open")], answer: "open" };
   if (game === "match") {
     const c = categoryById(o.category),
       count = Math.min(c.entries.length, level < 3 ? 2 : level < 5 ? 4 : 6),
@@ -618,7 +619,7 @@ export function summary(run) {
     stars: completed.reduce(
       (n, r) =>
         n +
-        (run.options.mode === "cdc"
+        ((run.options.mode === "cdc" || gameById(run.game)?.premium)
           ? 3
           : game.some((a) => a.round === r.round && !a.correct)
             ? 1

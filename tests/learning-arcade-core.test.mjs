@@ -20,11 +20,11 @@ import {
   teacherEmail,
 } from "../assets/learning-arcade/management.mjs";
 import { reportHTML } from "../assets/learning-arcade/report.mjs";
-test("Only the six approved games, 15 categories, and all progressive levels produce solvable tasks", () => {
-  assert.equal(GAMES.length, 6);
+test("The original six games, 15 categories, and all progressive levels produce solvable tasks", () => {
+  assert.equal(GAMES.length, 8);
   assert.equal(CATEGORIES.length, 15);
   for (const mode of ["cdc", "preets", "esp"])
-    for (const g of GAMES)
+    for (const g of GAMES.filter(g => !g.premium))
       for (let level = 1; level <= g.levels; level++)
         for (let round = 0; round < 30; round++)
           for (const category of g.id === "match"

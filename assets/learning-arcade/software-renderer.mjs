@@ -60,6 +60,8 @@ export function softwareRenderer(canvas) {
       }
       scene.traverse((o) => {
         if (!o.isMesh || !o.visible) return;
+        for (let parent=o.parent;parent;parent=parent.parent) if (!parent.visible) return;
+        const mirrored = o.matrixWorld.determinant() < 0;
         const geo = o.geometry,
           pos = geo.attributes.position,
           idx = geo.index,
@@ -91,7 +93,7 @@ export function softwareRenderer(canvas) {
           if ([a, b, c].some((p) => p.z >= 1 || p.z <= -1 || p.iw <= 0))
             continue;
           const den = (b.y - c.y) * (a.x - c.x) + (c.x - b.x) * (a.y - c.y);
-          if (Math.abs(den) < 0.01 || (den > 0 && mat.side !== T.DoubleSide))
+          if (Math.abs(den) < 0.01 || (den * (mirrored ? -1 : 1) > 0 && mat.side !== T.DoubleSide))
             continue;
           const xmin = Math.max(0, Math.floor(Math.min(a.x, b.x, c.x))),
             xmax = Math.min(W - 1, Math.ceil(Math.max(a.x, b.x, c.x))),
