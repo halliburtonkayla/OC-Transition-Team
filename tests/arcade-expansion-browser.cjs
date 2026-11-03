@@ -380,12 +380,20 @@ function findPaths(grid, words) {
       "Non-slip work shoes",
     ),
   );
+  await page.emulateMedia({ media: "print" });
+  assert.equal(
+    await page
+      .locator("#print-area .report-entry")
+      .evaluate((el) => getComputedStyle(el).breakInside),
+    "auto",
+  );
   await page.pdf({
     path: out + "/dress-student-practice-report.pdf",
     format: "Letter",
     printBackground: true,
     preferCSSPageSize: true,
   });
+  await page.emulateMedia({ media: "screen" });
   await page.locator("[data-next-challenge]").click();
   assert.notEqual(
     await page.locator("[data-ui=scenario-title]").textContent(),

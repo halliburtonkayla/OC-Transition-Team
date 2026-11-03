@@ -2,6 +2,12 @@ import { escapeHTML as e } from "../../learning/progress.mjs";
 import { BOOKS, DIFFICULTIES } from "./word-data.mjs";
 import { makeScenario, requirementsFor, outfitSummary } from "./dress-core.mjs";
 import { WEATHER } from "./dress-data.mjs";
+const localTime = (at) =>
+  new Date(at).toLocaleString("en-US", {
+    timeZone: "America/Chicago",
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 export function expansionReport(run) {
   const c = run.checkpoint;
   if (!c) return "";
@@ -17,7 +23,7 @@ export function expansionReport(run) {
         .map((h) => {
           const s = makeScenario(h.level, h.index, c.seed),
             r = h.evaluation;
-          return `<section class="dress-report-scenario"><h4>${e(s.label)} · ${e(DIFFICULTIES[h.level - 1])} · Attempt ${h.attempt}</h4><p>${e(h.at)} · Weather: ${e(WEATHER[s.weather].label)}${s.change ? " → " + e(WEATHER[s.change].label) : ""}</p><p><b>Dress requirements:</b> ${e(requirementsFor(s).join(" "))}</p><p><b>Selected outfit:</b> ${e(outfitSummary(h.outfit).join("; "))}</p><p><b>Result:</b> ${r.success ? "Completed" : "Retry available"} · ${r.score}% practical checks · Practice cost $${r.cost}.</p><p><b>Successful decisions:</b> ${e(r.successes.join(" "))}</p><p><b>Areas to practice:</b> ${e(r.improvements.join(" ") || "All stated checks met.")}</p>${h.reflection ? "<p><b>Student reflection:</b> " + e(h.reflection) + "</p>" : ""}</section>`;
+          return `<section class="dress-report-scenario"><h4>${e(s.label)} · ${e(DIFFICULTIES[h.level - 1])} · Attempt ${h.attempt}</h4><p>${e(localTime(h.at))} Central · Weather: ${e(WEATHER[s.weather].label)}${s.change ? " → " + e(WEATHER[s.change].label) : ""}</p><p><b>Dress requirements:</b> ${e(requirementsFor(s).join(" "))}</p><p><b>Selected outfit:</b> ${e(outfitSummary(h.outfit).join("; "))}</p><p><b>Result:</b> ${r.success ? "Completed" : "Retry available"} · ${r.score}% practical checks · Practice cost $${r.cost}.</p><p><b>Successful decisions:</b> ${e(r.successes.join(" "))}</p><p><b>Areas to practice:</b> ${e(r.improvements.join(" ") || "All stated checks met.")}</p>${h.reflection ? "<p><b>Student reflection:</b> " + e(h.reflection) + "</p>" : ""}</section>`;
         })
         .join("") || "<p>No outfit has been evaluated yet.</p>"
     }</div>`;
