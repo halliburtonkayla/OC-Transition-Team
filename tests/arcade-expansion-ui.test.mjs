@@ -67,6 +67,13 @@ test("Actual Word Quest DOM supports mouse/touch paths, keyboard words, 20 locke
     assert.equal(root.querySelectorAll("[data-book]").length, 10);
     click("[data-book=careers]");
     const p = generatePuzzle("careers", 1, 0, 126);
+    let pan = null;
+    root.querySelector(".letter-scroll").scrollBy = (opts) => {
+      pan = opts;
+    };
+    click('[data-grid-pan="right"]');
+    assert.equal(pan.behavior, "auto");
+
     const cell = (i) => root.querySelector(`[data-cell="${i}"]`);
     function pointerPath(f, drag = false) {
       let current = cell(f.path[0]);

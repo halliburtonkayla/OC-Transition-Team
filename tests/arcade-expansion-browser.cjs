@@ -536,6 +536,16 @@ function findPaths(grid, words) {
   });
   await touchSession.detach();
   assert.equal(await phone.locator("[data-ui=count]").textContent(), "2");
+  await phone.locator("[data-grid-pan=left]").tap();
+  const scrollLeft = await phone
+    .locator(".letter-scroll")
+    .evaluate((el) => el.scrollLeft);
+  await phone.locator("[data-grid-pan=right]").tap();
+  assert.ok(
+    (await phone.locator(".letter-scroll").evaluate((el) => el.scrollLeft)) >
+      scrollLeft,
+  );
+  assert.equal(await phone.locator("[data-ui=count]").textContent(), "2");
 
   assert.ok(
     await phone.evaluate(

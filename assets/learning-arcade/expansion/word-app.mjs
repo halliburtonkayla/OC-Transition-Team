@@ -143,7 +143,7 @@ export async function mount(root, host) {
     const b = BOOKS.find((b) => b.id === c.bookId);
     content.className = "premium-content word-play";
     content.style.setProperty("--book-color", b.color);
-    content.innerHTML = `<div class="book-topline"><button data-ui="library">← Book library</button><span>${e(b.title)} / ${DIFFICULTIES[c.level - 1]}</span><div class="word-top-tools"><label><input type="checkbox" data-ui="timed" ${host.get().options.timed ? "checked" : ""} ${c.level === 1 ? "disabled" : ""}> Optional 10-minute challenge</label><span data-ui="timer"></span></div></div><div class="open-book" data-ui="open-book"><section class="book-left"><header><div><span class="page-eyebrow">CHAPTER ${String(c.page + 1).padStart(2, "0")}</span><h2>${e(b.title)}</h2></div><span class="bubble-badge" aria-hidden="true">${b.icon}</span></header><p class="word-directions" data-ui="directions">${c.level === 1 ? "Find words going right → or down ↓." : c.level === 2 ? "Find words across or down, forward or backward." : "Find words in all eight directions, including diagonals."} Drag, or tap the first and last letter. Keyboard: arrows move; Enter selects endpoints; Escape clears.</p><div class="letter-scroll"><div class="letter-grid" data-ui="grid" role="grid" aria-label="${e(b.title)} word search, ${puzzle.size} rows and columns" style="--grid-size:${puzzle.size}"><svg class="grid-lines" data-ui="lines" viewBox="0 0 ${puzzle.size} ${puzzle.size}" preserveAspectRatio="none" aria-hidden="true"></svg>${puzzle.grid
+    content.innerHTML = `<div class="book-topline"><button data-ui="library">← Book library</button><span>${e(b.title)} / ${DIFFICULTIES[c.level - 1]}</span><div class="word-top-tools"><label><input type="checkbox" data-ui="timed" ${host.get().options.timed ? "checked" : ""} ${c.level === 1 ? "disabled" : ""}> Optional 10-minute challenge</label><span data-ui="timer"></span></div></div><div class="open-book" data-ui="open-book"><section class="book-left"><header><div><span class="page-eyebrow">CHAPTER ${String(c.page + 1).padStart(2, "0")}</span><h2>${e(b.title)}</h2></div><span class="bubble-badge" aria-hidden="true">${b.icon}</span></header><p class="word-directions" data-ui="directions">${c.level === 1 ? "Find words going right → or down ↓." : c.level === 2 ? "Find words across or down, forward or backward." : "Find words in all eight directions, including diagonals."} Drag, or tap the first and last letter. Keyboard: arrows move; Enter selects endpoints; Escape clears.</p><div class="grid-pan-tools" aria-label="Move around the letter grid"><span>Move the grid</span><button data-grid-pan="left" aria-label="Move grid left">←</button><button data-grid-pan="right" aria-label="Move grid right">→</button><button data-grid-pan="up" aria-label="Move grid up">↑</button><button data-grid-pan="down" aria-label="Move grid down">↓</button></div><div class="letter-scroll"><div class="letter-grid" data-ui="grid" role="grid" aria-label="${e(b.title)} word search, ${puzzle.size} rows and columns" style="--grid-size:${puzzle.size}"><svg class="grid-lines" data-ui="lines" viewBox="0 0 ${puzzle.size} ${puzzle.size}" preserveAspectRatio="none" aria-hidden="true"></svg>${puzzle.grid
       .map(
         (row, r) =>
           `<div class="letter-row" role="row">${row
@@ -313,6 +313,13 @@ export async function mount(root, host) {
       const i = indexAt(ev) ?? origin.index;
       if (moved) {
         choose(pathBetween(origin.index, i, puzzle.size));
+      } else if (ui.preferences.simple === false) {
+        anchor = null;
+        path = [];
+        drawPaths();
+        feedback(
+          "Drag from the first letter to the last letter. Turn on tap endpoints in Accessibility for simpler controls.",
+        );
       } else if (origin.previous !== null) {
         choose(pathBetween(origin.previous, i, puzzle.size));
       } else {
@@ -397,6 +404,26 @@ export async function mount(root, host) {
       if (ui.paused) return;
       const b = ev.target.closest("button");
       if (!b) return;
+      if (b.dataset.gridPan) {
+        const scroller = content.querySelector(".letter-scroll"),
+          dir = b.dataset.gridPan;
+        scroller.scrollBy({
+          left:
+            dir === "left"
+              ? -scroller.clientWidth * 0.65
+              : dir === "right"
+                ? scroller.clientWidth * 0.65
+                : 0,
+          top:
+            dir === "up"
+              ? -scroller.clientHeight * 0.65
+              : dir === "down"
+                ? scroller.clientHeight * 0.65
+                : 0,
+          behavior: ui.preferences.reduced ? "auto" : "smooth",
+        });
+        return;
+      }
       if (b.dataset.book)
         openBook(b.dataset.book, Number($(root, "difficulty").value));
       else if (b.dataset.ui === "continue") openBook();

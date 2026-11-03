@@ -1811,6 +1811,25 @@
 .premium-shell .clothing-card span {
   font-size: calc(9px * var(--game-text));
 }
+.grid-pan-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  color: #88758b;
+  font-size: 10px;
+}
+.grid-pan-tools span {
+  margin-right: auto;
+}
+.premium-shell .grid-pan-tools button {
+  min-height: 36px;
+  min-width: 40px;
+  padding: 5px 9px;
+  background: #f3e9f6;
+  color: #715481;
+  box-shadow: inset 0 1px white;
+}
 @media print {
   @page {
     size: letter;

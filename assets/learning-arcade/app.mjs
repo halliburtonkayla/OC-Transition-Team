@@ -309,9 +309,15 @@ async function suspendPremium() {
     $("connection-status").textContent =
       "This practice could not be saved. Keep this page open and use My progress to print the unsaved copy.";
   }
-  if (run.options.record && profile && !dirty)
+  if (run.options.record && profile && !dirty) {
     records = records.filter((r) => r.id !== run.id).concat(copy);
-  else if (run.ownerId)
+    transientByStudent.set(
+      run.ownerId,
+      (transientByStudent.get(run.ownerId) || []).filter(
+        (r) => r.id !== run.id,
+      ),
+    );
+  } else if (run.ownerId)
     transientByStudent.set(
       run.ownerId,
       (transientByStudent.get(run.ownerId) || [])
@@ -832,6 +838,7 @@ async function save() {
       JSON.stringify(run) === JSON.stringify(snapshot)
     )
       dirty = false;
+    if (!dirty && run?.id === snapshot.id) delete run.unsaved;
     $("save-status").textContent =
       "Practice saved to your connected learning profile.";
     premium?.ui.status(
