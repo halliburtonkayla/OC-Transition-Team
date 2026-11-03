@@ -156,17 +156,49 @@ if(w.businesses["Jasmine, Aubrey & Chevi Services"]){if(!w.businesses["The Main 
 let oldChild=["Gia & Jacob Business","Dalton & Aiden Business"];oldChild.forEach(function(n){if(w.businesses[n])delete w.businesses[n]});if(!w.businesses["Guardian Angel"])w.businesses["Guardian Angel"]={owners:["Gia","Adon","Jacob","Dalton"],balance:5000,alerts:[],type:"Childcare & daycare"};w.businesses["Guardian Angel"].owners=["Gia","Adon","Jacob","Dalton"];w.businesses["Guardian Angel"].type="Childcare & daycare • Guarding Little Wings With Love Every Day";if(w.businesses["The Main Attraction"])w.businesses["The Main Attraction"].type="Beauty salon • Hair • Makeup • Lashes • Nails";try{let old=JSON.parse(localStorage.ttResidents||'{}');Object.entries(old).forEach(([n,r])=>{if(!w.residents[n])w.residents[n]={checking:Number.isFinite(Number(r.checking))?Number(r.checking):10000,savings:Number(r.savings)||0,sessions:Number(r.sessions)||0,career:r.career||"Not selected",job:r.job||"Needs a job",home:r.home||"Not selected",car:r.car||"Not selected",history:[],notifications:[]}})}catch(e){}return w};const put=w=>{localStorage.ttWorld=JSON.stringify(w);if(window.TTNotifications)TTNotifications.sync();updateBadge();try{renderResidentDashboard()}catch(e){}};function openSheet(html){stopHousingAudio();content.innerHTML=html;sheet.classList.add('show')}function closeSheet(){stopHousingAudio();sheet.classList.remove('show')}function ensure(n){let w=get();if(!w.residents[n])w.residents[n]={checking:10000,savings:0,sessions:0,career:"Not selected",job:"Needs a job",home:"Not selected",car:"Not selected",history:[],notifications:[],avatar:null};if(!("avatar" in w.residents[n]))w.residents[n].avatar=null;put(w);return w.residents[n]}const townLoginProfiles=[
 "Bradley","Jaden","Clark","Noah","Olivia","Kaylee","Gia","Jacob","Jasmine","Cameron","Dalton","Allen","Snow","Aubrey","Haley","Jocquan","Alyssa","Nicholas","Aiden","Chevi","Adon","Miss Kayla","Guest"
 ];
+const privateTownCodeKey='ttPrivateTownCode';
 function resident(){
  const options=townLoginProfiles.map(n=>'<option value="'+n.replace(/"/g,'&quot;')+'">'+n+'</option>').join('');
- openSheet('<h2>Log in to Transition Town</h2><p>Choose your profile to enter town.</p><label style="display:block;font-weight:800;margin:14px 0 7px">Who are you?</label><select class="field" id="loginProfile"><option value="">Select your name…</option>'+options+'</select><button class="primary" style="margin-top:14px;width:100%" onclick="login()">Enter Transition Town</button><p class="tiny">Student progress is saved on this device. Guest is available for visitors and practice.</p>')
+ openSheet('<h2>Log in to Transition Town</h2><p>Choose your profile to enter town.</p><label style="display:block;font-weight:800;margin:14px 0 7px">Who are you?</label><select class="field" id="loginProfile"><option value="">Select your name…</option>'+options+'</select><button class="primary" style="margin-top:14px;width:100%" onclick="login()">Enter Transition Town</button><p class="tiny">Student progress is saved on this device. Guest is available for visitors and practice.</p><form id="privateTownSignIn" data-monitor-private><label for="privateTownCode" style="display:block;font-weight:800;margin:14px 0 7px">New student access code</label><input id="privateTownCode" class="field" type="password" autocomplete="off" maxlength="32" required><button class="primary" style="margin-top:10px;width:100%" type="submit">Sign in with access code</button><p id="privateTownError" class="tiny" role="status"></p></form>');
+ document.querySelector('#privateTownSignIn').addEventListener('submit',signInPrivateTown);
 }
-function logoutTown(){if(/kayla/i.test(current)){try{const auth=JSON.parse(sessionStorage.getItem('ttMonitorPinAuth')||'null');if(auth?.token)fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+auth.token},body:JSON.stringify({action:'teacher_logout'}),keepalive:true}).catch(()=>{});}catch{}sessionStorage.removeItem('ttMonitorPinAuth');}window.TTMonitor?.end?.();sessionStorage.removeItem('ttCurrent');sessionStorage.removeItem('ttVisitIdentity');sessionStorage.removeItem('ttKaylaPinVerified');if(window.TTRoom)TTRoom.leaveStudent(current);sessionStorage.removeItem('ttTownTeacherCode');localStorage.removeItem('ttCurrent');current='';activeGroup=[];localStorage.removeItem('ttActiveGroup');document.body.classList.remove('teacher-mode');document.body.classList.add('login-required');resident();renderResidentDashboard();}
+async function verifyPrivateTownCode(code){
+ const response=await fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{
+  method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',
+  signal:AbortSignal.timeout(10000),body:JSON.stringify({action:'town_sign_in',code})
+ });
+ if(response.status===401)throw Error('That access code did not match. Check it and try again.');
+ if(!response.ok)throw Error('Sign-in is temporarily unavailable. Try again.');
+ const data=await response.json();
+ if(typeof data.student!=='string'||!data.student)throw Error('Sign-in is temporarily unavailable. Try again.');
+ return data.student;
+}
+async function signInPrivateTown(event){
+ event.preventDefault();
+ const form=event.currentTarget,button=form.querySelector('button'),error=form.querySelector('[role=status]');
+ const code=form.querySelector('input').value.trim();
+ button.disabled=true;
+ error.textContent='Checking your access code…';
+ try{
+  const student=await verifyPrivateTownCode(code);
+  if(!form.isConnected)return;
+  sessionStorage.setItem(privateTownCodeKey,code);
+  enterTownStudent(student);
+ }catch(err){
+  error.textContent=err.name==='TimeoutError'||err instanceof TypeError?'Sign-in is temporarily unavailable. Try again.':err.message;
+ }finally{button.disabled=false;}
+}
+function logoutTown(){sessionStorage.removeItem(privateTownCodeKey);if(/kayla/i.test(current)){try{const auth=JSON.parse(sessionStorage.getItem('ttMonitorPinAuth')||'null');if(auth?.token)fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+auth.token},body:JSON.stringify({action:'teacher_logout'}),keepalive:true}).catch(()=>{});}catch{}sessionStorage.removeItem('ttMonitorPinAuth');}window.TTMonitor?.end?.();sessionStorage.removeItem('ttCurrent');sessionStorage.removeItem('ttVisitIdentity');sessionStorage.removeItem('ttKaylaPinVerified');if(window.TTRoom)TTRoom.leaveStudent(current);sessionStorage.removeItem('ttTownTeacherCode');localStorage.removeItem('ttCurrent');current='';activeGroup=[];localStorage.removeItem('ttActiveGroup');document.body.classList.remove('teacher-mode');document.body.classList.add('login-required');resident();renderResidentDashboard();}
 function switchResident(encoded){let n=decodeURIComponent(encoded);if(window.TTRoom&&current&&current!==n)TTRoom.leaveStudent(current);ensure(n);current=n;localStorage.ttCurrent=n;sessionStorage.ttCurrent=n;sessionStorage.ttVisitIdentity=n;status.textContent=n+" is in Transition Town.";studentView()}
 function login(){
  let n=document.querySelector('#loginProfile')?.value||'';
  if(!n)return alert('Choose a profile first.');
+ sessionStorage.removeItem(privateTownCodeKey);
  if(window.TTRoom&&current&&current!==n)TTRoom.leaveStudent(current);
  if(/^(?:miss|ms\.) kayla$/i.test(n)){current=n;ensure(n);localStorage.ttCurrent=n;sessionStorage.ttCurrent=n;sessionStorage.ttVisitIdentity=n;teacherView();return}
+ enterTownStudent(n);
+}
+function enterTownStudent(n){
  ensure(n);current=n;localStorage.ttCurrent=n;sessionStorage.ttCurrent=n;sessionStorage.ttVisitIdentity=n;status.textContent=n+' is in Transition Town.';const next=new URLSearchParams(location.search).get('next');if(next&&/^[a-z0-9-]+\.html(?:\?[^#]*)?$/.test(next)){location.replace(next);return;}studentView()
 }
 function loginKayla(){current='Ms. Kayla';ensure(current);localStorage.ttCurrent=current;sessionStorage.ttCurrent=current;teacherView()}
@@ -719,7 +751,7 @@ function teacherResidents(){let w=get();openSheet('<h2>Residents</h2>'+Object.en
 try{activeGroup=JSON.parse(localStorage.ttActiveGroup||'[]')}catch(e){activeGroup=[]}
 function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.sessions++;r.utilities=r.utilities||{electricOn:false,waterOn:false,electricDeposit:false,waterDeposit:false,lastElectricPaid:0,lastWaterPaid:0};if(!r.life?.housing&&r.utilities.electricOn&&r.sessions-r.utilities.lastElectricPaid>=2&&!r.notifications.includes('CITY HALL: Your electric bill of $85 is due. Visit the Electricity Department to pay it.')){r.notifications.push('CITY HALL: Your electric bill of $85 is due. Visit the Electricity Department to pay it.');w.messages.push({from:'City Hall - Electricity Department',to:current,text:'Your electric bill of $85 is due. Visit the Electricity Department to pay it.',date:new Date().toLocaleString()})}if(!r.life?.housing&&r.utilities.waterOn&&r.sessions-r.utilities.lastWaterPaid>=2&&!r.notifications.includes('CITY HALL: Your water bill of $45 is due. Visit the Water Department to pay it.')){r.notifications.push('CITY HALL: Your water bill of $45 is due. Visit the Water Department to pay it.');w.messages.push({from:'City Hall - Water Department',to:current,text:'Your water bill of $45 is due. Visit the Water Department to pay it.',date:new Date().toLocaleString()})}put(w);let x=window.open('','_blank');x.document.write('<h1>Transition Town Session Report</h1><h2>'+current+'</h2><p>'+new Date().toLocaleString()+'</p><p>Career: '+r.career+'</p><p>Job: '+r.job+'</p><p>Home: '+r.home+'</p><p>Checking: $'+r.checking.toFixed(2)+'</p><p>Savings: $'+r.savings.toFixed(2)+'</p><p>Completed sessions: '+r.sessions+'</p><h3>Recent actions</h3><p>'+r.history.slice(-8).join('<br>')+'</p><hr><p>Pre-ETS / session note: __________________________________________</p><script>window.print()<\/script>')}updateBadge();if(current)status.textContent=current+' is in Transition Town. Choose a building on the map.';
 
-(function restoreOpeningLoginAndKaylaBalance(){
+(async function restoreOpeningLoginAndKaylaBalance(){
  // Existing balances are preserved; Transition Life never issues another starting balance.
  const params=new URLSearchParams(location.search);const passed=sessionStorage.ttVisitIdentity?params.get('resident')||'':'';const returning=passed||sessionStorage.ttCurrent||'';if(returning&&returning!=='Guest'){localStorage.ttCurrent=returning;sessionStorage.ttCurrent=returning}
  if(returning&&townLoginProfiles.includes(returning)){
@@ -728,6 +760,15 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
   if(/^(?:miss|ms\.) kayla$/i.test(current))teacherView();else studentView();
  }else{
   document.body.classList.add('login-required');
+  const code=returning&&sessionStorage.getItem(privateTownCodeKey);
+  if(code){
+   try{
+    const student=await verifyPrivateTownCode(code);
+    if(student===returning){enterTownStudent(student);return;}
+   }catch{}
+  }
+  sessionStorage.removeItem(privateTownCodeKey);
+  if(returning){sessionStorage.removeItem('ttCurrent');sessionStorage.removeItem('ttVisitIdentity');localStorage.removeItem('ttCurrent');}
   resident();
  }
 })();
@@ -744,7 +785,7 @@ if (new URLSearchParams(location.search).get('park') === 'football') {
 }
 </script>
 <script src="transition-life/catalog.js?v=20261006-2"></script><script src="transition-life/core.js?v=20261006-2"></script><script src="transition-life/storage.js?v=20261006-2"></script><script src="transition-life/town-bridge.js?v=20261006-sidebar-only"></script>
-<a href="pre-ets-session-reports.html" style="position:fixed;bottom:14px;right:14px;z-index:9999;background:#302365;color:white;padding:12px 16px;border-radius:12px;font:bold 14px Arial;text-decoration:none;box-shadow:0 3px 14px #0005">Teacher: Pre-ETS Reports</a><script src="assets/classroom-monitor/student.js?v=20261030release" defer></script><script src="assets/career-lab/business-avatars.js?v=20261024walking"></script><script src="assets/career-lab/avatar.js?v=20261024walking"></script><script src="assets/career-lab/town-walk.js?v=20261024walking"></script><script>if(["1","classrooms","legacy"].includes(new URLSearchParams(location.search).get("school")))window.addEventListener("load",function(){if(current){if(new URLSearchParams(location.search).get("school")==="classrooms")schoolClassrooms();else if(new URLSearchParams(location.search).get("school")==="legacy")schoolOriginalHallway();else trainingCollege()}});</script></body></html>
+<a href="pre-ets-session-reports.html" style="position:fixed;bottom:14px;right:14px;z-index:9999;background:#302365;color:white;padding:12px 16px;border-radius:12px;font:bold 14px Arial;text-decoration:none;box-shadow:0 3px 14px #0005">Teacher: Pre-ETS Reports</a><script src="assets/classroom-monitor/student.js?v=20261103-private-signin" defer></script><script src="assets/career-lab/business-avatars.js?v=20261024walking"></script><script src="assets/career-lab/avatar.js?v=20261024walking"></script><script src="assets/career-lab/town-walk.js?v=20261024walking"></script><script>if(["1","classrooms","legacy"].includes(new URLSearchParams(location.search).get("school")))window.addEventListener("load",function(){if(current){if(new URLSearchParams(location.search).get("school")==="classrooms")schoolClassrooms();else if(new URLSearchParams(location.search).get("school")==="legacy")schoolOriginalHallway();else trainingCollege()}});</script></body></html>
 
 
 

@@ -32,7 +32,7 @@ async function join(){
  try{
   cfg=await api('public_config');draw();if(!cfg.enabled)return;
   token=sessionStorage.getItem(key(student))||localStorage.getItem(key(student))||'';if(token)sessionStorage.setItem(key(student),token);localStorage.setItem(key(student),token);
-  if(!token){const r=await api('join',{student,phone_token:sessionStorage.getItem('ttTownSession:'+student)||''});token=r.token;pendingPair=r.pair_code;sessionStorage.setItem(key(student),token);localStorage.setItem(key(student),token);sessionStorage.setItem(key(student)+':pair',pendingPair);}
+  if(!token){const r=await api('join',{student,phone_token:sessionStorage.getItem('ttTownSession:'+student)||'',town_code:sessionStorage.getItem('ttPrivateTownCode')||undefined});token=r.token;pendingPair=r.pair_code;sessionStorage.setItem(key(student),token);localStorage.setItem(key(student),token);sessionStorage.setItem(key(student)+':pair',pendingPair);}
   const d=await api('device_status');pendingPair=d.approved?'':sessionStorage.getItem(key(student)+':pair')||pendingPair;
   if(!d.approved){draw();return}
   const r=await api('begin');session=r.session;sessionStorage.setItem(sessionKey(student),session.id);setTimeout(workPay,1000);paused=session.status==='paused';mirror=wantsMirror();stopped=false;lastWorld=null;record('visit','Opened '+document.title);draw();await heartbeat();
