@@ -537,31 +537,22 @@ function findPaths(grid, words) {
   });
   await touchSession.detach();
   assert.equal(await phone.locator("[data-ui=count]").textContent(), "2");
-  await phone.evaluate(() => {
-    window.__panEvents = [];
-    for (const type of ["pointerdown", "pointerup", "pointercancel", "click", "scroll"])
-      document.addEventListener(type, (ev) => {
-        const el = document.querySelector(".letter-scroll");
-        window.__panEvents.push({ type, target: ev.target?.outerHTML?.slice(0, 160),
-          left: el.scrollLeft, top: el.scrollTop });
-        window.__panEvents = window.__panEvents.slice(-30);
-      }, { capture: true });
-  });
   const beforePan = await phone.locator(".letter-scroll").evaluate((el) => ({
     left: el.scrollLeft,
     width: el.clientWidth,
     range: el.scrollWidth - el.clientWidth,
   }));
   assert.ok(beforePan.range > 0, "The phone grid must have room to pan");
+  await phone.locator("[data-grid-pan=right]").tap();
+  await phone.waitForFunction(
+    () => document.querySelector(".letter-scroll").scrollLeft > 1,
+  );
+  const rightOffset = await phone.locator(".letter-scroll").evaluate((el) => el.scrollLeft);
   await phone.locator("[data-grid-pan=left]").tap();
-  console.log("PHONE_GRID_NAVIGATION", JSON.stringify(await phone.evaluate((before) => ({
-    before, events: window.__panEvents, reduced: document.querySelector("[data-ui=reduced]").checked,
-    active: document.activeElement?.outerHTML?.slice(0, 160),
-  }), beforePan)));
   // Observe the first control's result before testing the reverse control.
   await phone.waitForFunction(
     (target) => document.querySelector(".letter-scroll").scrollLeft <= target + 1,
-    Math.max(0, beforePan.left - beforePan.width * 0.65),
+    Math.max(0, rightOffset - beforePan.width * 0.65),
   );
   const scrollLeft = await phone
     .locator(".letter-scroll")

@@ -67,12 +67,37 @@ test("Actual Word Quest DOM supports mouse/touch paths, keyboard words, 20 locke
     assert.equal(root.querySelectorAll("[data-book]").length, 10);
     click("[data-book=careers]");
     const p = generatePuzzle("careers", 1, 0, 126);
-    let pan = null;
+    let pan = null, panCount = 0;
     root.querySelector(".letter-scroll").scrollBy = (opts) => {
       pan = opts;
+      panCount++;
     };
     click('[data-grid-pan="right"]');
     assert.equal(pan.behavior, "auto");
+    const panButton = root.querySelector('[data-grid-pan="left"]');
+    const touchPan = (type, x = 10) => {
+      const ev = new w.MouseEvent(type, {
+        bubbles: true, cancelable: true, clientX: x, clientY: 10,
+      });
+      Object.defineProperties(ev, {
+        pointerType: { value: "touch" }, pointerId: { value: 9 },
+      });
+      panButton.dispatchEvent(ev);
+    };
+    touchPan("pointerdown");
+    touchPan("pointerup");
+    assert.equal(panCount, 2, "A touch pans even when no compatibility click arrives");
+    panButton.dispatchEvent(new w.MouseEvent("click", { bubbles: true, detail: 1 }));
+    assert.equal(panCount, 2, "A delayed touch click must not pan twice");
+    panButton.click();
+    assert.equal(panCount, 3, "Keyboard / assistive clicks still activate the control");
+    touchPan("pointerdown");
+    touchPan("pointerup", 40);
+    assert.equal(panCount, 3, "Swiping over a pan button must not activate it");
+    touchPan("pointerdown");
+    touchPan("pointercancel");
+    touchPan("pointerup");
+    assert.equal(panCount, 3, "A canceled touch must not activate the control");
 
     const cell = (i) => root.querySelector(`[data-cell="${i}"]`);
     function pointerPath(f, drag = false) {

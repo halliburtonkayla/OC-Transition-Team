@@ -55,6 +55,8 @@ export async function mount(root, host) {
     library = true,
     hintPath = [],
     hintTimer = 0,
+    panTouch = null,
+    lastTouchPan = null,
     disposed = false;
   const ui = shell(root, host, {
     title: "Word Quest.",
@@ -401,6 +403,52 @@ export async function mount(root, host) {
     $(root, "question").innerHTML =
       `<p class="vocab-word">${e(q.word)}</p><p>${e(q.prompt)}</p><button data-q-read>Read prompt ♪</button><div class="vocab-options">${options.map((o) => `<button data-answer="${e(o)}">${e(o)}</button>`).join("")}</div><p data-ui="q-feedback" role="status"></p><div class="vocab-nav"><button data-q-prev aria-label="Previous vocabulary question">←</button><span>${c.questionIndex + 1} / 20 optional prompts</span><button data-q-next aria-label="Next vocabulary question">→</button></div>`;
   }
+  function panGrid(button) {
+    const scroller = content.querySelector(".letter-scroll"),
+      dir = button.dataset.gridPan;
+    button.focus({ preventScroll: true });
+    scroller.scrollBy({
+      left:
+        dir === "left" ? -scroller.clientWidth * 0.65
+          : dir === "right" ? scroller.clientWidth * 0.65 : 0,
+      top:
+        dir === "up" ? -scroller.clientHeight * 0.65
+          : dir === "down" ? scroller.clientHeight * 0.65 : 0,
+      behavior: ui.preferences.reduced ? "auto" : "smooth",
+    });
+  }
+  content.addEventListener(
+    "pointerdown",
+    (ev) => {
+      const button = ev.target.closest("[data-grid-pan]");
+      if (button && ev.pointerType === "touch" && !ui.paused)
+        panTouch = { button, id: ev.pointerId, x: ev.clientX, y: ev.clientY };
+    },
+    { signal: ui.signal },
+  );
+  content.addEventListener(
+    "pointerup",
+    (ev) => {
+      const touch = panTouch;
+      panTouch = null;
+      if (
+        !touch || touch.id !== ev.pointerId || ui.paused ||
+        ev.target.closest("[data-grid-pan]") !== touch.button ||
+        Math.hypot(ev.clientX - touch.x, ev.clientY - touch.y) > 10
+      ) return;
+      // Mobile browsers can suppress a compatibility click after a letter drag.
+      // Handle a completed touch directly, then ignore only its duplicate click.
+      ev.preventDefault();
+      panGrid(touch.button);
+      lastTouchPan = { button: touch.button, at: performance.now() };
+    },
+    { signal: ui.signal },
+  );
+  content.addEventListener(
+    "pointercancel",
+    () => { panTouch = null; },
+    { signal: ui.signal },
+  );
   content.addEventListener(
     "click",
     (ev) => {
@@ -408,23 +456,9 @@ export async function mount(root, host) {
       const b = ev.target.closest("button");
       if (!b) return;
       if (b.dataset.gridPan) {
-        const scroller = content.querySelector(".letter-scroll"),
-          dir = b.dataset.gridPan;
-        scroller.scrollBy({
-          left:
-            dir === "left"
-              ? -scroller.clientWidth * 0.65
-              : dir === "right"
-                ? scroller.clientWidth * 0.65
-                : 0,
-          top:
-            dir === "up"
-              ? -scroller.clientHeight * 0.65
-              : dir === "down"
-                ? scroller.clientHeight * 0.65
-                : 0,
-          behavior: ui.preferences.reduced ? "auto" : "smooth",
-        });
+        const duplicateTouchClick = ev.detail > 0 && ev.pointerType !== "mouse" &&
+          lastTouchPan?.button === b && performance.now() - lastTouchPan.at < 800;
+        if (!duplicateTouchClick) panGrid(b);
         return;
       }
       if (b.dataset.book)

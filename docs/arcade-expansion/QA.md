@@ -21,8 +21,10 @@ Learning Arcade, Classroom Release, Prism Pour, and Letter Lane.
   checked. No clipping, broken grids or blank cover page remains.
 - The screenshots and print examples in [evidence/](evidence/) are unmodified
   artifacts from this source revision. They contain only guest / fictional QA
-  learners. The game source after this revision is unchanged; subsequent updates
-  cover test synchronization, documentation and evidence only.
+  learners. Later follow-ups improve phone grid controls after touch dragging,
+  enlarge their touch targets, and strengthen browser synchronization. Latest
+  workflow results are attached to PR #19; the captured scenes retain the same
+  original game models, vocabulary and gameplay.
 
 ## Automated coverage
 
