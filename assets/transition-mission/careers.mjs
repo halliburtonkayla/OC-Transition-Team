@@ -159,7 +159,7 @@ export const CAREERS=[
 ];
 export const REGIONS=[{title:'Market Street',color:'#65a486'},{title:'Community Square',color:'#6c9db9'},{title:'Service Avenue',color:'#b78b93'},{title:'Makers’ District',color:'#b39667'},{title:'Discovery Heights',color:'#9690bd'},{title:'Future Valley',color:'#6d9f85'}];
 export const DENOMINATIONS=[{cents:500,name:'$5 bill'},{cents:100,name:'$1 bill'},{cents:25,name:'Quarter · 25¢'},{cents:10,name:'Dime · 10¢'},{cents:5,name:'Nickel · 5¢'},{cents:1,name:'Penny · 1¢'}];
-export const CHARACTER_BACKGROUNDS=[{id:'white',label:'White',skin:'#efc3a1',hair:'#70482c'},{id:'black',label:'Black',skin:'#955b3d',hair:'#231b1b'},{id:'hispanic',label:'Hispanic',skin:'#c78d61',hair:'#302322'},{id:'asian',label:'Asian',skin:'#dfb58b',hair:'#211e25'}];
+export const CHARACTER_BACKGROUNDS=[{id:'white',label:'Avery',skin:'#efc3a1',hair:'#70482c'},{id:'black',label:'Jordan',skin:'#955b3d',hair:'#231b1b'},{id:'hispanic',label:'Alex',skin:'#c78d61',hair:'#302322'},{id:'asian',label:'Riley',skin:'#dfb58b',hair:'#211e25'}];
 export const PORTALS=[{x:1650,title:'Your mission'},{x:5850,title:'Quick application'},{x:10050,title:'Job offer & clock in'},{x:14250,title:'Try the job'}];
 export const WORLD_END=17200;
 const scenarios=[
