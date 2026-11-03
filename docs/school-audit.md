@@ -1,12 +1,12 @@
 # Transition Town School activity and navigation audit
 
-Audited 2026-10-30. Existing files, Town records, business pages and game URLs are preserved.
+Audited 2026-11-02. Existing files, Town records, business pages and game URLs are preserved.
 
-204 existing HTML pages inspected. 0 literal local references still point to absent repository files. The remaining references are listed below. External URLs, dynamic destinations, playback and game behavior require separate checks.
+208 existing HTML pages inspected. 0 literal local references still point to absent repository files. The remaining references are listed below. External URLs, dynamic destinations, playback and game behavior require separate checks.
 
 ## Navigation decisions
 
-- School entry now presents six room signs. All original hallway actions remain under Original hallway.
+- School entry preserves the original hallway and adds the Home Economics door. The six-room directory remains optional.
 - The two Ready, Set, Work! activities are labeled Connected classroom game show and Solo / shared-keyboard game show to distinguish their different modes.
 - Career exploration and résumé/interview tools are under Career & Interview Studio; practical simulators are under Job Missions; arcade, math and life games are under The Wow Zone.
 - Kindness & Creativity links group projects, storytelling and coloring.
@@ -49,6 +49,7 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | build-your-own-story.html | Build Your Own Story | kindness | 2 | 0 |
 | business-startup-marketplace.html | Business Startup Marketplace | studio | 2 | 0 |
 | business-workday.html | Opening Day · Transition Town | wow | 14 | 0 |
+| candy-counter.html | Candy Counter · Weekly Snack Shop · Transition Town School | jobs | 5 | 0 |
 | career-adventures.html | Career Adventures | studio | 8 | 0 |
 | career-challenge.html | High School Career Challenge | studio | 5 | 0 |
 | career-explorer.html | Career A–Z | studio | 6 | 0 |
@@ -58,7 +59,7 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | career-scroll.html | Career Scroll \| OC Transition Team | studio | 3 | 0 |
 | career-specific-interview.html | Career-Specific Interview Builder \| Transition Team | studio | 3 | 0 |
 | career_presentations.html | Career Presentations | studio | 11 | 0 |
-| cdc-center.html | CDC Center \| OC Transition Team | watch | 21 | 0 |
+| cdc-center.html | CDC Center \| OC Transition Team | watch | 24 | 0 |
 | cdc-cleaning.html | CDC Cleaning & Home Skills | jobs | 2 | 0 |
 | cdc-cooking-match.html | CDC Make It! Cooking Match | jobs | 2 | 0 |
 | cdc-hands-on.html | CDC Hands-On Life & Work Skills | jobs | 1 | 0 |
@@ -104,11 +105,11 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | firefighter_emt_presentation.html | Firefighter &amp; EMT Careers \| Transition Team | studio | 2 | 0 |
 | first-day-work-checklist.html | First Day at Work Checklist \| Transition Team | watch | 3 | 0 |
 | first-paycheck-budget.html | First Paycheck Budget \| Transition Team | watch | 3 | 0 |
-| game-zone.html | Digital Game Zone | wow | 17 | 0 |
+| game-zone.html | Digital Game Zone | wow | 19 | 0 |
 | gaming_careers_presentation.html | Gaming Careers \| Transition Team | studio | 2 | 0 |
 | grocery-budget-meal-plan.html | Grocery Budget &amp; Meal Plan \| Transition Team | watch | 3 | 0 |
 | grocery-employee.html | Transition Town Grocery Employee Center | jobs | 7 | 0 |
-| grocery-store.html | Transition Town Grocery | town | 11 | 0 |
+| grocery-store.html | Transition Town Grocery | town | 13 | 0 |
 | grocery-trip.html | My Grocery Trip | wow | 5 | 0 |
 | group-projects.html | Group Projects \| Transition Team | kindness | 4 | 0 |
 | group-readings.html | Group Reading Room \| Transition Team | kindness | 2 | 0 |
@@ -116,6 +117,7 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | guardian-angel.html | Guardian Angel Childcare • Owner Interviews | town | 11 | 0 |
 | healthcare-simulator.html | Healthcare Career Simulator \| Transition Team | jobs | 4 | 0 |
 | home-beyond.html | Home & Beyond • Transition Town | town | 10 | 0 |
+| home-economics.html | Home Economics & Life Skills \| Transition Town | jobs | 9 | 0 |
 | house-01.html | House 1 — Maple Street Starter Home | compatibility | 6 | 0 |
 | house-02.html | House 2 — Cedar Lane Cottage | compatibility | 6 | 0 |
 | house-03.html | House 3 — Dogwood Drive Family Home | compatibility | 6 | 0 |
@@ -147,6 +149,7 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | landscaping_presentation.html | Landscaping Careers | studio | 2 | 0 |
 | laundry-weather-game.html | Laundry Weather Match | wow | 2 | 0 |
 | law_enforcement_presentation.html | Police &amp; Law Enforcement \| Transition Team | studio | 2 | 0 |
+| letter-lane.html | Letter Lane · Driving & Spelling · Transition Town School | wow | 7 | 0 |
 | life-stories.html | Real-Life Decision Stories | wow | 5 | 0 |
 | life-story-library.html | 30 Life Story Adventures \| Transition Team | wow | 4 | 0 |
 | main-attraction-appointments.html | Main Attraction \| Appointment Practice | wow | 4 | 0 |
@@ -184,6 +187,7 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | postsecondary.html | Postsecondary Education \| OC Transition Team | studio | 5 | 0 |
 | pre-ets-session-reports.html | Transition Town \| Pre-ETS Session Reports | teacher | 4 | 0 |
 | presentations.html | Career Presentations | studio | 16 | 0 |
+| prism-pour.html | Prism Pour · Transition Town School | wow | 6 | 0 |
 | read-work-schedule.html | Read a Work Schedule \| Transition Team | watch | 3 | 0 |
 | real-life-simulator.html | Real Life Simulator \| Transition Team | jobs | 4 | 0 |
 | relax-color.html | Relax & Tap Color \| Transition Team | kindness | 2 | 0 |
@@ -200,7 +204,7 @@ Audited 2026-10-30. Existing files, Town records, business pages and game URLs a
 | smart-transition-goal.html | SMART Transition Goal \| Transition Team | watch | 3 | 0 |
 | softball-game.html | Softball at Transition Park | wow | 7 | 0 |
 | stories.html | What Would You Do? \| Transition Team | wow | 7 | 0 |
-| student-businesses.html | Student Businesses · Opening Day • Transition Town | town | 14 | 0 |
+| student-businesses.html | Student Businesses · Opening Day • Transition Town | town | 15 | 0 |
 | teacher_teacher_assistant_presentation.html | Teacher &amp; Teacher Assistant | studio | 2 | 0 |
 | teamwork-reflection.html | Teamwork &amp; Group Project Reflection \| Transition Team | watch | 3 | 0 |
 | the-drama-book.html | The Drama \| Transition Team | wow | 2 | 0 |

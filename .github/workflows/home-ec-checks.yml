@@ -1,0 +1,76 @@
+name: Home Economics checks
+on:
+  pull_request:
+    paths:
+      - 'home-economics.html'
+      - 'assets/home-ec/**'
+      - 'assets/candy-counter/**'
+      - 'grocery-store.html'
+      - 'assets/school/entrance.*'
+      - 'assets/classroom-monitor/**'
+      - 'tests/home-ec*.mjs'
+      - 'tests/home-ec*.cjs'
+      - 'tools/home-ec/**'
+      - 'printables/home-ec/**'
+      - '.github/workflows/home-ec-checks.yml'
+permissions:
+  contents: read
+jobs:
+  classroom:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/home-ec/package-lock.json
+      - run: npm ci --prefix tools/home-ec --ignore-scripts --no-audit --no-fund
+      - name: Learning rules, real grocery DOM, teacher observations, geometry and snack-shop regressions
+        env:
+          SCHOOL_JSDOM: ${{ github.workspace }}/tools/home-ec/node_modules/jsdom
+        run: node --test tests/home-ec*.test.mjs tests/candy-counter*.test.mjs tests/school-release.test.mjs
+      - run: node tests/student-shop-core.cjs
+      - run: node tests/business-workday.cjs
+      - run: node tests/classroom-monitor.cjs
+      - name: Local references
+        run: |
+          node tools/school/audit.mjs
+          node -e "const d=require('./docs/school-inventory.json'); if(d.pages.some(x=>x.links.some(l=>!l.exists)))process.exit(1)"
+      - name: Install isolated browser for automated rendering checks
+        run: tools/home-ec/node_modules/.bin/playwright install --with-deps chromium
+      - name: Render the actual classroom, exercise walking and check responsive layouts
+        env:
+          NODE_PATH: ${{ github.workspace }}/tools/home-ec/node_modules
+        run: node tests/home-ec-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: home-economics-browser-evidence
+          path: home-ec-browser-output/
+          if-no-files-found: ignore
+
+  art-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tools/home-ec/package-lock.json
+      - run: npm ci --prefix tools/home-ec --ignore-scripts --no-audit --no-fund
+      - run: tools/home-ec/node_modules/.bin/playwright install --with-deps chromium
+      - name: Capture the real revised room, laundry and counter art
+        env:
+          NODE_PATH: ${{ github.workspace }}/tools/home-ec/node_modules
+          HOME_EC_ART_REVIEW: '1'
+        run: node tests/home-ec-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: home-economics-art-review
+          path: home-ec-browser-output/
+          if-no-files-found: ignore

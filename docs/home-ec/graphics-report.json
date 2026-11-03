@@ -1,0 +1,31 @@
+{
+  "renderer": {
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "stats": {
+      "calls": 371,
+      "triangles": 413576,
+      "width": 1440,
+      "height": 900
+    },
+    "art": {
+      "ready": true,
+      "loaded": 10,
+      "total": 10
+    },
+    "plants": 4
+  },
+  "views": [
+    "classroom-3d.jpg",
+    "walk-around-3d.jpg",
+    "laundry-3d.jpg",
+    "kitchen-art-3d.jpg"
+  ],
+  "checks": [
+    "Actual WebGL rendering and keyboard avatar movement",
+    "Photographic materials, real floor reflection, scanned foliage and actual 3D art views"
+  ],
+  "sourceRevision": "6e67d3d939a556eeb732fabf3e68832ef68240bd",
+  "workflowRun": "https://github.com/halliburtonkayla/OC-Transition-Team/actions/runs/41475368237",
+  "scope": "Successful art-review rendering. Full recipe journey is a separate workflow job."
+}
