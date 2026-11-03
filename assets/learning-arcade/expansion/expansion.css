@@ -47,6 +47,7 @@
   background: #fffdfa;
   color: #29444b;
   cursor: pointer;
+  touch-action: manipulation;
   box-shadow: 0 2px 2px #173d4110;
   letter-spacing: 0;
   line-height: 1.35;

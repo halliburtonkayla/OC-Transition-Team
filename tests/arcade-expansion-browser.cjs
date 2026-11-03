@@ -139,6 +139,7 @@ function findPaths(grid, words) {
     const a = page.locator('[data-cell="' + f.path[0] + '"]'),
       b = page.locator('[data-cell="' + f.path.at(-1) + '"]');
     await a.scrollIntoViewIfNeeded();
+    await b.scrollIntoViewIfNeeded();
     const aa = await a.boundingBox(),
       bb = await b.boundingBox();
     await page.mouse.move(aa.x + aa.width / 2, aa.y + aa.height / 2);
@@ -559,6 +560,7 @@ function findPaths(grid, words) {
     type: "jpeg",
   });
   await phone.locator("[data-ui=exit]").tap();
+  await phone.locator("#premium-dialog").waitFor({ state: "hidden" });
   await phone.locator("[data-launch=dresspart]").tap();
   await phone
     .locator("[data-ui=canvas][data-rendered=true]")

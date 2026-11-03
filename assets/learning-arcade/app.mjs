@@ -210,9 +210,14 @@ async function launchPremium(game, resume = null) {
       ? structuredClone(prior)
       : newRun(game, { mode, level: 1, record: !!profile });
     run.ownerId = profile?.id || null;
-    if (!run.checkpoint)
+    if (!run.checkpoint) {
       run.checkpoint =
         game === "wordquest" ? module.initialWord() : module.initialDress();
+      run.checkpoint.level = Math.max(
+        1,
+        Math.min(4, Math.trunc(Number(profile?.learning?.level) || 1)),
+      );
+    }
     run.checkpointRevision ||= 0;
     run.options.level = run.checkpoint.level;
     clock = new ActiveClock(performance.now());

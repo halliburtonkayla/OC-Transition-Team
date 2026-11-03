@@ -250,6 +250,7 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
                       ? "Sample learner one"
                       : "Sample learner two",
                   schoolLabel: "Fictional school",
+                  learning: { level: 2 },
                 },
                 records: structuredClone(serverRecords.get(body.token) || []),
               }),
@@ -369,6 +370,11 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
         failSave = true;
         click('[data-launch="wordquest"]');
         await flush();
+        assert.equal(
+          $('[data-ui="difficulty"]').value,
+          "2",
+          "new stations honor the existing teacher-selected starting level",
+        );
         click('[data-book="careers"]');
         await flush();
         click('[data-ui="save"]');

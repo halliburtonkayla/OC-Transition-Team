@@ -310,6 +310,9 @@ export async function mount(root, host) {
     (ev) => {
       if (!dragging || !origin) return;
       dragging = false;
+      const grid = content.querySelector('[data-ui="grid"]');
+      if (grid.hasPointerCapture?.(ev.pointerId))
+        grid.releasePointerCapture(ev.pointerId);
       const i = indexAt(ev) ?? origin.index;
       if (moved) {
         choose(pathBetween(origin.index, i, puzzle.size));
