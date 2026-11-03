@@ -1,4 +1,4 @@
-import {CAREERS,REGIONS,CHARACTER_BACKGROUNDS,DENOMINATIONS,PORTALS,WORLD_END} from './careers.mjs';
+import {CAREERS,REGIONS,CHARACTER_BACKGROUNDS,DENOMINATIONS,PORTALS,WORLD_END} from './careers.mjs?v=20261103names1';
 import {newCampaign,restoreCampaign,safeAvatar,fallbackAvatar,newPlayer,createWorld,stepWorld,submit,finishStage,nextStage,clockCode,useHelp,money,shuffled} from './core.mjs';
 import {createRenderer,drawAvatar,iconSVG,portraitOwner} from './render.mjs';
 import {createSound} from './sound.mjs';
