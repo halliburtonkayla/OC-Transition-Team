@@ -1,11 +1,25 @@
 // Original Transition Town instructional vocabulary. Each row links four levels
 // of vocabulary to one practical concept; no student information belongs here.
-const book = (id, title, color, icon, rows) => ({id,title,color,icon,rows:rows.trim().split('\n').map((row,i)=>{
- const [b,m,h,e,meaning]=row.split('|');
- return {id:i,words:[b,m,h,e],meaning};
-})});
+const book = (id, title, color, icon, rows) => ({
+  id,
+  title,
+  color,
+  icon,
+  rows: rows
+    .trim()
+    .split("\n")
+    .map((row, i) => {
+      const [b, m, h, e, meaning] = row.split("|");
+      return { id: i, words: [b, m, h, e], meaning };
+    }),
+});
 export const BOOKS = [
-book('careers','Career Exploration','#a14dd2','✦',`
+  book(
+    "careers",
+    "Career Exploration",
+    "#a14dd2",
+    "✦",
+    `
 JOB|CAREER|OCCUPATION|CAREERPATHWAY|Explore a type of work you may want to do.
 COOK|CHEF|CULINARY|FOODSERVICE|Prepare food safely for others.
 NURSE|HEALTH|HEALTHCARE|HEALTHSERVICES|Help people with their health and care.
@@ -26,8 +40,14 @@ TRY|EXPLORE|JOBSHADOW|CAREEREXPLORATION|Observe a worker to learn about a job.
 LEARN|TRAINING|APPRENTICE|APPRENTICESHIP|Learn job skills with instruction and practice.
 TEAM|CREW|COLLEAGUE|COLLABORATION|Work with other people toward a shared goal.
 PAY|WAGES|EARNINGS|COMPENSATION|Learn what a worker receives for their work.
-`),
-book('readiness','Workplace Readiness','#258d99','◈',`
+`,
+  ),
+  book(
+    "readiness",
+    "Workplace Readiness",
+    "#258d99",
+    "◈",
+    `
 TIME|ONTIME|PUNCTUAL|PUNCTUALITY|Arrive when your shift or meeting begins.
 PLAN|SCHEDULE|SCHEDULING|TIMEMANAGEMENT|Organize tasks and the time needed for them.
 LISTEN|LISTENING|ATTENTIVE|ACTIVELISTENING|Pay attention and check what a speaker means.
@@ -48,8 +68,14 @@ CHANGE|ADAPT|FLEXIBLE|ADAPTABILITY|Adjust your plan when a task or situation cha
 SHARE|SPEAK|COMMUNICATE|COMMUNICATION|Give clear information and listen to others.
 SOLVE|PROBLEM|SOLUTION|PROBLEMSOLVING|Identify a problem and try a safe solution.
 FINISH|COMPLETE|FOLLOWUP|FOLLOWTHROUGH|Finish an agreed task or tell someone what is still needed.
-`),
-book('money','Money and Banking','#c08d27','$',`
+`,
+  ),
+  book(
+    "money",
+    "Money and Banking",
+    "#c08d27",
+    "$",
+    `
 COIN|COINS|CURRENCY|LEGALCURRENCY|Recognize money used to pay for goods and services.
 PENNY|CENT|PENNIES|COINVALUE|Recognize the United States coin worth one cent.
 NICKEL|NICKELS|FIVECENTS|COINCOUNTING|Recognize the United States coin worth five cents.
@@ -70,8 +96,14 @@ TAKE|WITHDRAW|WITHDRAWAL|WITHDRAWFUNDS|Take available money out of an account.
 EARN|INCOME|PAYCHECK|NETEARNINGS|Identify the money available after paycheck deductions.
 BILL|BILLS|EXPENSES|RECURRINGEXPENSE|Plan for payments that come due regularly.
 CARD|DEBIT|DEBITCARD|ACCOUNTPRIVACY|Keep your card and private account information secure.
-`),
-book('interviews','Job Interviews','#427ed2','↗',`
+`,
+  ),
+  book(
+    "interviews",
+    "Job Interviews",
+    "#427ed2",
+    "↗",
+    `
 HELLO|GREETING|INTRODUCE|INTRODUCTION|Greet the interviewer and share your name.
 NAME|CONTACT|CONTACTINFO|CONTACTDETAILS|Provide a safe way for an employer to reach you.
 JOB|POSITION|VACANCY|JOBOPPORTUNITY|Find out which role the employer needs to fill.
@@ -92,8 +124,14 @@ THANK|THANKS|APPRECIATE|APPRECIATION|Thank the interviewer for their time.
 LATER|FOLLOWUP|FOLLOWTHROUGH|PROFESSIONALFOLLOWUP|Use the agreed method to check in after the interview.
 PERSON|REFERENCE|REFERENCES|PROFESSIONALREFERENCE|Ask permission before listing someone who can describe your work.
 OFFER|JOBOFFER|EMPLOYMENT|EMPLOYMENTTERMS|Review the job duties, pay, and schedule before accepting.
-`),
-book('kitchen','Kitchen and Food Safety','#df7370','♧',`
+`,
+  ),
+  book(
+    "kitchen",
+    "Kitchen and Food Safety",
+    "#df7370",
+    "♧",
+    `
 WASH|HANDWASH|HANDWASHING|HANDHYGIENE|Wash hands with soap and water before handling food.
 CLEAN|CLEANING|SANITIZE|SANITATION|Clean and sanitize work surfaces as directed.
 SOAP|SOAPY|DETERGENT|CLEANINGSUPPLIES|Use the correct cleaning product according to its label.
@@ -114,8 +152,14 @@ STORE|STORAGE|FOODSTORAGE|SAFESTORAGE|Store food safely according to its instruc
 MEASURE|CUP|MEASUREMENT|RECIPEMEASUREMENT|Measure ingredients using the amount and unit in a recipe.
 SPILL|SPILLS|SLIPHAZARD|SPILLRESPONSE|Clean a spill safely and alert others to a slippery area.
 TRASH|WASTE|DISPOSAL|WASTEMANAGEMENT|Place waste in the proper container and wash hands afterward.
-`),
-book('service','Customer Service','#ad5f9b','✧',`
+`,
+  ),
+  book(
+    "service",
+    "Customer Service",
+    "#ad5f9b",
+    "✧",
+    `
 HELLO|WELCOME|GREETING|CUSTOMERWELCOME|Greet customers in a friendly, respectful way.
 LISTEN|LISTENING|ATTENTIVE|ACTIVELISTENING|Let the customer explain what they need.
 ASK|INQUIRE|CLARIFY|CLARIFICATION|Ask a clear question when a request is uncertain.
@@ -136,8 +180,14 @@ PRIVATE|PRIVACY|CONFIDENTIAL|CONFIDENTIALITY|Protect a customer's personal or pa
 CLEAR|EXPLAIN|COMMUNICATE|CLEARCOMMUNICATION|Explain the next step in language the customer understands.
 FEEDBACK|COMMENT|SUGGESTION|CUSTOMERFEEDBACK|Listen to useful information about the service experience.
 FAIR|EQUAL|INCLUSIVE|ACCESSIBLESERVICE|Offer respectful service and appropriate access to each customer.
-`),
-book('tools','Tools of the Trade','#d49445','⌁',`
+`,
+  ),
+  book(
+    "tools",
+    "Tools of the Trade",
+    "#d49445",
+    "⌁",
+    `
 HAMMER|HAMMERS|CARPENTRY|CARPENTRYTOOLS|Use the correct tool to drive or remove a nail safely.
 WRENCH|WRENCHES|MECHANICAL|MECHANICALTOOLS|Choose a properly sized tool to turn a nut or bolt.
 SAW|CUTTING|SAWGUARD|MACHINESAFETY|Use cutting equipment only with approved training and guards.
@@ -158,8 +208,14 @@ SCALE|WEIGH|WEIGHING|WEIGHTMEASUREMENT|Check an item's weight using an appropria
 HEAT|THERMOMETER|TEMPCHECK|TEMPERATURETOOL|Use a thermometer to check a required temperature.
 CART|TROLLEY|TRANSPORT|MATERIALHANDLING|Move items with suitable equipment and a safe load.
 MANUAL|GUIDE|INSTRUCTIONS|OPERATINGMANUAL|Read approved operating instructions before using equipment.
-`),
-book('living','Independent Living','#4b9b79','⌂',`
+`,
+  ),
+  book(
+    "living",
+    "Independent Living",
+    "#4b9b79",
+    "⌂",
+    `
 HOME|HOUSING|RESIDENCE|HOUSINGOPTIONS|Compare a living arrangement with your needs and resources.
 RENT|RENTAL|LEASE|RENTALAGREEMENT|Review the terms and costs of renting a home.
 BILL|BILLS|UTILITIES|UTILITYPAYMENTS|Plan for household services and their due dates.
@@ -180,8 +236,14 @@ FIX|REPAIR|MAINTENANCE|REPAIRREQUEST|Report a housing repair need through the pr
 KEY|LOCK|SECURITY|HOMESECURITY|Protect access to your home and keep private information secure.
 CHOICE|CHOOSE|DECISION|INDEPENDENTCHOICE|Make an informed decision using your needs and preferences.
 PLAN|GOAL|LIFEGOAL|INDEPENDENTLIVING|Set a practical living goal and choose a next step.
-`),
-book('advocacy','Self-Advocacy','#7169c6','✺',`
+`,
+  ),
+  book(
+    "advocacy",
+    "Self-Advocacy",
+    "#7169c6",
+    "✺",
+    `
 VOICE|SPEAK|SPEAKUP|SELFADVOCACY|Explain your needs, strengths, and preferences.
 NEED|NEEDS|SUPPORTNEED|IDENTIFYNEEDS|Identify the support that helps you participate.
 WANT|PREFER|PREFERENCE|PERSONALPREFERENCE|Share a choice about how you would like to do something.
@@ -202,8 +264,14 @@ STRONG|STRENGTH|ABILITY|STRENGTHAWARENESS|Recognize and explain something you do
 LEARN|PRACTICE|CONFIDENCE|SELFDETERMINATION|Practice making choices and acting toward your own goals.
 FAIR|FAIRNESS|INCLUSION|EQUALPARTICIPATION|Ask for a fair opportunity to take part.
 TRUST|ALLY|ADVOCATE|SUPPORTNETWORK|Identify trusted people who respect your choices.
-`),
-book('future','Life After High School','#d26f9d','☀',`
+`,
+  ),
+  book(
+    "future",
+    "Life After High School",
+    "#d26f9d",
+    "☀",
+    `
 GOAL|FUTURE|TRANSITION|TRANSITIONPLANNING|Plan steps toward life after high school.
 SCHOOL|COLLEGE|POSTSECONDARY|POSTSECONDARYPLAN|Explore education or training after high school.
 TRADE|TRADES|TRADETRAINING|VOCATIONALTRAINING|Explore preparation for a skilled occupation.
@@ -224,15 +292,41 @@ ASK|VISIT|RESEARCH|INFORMATIONGATHERING|Ask questions and compare information be
 PLAN|PATHWAY|ALTERNATIVE|ALTERNATIVEPATHWAY|Identify another route if your first plan changes.
 VOICE|CHOICE|ADVOCACY|SELFDETERMINATION|Keep your own goals and choices central in transition planning.
 NEXT|ACTION|NEXTSTEP|ACTIONPLANNING|Choose one achievable action to move toward your goal.
-`)
+`,
+  ),
 ];
-export const DIFFICULTIES = ['Beginner','Medium','Hard','Expert'];
-export const DIRECTIONS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
-export function vocabulary(bookId,level=1){
- const b=BOOKS.find(x=>x.id===bookId);if(!b)throw Error('Unknown book');
- return b.rows.map(r=>({id:r.id,word:r.words[level-1],meaning:r.meaning}));
+export const DIFFICULTIES = ["Beginner", "Medium", "Hard", "Expert"];
+export const DIRECTIONS = [
+  [0, 1],
+  [1, 0],
+  [0, -1],
+  [-1, 0],
+  [1, 1],
+  [1, -1],
+  [-1, 1],
+  [-1, -1],
+];
+export function vocabulary(bookId, level = 1) {
+  const b = BOOKS.find((x) => x.id === bookId);
+  if (!b) throw Error("Unknown book");
+  return b.rows.map((r) => ({
+    id: r.id,
+    word: r.words[level - 1],
+    meaning: r.meaning,
+  }));
 }
-export function questions(bookId,level=1){
- const rows=vocabulary(bookId,level);
- return rows.map((r,i)=>({id:i,word:r.word,prompt:`Which action connects with ${r.word.toLowerCase()}?`,options:[r.meaning,rows[(i+7)%20].meaning,rows[(i+13)%20].meaning],answer:r.meaning,feedback:r.meaning}));
+export function questions(bookId, level = 1) {
+  const rows = vocabulary(bookId, level);
+  return rows.map((r, i) => ({
+    id: i,
+    word: r.word,
+    prompt: `Which action connects with ${r.word.toLowerCase()}?`,
+    options: [
+      r.meaning,
+      rows[(i + 7) % 20].meaning,
+      rows[(i + 13) % 20].meaning,
+    ],
+    answer: r.meaning,
+    feedback: r.meaning,
+  }));
 }

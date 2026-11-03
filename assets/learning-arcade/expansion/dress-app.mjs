@@ -1,103 +1,638 @@
-import {GARMENTS,COLORS,PATTERNS,SKINS,HAIRCOLORS,EYES,HAIRSTYLES,BODYTYPES,WEATHER,defaultAvatar,defaultOutfit,garmentById,SLOTS} from './dress-data.mjs';
-import {cleanAvatar,wear,makeScenario,evaluateOutfit,requirementsFor,outfitCost,suggestedOutfit,outfitSummary} from './dress-core.mjs';
-import {DIFFICULTIES} from './word-data.mjs';
-import {createDressScene} from './dress-scene.mjs';
-import {shell,$,chime,celebrate} from './shared.mjs';
-import {escapeHTML as e} from '../../learning/progress.mjs';
-export const initialDress=()=>({version:1,seed:Math.floor(Math.random()*4294967295),level:1,index:0,stage:'bedroom',avatar:defaultAvatar(),outfit:defaultOutfit(),created:false,history:[],achievements:[],questionIndex:0,preferences:{sound:false,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,low:false,text:1,simple:true,hints:true}});
-const slotNames={top:'Tops',bottom:'Bottoms',feet:'Shoes',dress:'Dresses',outer:'Layers',head:'Headwear',neck:'Scarves',hands:'Gloves',accessory:'Extras'};
-const REFLECTIONS=[
- {prompt:'The dress code is unclear. What could you do?',options:['Ask the supervisor to explain the requirements.','Guess without checking.','Skip the safety rules.'],answer:0,why:'Asking for clear instructions is a useful self-advocacy skill.'},
- {prompt:'Your workplace requires protective boots and you do not have any. What is a useful next step?',options:['Tell the supervisor and ask about approved equipment or support.','Start the unsafe task in sandals.','Hide the problem.'],answer:0,why:'Explain the barrier and ask for safe options before beginning the task.'},
- {prompt:'A forecast changes before you leave. What could help?',options:['Review the new weather and adjust your layers.','Ignore the updated forecast.','Choose only by your favorite color.'],answer:0,why:'Planning ahead includes adjusting to new information.'}
+import {
+  GARMENTS,
+  COLORS,
+  COLOR_NAMES,
+  PATTERNS,
+  SKINS,
+  HAIRCOLORS,
+  EYES,
+  HAIRSTYLES,
+  BODYTYPES,
+  WEATHER,
+  defaultAvatar,
+  defaultOutfit,
+  garmentById,
+  SLOTS,
+} from "./dress-data.mjs";
+import {
+  cleanAvatar,
+  wear,
+  makeScenario,
+  evaluateOutfit,
+  requirementsFor,
+  outfitCost,
+  suggestedOutfit,
+  outfitSummary,
+} from "./dress-core.mjs";
+import { DIFFICULTIES } from "./word-data.mjs";
+import { createDressScene } from "./dress-scene.mjs";
+import { shell, $, chime, celebrate } from "./shared.mjs";
+import { escapeHTML as e } from "../../learning/progress.mjs";
+export const initialDress = () => ({
+  version: 1,
+  seed: Math.floor(Math.random() * 4294967295),
+  level: 1,
+  index: 0,
+  stage: "bedroom",
+  avatar: defaultAvatar(),
+  outfit: defaultOutfit(),
+  created: false,
+  history: [],
+  achievements: [],
+  questionIndex: 0,
+  preferences: {
+    sound: false,
+    reduced: matchMedia("(prefers-reduced-motion: reduce)").matches,
+    low: false,
+    text: 1,
+    simple: true,
+    hints: true,
+  },
+});
+const slotNames = {
+  top: "Tops",
+  bottom: "Bottoms",
+  feet: "Shoes",
+  dress: "Dresses",
+  outer: "Layers",
+  head: "Headwear",
+  neck: "Scarves",
+  hands: "Gloves",
+  accessory: "Extras",
+};
+const REFLECTIONS = [
+  {
+    prompt: "The dress code is unclear. What could you do?",
+    options: [
+      "Ask the supervisor to explain the requirements.",
+      "Guess without checking.",
+      "Skip the safety rules.",
+    ],
+    answer: 0,
+    why: "Asking for clear instructions is a useful self-advocacy skill.",
+  },
+  {
+    prompt:
+      "Your workplace requires protective boots and you do not have any. What is a useful next step?",
+    options: [
+      "Tell the supervisor and ask about approved equipment or support.",
+      "Start the unsafe task in sandals.",
+      "Hide the problem.",
+    ],
+    answer: 0,
+    why: "Explain the barrier and ask for safe options before beginning the task.",
+  },
+  {
+    prompt: "A forecast changes before you leave. What could help?",
+    options: [
+      "Review the new weather and adjust your layers.",
+      "Ignore the updated forecast.",
+      "Choose only by your favorite color.",
+    ],
+    answer: 0,
+    why: "Planning ahead includes adjusting to new information.",
+  },
 ];
-function garmentIcon(g,color='#d0a6bd'){
- const defs=`<defs><linearGradient id="g-${g.id}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${color}"/><stop offset="1" stop-color="#26313e" stop-opacity=".4"/></linearGradient></defs>`,fill=`url(#g-${g.id})`;
- let shape=g.slot==='top'||g.slot==='outer'?'<path d="M29 18 16 25 8 44 25 51 29 40 29 78 71 78 71 40 75 51 92 44 84 25 71 18 62 25 38 25Z"/>':g.slot==='bottom'?g.cut==='skirt'?'<path d="M32 17 68 17 82 79 18 79Z"/>':'<path d="M27 17 73 17 77 83 54 83 50 43 46 83 23 83Z"/>':g.slot==='dress'?'<path d="M35 13 43 22 57 22 65 13 71 33 62 39 64 47 83 86 17 86 36 47 38 39 29 33Z"/>':g.slot==='feet'?'<path d="M15 40 43 40 47 58 75 62 84 73 81 80 15 80Z"/><path d="M24 29 51 29 55 47 82 51 91 62 88 67 68 66 57 59 29 57Z"/>':g.slot==='head'?'<path d="M23 62V48a27 27 0 0 1 54 0v14Z"/><ellipse cx="51" cy="64" rx="37" ry="8"/>':g.id==='umbrella'?'<path d="M12 45a38 38 0 0 1 76 0L77 41 65 47 50 41 35 47 22 41Z"/><path d="M50 42v36q0 15 12 7" fill="none" stroke="#485466" stroke-width="4"/>':g.slot==='neck'?'<path d="M31 20 68 20 65 33 52 36 58 79 40 82 39 36 29 32Z"/>':g.slot==='hands'?'<path d="M23 34 40 34 45 48 45 72 20 72 14 48 18 42 23 47Z"/><path d="M61 34 78 34 83 48 83 72 58 72 52 48 56 42 61 47Z"/>':'<rect x="26" y="27" width="48" height="53" rx="12"/><path d="M37 29v-9q13-15 26 0v9" fill="none" stroke="#737b7b" stroke-width="5"/>';
- return `<svg viewBox="0 0 100 100" aria-hidden="true">${defs}<g fill="${fill}" stroke="#ffffff55" stroke-width="1.5">${shape}</g></svg>`;
+function garmentIcon(g, color = "#d0a6bd") {
+  const defs = `<defs><linearGradient id="g-${g.id}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${color}"/><stop offset="1" stop-color="#26313e" stop-opacity=".4"/></linearGradient></defs>`,
+    fill = `url(#g-${g.id})`;
+  let shape =
+    g.slot === "top" || g.slot === "outer"
+      ? '<path d="M29 18 16 25 8 44 25 51 29 40 29 78 71 78 71 40 75 51 92 44 84 25 71 18 62 25 38 25Z"/>'
+      : g.slot === "bottom"
+        ? g.cut === "skirt"
+          ? '<path d="M32 17 68 17 82 79 18 79Z"/>'
+          : '<path d="M27 17 73 17 77 83 54 83 50 43 46 83 23 83Z"/>'
+        : g.slot === "dress"
+          ? '<path d="M35 13 43 22 57 22 65 13 71 33 62 39 64 47 83 86 17 86 36 47 38 39 29 33Z"/>'
+          : g.slot === "feet"
+            ? '<path d="M15 40 43 40 47 58 75 62 84 73 81 80 15 80Z"/><path d="M24 29 51 29 55 47 82 51 91 62 88 67 68 66 57 59 29 57Z"/>'
+            : g.slot === "head"
+              ? '<path d="M23 62V48a27 27 0 0 1 54 0v14Z"/><ellipse cx="51" cy="64" rx="37" ry="8"/>'
+              : g.id === "umbrella"
+                ? '<path d="M12 45a38 38 0 0 1 76 0L77 41 65 47 50 41 35 47 22 41Z"/><path d="M50 42v36q0 15 12 7" fill="none" stroke="#485466" stroke-width="4"/>'
+                : g.slot === "neck"
+                  ? '<path d="M31 20 68 20 65 33 52 36 58 79 40 82 39 36 29 32Z"/>'
+                  : g.slot === "hands"
+                    ? '<path d="M23 34 40 34 45 48 45 72 20 72 14 48 18 42 23 47Z"/><path d="M61 34 78 34 83 48 83 72 58 72 52 48 56 42 61 47Z"/>'
+                    : '<rect x="26" y="27" width="48" height="53" rx="12"/><path d="M37 29v-9q13-15 26 0v9" fill="none" stroke="#737b7b" stroke-width="5"/>';
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">${defs}<g fill="${fill}" stroke="#ffffff55" stroke-width="1.5">${shape}</g></svg>`;
 }
-export async function mount(root,host){
- const c=host.get().checkpoint||initialDress();host.get().checkpoint=c;
- let scene,slot='top',color=4,pattern='solid',customizing=!c.created,busy=false,disposed=false,feedback=null,transitionTimer=null;
- const ui=shell(root,host,{title:'Dress the Part.',kicker:'LIFE IN STYLE',description:'Your look. Your choices. A little preparation for wherever life takes you.',onPrint:()=>ui.printOptions([['report','Individual practice & scenario report'],['outfit','Current challenge & outfit planning sheet']])});
- ui.content.className='premium-content dress-game';ui.content.innerHTML=`<div class="dress-game-bar"><div><span class="premium-eyebrow">YOUR NEXT STEP</span><h2 data-ui="scenario-title"></h2></div><div class="game-controls"><label>Practice <select data-ui="mode">${[['cdc','CDC Beginner'],['preets','Pre-ETS Learning'],['esp','ESP Enrichment']].map(([id,label])=>`<option value="${id}" ${host.get().options.mode===id?'selected':''}>${label}</option>`).join('')}</select></label><label>Difficulty <select data-ui="difficulty">${DIFFICULTIES.map((l,i)=>`<option value="${i+1}" ${c.level===i+1?'selected':''}>${l}</option>`).join('')}</select></label><button data-ui="edit-avatar">My avatar</button></div></div><div class="dress-layout"><section class="dress-stage"><canvas data-ui="canvas" tabindex="0" aria-label="Interactive 3D avatar and bedroom. Drag to rotate or use left and right arrow keys."></canvas><div class="scene-location" data-ui="location">TRANSITION TOWN / YOUR BEDROOM</div><div class="weather-chip" data-ui="weather"></div><div class="scene-bottom"><div class="avatar-rotate"><button data-ui="left" aria-label="Rotate avatar left">↶</button><span>DRAG TO ROTATE</span><button data-ui="right" aria-label="Rotate avatar right">↷</button></div><div class="camera-tools"><button data-view="full">Full look</button><button data-view="face">Face</button><button data-view="room">Room</button></div></div><div class="changing-flash" data-ui="changing" hidden><span>✦ A fresh look ✦</span></div><div class="travel-card" data-ui="travel" hidden><span>✦</span><h3>On your way.</h3><p data-ui="travel-text"></p></div><div class="scene-error" data-ui="scene-error" hidden>3D could not initialize. Reopen the game in a browser with graphics support. Your saved work is preserved.</div></section><aside class="dress-panel" data-ui="panel" aria-label="Character, wardrobe and challenge controls"></aside></div><p class="dress-footer"><span data-ui="active-time">0 active practice minutes</span> · Practice evidence is separate from official Pre-ETS service records. No bank deposits.</p>`;
- const canvas=$(root,'canvas');let s=makeScenario(c.level,c.index,c.seed);
- scene=createDressScene(canvas,{config:c.avatar,outfit:c.outfit,weather:s.weather,onInteract:interact,onError:()=>{$(root,'scene-error').hidden=false;}});
- if(!scene)ui.status('3D is unavailable on this browser. Your saved work is preserved. Try a graphics-enabled browser.');
- scene?.motion(!ui.preferences.reduced);scene?.quality(ui.preferences.low);scene?.view('room');
- function save(){host.changed();host.save();}
- function updateBoard(){s=makeScenario(c.level,c.index,c.seed);$(root,'scenario-title').textContent=s.label;$(root,'weather').textContent=WEATHER[s.change&&['destination','feedback'].includes(c.stage)?s.change:s.weather].icon+' '+WEATHER[s.change&&['destination','feedback'].includes(c.stage)?s.change:s.weather].label;ui.instructions=`Your challenge is ${s.label}. ${requirementsFor(s).join(' ')} Choose clothing in the closet, check the mirror, and leave when ready.`;}
- function challengeCard(){return `<div class="challenge-card"><p class="premium-eyebrow">CHALLENGE ${c.index+1} · ${DIFFICULTIES[c.level-1]}</p><h3>${e(s.label)}</h3><p>${e(s.description)}</p><div class="challenge-weather"><b>${WEATHER[s.weather].icon} ${e(WEATHER[s.weather].label)}</b>${s.change?`<span>Forecast update: ${e(WEATHER[s.change].label)}</span>`:''}</div>${s.budget?`<p class="outfit-cost">Practice budget <b>$${outfitCost(c.outfit)} / $${s.budget}</b></p>`:''}<button data-read-scenario>Read challenge ♪</button></div>`;}
- const panel=()=>$(root,'panel');
- function avatarPanel(){
-  customizing=true;scene?.view('full');panel().innerHTML=`<div class="panel-heading"><span class="premium-eyebrow">ORIGINAL TO YOU</span><h2>Create your character.</h2><p>Make yourself, or someone you imagine. Every look belongs here.</p></div><div class="avatar-options"><fieldset><legend>Skin tone</legend><div class="swatches">${SKINS.map((v,i)=>`<button data-avatar-color="skin" data-value="${i}" class="swatch ${c.avatar.skin===i?'chosen':''}" style="--swatch:${v}" aria-label="Skin tone ${i+1}" aria-pressed="${c.avatar.skin===i}"></button>`).join('')}</div></fieldset><div class="avatar-selects"><label>Face shape<select data-config="face">${['Oval','Soft square','Round'].map((v,i)=>`<option value="${i}" ${c.avatar.face===i?'selected':''}>${v}</option>`).join('')}</select></label><label>Facial features<select data-config="features">${['Set one','Set two','Set three'].map((v,i)=>`<option value="${i}" ${c.avatar.features===i?'selected':''}>${v}</option>`).join('')}</select></label><label>Hairstyle<select data-config="hair">${HAIRSTYLES.map((v,i)=>`<option value="${i}" ${c.avatar.hair===i?'selected':''}>${v}</option>`).join('')}</select></label><label>Body proportions<select data-config="body">${BODYTYPES.map((v,i)=>`<option value="${i}" ${c.avatar.body===i?'selected':''}>${v}</option>`).join('')}</select></label></div><fieldset><legend>Hair color</legend><div class="swatches">${HAIRCOLORS.map((v,i)=>`<button data-avatar-color="hairColor" data-value="${i}" class="swatch ${c.avatar.hairColor===i?'chosen':''}" style="--swatch:${v}" aria-label="Hair color ${i+1}" aria-pressed="${c.avatar.hairColor===i}"></button>`).join('')}</div></fieldset><fieldset><legend>Eye color</legend><div class="swatches">${EYES.map((v,i)=>`<button data-avatar-color="eye" data-value="${i}" class="swatch ${c.avatar.eye===i?'chosen':''}" style="--swatch:${v}" aria-label="Eye color ${i+1}" aria-pressed="${c.avatar.eye===i}"></button>`).join('')}</div></fieldset><label>Height proportions<input data-config="height" type="range" min="0.88" max="1.12" step="0.02" value="${c.avatar.height}"></label><label class="avatar-glasses"><input data-config="glasses" type="checkbox" ${c.avatar.glasses?'checked':''}> Glasses</label></div><button class="dress-primary" data-avatar-done>${c.created?'Save my character':'This is my character'} →</button>`;
- }
- function bedroomPanel(){
-  customizing=false;c.stage='bedroom';scene?.view('room');panel().innerHTML=challengeCard()+`<div class="panel-intro"><h2>Ready for your next step?</h2><p>Start in your bedroom. Check the destination and weather, then choose your outfit.</p><ol class="journey-steps"><li class="current">Your bedroom</li><li>Walk-in closet</li><li>Mirror check</li><li>Your destination</li></ol><button class="dress-primary" data-enter-closet>Open walk-in closet →</button>${c.achievements.length?`<p class="achievement-count">✦ ${c.achievements.length} challenges completed</p><label>Replay a completed challenge<select data-replay><option value="">Choose a challenge</option>${[...new Map(c.history.filter(h=>h.evaluation.success).map(h=>[h.instance,h])).values()].map(h=>`<option value="${h.level}:${h.index}">${e(makeScenario(h.level,h.index,c.seed).label)} · ${DIFFICULTIES[h.level-1]}</option>`).join('')}</select></label>`:''}</div>`;save();
- }
- async function enterCloset(){if(busy)return;busy=true;scene?.view('closet');await scene?.moveTo('closet');if(disposed)return;busy=false;closetPanel();}
- function interact(action){if(busy||ui.paused)return;if(action==='challenge')ui.say(ui.instructions);else if(action.startsWith('closet:')){slot=action.split(':')[1];enterCloset();}else if(action==='mirror'&&c.created){scene?.moveTo('center');scene?.view('mirror');mirrorPanel();}else if(action==='door'&&c.stage==='mirror')leave();else if(action==='feedback')readFeedback();}
- function readFeedback(){if(!feedback)return;scene?.talk(true);ui.say(feedback.checks.map(ch=>ch.feedback).join(' '),()=>scene?.talk(false));}
- function closetPanel(){
-  customizing=false;c.stage='closet';panel().innerHTML=`${challengeCard()}<div class="wardrobe-heading"><div><p class="premium-eyebrow">THE WALK-IN CLOSET</p><h2>Find your look.</h2></div><button data-hint ${ui.preferences.hints?'':'hidden'}>Hint ✦</button></div><div class="clothing-tabs" role="group" aria-label="Clothing categories">${SLOTS.map(k=>`<button data-slot="${k}" aria-pressed="${slot===k}">${slotNames[k]}${c.outfit[k]?' ✓':''}</button>`).join('')}</div><div class="wardrobe-colors"><div class="swatches" aria-label="Garment color">${COLORS.map((v,i)=>`<button data-color="${i}" class="swatch ${color===i?'chosen':''}" style="--swatch:${v}" aria-label="Clothing color ${i+1}" aria-pressed="${color===i}"></button>`).join('')}</div><label>Fabric & pattern<select data-ui="pattern">${PATTERNS.map(p=>`<option value="${p}" ${pattern===p?'selected':''}>${p[0].toUpperCase()+p.slice(1)}</option>`).join('')}</select></label></div><div class="clothing-grid">${GARMENTS.filter(g=>g.slot===slot&&s.allowed.includes(g.id)).map(g=>`<button class="clothing-card ${c.outfit[slot]?.id===g.id?'worn':''}" data-wear="${g.id}" aria-pressed="${c.outfit[slot]?.id===g.id}">${garmentIcon(g,COLORS[color])}<b>${e(g.label)}</b><span>${e(g.tags.join(' · '))}</span><small>Practice $${g.price}${c.outfit[slot]?.id===g.id?' · WEARING':''}</small></button>`).join('')}</div>${['outer','head','neck','hands','accessory'].includes(slot)?`<button class="remove-garment" data-remove="${slot}">Remove ${slotNames[slot].toLowerCase()}</button>`:''}<p class="wardrobe-feedback" data-ui="wardrobe-feedback" role="status">Select clothing to change your avatar immediately.</p><button class="dress-primary" data-mirror>Check my outfit in the mirror →</button>`;save();
- }
- function mirrorPanel(){
-  customizing=false;c.stage='mirror';panel().innerHTML=challengeCard()+`<div class="panel-intro"><p class="premium-eyebrow">THE MIRROR CHECK</p><h2>One last look.</h2><p>Rotate your character. Are you ready for the destination, weather, and any stated safety rules?</p><ul class="outfit-list">${outfitSummary(c.outfit).map(t=>`<li>${e(t.replace(/\(#[\s\S]*$/, ''))}</li>`).join('')}</ul><div class="mirror-actions"><button data-back-closet>Keep choosing</button><button class="dress-primary" data-leave>Ready. Let’s go →</button></div></div>`;save();
- }
- function reflectionMarkup(){
-  if(host.get().options.mode==='cdc')return '<p class="small">Question-free practice is on.</p>';
-  const q=REFLECTIONS[c.questionIndex%3];return `<details class="dress-reflection"><summary>Optional reflection · self-advocacy</summary><p>${e(q.prompt)}</p><button data-read-reflection>Read reflection ♪</button>${q.options.map((t,i)=>`<button data-reflection="${i}">${e(t)}</button>`).join('')}<p data-ui="reflection-feedback" role="status"></p><button data-next-reflection>Another reflection →</button></details>`;
- }
- function feedbackPanel(){
-  c.stage='feedback';const r=feedback||c.history.filter(h=>h.instance===s.instance).at(-1)?.evaluation||evaluateOutfit(s,c.outfit);feedback=r;
-  panel().innerHTML=`<div class="result-heading ${r.success?'success':'retry'}"><span class="premium-eyebrow">${e(s.person.toUpperCase())}</span><span class="result-stars" aria-label="${r.success?'3 stars':'Keep practicing'}">${r.success?'★★★':'✦'}</span><h2>${r.success?'You’re ready.':'Let’s make a plan.'}</h2><p>${r.success?'Great job! Your outfit meets this challenge’s practical requirements.':'You can change your outfit and try again. Here is what will help.'}</p><b>${r.score}% of practical checks met</b></div><button data-read-feedback>Hear ${e(s.person.toLowerCase())} feedback ♪</button><div class="outfit-checks">${r.checks.map(ch=>`<p class="${ch.pass?'pass':'improve'}"><span>${ch.pass?'✓':'↗'}</span>${e(ch.feedback)}</p>`).join('')}</div>${reflectionMarkup()}<div class="result-actions"><button data-retry>${r.success?'Try another outfit':'Back to the closet'}</button>${r.success?'<button class="dress-primary" data-next-challenge>Return home · next challenge →</button>':''}<button data-print-result>Print / save my report</button></div>`;
- }
- async function leave(){
-  if(busy)return;busy=true;panel().querySelectorAll('button').forEach(b=>b.disabled=true);ui.status('Your avatar is travelling to the destination.');
-  await scene?.moveTo('door');if(disposed)return;scene?.travel();c.stage='travel';$(root,'travel').hidden=false;$(root,'travel-text').textContent=s.label;$(root,'location').textContent='TRANSITION TOWN / ON YOUR WAY';
-  await new Promise(resolve=>{transitionTimer=setTimeout(resolve,ui.preferences.reduced?0:1200);});if(disposed)return;
-  const w=s.change||s.weather;scene?.destination(s.destination,w);$(root,'travel').hidden=true;$(root,'location').textContent='TRANSITION TOWN / '+s.label.toUpperCase();c.stage='destination';
-  feedback=evaluateOutfit(s,c.outfit);const attempt=c.history.filter(h=>h.instance===s.instance).length+1,h={index:c.index,level:c.level,instance:s.instance,at:new Date().toISOString(),outfit:structuredClone(c.outfit),evaluation:structuredClone(feedback),attempt};c.history.push(h);
-  host.attempt({kind:'game',correct:feedback.success,choice:`${s.label}: ${outfitSummary(c.outfit).map(x=>x.split(' (')[0]).join(', ')}`,objective:'Choose practical clothing for the destination, stated dress rules, safety, and weather.',round:(c.level-1)*10000+c.index,level:c.level});
-  if(feedback.success){if(!c.achievements.includes(s.instance)){c.achievements.push(s.instance);host.attempt({kind:'round',correct:true,choice:s.label,objective:'Complete an outfit-planning challenge.',round:(c.level-1)*10000+c.index,level:c.level});}scene?.mood('celebrate');chime(ui.preferences.sound,true);celebrate(root,'Congratulations! Ready for your next step.',ui.preferences.reduced);}else if(feedback.improvements.some(x=>x.includes('warm')))scene?.mood('shiver');
-  busy=false;feedbackPanel();updateBoard();save();ui.status(host.notice());
- }
- async function returnHome(next=false){
-  if(busy)return;busy=true;if(next)c.index++;s=makeScenario(c.level,c.index,c.seed);feedback=null;scene?.bedroom(s.weather);scene?.view('room');$(root,'location').textContent='TRANSITION TOWN / YOUR BEDROOM';busy=false;updateBoard();bedroomPanel();
- }
- ui.content.addEventListener('click',async ev=>{const b=ev.target.closest('button');if(!b||ui.paused||busy)return;
-  if(b.dataset.view){scene?.view(b.dataset.view);return;}
-  if(b.dataset.ui==='left'){scene?.rotate(-.35);return;}if(b.dataset.ui==='right'){scene?.rotate(.35);return;}
-  if(b.dataset.ui==='edit-avatar'){scene?.bedroom(s.weather);avatarPanel();return;}
-  if(b.dataset.avatarColor){c.avatar[b.dataset.avatarColor]=Number(b.dataset.value);scene?.update(c.avatar,c.outfit);avatarPanel();if(b.dataset.avatarColor==='eye'||b.dataset.avatarColor==='hairColor')scene?.view('face');save();return;}
-  if(b.hasAttribute('data-avatar-done')){c.created=true;customizing=false;c.avatar=cleanAvatar(c.avatar);bedroomPanel();ui.status('Your original character is ready. '+host.notice());return;}
-  if(b.hasAttribute('data-read-scenario')){ui.say(ui.instructions);return;}
-  if(b.hasAttribute('data-enter-closet')||b.hasAttribute('data-back-closet')){await enterCloset();return;}
-  if(b.dataset.slot){slot=b.dataset.slot;closetPanel();return;}
-  if(b.dataset.color){color=Number(b.dataset.color);if(c.outfit[slot]){c.outfit=wear(c.outfit,c.outfit[slot].id,color,pattern);scene?.change(c.outfit);}closetPanel();return;}
-  if(b.dataset.wear){c.outfit=wear(c.outfit,b.dataset.wear,color,pattern);scene?.change(c.outfit);$(root,'changing').hidden=false;setTimeout(()=>{if(!disposed)$(root,'changing').hidden=true;},ui.preferences.reduced?120:330);closetPanel();$(root,'wardrobe-feedback').textContent='Now wearing '+garmentById(b.dataset.wear).label+'. The previous garment has been replaced.';return;}
-  if(b.dataset.remove){c.outfit[b.dataset.remove]=null;scene?.change(c.outfit);closetPanel();return;}
-  if(b.hasAttribute('data-mirror')){busy=true;await scene?.moveTo('center');if(disposed)return;busy=false;scene?.view('mirror');mirrorPanel();return;}
-  if(b.hasAttribute('data-leave')){await leave();return;}
-  if(b.hasAttribute('data-retry')){await returnHome(false);await enterCloset();return;}
-  if(b.hasAttribute('data-next-challenge')){await returnHome(true);return;}
-  if(b.hasAttribute('data-hint')){const hint=suggestedOutfit(s);ui.say('One possible outfit is '+outfitSummary(hint).map(x=>x.split(' (')[0]).join(', ')+'. Other outfits can work too.');host.help('Dress the Part: one possible outfit spoken');ui.status('One possible outfit: '+outfitSummary(hint).map(x=>x.split(' (')[0]).join(', ')+'. Other combinations can meet the rules.');return;}
-  if(b.hasAttribute('data-read-feedback')){readFeedback();return;}
-  if(b.hasAttribute('data-print-result')){$(root,'print').click();return;}
-  if(b.hasAttribute('data-read-reflection')){const q=REFLECTIONS[c.questionIndex%3];ui.say(q.prompt+' '+q.options.join('. '));return;}
-  if(b.dataset.reflection!==undefined){const q=REFLECTIONS[c.questionIndex%3],correct=Number(b.dataset.reflection)===q.answer;$(root,'reflection-feedback').textContent=correct?'✓ '+q.why:'Think about asking for help, safety, and planning ahead. Try another choice.';host.attempt({kind:'question',correct,choice:q.options[Number(b.dataset.reflection)],objective:q.prompt,round:(c.level-1)*10000+c.index,level:c.level});if(correct){const h=c.history.at(-1);if(h)h.reflection=q.prompt+' '+q.options[q.answer];}save();return;}
-  if(b.hasAttribute('data-next-reflection')){c.questionIndex=(c.questionIndex+1)%3;feedbackPanel();save();}
- },{signal:ui.signal});
- ui.content.addEventListener('change',ev=>{if(busy)return;const el=ev.target;
-  if(el.dataset.config){c.avatar[el.dataset.config]=el.dataset.config==='glasses'?el.checked:Number(el.value);c.avatar=cleanAvatar(c.avatar);scene?.update(c.avatar,c.outfit);save();}
-  if(el.dataset.ui==='pattern'){pattern=el.value;if(c.outfit[slot]){c.outfit=wear(c.outfit,c.outfit[slot].id,color,pattern);scene?.change(c.outfit);}save();}
-  if(el.dataset.ui==='difficulty'){c.level=Number(el.value);host.get().options.level=c.level;c.index=0;returnHome(false);}
-  if(el.dataset.ui==='mode'){host.get().options.mode=el.value;host.get().options.questions=el.value!=='cdc';save();}
-  if(el.hasAttribute('data-replay')&&el.value){const [level,index]=el.value.split(':').map(Number);c.level=level;c.index=index;host.get().options.level=level;$(root,'difficulty').value=String(level);returnHome(false);}
- },{signal:ui.signal});
- const timer=setInterval(()=>{if(!disposed)$(root,'active-time').textContent=(host.get().activeMs/60000).toFixed(1)+' active practice minutes';},1000);
- ui.onPause=v=>scene?.pause(v);ui.onChange=()=>{scene?.motion(!ui.preferences.reduced);scene?.quality(ui.preferences.low);panel().querySelector('[data-hint]')?.toggleAttribute('hidden',!ui.preferences.hints);};
- updateBoard();
- if(!c.created)avatarPanel();else if(['feedback','destination'].includes(c.stage)){scene?.destination(s.destination,s.change||s.weather);feedbackPanel();}else if(c.stage==='closet'){closetPanel();scene?.view('full');}else if(c.stage==='mirror'){mirrorPanel();scene?.view('mirror');}else bedroomPanel();
- return {ui,scene,print(kind){if(kind==='report')return null;return `<section class="dress-plan-print"><h1>Dress the Part · Outfit plan</h1><p>${e(host.identity())} · ${DIFFICULTIES[c.level-1]}</p><h2>${e(s.label)}</h2><ul>${requirementsFor(s).map(t=>`<li>${e(t)}</li>`).join('')}</ul><h2>Selected outfit</h2><ul>${outfitSummary(c.outfit).map(t=>`<li>${e(t)}</li>`).join('')}</ul><p>Practice outfit cost: $${outfitCost(c.outfit)}</p><h2>What would you keep or change?</h2><p>____________________________________________________</p><p>____________________________________________________</p><p>Practice evidence only. Teacher observations are recorded separately.</p></section>`;},dispose(){disposed=true;clearInterval(timer);clearTimeout(transitionTimer);scene?.dispose();ui.dispose();}};
+export async function mount(root, host) {
+  const c = host.get().checkpoint || initialDress();
+  host.get().checkpoint = c;
+  let scene,
+    slot = "top",
+    color = 4,
+    pattern = "solid",
+    customizing = !c.created,
+    busy = false,
+    disposed = false,
+    feedback = null,
+    transitionTimer = null;
+  const ui = shell(root, host, {
+    title: "Dress the Part.",
+    kicker: "LIFE IN STYLE",
+    description:
+      "Your look. Your choices. A little preparation for wherever life takes you.",
+    onPrint: () =>
+      ui.printOptions([
+        ["report", "Individual practice & scenario report"],
+        ["outfit", "Current challenge & outfit planning sheet"],
+      ]),
+  });
+  ui.content.className = "premium-content dress-game";
+  ui.content.innerHTML = `<div class="dress-game-bar"><div><span class="premium-eyebrow">YOUR NEXT STEP</span><h2 data-ui="scenario-title"></h2></div><div class="game-controls"><label>Practice <select data-ui="mode">${[
+    ["cdc", "CDC Beginner"],
+    ["preets", "Pre-ETS Learning"],
+    ["esp", "ESP Enrichment"],
+  ]
+    .map(
+      ([id, label]) =>
+        `<option value="${id}" ${host.get().options.mode === id ? "selected" : ""}>${label}</option>`,
+    )
+    .join(
+      "",
+    )}</select></label><label>Difficulty <select data-ui="difficulty">${DIFFICULTIES.map((l, i) => `<option value="${i + 1}" ${c.level === i + 1 ? "selected" : ""}>${l}</option>`).join("")}</select></label><button data-ui="edit-avatar">My avatar</button></div></div><div class="dress-layout"><section class="dress-stage"><canvas data-ui="canvas" tabindex="0" aria-label="Interactive 3D avatar and bedroom. Drag to rotate or use left and right arrow keys."></canvas><div class="scene-location" data-ui="location">TRANSITION TOWN / YOUR BEDROOM</div><div class="weather-chip" data-ui="weather"></div><div class="scene-bottom"><div class="avatar-rotate"><button data-ui="left" aria-label="Rotate avatar left">↶</button><span>DRAG TO ROTATE</span><button data-ui="right" aria-label="Rotate avatar right">↷</button></div><div class="camera-tools"><button data-view="full">Full look</button><button data-view="face">Face</button><button data-view="room">Room</button></div></div><div class="changing-flash" data-ui="changing" hidden><span>✦ A fresh look ✦</span></div><div class="travel-card" data-ui="travel" hidden><span>✦</span><h3>On your way.</h3><p data-ui="travel-text"></p></div><div class="scene-error" data-ui="scene-error" hidden>3D could not initialize. Reopen the game in a browser with graphics support. Your saved work is preserved.</div></section><aside class="dress-panel" data-ui="panel" aria-label="Character, wardrobe and challenge controls"></aside></div><p class="dress-footer"><span data-ui="active-time">0 active practice minutes</span> · Practice evidence is separate from official Pre-ETS service records. No bank deposits.</p>`;
+  const canvas = $(root, "canvas");
+  let s = makeScenario(c.level, c.index, c.seed);
+  scene = createDressScene(canvas, {
+    config: c.avatar,
+    outfit: c.outfit,
+    weather: s.weather,
+    onInteract: interact,
+    onError: () => {
+      $(root, "scene-error").hidden = false;
+    },
+  });
+  if (!scene)
+    ui.status(
+      "3D is unavailable on this browser. Your saved work is preserved. Try a graphics-enabled browser.",
+    );
+  scene?.motion(!ui.preferences.reduced);
+  scene?.quality(ui.preferences.low);
+  scene?.view("room");
+  function save() {
+    host.changed();
+    host.save();
+  }
+  function updateBoard() {
+    s = makeScenario(c.level, c.index, c.seed);
+    $(root, "scenario-title").textContent = s.label;
+    $(root, "weather").textContent =
+      WEATHER[
+        s.change && ["destination", "feedback"].includes(c.stage)
+          ? s.change
+          : s.weather
+      ].icon +
+      " " +
+      WEATHER[
+        s.change && ["destination", "feedback"].includes(c.stage)
+          ? s.change
+          : s.weather
+      ].label;
+    ui.instructions = `Your challenge is ${s.label}. ${requirementsFor(s).join(" ")} Choose clothing in the closet, check the mirror, and leave when ready.`;
+  }
+  function challengeCard() {
+    return `<div class="challenge-card"><p class="premium-eyebrow">CHALLENGE ${c.index + 1} · ${DIFFICULTIES[c.level - 1]}</p><h3>${e(s.label)}</h3><p>${e(s.description)}</p><div class="challenge-weather"><b>${WEATHER[s.weather].icon} ${e(WEATHER[s.weather].label)}</b>${s.change ? `<span>Forecast update: ${e(WEATHER[s.change].label)}</span>` : ""}</div>${s.budget ? `<p class="outfit-cost">Practice budget <b>$${outfitCost(c.outfit)} / $${s.budget}</b></p>` : ""}<button data-read-scenario>Read challenge ♪</button></div>`;
+  }
+  const panel = () => $(root, "panel");
+  function avatarPanel() {
+    customizing = true;
+    scene?.view("full");
+    panel().innerHTML = `<div class="panel-heading"><span class="premium-eyebrow">ORIGINAL TO YOU</span><h2>Create your character.</h2><p>Make yourself, or someone you imagine. Every look belongs here.</p></div><div class="avatar-options"><fieldset><legend>Skin tone</legend><div class="swatches">${SKINS.map((v, i) => `<button data-avatar-color="skin" data-value="${i}" class="swatch ${c.avatar.skin === i ? "chosen" : ""}" style="--swatch:${v}" aria-label="Skin tone ${i + 1}" aria-pressed="${c.avatar.skin === i}"></button>`).join("")}</div></fieldset><div class="avatar-selects"><label>Face shape<select data-config="face">${["Oval", "Soft square", "Round"].map((v, i) => `<option value="${i}" ${c.avatar.face === i ? "selected" : ""}>${v}</option>`).join("")}</select></label><label>Facial features<select data-config="features">${["Set one", "Set two", "Set three"].map((v, i) => `<option value="${i}" ${c.avatar.features === i ? "selected" : ""}>${v}</option>`).join("")}</select></label><label>Hairstyle<select data-config="hair">${HAIRSTYLES.map((v, i) => `<option value="${i}" ${c.avatar.hair === i ? "selected" : ""}>${v}</option>`).join("")}</select></label><label>Body proportions<select data-config="body">${BODYTYPES.map((v, i) => `<option value="${i}" ${c.avatar.body === i ? "selected" : ""}>${v}</option>`).join("")}</select></label></div><fieldset><legend>Hair color</legend><div class="swatches">${HAIRCOLORS.map((v, i) => `<button data-avatar-color="hairColor" data-value="${i}" class="swatch ${c.avatar.hairColor === i ? "chosen" : ""}" style="--swatch:${v}" aria-label="Hair color ${i + 1}" aria-pressed="${c.avatar.hairColor === i}"></button>`).join("")}</div></fieldset><fieldset><legend>Eye color</legend><div class="swatches">${EYES.map((v, i) => `<button data-avatar-color="eye" data-value="${i}" class="swatch ${c.avatar.eye === i ? "chosen" : ""}" style="--swatch:${v}" aria-label="Eye color ${i + 1}" aria-pressed="${c.avatar.eye === i}"></button>`).join("")}</div></fieldset><label>Height proportions<input data-config="height" type="range" min="0.88" max="1.12" step="0.02" value="${c.avatar.height}"></label><label class="avatar-glasses"><input data-config="glasses" type="checkbox" ${c.avatar.glasses ? "checked" : ""}> Glasses</label></div><button class="dress-primary" data-avatar-done>${c.created ? "Save my character" : "This is my character"} →</button>`;
+  }
+  function bedroomPanel() {
+    customizing = false;
+    c.stage = "bedroom";
+    scene?.view("room");
+    panel().innerHTML =
+      challengeCard() +
+      `<div class="panel-intro"><h2>Ready for your next step?</h2><p>Start in your bedroom. Check the destination and weather, then choose your outfit.</p><ol class="journey-steps"><li class="current">Your bedroom</li><li>Walk-in closet</li><li>Mirror check</li><li>Your destination</li></ol><button class="dress-primary" data-enter-closet>Open walk-in closet →</button>${c.achievements.length ? `<p class="achievement-count">✦ ${c.achievements.length} challenges completed</p><label>Replay a completed challenge<select data-replay><option value="">Choose a challenge</option>${[...new Map(c.history.filter((h) => h.evaluation.success).map((h) => [h.instance, h])).values()].map((h) => `<option value="${h.level}:${h.index}">${e(makeScenario(h.level, h.index, c.seed).label)} · ${DIFFICULTIES[h.level - 1]}</option>`).join("")}</select></label>` : ""}</div>`;
+    save();
+  }
+  async function enterCloset() {
+    if (busy) return;
+    busy = true;
+    scene?.view("closet");
+    await scene?.moveTo("closet");
+    if (disposed) return;
+    busy = false;
+    closetPanel();
+  }
+  function interact(action) {
+    if (busy || ui.paused) return;
+    if (action === "challenge") ui.say(ui.instructions);
+    else if (action.startsWith("closet:")) {
+      slot = action.split(":")[1];
+      enterCloset();
+    } else if (action === "mirror" && c.created) {
+      scene?.moveTo("center");
+      scene?.view("mirror");
+      mirrorPanel();
+    } else if (action === "door" && c.stage === "mirror") leave();
+    else if (action === "feedback") readFeedback();
+  }
+  function readFeedback() {
+    if (!feedback) return;
+    scene?.talk(true);
+    ui.say(feedback.checks.map((ch) => ch.feedback).join(" "), () =>
+      scene?.talk(false),
+    );
+  }
+  function closetPanel() {
+    customizing = false;
+    c.stage = "closet";
+    panel().innerHTML = `${challengeCard()}<div class="wardrobe-heading"><div><p class="premium-eyebrow">THE WALK-IN CLOSET</p><h2>Find your look.</h2></div><button data-hint ${ui.preferences.hints ? "" : "hidden"}>Hint ✦</button></div><div class="clothing-tabs" role="group" aria-label="Clothing categories">${SLOTS.map((k) => `<button data-slot="${k}" aria-pressed="${slot === k}">${slotNames[k]}${c.outfit[k] ? " ✓" : ""}</button>`).join("")}</div><div class="wardrobe-colors"><div class="swatches" aria-label="Garment color">${COLORS.map((v, i) => `<button data-color="${i}" class="swatch ${color === i ? "chosen" : ""}" style="--swatch:${v}" aria-label="${COLOR_NAMES[i]} clothing" aria-pressed="${color === i}"></button>`).join("")}</div><label>Fabric & pattern<select data-ui="pattern">${PATTERNS.map((p) => `<option value="${p}" ${pattern === p ? "selected" : ""}>${p[0].toUpperCase() + p.slice(1)}</option>`).join("")}</select></label></div><div class="clothing-grid">${GARMENTS.filter(
+      (g) => g.slot === slot && s.allowed.includes(g.id),
+    )
+      .map(
+        (g) =>
+          `<button class="clothing-card ${c.outfit[slot]?.id === g.id ? "worn" : ""}" data-wear="${g.id}" aria-pressed="${c.outfit[slot]?.id === g.id}">${garmentIcon(g, COLORS[color])}<b>${e(g.label)}</b><span>${e(g.tags.join(" · "))}</span><small>Practice $${g.price}${c.outfit[slot]?.id === g.id ? " · WEARING" : ""}</small></button>`,
+      )
+      .join(
+        "",
+      )}</div>${["outer", "head", "neck", "hands", "accessory"].includes(slot) ? `<button class="remove-garment" data-remove="${slot}">Remove ${slotNames[slot].toLowerCase()}</button>` : ""}<p class="wardrobe-feedback" data-ui="wardrobe-feedback" role="status">Select clothing to change your avatar immediately.</p><button class="dress-primary" data-mirror>Check my outfit in the mirror →</button>`;
+    save();
+  }
+  function mirrorPanel() {
+    customizing = false;
+    c.stage = "mirror";
+    panel().innerHTML =
+      challengeCard() +
+      `<div class="panel-intro"><p class="premium-eyebrow">THE MIRROR CHECK</p><h2>One last look.</h2><p>Rotate your character. Are you ready for the destination, weather, and any stated safety rules?</p><ul class="outfit-list">${outfitSummary(
+        c.outfit,
+      )
+        .map((t) => `<li>${e(t)}</li>`)
+        .join(
+          "",
+        )}</ul><div class="mirror-actions"><button data-back-closet>Keep choosing</button><button class="dress-primary" data-leave>Ready. Let’s go →</button></div></div>`;
+    save();
+  }
+  function reflectionMarkup() {
+    if (host.get().options.mode === "cdc")
+      return '<p class="small">Question-free practice is on.</p>';
+    const q = REFLECTIONS[c.questionIndex % 3];
+    return `<details class="dress-reflection"><summary>Optional reflection · self-advocacy</summary><p>${e(q.prompt)}</p><button data-read-reflection>Read reflection ♪</button>${q.options.map((t, i) => `<button data-reflection="${i}">${e(t)}</button>`).join("")}<p data-ui="reflection-feedback" role="status"></p><button data-next-reflection>Another reflection →</button></details>`;
+  }
+  function feedbackPanel() {
+    c.stage = "feedback";
+    const r =
+      feedback ||
+      c.history.filter((h) => h.instance === s.instance).at(-1)?.evaluation ||
+      evaluateOutfit(s, c.outfit);
+    feedback = r;
+    panel().innerHTML = `<div class="result-heading ${r.success ? "success" : "retry"}"><span class="premium-eyebrow">${e(s.person.toUpperCase())}</span><span class="result-stars" aria-label="${r.success ? "3 stars" : "Keep practicing"}">${r.success ? "★★★" : "✦"}</span><h2>${r.success ? "You’re ready." : "Let’s make a plan."}</h2><p>${r.success ? "Great job! Your outfit meets this challenge’s practical requirements." : "You can change your outfit and try again. Here is what will help."}</p><b>${r.score}% of practical checks met</b></div><button data-read-feedback>Hear ${e(s.person.toLowerCase())} feedback ♪</button><div class="outfit-checks">${r.checks.map((ch) => `<p class="${ch.pass ? "pass" : "improve"}"><span>${ch.pass ? "✓" : "↗"}</span>${e(ch.feedback)}</p>`).join("")}</div>${reflectionMarkup()}<div class="result-actions"><button data-retry>${r.success ? "Try another outfit" : "Back to the closet"}</button>${r.success ? '<button class="dress-primary" data-next-challenge>Return home · next challenge →</button>' : ""}<button data-print-result>Print / save my report</button></div>`;
+  }
+  async function leave() {
+    if (busy) return;
+    busy = true;
+    panel()
+      .querySelectorAll("button")
+      .forEach((b) => (b.disabled = true));
+    ui.status("Your avatar is travelling to the destination.");
+    await scene?.moveTo("door");
+    if (disposed) return;
+    scene?.travel();
+    c.stage = "travel";
+    $(root, "travel").hidden = false;
+    $(root, "travel-text").textContent = s.label;
+    $(root, "location").textContent = "TRANSITION TOWN / ON YOUR WAY";
+    await new Promise((resolve) => {
+      transitionTimer = setTimeout(resolve, ui.preferences.reduced ? 0 : 1200);
+    });
+    if (disposed) return;
+    const w = s.change || s.weather;
+    scene?.destination(s.destination, w);
+    $(root, "travel").hidden = true;
+    $(root, "location").textContent =
+      "TRANSITION TOWN / " + s.label.toUpperCase();
+    c.stage = "destination";
+    feedback = evaluateOutfit(s, c.outfit);
+    const attempt =
+        c.history.filter((h) => h.instance === s.instance).length + 1,
+      h = {
+        index: c.index,
+        level: c.level,
+        instance: s.instance,
+        at: new Date().toISOString(),
+        outfit: structuredClone(c.outfit),
+        evaluation: structuredClone(feedback),
+        attempt,
+      };
+    c.history.push(h);
+    host.attempt({
+      kind: "game",
+      correct: feedback.success,
+      choice: `${s.label}: ${outfitSummary(c.outfit)
+        .map((x) => x.split(" (")[0])
+        .join(", ")}`,
+      objective:
+        "Choose practical clothing for the destination, stated dress rules, safety, and weather.",
+      round: (c.level - 1) * 10000 + c.index,
+      level: c.level,
+    });
+    if (feedback.success) {
+      if (!c.achievements.includes(s.instance)) {
+        c.achievements.push(s.instance);
+        host.attempt({
+          kind: "round",
+          correct: true,
+          choice: s.label,
+          objective: "Complete an outfit-planning challenge.",
+          round: (c.level - 1) * 10000 + c.index,
+          level: c.level,
+        });
+      }
+      scene?.mood("celebrate");
+      chime(ui.preferences.sound, true);
+      celebrate(
+        root,
+        "Congratulations! Ready for your next step.",
+        ui.preferences.reduced,
+      );
+    } else if (feedback.improvements.some((x) => x.includes("warm")))
+      scene?.mood("shiver");
+    busy = false;
+    feedbackPanel();
+    updateBoard();
+    save();
+    ui.status(host.notice());
+  }
+  async function returnHome(next = false) {
+    if (busy) return;
+    busy = true;
+    if (next) c.index++;
+    s = makeScenario(c.level, c.index, c.seed);
+    feedback = null;
+    scene?.bedroom(s.weather);
+    scene?.view("room");
+    $(root, "location").textContent = "TRANSITION TOWN / YOUR BEDROOM";
+    busy = false;
+    updateBoard();
+    bedroomPanel();
+  }
+  ui.content.addEventListener(
+    "click",
+    async (ev) => {
+      const b = ev.target.closest("button");
+      if (!b || ui.paused || busy) return;
+      if (b.dataset.view) {
+        scene?.view(b.dataset.view);
+        return;
+      }
+      if (b.dataset.ui === "left") {
+        scene?.rotate(-0.35);
+        return;
+      }
+      if (b.dataset.ui === "right") {
+        scene?.rotate(0.35);
+        return;
+      }
+      if (b.dataset.ui === "edit-avatar") {
+        scene?.bedroom(s.weather);
+        avatarPanel();
+        return;
+      }
+      if (b.dataset.avatarColor) {
+        c.avatar[b.dataset.avatarColor] = Number(b.dataset.value);
+        scene?.update(c.avatar, c.outfit);
+        avatarPanel();
+        if (
+          b.dataset.avatarColor === "eye" ||
+          b.dataset.avatarColor === "hairColor"
+        )
+          scene?.view("face");
+        save();
+        return;
+      }
+      if (b.hasAttribute("data-avatar-done")) {
+        c.created = true;
+        customizing = false;
+        c.avatar = cleanAvatar(c.avatar);
+        bedroomPanel();
+        ui.status("Your original character is ready. " + host.notice());
+        return;
+      }
+      if (b.hasAttribute("data-read-scenario")) {
+        ui.say(ui.instructions);
+        return;
+      }
+      if (
+        b.hasAttribute("data-enter-closet") ||
+        b.hasAttribute("data-back-closet")
+      ) {
+        await enterCloset();
+        return;
+      }
+      if (b.dataset.slot) {
+        slot = b.dataset.slot;
+        closetPanel();
+        return;
+      }
+      if (b.dataset.color) {
+        color = Number(b.dataset.color);
+        if (c.outfit[slot]) {
+          c.outfit = wear(c.outfit, c.outfit[slot].id, color, pattern);
+          scene?.change(c.outfit);
+        }
+        closetPanel();
+        return;
+      }
+      if (b.dataset.wear) {
+        c.outfit = wear(c.outfit, b.dataset.wear, color, pattern);
+        scene?.change(c.outfit);
+        $(root, "changing").hidden = false;
+        setTimeout(
+          () => {
+            if (!disposed) $(root, "changing").hidden = true;
+          },
+          ui.preferences.reduced ? 120 : 330,
+        );
+        closetPanel();
+        $(root, "wardrobe-feedback").textContent =
+          "Now wearing " +
+          garmentById(b.dataset.wear).label +
+          ". The previous garment has been replaced.";
+        return;
+      }
+      if (b.dataset.remove) {
+        c.outfit[b.dataset.remove] = null;
+        scene?.change(c.outfit);
+        closetPanel();
+        return;
+      }
+      if (b.hasAttribute("data-mirror")) {
+        busy = true;
+        await scene?.moveTo("center");
+        if (disposed) return;
+        busy = false;
+        scene?.view("mirror");
+        mirrorPanel();
+        return;
+      }
+      if (b.hasAttribute("data-leave")) {
+        await leave();
+        return;
+      }
+      if (b.hasAttribute("data-retry")) {
+        await returnHome(false);
+        await enterCloset();
+        return;
+      }
+      if (b.hasAttribute("data-next-challenge")) {
+        await returnHome(true);
+        return;
+      }
+      if (b.hasAttribute("data-hint")) {
+        const hint = suggestedOutfit(s);
+        ui.say(
+          "One possible outfit is " +
+            outfitSummary(hint)
+              .map((x) => x.split(" (")[0])
+              .join(", ") +
+            ". Other outfits can work too.",
+        );
+        host.help("Dress the Part: one possible outfit spoken");
+        ui.status(
+          "One possible outfit: " +
+            outfitSummary(hint)
+              .map((x) => x.split(" (")[0])
+              .join(", ") +
+            ". Other combinations can meet the rules.",
+        );
+        return;
+      }
+      if (b.hasAttribute("data-read-feedback")) {
+        readFeedback();
+        return;
+      }
+      if (b.hasAttribute("data-print-result")) {
+        $(root, "print").click();
+        return;
+      }
+      if (b.hasAttribute("data-read-reflection")) {
+        const q = REFLECTIONS[c.questionIndex % 3];
+        ui.say(q.prompt + " " + q.options.join(". "));
+        return;
+      }
+      if (b.dataset.reflection !== undefined) {
+        const q = REFLECTIONS[c.questionIndex % 3],
+          correct = Number(b.dataset.reflection) === q.answer;
+        $(root, "reflection-feedback").textContent = correct
+          ? "✓ " + q.why
+          : "Think about asking for help, safety, and planning ahead. Try another choice.";
+        host.attempt({
+          kind: "question",
+          correct,
+          choice: q.options[Number(b.dataset.reflection)],
+          objective: q.prompt,
+          round: (c.level - 1) * 10000 + c.index,
+          level: c.level,
+        });
+        if (correct) {
+          const h = c.history.at(-1);
+          if (h) h.reflection = q.prompt + " " + q.options[q.answer];
+        }
+        save();
+        return;
+      }
+      if (b.hasAttribute("data-next-reflection")) {
+        c.questionIndex = (c.questionIndex + 1) % 3;
+        feedbackPanel();
+        save();
+      }
+    },
+    { signal: ui.signal },
+  );
+  ui.content.addEventListener(
+    "change",
+    (ev) => {
+      if (busy) return;
+      const el = ev.target;
+      if (el.dataset.config) {
+        c.avatar[el.dataset.config] =
+          el.dataset.config === "glasses" ? el.checked : Number(el.value);
+        c.avatar = cleanAvatar(c.avatar);
+        scene?.update(c.avatar, c.outfit);
+        save();
+      }
+      if (el.dataset.ui === "pattern") {
+        pattern = el.value;
+        if (c.outfit[slot]) {
+          c.outfit = wear(c.outfit, c.outfit[slot].id, color, pattern);
+          scene?.change(c.outfit);
+        }
+        save();
+      }
+      if (el.dataset.ui === "difficulty") {
+        c.level = Number(el.value);
+        host.get().options.level = c.level;
+        c.index = 0;
+        returnHome(false);
+      }
+      if (el.dataset.ui === "mode") {
+        host.get().options.mode = el.value;
+        host.get().options.questions = el.value !== "cdc";
+        save();
+      }
+      if (el.hasAttribute("data-replay") && el.value) {
+        const [level, index] = el.value.split(":").map(Number);
+        c.level = level;
+        c.index = index;
+        host.get().options.level = level;
+        $(root, "difficulty").value = String(level);
+        returnHome(false);
+      }
+    },
+    { signal: ui.signal },
+  );
+  const timer = setInterval(() => {
+    if (!disposed)
+      $(root, "active-time").textContent =
+        (host.get().activeMs / 60000).toFixed(1) + " active practice minutes";
+  }, 1000);
+  ui.onPause = (v) => scene?.pause(v);
+  ui.onChange = () => {
+    scene?.motion(!ui.preferences.reduced);
+    scene?.quality(ui.preferences.low);
+    panel()
+      .querySelector("[data-hint]")
+      ?.toggleAttribute("hidden", !ui.preferences.hints);
+  };
+  updateBoard();
+  if (!c.created) avatarPanel();
+  else if (["feedback", "destination"].includes(c.stage)) {
+    scene?.destination(s.destination, s.change || s.weather);
+    feedbackPanel();
+  } else if (c.stage === "closet") {
+    closetPanel();
+    scene?.view("full");
+  } else if (c.stage === "mirror") {
+    mirrorPanel();
+    scene?.view("mirror");
+  } else bedroomPanel();
+  return {
+    ui,
+    scene,
+    print(kind) {
+      if (kind === "report") return null;
+      return `<section class="dress-plan-print"><h1>Dress the Part · Outfit plan</h1><p>${e(host.identity())} · ${DIFFICULTIES[c.level - 1]}</p><h2>${e(s.label)}</h2><ul>${requirementsFor(
+        s,
+      )
+        .map((t) => `<li>${e(t)}</li>`)
+        .join("")}</ul><h2>Selected outfit</h2><ul>${outfitSummary(c.outfit)
+        .map((t) => `<li>${e(t)}</li>`)
+        .join(
+          "",
+        )}</ul><p>Practice outfit cost: $${outfitCost(c.outfit)}</p><h2>What would you keep or change?</h2><p>____________________________________________________</p><p>____________________________________________________</p><p>Practice evidence only. Teacher observations are recorded separately.</p></section>`;
+    },
+    dispose() {
+      disposed = true;
+      clearInterval(timer);
+      clearTimeout(transitionTimer);
+      scene?.dispose();
+      ui.dispose();
+    },
+  };
 }

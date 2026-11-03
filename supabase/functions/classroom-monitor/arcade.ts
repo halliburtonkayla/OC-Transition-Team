@@ -127,7 +127,16 @@ function cleanRun(v: any, fail: Context["fail"]) {
         at: String(a.at).slice(0, 40),
         kind: String(a.kind || "Help requested").slice(0, 200),
       })),
-    ...(GAMES.find(g => g.id === v.game)?.premium ? {checkpoint: cleanCheckpoint(v.game, v.checkpoint), checkpointRevision: Number.isSafeInteger(v.checkpointRevision) && v.checkpointRevision >= 0 ? v.checkpointRevision : 0} : {}),
+    ...(GAMES.find((g) => g.id === v.game)?.premium
+      ? {
+          checkpoint: cleanCheckpoint(v.game, v.checkpoint),
+          checkpointRevision:
+            Number.isSafeInteger(v.checkpointRevision) &&
+            v.checkpointRevision >= 0
+              ? v.checkpointRevision
+              : 0,
+        }
+      : {}),
     notes: "",
   };
 }

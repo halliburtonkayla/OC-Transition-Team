@@ -24,7 +24,7 @@ test("The original six games, 15 categories, and all progressive levels produce 
   assert.equal(GAMES.length, 8);
   assert.equal(CATEGORIES.length, 15);
   for (const mode of ["cdc", "preets", "esp"])
-    for (const g of GAMES.filter(g => !g.premium))
+    for (const g of GAMES.filter((g) => !g.premium))
       for (let level = 1; level <= g.levels; level++)
         for (let round = 0; round < 30; round++)
           for (const category of g.id === "match"

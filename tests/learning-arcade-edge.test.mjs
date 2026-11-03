@@ -329,19 +329,80 @@ test("Last approved service uses the actual service date rather than the report 
   assert.equal(d.approvedReports[0].id, "latest-service");
 });
 
-test('Expansion games save only validated own-learner checkpoints through the existing private service', async()=>{
- const {generatePuzzle}=await import('../assets/learning-arcade/expansion/word-core.mjs');
- const f=fixture(),p=generatePuzzle('careers',1,0,51),run=newRun('wordquest',{mode:'preets',record:true});
- run.checkpoint={version:1,seed:51,level:1,page:0,bookId:'careers',found:[p.placements[0]],progress:{},bookmarks:{},teacherNotes:'forged',studentId:otherId};run.checkpointRevision=1;run.teacherNotes='forged';
- await f.call('arcade_save',{token:'verified',studentId:otherId,run});
- assert.equal(f.saved.body.p_student,studentId);assert.equal(f.saved.body.p_run.checkpoint.found.length,1);assert.equal(f.saved.body.p_run.checkpointRevision,1);assert.ok(!('teacherNotes'in f.saved.body.p_run));assert.ok(!('studentId'in f.saved.body.p_run.checkpoint));assert.ok(!('teacherNotes'in f.saved.body.p_run.checkpoint));
- run.checkpoint.found=[{word:p.words[0],path:[0,1]}];await assert.rejects(()=>f.call('arcade_save',{token:'verified',run}),/Invalid saved word/);
- await assert.rejects(()=>f.call('arcade_save',{token:'pending',run}),/approve this device/);
+test("Expansion games save only validated own-learner checkpoints through the existing private service", async () => {
+  const { generatePuzzle } = await import(
+    "../assets/learning-arcade/expansion/word-core.mjs"
+  );
+  const f = fixture(),
+    p = generatePuzzle("careers", 1, 0, 51),
+    run = newRun("wordquest", { mode: "preets", record: true });
+  run.checkpoint = {
+    version: 1,
+    seed: 51,
+    level: 1,
+    page: 0,
+    bookId: "careers",
+    found: [p.placements[0]],
+    progress: {},
+    bookmarks: {},
+    teacherNotes: "forged",
+    studentId: otherId,
+  };
+  run.checkpointRevision = 1;
+  run.teacherNotes = "forged";
+  await f.call("arcade_save", { token: "verified", studentId: otherId, run });
+  assert.equal(f.saved.body.p_student, studentId);
+  assert.equal(f.saved.body.p_run.checkpoint.found.length, 1);
+  assert.equal(f.saved.body.p_run.checkpointRevision, 1);
+  assert.ok(!("teacherNotes" in f.saved.body.p_run));
+  assert.ok(!("studentId" in f.saved.body.p_run.checkpoint));
+  assert.ok(!("teacherNotes" in f.saved.body.p_run.checkpoint));
+  run.checkpoint.found = [{ word: p.words[0], path: [0, 1] }];
+  await assert.rejects(
+    () => f.call("arcade_save", { token: "verified", run }),
+    /Invalid saved word/,
+  );
+  await assert.rejects(
+    () => f.call("arcade_save", { token: "pending", run }),
+    /approve this device/,
+  );
 });
-test('Dress checkpoints recompute practical results and preserve outfit/avatar without allowing forged teacher evidence',async()=>{
- const {defaultAvatar,defaultOutfit}=await import('../assets/learning-arcade/expansion/dress-data.mjs');
- const {makeScenario,evaluateOutfit}=await import('../assets/learning-arcade/expansion/dress-core.mjs');
- const f=fixture(),run=newRun('dresspart',{mode:'esp',record:true});run.checkpointRevision=2;run.checkpoint={version:1,seed:51,level:3,index:0,avatar:{...defaultAvatar(),body:2},outfit:defaultOutfit(),history:[{level:3,index:0,at:new Date().toISOString(),outfit:defaultOutfit(),evaluation:{success:true,score:100},attempt:1,teacherNotes:'forged'}]};
- await f.call('arcade_save',{token:'verified',run});const cp=f.saved.body.p_run.checkpoint;
- assert.equal(cp.avatar.body,2);assert.deepEqual(cp.history[0].evaluation,evaluateOutfit(makeScenario(3,0,51),defaultOutfit()));assert.ok(!('teacherNotes'in cp.history[0]));assert.equal(f.saved.body.p_run.options.mode,'esp');
+test("Dress checkpoints recompute practical results and preserve outfit/avatar without allowing forged teacher evidence", async () => {
+  const { defaultAvatar, defaultOutfit } = await import(
+    "../assets/learning-arcade/expansion/dress-data.mjs"
+  );
+  const { makeScenario, evaluateOutfit } = await import(
+    "../assets/learning-arcade/expansion/dress-core.mjs"
+  );
+  const f = fixture(),
+    run = newRun("dresspart", { mode: "esp", record: true });
+  run.checkpointRevision = 2;
+  run.checkpoint = {
+    version: 1,
+    seed: 51,
+    level: 3,
+    index: 0,
+    avatar: { ...defaultAvatar(), body: 2 },
+    outfit: defaultOutfit(),
+    history: [
+      {
+        level: 3,
+        index: 0,
+        at: new Date().toISOString(),
+        outfit: defaultOutfit(),
+        evaluation: { success: true, score: 100 },
+        attempt: 1,
+        teacherNotes: "forged",
+      },
+    ],
+  };
+  await f.call("arcade_save", { token: "verified", run });
+  const cp = f.saved.body.p_run.checkpoint;
+  assert.equal(cp.avatar.body, 2);
+  assert.deepEqual(
+    cp.history[0].evaluation,
+    evaluateOutfit(makeScenario(3, 0, 51), defaultOutfit()),
+  );
+  assert.ok(!("teacherNotes" in cp.history[0]));
+  assert.equal(f.saved.body.p_run.options.mode, "esp");
 });
