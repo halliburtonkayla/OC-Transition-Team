@@ -1,0 +1,49 @@
+name: Word Quest and Dress the Part checks
+on:
+  pull_request:
+    paths:
+      [
+        "learning-arcade.html",
+        "assets/learning-arcade/**",
+        "supabase/functions/classroom-monitor/**",
+        "docs/learning-arcade/schema.sql",
+        "tests/arcade-expansion-*",
+        ".github/workflows/arcade-expansion-checks.yml",
+      ]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install isolated QA dependencies
+        run: npm install --prefix /tmp/learning-arcade-qa --no-save jsdom@26.1.0 @electric-sql/pglite@0.3.14 @playwright/test@1.51.1
+      - name: Puzzle, scenario, actual model, DOM, authorization and PostgreSQL checks
+        run: node --test tests/arcade-expansion-*.test.mjs tests/learning-arcade-*.test.mjs
+      - name: Preserve existing school, games, accounts, balances and businesses
+        env:
+          SCHOOL_JSDOM: /tmp/learning-arcade-qa/node_modules/jsdom
+        run: |
+          node --test tests/prism-pour-*.test.mjs tests/school-release.test.mjs
+          node tests/classroom-monitor.cjs
+          node tests/student-shop-core.cjs
+          node tests/business-workday.cjs
+          node tools/release-audit.mjs
+      - name: Install isolated Chromium
+        run: /tmp/learning-arcade-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Play both actual games with WebGL, mouse, keyboard, touch, private fixtures and PDF printing
+        env:
+          NODE_PATH: /tmp/learning-arcade-qa/node_modules
+        run: node tests/arcade-expansion-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arcade-expansion-gameplay-evidence
+          path: arcade-expansion-output/
+          if-no-files-found: ignore

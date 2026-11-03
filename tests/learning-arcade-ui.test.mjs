@@ -29,6 +29,7 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
     "devicePixelRatio",
     "innerWidth",
     "fetch",
+    "AbortController",
   ])
     saved.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
   const define = (k, v) =>
@@ -43,6 +44,7 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
   define("sessionStorage", w.sessionStorage);
   define("localStorage", w.localStorage);
   define("navigator", w.navigator);
+  define("AbortController", w.AbortController);
   define("speechSynthesis", { cancel() {}, speak() {} });
   w.speechSynthesis = globalThis.speechSynthesis;
   define(
@@ -104,7 +106,7 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
   try {
     await import("../assets/learning-arcade/app.mjs?dom-test=1");
     await flush();
-    assert.equal(w.document.querySelectorAll("[data-launch]").length, 6);
+    assert.equal(w.document.querySelectorAll("[data-launch]").length, 8);
     const start = (
       id,
       { mode = "cdc", level = 1, questions = false, record } = {},
@@ -248,6 +250,7 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
                       ? "Sample learner one"
                       : "Sample learner two",
                   schoolLabel: "Fictional school",
+                  learning: { level: 2 },
                 },
                 records: structuredClone(serverRecords.get(body.token) || []),
               }),
@@ -361,6 +364,53 @@ test("Actual arcade DOM supports all six games, questions, beginner practice, se
         assert.equal(serverRecords.get("fixture-one").length, 1);
         assert.equal(w.localStorage.getItem("ttWorld"), original);
         assert.equal(w.localStorage.length, 1);
+
+        // Exercise the expansion through the actual shared host, including a
+        // failed save, resume/recovery, and a different learner on this device.
+        failSave = true;
+        click('[data-launch="wordquest"]');
+        await flush();
+        assert.equal(
+          $('[data-ui="difficulty"]').value,
+          "2",
+          "new stations honor the existing teacher-selected starting level",
+        );
+        click('[data-book="careers"]');
+        await flush();
+        click('[data-ui="save"]');
+        await flush();
+        assert.ok(
+          $('[data-ui="notice"]').textContent.includes("Could not save:"),
+        );
+        click('[data-ui="exit"]');
+        await flush();
+        assert.equal(progressCount(), 4);
+        const wordEntry = () =>
+          [
+            ...w.document.querySelectorAll("#progress-content .report-entry"),
+          ].find((e) => e.textContent.includes("Word Quest"));
+        click("#progress-button");
+        assert.ok(wordEntry().textContent.includes("UNSAVED"));
+        click('[data-close="progress-dialog"]');
+        failSave = false;
+        click('[data-launch="wordquest"]');
+        await flush();
+        click('[data-ui="continue"]');
+        await flush();
+        click('[data-ui="save"]');
+        await flush();
+        click('[data-ui="exit"]');
+        await flush();
+        click("#progress-button");
+        assert.ok(!wordEntry().textContent.includes("UNSAVED"));
+        click('[data-close="progress-dialog"]');
+        assert.equal(progressCount(), 4);
+        assert.equal(serverRecords.get("fixture-one").length, 2);
+        click("#disconnect-button");
+        await flush();
+        await connectAs("fixture-two");
+        assert.equal(progressCount(), 0);
+        assert.equal(w.localStorage.getItem("ttWorld"), original);
       },
     );
   } finally {

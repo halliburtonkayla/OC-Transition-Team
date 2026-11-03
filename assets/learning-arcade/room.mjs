@@ -590,7 +590,7 @@ export function createArcadeRoom(
         s.rotation.y = tick * 0.5;
         s.position.y = 4.18 + Math.sin(tick * 1.4 + i) * 0.08;
       });
-    if (software && !changed && !needsRender) return;
+    if (!walk && (software || !motion) && !changed && !needsRender) return;
     if (quality === "low" && now % 66 > 34) return;
     renderer.render(scene, camera);
     canvas.dataset.rendered = "true";

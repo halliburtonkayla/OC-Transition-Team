@@ -78,6 +78,10 @@ begin
  select * into r from public.student_state where student_id=p_student for update;
  old:=r.state#>array['arcade',key];
  if old is not null and ((old->>'activeMs')::numeric>(p_run->>'activeMs')::numeric or jsonb_array_length(old->'rounds')>jsonb_array_length(p_run->'rounds') or (old->>'endedAt' is not null and p_run->>'endedAt' is null)) then return jsonb_build_object('saved',false,'reason','Newer practice is already saved');end if;
+ if old is not null and old ? 'checkpointRevision' and p_run ? 'checkpointRevision' and (old->>'checkpointRevision')::numeric >= (p_run->>'checkpointRevision')::numeric then
+  if old=p_run then return jsonb_build_object('saved',true); end if;
+  return jsonb_build_object('saved',false,'reason','Newer game progress is already saved; reconnect before continuing');
+ end if;
  r.state:=jsonb_set(r.state,'{arcade}',coalesce(r.state->'arcade','{}'::jsonb)||jsonb_build_object(key,p_run));
  if octet_length(r.state::text)>5000000 then raise exception 'Learning storage is full; ask your teacher to export records';end if;
  update public.student_state set state=r.state,revision=revision+1,updated_at=now()where student_id=p_student;

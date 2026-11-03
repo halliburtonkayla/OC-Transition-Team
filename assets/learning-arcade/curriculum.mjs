@@ -54,6 +54,26 @@ export const GAMES = [
     icon: "basket",
     levels: 9,
   },
+  {
+    id: "wordquest",
+    title: "Word Quest: Glossy Bubble Edition",
+    subtitle: "Twenty discoveries on every page",
+    skill: "Vocabulary · Reading · Career and life skills",
+    color: "#a36bc5",
+    icon: "book",
+    levels: 4,
+    premium: true,
+  },
+  {
+    id: "dresspart",
+    title: "Dress the Part: Life in Style",
+    subtitle: "Your look. Your choices. Your next step.",
+    skill: "Workplace attire · Weather · Safety · Planning",
+    color: "#438b85",
+    icon: "wardrobe",
+    levels: 4,
+    premium: true,
+  },
 ];
 export const MODES = [
   {
