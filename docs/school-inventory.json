@@ -3,6 +3,45 @@
   "scope": "All repository HTML pages and their literal local href/src and navigation URLs. External availability and dynamic URLs are not inferred.",
   "pages": [
     {
+      "path": "transition-mission.html",
+      "title": "Transition Mission · 30 Career Adventures",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/transition-mission/style.css",
+          "exists": true
+        },
+        {
+          "target": "assets/transition-mission/app.mjs",
+          "exists": true
+        },
+        {
+          "target": "assets/career-lab/business-avatars.js",
+          "exists": true
+        },
+        {
+          "target": "assets/classroom-monitor/student.js",
+          "exists": true
+        },
+        {
+          "target": "miss-kayla-info-center.png",
+          "exists": true
+        },
+        {
+          "target": "school-directory.html",
+          "exists": true
+        },
+        {
+          "target": "transition-town.html",
+          "exists": true
+        }
+      ],
+      "externalLinks": [],
+      "fragmentReview": [],
+      "contentFlags": [],
+      "bytes": 10153
+    },
+    {
       "path": "letter-lane.html",
       "title": "Letter Lane · Driving & Spelling · Transition Town School",
       "room": "wow",
