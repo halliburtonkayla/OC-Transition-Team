@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 const root=process.cwd();
-const files=fs.readdirSync(root,{recursive:true}).filter(p=>!p.startsWith('.git/')&&!p.startsWith('.preview-static/')&&!p.startsWith('.openai/')&&fs.statSync(path.join(root,p)).isFile()).map(p=>({path:p,size:fs.statSync(path.join(root,p)).size}));
+const files=fs.readdirSync(root,{recursive:true}).filter(p=>!p.startsWith('.git/')&&!p.startsWith('dist/')&&!p.startsWith('.preview-static/')&&!p.startsWith('.openai/')&&fs.statSync(path.join(root,p)).isFile()).map(p=>({path:p,size:fs.statSync(path.join(root,p)).size}));
 const known=new Set(files.map(f=>f.path));
 for(const p of fs.readdirSync(root,{recursive:true}))if(!p.startsWith('dist/')&&!p.startsWith('.git/'))known.add(p);
 const extra=['job-missions.html','watch-and-learn.html','school-directory.html'];
@@ -9,6 +9,7 @@ extra.forEach(p=>known.add(p));
 const text=p=>fs.readFileSync(path.join(root,p),'utf8');
 const title=s=>(s.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]||'Untitled').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
 function category(p){
+ if(p==='learning-arcade.html')return 'arcade';
  if(['career-feud.html','transition-game-show.html'].includes(p))return 'wow';
  if(/^(?:index(?:[-_(]|\.html)|ADD-|INDEX_|apartment-simulator\()/.test(p)||/^(?:house|mansion|book)-\d/.test(p)||p.startsWith('tests/'))return 'compatibility';
  if(/^(?:classroom-monitor|pre-ets|miss-kayla|downloads|worksheets|expanded-resource|resource-viewer|pdf-viewer)/.test(p))return 'teacher';

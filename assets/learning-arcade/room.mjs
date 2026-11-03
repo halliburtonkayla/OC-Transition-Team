@@ -27,7 +27,7 @@ export function createArcadeRoom(
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
   renderer.outputColorSpace = T.SRGBColorSpace;
   renderer.toneMapping = T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
+  renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = T.PCFSoftShadowMap;
   const scene = new T.Scene();
@@ -73,8 +73,8 @@ export function createArcadeRoom(
   camera.lookAt(aim);
   const lights = new T.Group();
   scene.add(lights);
-  lights.add(new T.HemisphereLight("#f4f9ff", "#a7899e", 3.0));
-  const sun = new T.DirectionalLight("#fff0d5", 3.0);
+  lights.add(new T.HemisphereLight("#f4f9ff", "#a7899e", 1.6));
+  const sun = new T.DirectionalLight("#fff0d5", 2.5);
   sun.position.set(-4, 8, 6);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
@@ -84,7 +84,7 @@ export function createArcadeRoom(
   sun.shadow.camera.bottom = -10;
   sun.shadow.bias = -0.0006;
   lights.add(sun);
-  const fill = new T.DirectionalLight("#b5dcff", 2);
+  const fill = new T.DirectionalLight("#b5dcff", 1.3);
   fill.position.set(8, 5, -2);
   lights.add(fill);
   const m = (c, r = 0.3, metal = 0.03, extra = {}) =>
@@ -459,7 +459,7 @@ export function createArcadeRoom(
   plant(8, 6.2);
   for (const x of [-4, 4]) {
     cylinder(x, 4.85, -1, 0.65, 0.18, M.cream);
-    const l = new T.PointLight("#ffe9c3", 12, 7, 2);
+    const l = new T.PointLight("#ffe9c3", 8, 7, 2);
     l.position.set(x, 4.6, -1);
     lights.add(l);
   }

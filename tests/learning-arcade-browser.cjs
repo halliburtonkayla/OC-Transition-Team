@@ -70,7 +70,12 @@ let browser;
     .locator("#arcade-room")
     .getAttribute("data-position");
   await page.keyboard.down("w");
-  await page.waitForTimeout(350);
+  await page.waitForFunction(
+    (previous) =>
+      document.querySelector("#arcade-room").dataset.position !== previous,
+    before,
+    { timeout: 20000 },
+  );
   await page.keyboard.up("w");
   assert.notEqual(
     await page.locator("#arcade-room").getAttribute("data-position"),
