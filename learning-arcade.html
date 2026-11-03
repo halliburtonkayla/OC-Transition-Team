@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f7f3ed" />
+    <title>The Learning Arcade · Transition Town School</title>
+    <meta
+      name="description"
+      content="A new classroom in Transition Town School. Match, count, read and explore at your pace."
+    />
+    <link rel="stylesheet" href="assets/learning-arcade/arcade.css" />
+  </head>
+  <body>
+    <a class="skip" href="#game-board">Skip to game stations</a>
+    <header class="arcade-header">
+      <a class="brand" href="transition-town.html?school=1"
+        ><span class="brand-mark">TT</span
+        ><span
+          >TRANSITION TOWN<small>OUR SCHOOL · YOUR NEXT STEP</small></span
+        ></a
+      >
+      <nav aria-label="School navigation">
+        <a href="transition-town.html?school=1">← School hallway</a
+        ><button id="progress-button">My progress</button
+        ><a href="classroom-monitor.html#students">Teacher dashboard</a>
+      </nav>
+    </header>
+    <main>
+      <section class="welcome">
+        <div>
+          <p class="eyebrow">A CLASSROOM FULL OF POSSIBILITY</p>
+          <h1>The Learning <em>Arcade.</em></h1>
+          <p>Little discoveries. Real skills. A world of possibility.</p>
+        </div>
+        <div class="welcome-label">
+          <span class="live-dot"></span> SIX STATIONS · YOUR PACE
+        </div>
+      </section>
+      <section
+        class="room-wrap"
+        aria-label="Interactive Learning Arcade classroom"
+      >
+        <canvas
+          id="arcade-room"
+          tabindex="0"
+          aria-label="3D Learning Arcade. Use the station buttons below to choose a game, or turn on walk-around controls."
+        ></canvas>
+        <div class="room-overlay">
+          <span class="room-tag">TRANSITION TOWN SCHOOL / LEARNING ARCADE</span>
+          <div class="room-caption">
+            <span>COME ON IN.</span>
+            <h2>Find your next discovery.</h2>
+            <a class="primary" href="#game-board">Choose a game <b>↘</b></a>
+          </div>
+        </div>
+        <div class="room-tools">
+          <button id="walk-button" aria-pressed="false">Walk around</button
+          ><button id="room-home">Room view</button
+          ><button id="motion-button" aria-pressed="false">Reduce motion</button
+          ><button id="graphics-button" aria-pressed="false">
+            Lower graphics
+          </button>
+        </div>
+        <p id="room-status" class="sr-only" role="status">
+          Loading classroom. Game stations below are always available.
+        </p>
+        <div id="walk-controls" hidden>
+          <p>Arrows / WASD move · Q / E turn · Enter interacts</p>
+          <div class="direction-pad" aria-label="Touch walk controls">
+            <button data-move="ArrowUp" aria-label="Walk forward">↑</button
+            ><button data-move="ArrowLeft" aria-label="Walk left">←</button
+            ><button data-move="ArrowDown" aria-label="Walk backward">↓</button
+            ><button data-move="ArrowRight" aria-label="Walk right">→</button
+            ><button data-move="KeyQ" aria-label="Turn left">↶</button
+            ><button data-move="KeyE" aria-label="Turn right">↷</button>
+          </div>
+        </div>
+      </section>
+      <section class="learning-bar" aria-label="Learning mode">
+        <div>
+          <p class="eyebrow">MAKE IT YOURS</p>
+          <h2>One arcade. Your way to learn.</h2>
+        </div>
+        <div class="mode-switch" role="group" aria-label="Choose learning mode">
+          <button data-mode="cdc" aria-pressed="true">
+            CDC Beginner<small>Pictures & practice</small></button
+          ><button data-mode="preets" aria-pressed="false">
+            Pre-ETS Learning<small>Skills for your next step</small></button
+          ><button data-mode="esp" aria-pressed="false">
+            ESP Enrichment<small>After-school discoveries</small>
+          </button>
+        </div>
+      </section>
+      <section id="game-board" tabindex="-1" class="game-board">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PICK YOUR PLAY</p>
+            <h2>A little fun. A lot of learning.</h2>
+          </div>
+          <p id="mode-description">
+            Big pictures, spoken directions and practice at your pace.
+          </p>
+        </div>
+        <div id="station-cards" class="station-grid"></div>
+      </section>
+      <section class="keep-exploring">
+        <div>
+          <p class="eyebrow">AN ORIGINAL FAVORITE</p>
+          <h2>Keep finding your flow.</h2>
+          <p>
+            Prism Pour is right where you left it. All 100 color-sorting levels,
+            the original artwork, and your saved progress.
+          </p>
+          <a href="prism-pour.html">Open original Prism Pour →</a
+          ><a href="prism-pour.html?mode=sort-only"
+            >Just sort · no questions →</a
+          >
+        </div>
+        <div class="bottle-preview" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+      </section>
+      <section class="connection" data-monitor-private>
+        <div>
+          <p class="eyebrow">YOUR LEARNING JOURNEY</p>
+          <h2 id="learner-title">Ready when you are.</h2>
+          <p id="connection-status">
+            Play freely as a guest, or use a teacher-approved device to save
+            your learning.
+          </p>
+        </div>
+        <div class="connection-tools">
+          <button id="connect-button">Connect my learning</button
+          ><button id="disconnect-button" hidden>Lock my learning</button
+          ><button id="print-summary">Print practice summary</button>
+        </div>
+      </section>
+      <footer>
+        <span>TRANSITION TOWN SCHOOL · THE LEARNING ARCADE</span
+        ><a href="school-directory.html">Explore the school</a
+        ><span>More room to grow. New games can be added here.</span>
+      </footer>
+    </main>
+    <dialog id="setup-dialog" aria-labelledby="setup-title">
+      <form id="setup-form">
+        <button
+          type="button"
+          class="dialog-x"
+          data-close="setup-dialog"
+          aria-label="Close setup"
+        >
+          ×
+        </button>
+        <p class="eyebrow" id="setup-eyebrow">LET’S PLAY</p>
+        <h2 id="setup-title">Choose your adventure.</h2>
+        <p id="setup-intro"></p>
+        <div id="setup-picture" class="setup-picture"></div>
+        <div class="form-grid">
+          <label
+            >Learning mode<select id="setup-mode">
+              <option value="cdc">CDC Beginner</option>
+              <option value="preets">Pre-ETS Learning</option>
+              <option value="esp">ESP Enrichment</option>
+            </select></label
+          ><label>Starting level<select id="setup-level"></select></label
+          ><label id="category-wrap"
+            >Matching category<select id="setup-category"></select></label
+          ><label id="minutes-wrap" hidden
+            >Quick-play session<select id="setup-minutes">
+              <option value="5">5 minutes</option>
+              <option value="10" selected>10 minutes</option>
+              <option value="15">15 minutes</option>
+            </select></label
+          >
+        </div>
+        <div class="setting-checks">
+          <label
+            ><input id="setup-questions" type="checkbox" /> Add spoken learning
+            questions after each round</label
+          ><label
+            ><input id="setup-timed" type="checkbox" /> Optional 90-second
+            challenge</label
+          ><label
+            ><input id="setup-record" type="checkbox" /> Save this activity with
+            my connected learning profile</label
+          >
+        </div>
+        <p id="setup-objective" class="objective"></p>
+        <p class="small">
+          Practice records describe this game. Your teacher reviews official
+          Pre-ETS services separately.
+        </p>
+        <button class="primary" id="start-game">Let’s play →</button>
+        <p id="setup-status" role="status"></p>
+      </form>
+    </dialog>
+    <dialog id="play-dialog" aria-labelledby="play-title">
+      <div class="play-top">
+        <button id="leave-game">← Arcade</button
+        ><span id="play-mode" class="badge"></span>
+        <div>
+          <button id="pause-game" aria-pressed="false">Pause</button
+          ><button id="change-settings">Change level</button
+          ><button id="read-prompt" aria-label="Hear directions again">
+            ◖)) Hear it
+          </button>
+        </div>
+      </div>
+      <div class="play-heading">
+        <div>
+          <p id="play-level" class="eyebrow"></p>
+          <h2 id="play-title"></h2>
+        </div>
+        <div class="play-score">
+          <span id="play-stars">0 stars</span
+          ><span id="play-rounds">Round 1</span
+          ><span id="play-timer" hidden></span>
+        </div>
+      </div>
+      <p id="game-prompt" class="game-prompt" tabindex="-1"></p>
+      <div id="game-visual" class="game-visual"></div>
+      <div id="game-actions" class="game-actions"></div>
+      <div class="play-bottom">
+        <p id="game-feedback" role="status" aria-live="polite">
+          Take your time. You can practice as much as you like.
+        </p>
+        <button id="help-button">Ask for help</button
+        ><button id="next-round" class="primary" hidden>Next round →</button>
+      </div>
+      <p id="save-status" class="small" role="status"></p>
+      <div id="paused-overlay" hidden>
+        <h2>Take a little break.</h2>
+        <p>Your practice time is paused.</p>
+        <button id="resume-game" class="primary">Keep playing →</button>
+      </div>
+    </dialog>
+    <dialog id="connect-dialog" aria-labelledby="connect-title">
+      <button
+        class="dialog-x"
+        data-close="connect-dialog"
+        aria-label="Close connection"
+      >
+        ×
+      </button>
+      <p class="eyebrow">TEACHER-APPROVED LEARNING</p>
+      <h2 id="connect-title">Let’s connect.</h2>
+      <p>
+        Ask your teacher for this device’s private learning key, or reconnect
+        the Town profile already approved on this device.
+      </p>
+      <form id="connect-form">
+        <label
+          >Private device key<input
+            id="device-key"
+            type="password"
+            autocomplete="off"
+            maxlength="100"
+            placeholder="Teacher provides this privately" /></label
+        ><button class="primary">Connect this device</button>
+      </form>
+      <button id="connect-town">Use my approved Town device</button>
+      <p id="connect-message" role="status"></p>
+    </dialog>
+    <dialog id="progress-dialog" aria-labelledby="progress-title">
+      <button
+        class="dialog-x"
+        data-close="progress-dialog"
+        aria-label="Close progress"
+      >
+        ×
+      </button>
+      <p class="eyebrow">ONE STEP AT A TIME</p>
+      <h2 id="progress-title">Look how you’re growing.</h2>
+      <div id="progress-content"></div>
+      <button id="print-progress" class="primary">Print my report</button>
+    </dialog>
+    <div id="print-area"></div>
+    <script type="module" src="assets/learning-arcade/app.mjs"></script>
+  </body>
+</html>

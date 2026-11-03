@@ -1,0 +1,313 @@
+.arcade-teacher {
+  color: #263d53;
+}
+.arcade-teacher .at-kicker {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #7b6f87;
+  font-weight: 800;
+}
+.at-titlebar {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+}
+.arcade-teacher h2 {
+  font: 32px Georgia;
+}
+.at-tabs,
+.at-tools {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.at-tabs button[aria-pressed="true"] {
+  background: #506b80;
+  color: white;
+}
+.arcade-teacher button {
+  min-height: 44px;
+  font: 700 12px Arial;
+  border-radius: 10px;
+  border: 1px solid #cbd4dc;
+  background: #f8f4ef;
+  color: #2c4155;
+  padding: 10px 14px;
+}
+.arcade-teacher button.primary {
+  background: #596f83;
+  color: white;
+}
+.arcade-teacher input,
+.arcade-teacher select,
+.arcade-teacher textarea {
+  display: block;
+  width: 100%;
+  font: 13px Arial;
+  border: 1px solid #b8c6cf;
+  background: white;
+  padding: 11px;
+  border-radius: 8px;
+  color: #263d53;
+  min-height: 44px;
+  margin: 6px 0 13px;
+}
+.arcade-teacher label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+.at-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 20px;
+}
+.at-list {
+  max-height: 75vh;
+  overflow: auto;
+  border: 1px solid #dce1e5;
+  border-radius: 13px;
+  padding: 9px;
+  align-self: start;
+}
+.at-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 5px 0;
+  background: white;
+  font-size: 12px;
+}
+.at-list button.selected {
+  border-color: #8c6f9d;
+  background: #f1e9f2;
+}
+.at-list small {
+  display: block;
+  font-size: 10px;
+  margin-top: 5px;
+  color: #697d8e;
+}
+.at-profile {
+  min-width: 0;
+}
+.at-box {
+  background: #faf8f4;
+  border: 1px solid #dedee1;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 17px;
+}
+.at-box h3 {
+  font: 23px Georgia;
+  margin: 0 0 13px;
+}
+.at-mini {
+  font-size: 11px;
+  color: #5f7485;
+  line-height: 1.6;
+}
+.at-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.at-metrics div {
+  flex: 1;
+  background: #f3edf3;
+  padding: 13px;
+  border-radius: 10px;
+  min-width: 110px;
+  font-size: 10px;
+}
+.at-metrics b {
+  display: block;
+  font: 19px Georgia;
+  margin-bottom: 5px;
+}
+.at-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+.at-table-wrap {
+  overflow-x: auto;
+}
+.at-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.at-table td,
+.at-table th {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #d4dce2;
+  vertical-align: top;
+}
+.at-table input,
+.at-table select {
+  min-width: 90px;
+  font-size: 11px;
+  padding: 7px;
+}
+.at-table input[type="checkbox"] {
+  display: inline-block;
+  width: 20px;
+  min-width: 20px;
+  min-height: 20px;
+}
+.at-table .days {
+  min-width: 130px;
+}
+.at-table .days label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 9px;
+}
+.at-message {
+  padding: 12px;
+  background: #eaf0f0;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.at-message.error {
+  background: #fae8e8;
+}
+.at-import-panel textarea {
+  min-height: 180px;
+  font-family: monospace;
+}
+.at-image {
+  display: block;
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  margin: 15px auto;
+}
+.at-student-meta {
+  font-size: 12px;
+}
+.at-pills {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.at-pills span {
+  font-size: 10px;
+  background: #ede6ef;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
+.at-plan-card {
+  padding: 13px;
+  border: 1px solid #d3dce1;
+  border-radius: 10px;
+  margin: 9px 0;
+  font-size: 12px;
+}
+.at-senior {
+  color: #ad415c;
+}
+.at-name {
+  font: 27px Georgia !important;
+}
+.at-key {
+  word-break: break-all;
+  font: 12px monospace;
+  user-select: all;
+  background: #eaf0f4;
+  padding: 15px;
+  border-radius: 10px;
+}
+.at-approve {
+  border: 2px solid #ad8cb2;
+  background: #fcf6fc;
+}
+.at-summary {
+  margin: 10px 0;
+  font-size: 12px;
+}
+.at-email textarea {
+  min-height: 260px;
+}
+.arcade-teacher input[type="checkbox"] {
+  accent-color: #886d99;
+}
+.at-roster-count {
+  font-size: 12px;
+  color: #637c89;
+}
+.at-print-area {
+  display: none;
+}
+.at-subtabs {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+.at-subtabs button[aria-pressed="true"] {
+  background: #e8dfed;
+  border-color: #aa91b5;
+}
+@media (max-width: 900px) {
+  .at-grid {
+    grid-template-columns: 1fr;
+  }
+  .at-list {
+    max-height: 245px;
+  }
+  .at-fields {
+    grid-template-columns: 1fr;
+  }
+  .at-box {
+    padding: 15px;
+  }
+  .at-titlebar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .at-titlebar h2 {
+    font-size: 28px;
+  }
+  .at-table {
+    font-size: 10px;
+  }
+}
+@media print {
+  body:has(.at-print-area.printing) > *:not(.at-print-area) {
+    display: none !important;
+  }
+  .at-print-area.printing {
+    display: block !important;
+    color: #111;
+    font: 11pt Arial;
+  }
+  .at-print-area h1 {
+    font: 25pt Georgia;
+  }
+  .at-print-area h2 {
+    font: 18pt Georgia;
+    page-break-after: avoid;
+  }
+  .at-print-area .report-entry {
+    break-inside: avoid;
+    border-bottom: 1px solid #555;
+  }
+  .at-print-area table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 10pt;
+  }
+  .at-print-area th,
+  .at-print-area td {
+    border-bottom: 1px solid #666;
+    padding: 8px;
+    text-align: left;
+  }
+}
