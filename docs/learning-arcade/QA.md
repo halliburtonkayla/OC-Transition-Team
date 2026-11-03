@@ -5,7 +5,7 @@
 - New curriculum/core: 8 tests, including all six games, every level, all 15 matching categories, three modes and 30 deterministic rounds per combination; every task/checkpoint has a reachable correct answer.
 - Actual teacher workspace DOM: school isolation, duplicate enrollment rejection, schedule classification, planning, editable unsent email and event-handler cleanup.
 - Actual application DOM: six playable games, beginner question-free progression, optional question checkpoint, counting/scanning, spelling, exact payment, progress and printable output; the original Town financial record is byte-for-byte unchanged.
-- Authorization/Edge module: 6 tests covering teacher rejection before reads, own-device identity, cross-school denial, pending devices, valid response/timing bounds, roster preview, stale notes and hashed device provisioning.
+- Authorization/Edge module: 7 tests covering teacher rejection before reads, own-device identity, cross-school denial, pending devices, valid response/timing bounds, roster preview, stale notes and hashed device provisioning.
 - Real PostgreSQL 17 (PGlite): 5 tests applying the actual SQL, including rerun safety, atomic rollback, duplicate protection, preserving unrelated history/balances/business JSON, private-role denial, idempotent/stale result merges, schedule revisions, verified elective planning and conflicts, and preserving existing schedules during reimport.
 - Original Prism Pour: 17 tests passed, original 100 levels and question-free behavior unchanged.
 - Original school DOM: 9 tests passed covering existing jobs, stories, money matching, counting, memory, pause/retry, printable evidence and profile isolation.

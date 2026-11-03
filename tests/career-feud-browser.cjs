@@ -59,7 +59,7 @@ const server=http.createServer((req,res)=>{
   await expect(host.getByRole('button',{name:'School Directory',exact:true})).toBeVisible();
   await expect(host.locator('#schoolDirectoryDialog')).toHaveCount(0);
   await host.getByRole('button',{name:'School Directory',exact:true}).click();
-  await expect(host.locator('#schoolDirectoryDialog .school-room')).toHaveCount(6);
+  await expect(host.locator('#schoolDirectoryDialog .school-room')).toHaveCount(7);
   await host.keyboard.press('Escape');
   await expect(host.locator('#schoolDirectoryDialog')).toHaveCount(0);
   await expect(host.locator('.school-hall-art')).toBeVisible();

@@ -357,8 +357,14 @@ async function route(action: string, b: any, req: Request, c: Context) {
       );
       reports.push(...found);
     }
-    reports.sort((a, b) =>
-      String(b.created_at).localeCompare(String(a.created_at)),
+    const serviceTime = (r: any) => {
+      const value = Date.parse(r.draft?.end || r.draft?.start);
+      return Number.isFinite(value) ? value : -Infinity;
+    };
+    reports.sort(
+      (a, b) =>
+        serviceTime(b) - serviceTime(a) ||
+        String(a.id).localeCompare(String(b.id)),
     );
     return {
       student: publicStudent(student),

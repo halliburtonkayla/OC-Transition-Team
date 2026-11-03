@@ -83,6 +83,7 @@ let browser;
     "walk changes actual camera position",
   );
   await page.getByRole("button", { name: "Room view", exact: true }).click();
+  console.log("PASS WebGL camera walk and room return");
   async function start(
     game,
     { mode = "cdc", level = 1, questions = false } = {},
@@ -134,6 +135,7 @@ let browser;
     quality: 84,
   });
   await leave();
+  console.log("PASS matching and question-free/question checkpoints");
   await start("coins");
   await page.locator('[data-drive="right"]').click();
   await page.locator('[data-drive="jump"]').click();
@@ -144,8 +146,9 @@ let browser;
     quality: 84,
   });
   await leave();
+  console.log("PASS coin driving controls");
   await start("phonics");
-  await page.locator('#game-actions [aria-label="A"]').click();
+  await page.locator('#game-actions button[aria-label="A"]').click();
   assert.ok(await page.locator("#next-round").isVisible());
   await page.screenshot({
     path: output + "/phonics.jpg",
@@ -153,6 +156,7 @@ let browser;
     quality: 84,
   });
   await leave();
+  console.log("PASS phonics bubble");
   await start("monsters");
   await page.locator('[data-feed="add"]').click();
   await page.locator('[data-feed="check"]').click();
@@ -163,9 +167,12 @@ let browser;
     quality: 84,
   });
   await leave();
+  console.log("PASS counting monster");
   await start("words", { level: 2 });
   for (const letter of ["C", "A", "T"])
-    await page.locator('#game-actions [aria-label="' + letter + '"]').click();
+    await page
+      .locator('#game-actions button[aria-label="' + letter + '"]')
+      .click();
   assert.ok(await page.locator("#next-round").isVisible());
   await page.screenshot({
     path: output + "/word-delivery.jpg",
@@ -173,6 +180,7 @@ let browser;
     quality: 84,
   });
   await leave();
+  console.log("PASS word delivery");
   await start("store");
   await page.locator("[data-scan-next]").click();
   assert.ok(await page.locator("#next-round").isVisible());

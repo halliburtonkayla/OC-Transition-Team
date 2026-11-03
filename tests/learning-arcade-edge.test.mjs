@@ -39,6 +39,22 @@ function fixture() {
       revision: 0,
     },
   ];
+  const approvedReports = [
+    {
+      id: "latest-service",
+      status: "approved",
+      student: "Sample",
+      created_at: "2026-11-02T15:00:00Z",
+      draft: { end: "2026-11-02T15:00:00Z" },
+    },
+    {
+      id: "later-entry-old-service",
+      status: "approved",
+      student: "Sample",
+      created_at: "2026-11-03T15:00:00Z",
+      draft: { end: "2026-11-01T15:00:00Z" },
+    },
+  ];
   const states = [
     {
       student_id: studentId,
@@ -68,11 +84,13 @@ function fixture() {
           ? states
           : table === "tt_student_aliases"
             ? [{ alias: "Sample", student_id: studentId }]
-            : table === "tt_monitor_settings"
-              ? [{ roster_revision: 0 }]
-              : table === "tt_phone_contacts"
-                ? [{ name: "Sample" }, { name: "Unlinked" }]
-                : [];
+            : table === "tt_monitor_reports"
+              ? approvedReports
+              : table === "tt_monitor_settings"
+                ? [{ roster_revision: 0 }]
+                : table === "tt_phone_contacts"
+                  ? [{ name: "Sample" }, { name: "Unlinked" }]
+                  : [];
     for (const [k, v] of u.searchParams) {
       if (["select", "order", "limit"].includes(k)) continue;
       if (v.startsWith("eq."))
@@ -303,4 +321,10 @@ test("Unknown or inconsistent scheduling data never becomes an elective suggesti
     (e) => e.status === 400,
   );
   assert.equal(f.saved, null);
+});
+
+test("Last approved service uses the actual service date rather than the report creation date", async () => {
+  const f = fixture();
+  const d = await f.call("arcade_profile", { studentId }, "approved");
+  assert.equal(d.approvedReports[0].id, "latest-service");
 });
