@@ -131,4 +131,12 @@ fictional learners and mocked private responses; it blocks production service
 access. Its artifact contains actual implemented gameplay screenshots and US
 Letter print PDFs, plus a machine-readable browser result.
 
-See [QA.md](QA.md) for coverage and honest verification limits.
+Actual implemented gameplay and print examples:
+
+- [Word Quest library](evidence/word-library.jpg) · [Playing the glossy book](evidence/word-quest-playing.jpg) · [Phone touch play](evidence/word-quest-phone.jpg)
+- [Avatar creation](evidence/dress-avatar-creator.jpg) · [Red polo replacement](evidence/dress-red-polo-front.jpg) · [Side view](evidence/dress-red-polo-side.png) · [Back view](evidence/dress-red-polo-back.png)
+- [Supportive correction](evidence/dress-supportive-retry.jpg) · [Successful destination](evidence/dress-destination-success.jpg) · [Phone wardrobe](evidence/dress-the-part-phone.jpg)
+- [Exact student puzzle + teacher key PDF](evidence/word-search-student-and-key.pdf) · [Fictional individual practice report PDF](evidence/dress-student-practice-report.pdf)
+
+See [QA.md](QA.md) for passing check links, coverage, bounded saved-evidence limits
+and school-device verification still needed.

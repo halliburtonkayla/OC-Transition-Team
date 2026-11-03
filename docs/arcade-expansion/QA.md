@@ -1,5 +1,28 @@
 # Expansion QA
 
+## Verified results
+
+All five GitHub workflows passed for source commit
+`7602656a0c0df972f09bd46839f73be117a74ddb`: Word Quest / Dress the Part,
+Learning Arcade, Classroom Release, Prism Pour, and Letter Lane.
+
+[Full gameplay and PDF run](https://github.com/halliburtonkayla/OC-Transition-Team/actions/runs/41640738466)
+· [Complete original artifact](https://github.com/halliburtonkayla/OC-Transition-Team/actions/runs/41640738466/artifacts/13232557785).
+
+- 38 expansion / Arcade / authorization / PostgreSQL tests passed.
+- 26 original game / school regressions and 241 classroom / bank / business /
+  workday assertions passed.
+- Actual WebGL, full-screen entry/exit, text scaling, mouse / keyboard selection,
+  phone finger dragging and grid movement, clothing replacement and keyboard
+  focus, retry / travel, save/reload, failed-save recovery, and private report
+  isolation passed with synthetic data only.
+- Browser errors: zero. Print PDFs use 612 × 792 point US Letter pages. Both
+  student/key pages and both individual-report pages were rendered and visually
+  checked. No clipping, broken grids or blank cover page remains.
+- The screenshots and print examples in [evidence/](evidence/) are unmodified
+  artifacts from this source revision. They contain only guest / fictional QA
+  learners. The code after this revision changes documentation/evidence only.
+
 ## Automated coverage
 
 - 1,200 deterministic Word Quest puzzles: all 10 topics, four difficulties and
@@ -32,7 +55,9 @@
   actual WebGL avatar customization, immediate red-shirt replacement, front/side/
   back rotation, mirror, unsafe-shoe retry, successful arrival, reflections,
   private fixture saving/reload, lower graphics and shared-device report isolation;
-  actual 390-pixel phone touch and responsive layouts; native Chromium PDF output.
+  actual 390-pixel phone touch/drag and grid navigation, full-screen entry/exit,
+  actual text-size changes, wardrobe keyboard focus, and responsive layouts;
+  native Chromium PDF output.
 
 The CI artifact is named `arcade-expansion-gameplay-evidence`. The workflow has no
 publishing or deployment step. Screenshots contain only guest or fictional QA
@@ -56,3 +81,12 @@ records, never real student data or the uploaded Snapchat reference.
 - The renderer's simulated mirror duplicates the fitted character. It is not a
   physically traced mirror. Destination sets are deliberately bounded for school
   devices, with scene interaction focused on the learning/feedback flow.
+
+## Bounded saved evidence
+
+The checkpoint holds up to 120 recent detailed outfit attempts and 500 achievement
+identifiers; aggregate response/time events remain in the existing run record.
+The existing private service limits one run to 5,000 response events, 24 active
+hours, and the overall student-state JSON to 5 MB. Longer-term archival, unbounded
+outfit history and a separate session-rollover UI are not included. Export / print
+classroom evidence regularly and review retention needs before a wider release.

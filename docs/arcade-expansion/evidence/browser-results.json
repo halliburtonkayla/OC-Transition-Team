@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "wordPages": 40,
+  "wordsPerPage": 20,
+  "renderer": "WebGL / SwiftShader",
+  "mobileWidth": 390,
+  "privateService": "synthetic only",
+  "errors": []
+}
