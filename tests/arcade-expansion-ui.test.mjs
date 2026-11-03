@@ -146,6 +146,20 @@ test("Actual Word Quest DOM supports mouse/touch paths, keyboard words, 20 locke
     assert.equal(run.checkpoint.page, 1);
     assert.equal(run.checkpoint.found.length, 1);
     assert.ok(saveCount > 20);
+    host.connected = () => true;
+    run.options.record = true;
+    host.save = async () => {
+      root.querySelector('[data-ui="notice"]').textContent =
+        "Could not save: fixture outage. Keep this page open and print a copy.";
+      return false;
+    };
+    click('[data-ui="save"]');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.ok(
+      root
+        .querySelector('[data-ui="notice"]')
+        .textContent.startsWith("Could not save: fixture outage"),
+    );
   } finally {
     mounted?.dispose();
     w.close();

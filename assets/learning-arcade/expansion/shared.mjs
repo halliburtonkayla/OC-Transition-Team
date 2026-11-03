@@ -100,11 +100,13 @@ export function shell(root, host, { title, kicker, description, onPrint }) {
     "click",
     async () => {
       const ok = await host.save();
-      api.status(
-        ok
-          ? "Saved to your connected private learning profile."
-          : host.notice(),
-      );
+      if (ok) api.status("Saved to your connected private learning profile.");
+      else if (!host.connected() || !host.get().options.record)
+        api.status(host.notice());
+      else if (!$(root, "notice").textContent.startsWith("Could not save:"))
+        api.status(
+          "A save is still in progress. Keep this page open; you can print a copy before leaving.",
+        );
     },
     signal,
   );

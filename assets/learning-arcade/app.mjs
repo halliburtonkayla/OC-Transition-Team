@@ -304,7 +304,11 @@ async function suspendPremium() {
   while (saving) await new Promise((resolve) => setTimeout(resolve, 50));
   await save();
   const copy = structuredClone(run);
-  if (run.options.record && dirty) copy.unsaved = true;
+  if (run.options.record && dirty) {
+    copy.unsaved = true;
+    $("connection-status").textContent =
+      "This practice could not be saved. Keep this page open and use My progress to print the unsaved copy.";
+  }
   if (run.options.record && profile && !dirty)
     records = records.filter((r) => r.id !== run.id).concat(copy);
   else if (run.ownerId)
