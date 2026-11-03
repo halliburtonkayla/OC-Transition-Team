@@ -32,7 +32,23 @@ async function student(token:unknown){
 }
 async function hiringStatus(shop:string){const allowed=['main-attraction','cool-vibes','the-zoo','guardian-angel','3k-tire-shop'];if(shop!=='all'&&!allowed.includes(shop))fail(400,'Choose a student business.');const rows=await api('tt_interview_decisions_latest?select=shop_id,applicant_id,applicant_name,decision,decided_at,details&limit=500'+(shop==='all'?'':'&shop_id=eq.'+enc(shop)));const latest=new Map();for(const r of rows){const k=r.shop_id+':'+r.applicant_id.replace(/-short$/,'');if(!latest.has(k)||Date.parse(r.decided_at)>Date.parse(latest.get(k).decided_at))latest.set(k,r);}return [...latest.values()].map((r:any)=>({shop_id:r.shop_id,applicant_id:r.applicant_id,applicant_name:r.applicant_name,decision:r.decision,decided_at:r.decided_at,questions_heard:[...new Set((Array.isArray(r.details?.asked)?r.details.asked:[]).filter((x:any)=>Number.isInteger(x)&&x>=0&&x<30))]}));}
 async function ownInterviewProgress(d:any,shop:string,cfg:any){if(!['main-attraction','cool-vibes','the-zoo','guardian-angel','3k-tire-shop'].includes(shop))fail(400,'Choose a student business.');const cutoff=new Date(Date.now()-(cfg.retention_days||30)*864e5).toISOString();const rows=await get('events','student=eq.'+enc(d.student)+'&business=eq.'+enc(shop)+'&at=gte.'+enc(cutoff)+'&order=at.desc&limit=3000&select=details,at');const found=new Map();for(const e of rows){if(e.details?.action!=='interview-question'||!Number.isInteger(e.details.step)||e.details.step<1||e.details.step>30)continue;const id=String(e.details.item||''),name=String(e.details.applicant||'');const key=id||name;let p=found.get(key);if(!p){p={applicant_id:id,applicant_name:name,asked:[],updated_at:e.at};found.set(key,p);}if(!p.asked.includes(e.details.step-1))p.asked.push(e.details.step-1);}return [...found.values()];}
-async function roster(){return (await api('tt_phone_contacts?select=name&name=neq.Miss%20Kayla&order=extension.asc')).map((x:any)=>x.name)}
+async function legacyRoster(){
+ return (await api('tt_phone_contacts?select=name&name=neq.Miss%20Kayla&order=extension.asc')).map((row:any)=>row.name);
+}
+const townAccounts='student_accounts?school_key=eq.oc&enrollment_status=eq.active';
+const townCodePrefix='tt-town-access-v1:';
+async function townStudent(code:unknown){
+ const normalized=typeof code==='string'&&code.length<=32?code.trim().toLowerCase().replaceAll('-',''):'';
+ if(!/^[a-f0-9]{20}$/.test(normalized))fail(401,'That student access code did not match.');
+ const digest=townCodePrefix+await hash(townCodePrefix+normalized);
+ const rows=await api(townAccounts+'&pin_hash=eq.'+enc(digest)+'&select=full_name&limit=2');
+ if(rows.length!==1||!rows[0].full_name)fail(401,'That student access code did not match.');
+ return rows[0].full_name as string;
+}
+async function roster(){
+ const [legacy, accounts]=await Promise.all([legacyRoster(),api(townAccounts+'&pin_hash=like.'+enc(townCodePrefix+'*')+'&select=full_name')]);
+ return [...new Set([...legacy,...accounts.map((row:any)=>row.full_name)])];
+}
 async function eventsFor(studentName:string,start:string,end:string){
  const events=[];for(let offset=0;offset<20000;offset+=1000){const rows=await get('events','student=eq.'+enc(studentName)+'&at=gte.'+enc(start)+'&at=lte.'+enc(end)+'&order=at.asc&limit=1000&offset='+offset);events.push(...rows);if(rows.length<1000)break;}return events;
 }
@@ -89,12 +105,16 @@ Deno.serve(async(req:Request)=>{
  if(!allowed)return out({error:'Origin not allowed.'},403);if(req.method==='OPTIONS')return new Response('',{headers});if(req.method!=='POST')return out({error:'Use POST.'},405);
  try{
   if(Number(req.headers.get('content-length')||0)>100000)fail(413,'Request too large.');const raw=await req.text();if(raw.length>100000)fail(413,'Request too large.');const b=JSON.parse(raw),action=String(b.action||'');
+  if(action==='town_sign_in')return out({student:await townStudent(b.code)});
   const cfg=await settings();
   if(action==='teacher_pin'){if(!/^[0-9]{4}$/.test(String(b.pin||'')))fail(400,'Enter your four-digit teacher passcode.');const ip=req.headers.get('cf-connecting-ip')||req.headers.get('x-forwarded-for')?.split(',')[0]||'teacher-login';const check=await api('rpc/tt_monitor_check_pin','POST',{p_fingerprint:await hash('tt-pin-attempt:'+ip),p_hash:await hash('tt-teacher-pin-v1:'+b.pin)});if(check.blocked)fail(429,'Too many incorrect passcodes. Wait 15 minutes before trying again.');if(!check.teacher_id)fail(401,'That teacher passcode did not match.');const token='tt-pin-'+[...crypto.getRandomValues(new Uint8Array(32))].map(x=>x.toString(16).padStart(2,'0')).join('');const expires=new Date(Date.now()+3600000).toISOString();await add('teacher_sessions',{token_hash:await hash(token),teacher_id:check.teacher_id,expires_at:expires});await api('tt_monitor_teacher_sessions?expires_at=lt.'+enc(iso()),'DELETE');return out({token,expires_at:expires,user:{id:check.teacher_id,pin_session:true}});}
   if(action==='public_config')return out({enabled:cfg.enabled,retention_days:cfg.retention_days});
   if(action==='join'){
    if(!cfg.enabled||!cfg.retention_days)fail(403,'Miss Kayla has not turned on classroom activity recording yet.');
-   const name=C.canonical(b.student);if(!(await roster()).includes(name))fail(400,'Choose your own town student profile.');
+   const name=C.canonical(b.student);
+   if(b.town_code){
+    if(name!==await townStudent(b.town_code))fail(403,'This access code belongs to a different student.');
+   }else if(!(await legacyRoster()).includes(name))fail(400,'Choose your own town student profile.');
    // Reuse the existing teacher-approved phone device, without accepting a classroom code as identity.
    let legacy:any=null;if(typeof b.phone_token==='string'&&b.phone_token.length<=100){legacy=(await api('tt_phone_sessions?token_hash=eq.'+await hash('transition-town-session-v1:'+b.phone_token)+'&approved_at=not.is.null&expires_at=gt.'+enc(iso())+'&limit=1'))[0];if(legacy?.name!==name)legacy=null;}
    const recent=await get('devices','student=eq.'+enc(name)+'&created_at=gt.'+enc(new Date(Date.now()-3600e3).toISOString())+'&select=id');if(recent.length>=8)fail(429,'Several device requests are pending. Ask Miss Kayla for help.');
