@@ -11,7 +11,7 @@ const {stripTypeScriptTypes}=require('node:module');
 const townCode='aa00bb11cc22dd33ee44', townCodePrefix='tt-town-access-v1:';
 const townHash=townCodePrefix+require('node:crypto').createHash('sha256').update(townCodePrefix+townCode).digest('hex');
 const db={student_accounts:[{full_name:'Fixture Learner',school_key:'oc',enrollment_status:'active',pin_hash:townHash}],tt_monitor_settings:[{id:true,enabled:false,retention_days:null,approval_reference:''}],tt_teacher_access:[{email:'approved@example.invalid'}],tt_phone_contacts:[{name:'Miss Kayla'},{name:'Jaden'},{name:'Bradley'}],tt_phone_sessions:[]};for(const t of ['devices','sessions','groups','events','reports','signals','frames','live_usage'])db['tt_monitor_'+t]=[];
-function matches(row,key,v){if(v==='is.null')return row[key]==null;if(v==='not.is.null')return row[key]!=null;const p=v.indexOf('.'),op=v.slice(0,p),val=v.slice(p+1),actual=row[key];if(op==='eq')return String(actual)===val;if(op==='like'&&val.endsWith('*'))return String(actual).startsWith(val.slice(0,-1));if(op==='neq')return String(actual)!==val;if(op==='gt')return actual>val;if(op==='gte')return actual>=val;if(op==='lt')return actual<val;if(op==='lte')return actual<=val;throw Error('Unsupported filter '+v)}
+function matches(row,key,v){if(v==='is.null')return row[key]==null;if(v==='not.is.null')return row[key]!=null;const p=v.indexOf('.'),op=v.slice(0,p),val=v.slice(p+1),actual=key.includes('->>')?row[key.split('->>')[0]]?.[key.split('->>')[1]]:row[key];if(op==='eq')return String(actual)===val;if(op==='like'&&val.endsWith('*'))return String(actual).startsWith(val.slice(0,-1));if(op==='neq')return String(actual)!==val;if(op==='gt')return actual>val;if(op==='gte')return actual>=val;if(op==='lt')return actual<val;if(op==='lte')return actual<=val;throw Error('Unsupported filter '+v)}
 async function transport(url,opts={}){const u=new URL(url);if(u.pathname==='/auth/v1/user'){const token=opts.headers.Authorization;return Response.json(token==='Bearer teacher-good'?{id:'11111111-1111-4111-8111-111111111111',email:'approved@example.invalid',email_confirmed_at:new Date().toISOString()}:token==='Bearer teacher-other'?{id:uuid(),email:'not-approved@example.invalid',email_confirmed_at:new Date().toISOString()}:{error:'Invalid token'},{status:token?.startsWith('Bearer teacher-')?200:401});}
  const t=u.pathname.split('/').pop();if(t==='tt_monitor_reserve_live_bytes'){const b=JSON.parse(opts.body);let row=db.tt_monitor_live_usage.find(x=>x.teacher_id===b.p_teacher);if(!row){row={teacher_id:b.p_teacher,bytes:0};db.tt_monitor_live_usage.push(row)}if(b.p_bytes>40000||row.bytes+b.p_bytes>20000000)return Response.json(false);row.bytes+=b.p_bytes;return Response.json(true);}if(!db[t])return Response.json({error:'Missing table '+t},{status:404});let rows=db[t].filter(r=>[...u.searchParams].every(([k,v])=>['select','order','limit','offset','on_conflict'].includes(k)||matches(r,k,v)));const method=opts.method||'GET';
  if(method==='GET'){const order=u.searchParams.get('order');if(order){const [key,dir]=order.split('.');rows.sort((a,b)=>String(a[key]||'').localeCompare(String(b[key]||''))*(dir==='desc'?-1:1))}const offset=Number(u.searchParams.get('offset')||0),limit=Number(u.searchParams.get('limit')||rows.length);return Response.json(rows.slice(offset,offset+limit));}
@@ -29,6 +29,23 @@ async function call(action,b={},auth=''){const r=await handler(new Request('http
  eq((await call('town_sign_in',{code:'AA00-BB11-CC22-DD33-EE44'})).student,'Fixture Learner');
  eq((await call('town_sign_in',{code:'0000-0000-0000-0000-0000'})).status,401);
  eq((await call('join',{student:'Fixture Learner'})).status,400);
+ db.student_accounts.push(
+  {full_name:'Name Learner',school_key:'oc',enrollment_status:'active',pin_hash:townHash+'-other',profile:{townSignIn:'name'}},
+  {full_name:'Archived Learner',school_key:'oc',enrollment_status:'archived',profile:{townSignIn:'name'}},
+  {full_name:'Other School',school_key:'sf',enrollment_status:'active',profile:{townSignIn:'name'}}
+ );
+ eq((await call('town_profiles')).students,['Name Learner'],'only explicitly enabled active OC names are returned');
+ const nameDevice=await call('join',{student:'Name Learner'});
+ eq(nameDevice.status,200,'enabled name profiles can pair without a code');
+ eq(nameDevice.approved,false,'name sign-in does not approve recording');
+ eq((await call('begin',{token:nameDevice.token})).status,403,'recording still needs teacher device approval');
+ eq((await call('reports',{token:nameDevice.token})).status,401,'name sign-in cannot read teacher reports');
+ eq((await call('join',{student:'Archived Learner'})).status,400);
+ eq((await call('join',{student:'Other School'})).status,400);
+ db.student_accounts.find(row=>row.full_name==='Name Learner').profile.townSignIn='code';
+ eq((await call('town_profiles')).students,[],'disabling name sign-in removes it from the selector');
+ eq((await call('join',{student:'Name Learner'})).status,400);
+
  eq((await call('join',{student:'Jaden',town_code:townCode})).status,403);
  ok((await call('overview',{},'teacher-good')).roster.includes('Fixture Learner'));
  const privateDevice=await call('join',{student:'Fixture Learner',town_code:townCode});
@@ -72,3 +89,4 @@ async function call(action,b={},auth=''){const r=await handler(new Request('http
  eq((await call('logout',{token:m.token})).status,200);eq((await call('device_status',{token:m.token})).status,401,'explicit logout revokes device identity');
  console.log('PASS '+checks+' report-evidence, identity, access, signaling, session, and concurrency assertions');
 })().catch(e=>{console.error(e);process.exitCode=1});
+

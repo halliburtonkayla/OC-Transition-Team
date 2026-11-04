@@ -37,6 +37,15 @@ async function legacyRoster(){
 }
 const townAccounts='student_accounts?school_key=eq.oc&enrollment_status=eq.active';
 const townCodePrefix='tt-town-access-v1:';
+// Only profiles explicitly enabled by the teacher appear in the name selector.
+async function townNameProfiles(){
+ const rows=await api(townAccounts+'&profile->>townSignIn=eq.name&select=full_name&order=full_name.asc');
+ return [...new Set(rows.map((row:any)=>row.full_name).filter((name:any)=>typeof name==='string'&&name.trim()))] as string[];
+}
+async function nameSignInRoster(){
+ const [legacy,names]=await Promise.all([legacyRoster(),townNameProfiles()]);
+ return [...new Set([...legacy,...names])];
+}
 async function townStudent(code:unknown){
  const normalized=typeof code==='string'&&code.length<=32?code.trim().toLowerCase().replaceAll('-',''):'';
  if(!/^[a-f0-9]{20}$/.test(normalized))fail(401,'That student access code did not match.');
@@ -105,6 +114,7 @@ Deno.serve(async(req:Request)=>{
  if(!allowed)return out({error:'Origin not allowed.'},403);if(req.method==='OPTIONS')return new Response('',{headers});if(req.method!=='POST')return out({error:'Use POST.'},405);
  try{
   if(Number(req.headers.get('content-length')||0)>100000)fail(413,'Request too large.');const raw=await req.text();if(raw.length>100000)fail(413,'Request too large.');const b=JSON.parse(raw),action=String(b.action||'');
+  if(action==='town_profiles')return out({students:await townNameProfiles()});
   if(action==='town_sign_in')return out({student:await townStudent(b.code)});
   const cfg=await settings();
   if(action==='teacher_pin'){if(!/^[0-9]{4}$/.test(String(b.pin||'')))fail(400,'Enter your four-digit teacher passcode.');const ip=req.headers.get('cf-connecting-ip')||req.headers.get('x-forwarded-for')?.split(',')[0]||'teacher-login';const check=await api('rpc/tt_monitor_check_pin','POST',{p_fingerprint:await hash('tt-pin-attempt:'+ip),p_hash:await hash('tt-teacher-pin-v1:'+b.pin)});if(check.blocked)fail(429,'Too many incorrect passcodes. Wait 15 minutes before trying again.');if(!check.teacher_id)fail(401,'That teacher passcode did not match.');const token='tt-pin-'+[...crypto.getRandomValues(new Uint8Array(32))].map(x=>x.toString(16).padStart(2,'0')).join('');const expires=new Date(Date.now()+3600000).toISOString();await add('teacher_sessions',{token_hash:await hash(token),teacher_id:check.teacher_id,expires_at:expires});await api('tt_monitor_teacher_sessions?expires_at=lt.'+enc(iso()),'DELETE');return out({token,expires_at:expires,user:{id:check.teacher_id,pin_session:true}});}
@@ -114,7 +124,7 @@ Deno.serve(async(req:Request)=>{
    const name=C.canonical(b.student);
    if(b.town_code){
     if(name!==await townStudent(b.town_code))fail(403,'This access code belongs to a different student.');
-   }else if(!(await legacyRoster()).includes(name))fail(400,'Choose your own town student profile.');
+   }else if(!(await nameSignInRoster()).includes(name))fail(400,'Choose your own town student profile.');
    // Reuse the existing teacher-approved phone device, without accepting a classroom code as identity.
    let legacy:any=null;if(typeof b.phone_token==='string'&&b.phone_token.length<=100){legacy=(await api('tt_phone_sessions?token_hash=eq.'+await hash('transition-town-session-v1:'+b.phone_token)+'&approved_at=not.is.null&expires_at=gt.'+enc(iso())+'&limit=1'))[0];if(legacy?.name!==name)legacy=null;}
    const recent=await get('devices','student=eq.'+enc(name)+'&created_at=gt.'+enc(new Date(Date.now()-3600e3).toISOString())+'&select=id');if(recent.length>=8)fail(429,'Several device requests are pending. Ask Miss Kayla for help.');
@@ -247,3 +257,4 @@ Deno.serve(async(req:Request)=>{
   fail(403,'Action unavailable.');
  }catch(e){const err=e as Error;return out({error:e instanceof HttpError?err.message:'Classroom request could not be completed.'},e instanceof HttpError?e.status:500);}
 });
+

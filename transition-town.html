@@ -157,10 +157,43 @@ let oldChild=["Gia & Jacob Business","Dalton & Aiden Business"];oldChild.forEach
 "Bradley","Jaden","Clark","Noah","Olivia","Kaylee","Gia","Jacob","Jasmine","Cameron","Dalton","Allen","Snow","Aubrey","Haley","Jocquan","Alyssa","Nicholas","Aiden","Chevi","Adon","Miss Kayla","Guest"
 ];
 const privateTownCodeKey='ttPrivateTownCode';
+let townProfilesRequest=null;
+function townProfileOptions(){
+ const escape=value=>value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+ return townLoginProfiles.map(name=>'<option value="'+escape(name)+'">'+escape(name)+'</option>').join('');
+}
+async function loadTownLoginProfiles(){
+ if(townProfilesRequest)return townProfilesRequest;
+ townProfilesRequest=(async()=>{
+  const response=await fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{
+   method:'POST',headers:{'Content-Type':'application/json'},cache:'no-store',
+   signal:AbortSignal.timeout(10000),body:JSON.stringify({action:'town_profiles'})
+  });
+  if(!response.ok)throw Error('Student names are temporarily unavailable.');
+  const data=await response.json();
+  if(!Array.isArray(data.students)||data.students.some(name=>typeof name!=='string'||!name.trim()||name.length>100))throw Error('Student names are temporarily unavailable.');
+  for(const name of data.students)if(!townLoginProfiles.includes(name))townLoginProfiles.splice(townLoginProfiles.indexOf('Miss Kayla'),0,name);
+ })();
+ try{await townProfilesRequest;}finally{townProfilesRequest=null;}
+}
+async function refreshTownLoginProfiles(){
+ const select=document.querySelector('#loginProfile'),notice=document.querySelector('#townProfilesNotice');
+ if(!select||!notice)return;
+ notice.textContent='Loading all student names…';
+ try{
+  await loadTownLoginProfiles();
+  if(!select.isConnected)return;
+  const selected=select.value;
+  select.innerHTML='<option value="">Select your name…</option>'+townProfileOptions();
+  select.value=selected;
+  notice.textContent='Choose your name above. No access code is needed.';
+ }catch{
+  if(select.isConnected)notice.innerHTML='Additional student names could not load. Check your connection. <button class="action" type="button" onclick="refreshTownLoginProfiles()">Try again</button>';
+ }
+}
 function resident(){
- const options=townLoginProfiles.map(n=>'<option value="'+n.replace(/"/g,'&quot;')+'">'+n+'</option>').join('');
- openSheet('<h2>Log in to Transition Town</h2><p>Choose your profile to enter town.</p><label style="display:block;font-weight:800;margin:14px 0 7px">Who are you?</label><select class="field" id="loginProfile"><option value="">Select your name…</option>'+options+'</select><button class="primary" style="margin-top:14px;width:100%" onclick="login()">Enter Transition Town</button><p class="tiny">Student progress is saved on this device. Guest is available for visitors and practice.</p><form id="privateTownSignIn" data-monitor-private><label for="privateTownCode" style="display:block;font-weight:800;margin:14px 0 7px">New student access code</label><input id="privateTownCode" class="field" type="password" autocomplete="off" maxlength="32" required><button class="primary" style="margin-top:10px;width:100%" type="submit">Sign in with access code</button><p id="privateTownError" class="tiny" role="status"></p></form>');
- document.querySelector('#privateTownSignIn').addEventListener('submit',signInPrivateTown);
+ openSheet('<h2>Log in to Transition Town</h2><p>Choose your profile to enter town.</p><label for="loginProfile" style="display:block;font-weight:800;margin:14px 0 7px">Who are you?</label><select class="field" id="loginProfile"><option value="">Select your name…</option>'+townProfileOptions()+'</select><p id="townProfilesNotice" class="tiny" role="status"></p><button class="primary" style="margin-top:14px;width:100%" onclick="login()">Enter Transition Town</button><p class="tiny">Student progress is saved on this device. Guest is available for visitors and practice.</p>');
+ refreshTownLoginProfiles();
 }
 async function verifyPrivateTownCode(code){
  const response=await fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{
@@ -172,21 +205,6 @@ async function verifyPrivateTownCode(code){
  const data=await response.json();
  if(typeof data.student!=='string'||!data.student)throw Error('Sign-in is temporarily unavailable. Try again.');
  return data.student;
-}
-async function signInPrivateTown(event){
- event.preventDefault();
- const form=event.currentTarget,button=form.querySelector('button'),error=form.querySelector('[role=status]');
- const code=form.querySelector('input').value.trim();
- button.disabled=true;
- error.textContent='Checking your access code…';
- try{
-  const student=await verifyPrivateTownCode(code);
-  if(!form.isConnected)return;
-  sessionStorage.setItem(privateTownCodeKey,code);
-  enterTownStudent(student);
- }catch(err){
-  error.textContent=err.name==='TimeoutError'||err instanceof TypeError?'Sign-in is temporarily unavailable. Try again.':err.message;
- }finally{button.disabled=false;}
 }
 function logoutTown(){sessionStorage.removeItem(privateTownCodeKey);if(/kayla/i.test(current)){try{const auth=JSON.parse(sessionStorage.getItem('ttMonitorPinAuth')||'null');if(auth?.token)fetch('https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+auth.token},body:JSON.stringify({action:'teacher_logout'}),keepalive:true}).catch(()=>{});}catch{}sessionStorage.removeItem('ttMonitorPinAuth');}window.TTMonitor?.end?.();sessionStorage.removeItem('ttCurrent');sessionStorage.removeItem('ttVisitIdentity');sessionStorage.removeItem('ttKaylaPinVerified');if(window.TTRoom)TTRoom.leaveStudent(current);sessionStorage.removeItem('ttTownTeacherCode');localStorage.removeItem('ttCurrent');current='';activeGroup=[];localStorage.removeItem('ttActiveGroup');document.body.classList.remove('teacher-mode');document.body.classList.add('login-required');resident();renderResidentDashboard();}
 function switchResident(encoded){let n=decodeURIComponent(encoded);if(window.TTRoom&&current&&current!==n)TTRoom.leaveStudent(current);ensure(n);current=n;localStorage.ttCurrent=n;sessionStorage.ttCurrent=n;sessionStorage.ttVisitIdentity=n;status.textContent=n+" is in Transition Town.";studentView()}
@@ -754,6 +772,7 @@ function endSession(){if(!need())return;let w=get(),r=w.residents[current];r.ses
 (async function restoreOpeningLoginAndKaylaBalance(){
  // Existing balances are preserved; Transition Life never issues another starting balance.
  const params=new URLSearchParams(location.search);const passed=sessionStorage.ttVisitIdentity?params.get('resident')||'':'';const returning=passed||sessionStorage.ttCurrent||'';if(returning&&returning!=='Guest'){localStorage.ttCurrent=returning;sessionStorage.ttCurrent=returning}
+ if(returning&&!townLoginProfiles.includes(returning)){try{await loadTownLoginProfiles();}catch{}}
  if(returning&&townLoginProfiles.includes(returning)){
   current=returning;
   ensure(current);
@@ -786,6 +805,7 @@ if (new URLSearchParams(location.search).get('park') === 'football') {
 </script>
 <script src="transition-life/catalog.js?v=20261006-2"></script><script src="transition-life/core.js?v=20261006-2"></script><script src="transition-life/storage.js?v=20261006-2"></script><script src="transition-life/town-bridge.js?v=20261006-sidebar-only"></script>
 <a href="pre-ets-session-reports.html" style="position:fixed;bottom:14px;right:14px;z-index:9999;background:#302365;color:white;padding:12px 16px;border-radius:12px;font:bold 14px Arial;text-decoration:none;box-shadow:0 3px 14px #0005">Teacher: Pre-ETS Reports</a><script src="assets/classroom-monitor/student.js?v=20261103-private-signin" defer></script><script src="assets/career-lab/business-avatars.js?v=20261024walking"></script><script src="assets/career-lab/avatar.js?v=20261024walking"></script><script src="assets/career-lab/town-walk.js?v=20261024walking"></script><script>if(["1","classrooms","legacy"].includes(new URLSearchParams(location.search).get("school")))window.addEventListener("load",function(){if(current){if(new URLSearchParams(location.search).get("school")==="classrooms")schoolClassrooms();else if(new URLSearchParams(location.search).get("school")==="legacy")schoolOriginalHallway();else trainingCollege()}});</script></body></html>
+
 
 
 
