@@ -24,6 +24,7 @@ jobs:
           node tests/business-workday.cjs
           node tests/business-workday-edge.cjs
           node tests/classroom-monitor.cjs
+          node tests/town-name-login.cjs
           node tests/classroom-multiview.cjs
           node tests/career-lab.cjs
           node tests/transition-show.cjs

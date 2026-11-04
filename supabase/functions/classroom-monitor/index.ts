@@ -114,7 +114,8 @@ Deno.serve(async(req:Request)=>{
    const name=C.canonical(b.student);
    if(b.town_code){
     if(name!==await townStudent(b.town_code))fail(403,'This access code belongs to a different student.');
-   }else if(!(await legacyRoster()).includes(name))fail(400,'Choose your own town student profile.');
+   }else if(!(await roster()).includes(name))fail(400,'Choose your own town student profile.');
+   // Name selection requests a device connection; a teacher must still verify it before recording or reading progress.
    // Reuse the existing teacher-approved phone device, without accepting a classroom code as identity.
    let legacy:any=null;if(typeof b.phone_token==='string'&&b.phone_token.length<=100){legacy=(await api('tt_phone_sessions?token_hash=eq.'+await hash('transition-town-session-v1:'+b.phone_token)+'&approved_at=not.is.null&expires_at=gt.'+enc(iso())+'&limit=1'))[0];if(legacy?.name!==name)legacy=null;}
    const recent=await get('devices','student=eq.'+enc(name)+'&created_at=gt.'+enc(new Date(Date.now()-3600e3).toISOString())+'&select=id');if(recent.length>=8)fail(429,'Several device requests are pending. Ask Miss Kayla for help.');

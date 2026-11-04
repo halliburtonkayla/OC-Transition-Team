@@ -28,7 +28,12 @@ async function call(action,b={},auth=''){const r=await handler(new Request('http
  eq((await call('configure',{enabled:true,retention_days:7},'teacher-good')).status,200);
  eq((await call('town_sign_in',{code:'AA00-BB11-CC22-DD33-EE44'})).student,'Fixture Learner');
  eq((await call('town_sign_in',{code:'0000-0000-0000-0000-0000'})).status,401);
- eq((await call('join',{student:'Fixture Learner'})).status,400);
+ const nameDevice=await call('join',{student:'Fixture Learner'});
+ eq(nameDevice.status,200,'active new students can request a connection without an access code');
+ eq(nameDevice.approved,false,'name selection never approves a student device');
+ eq((await call('begin',{token:nameDevice.token})).status,403,'name-only devices cannot record before teacher verification');
+ eq((await call('interview_progress',{token:nameDevice.token,shop:'the-zoo'})).status,403,'name-only devices cannot read progress before teacher verification');
+ eq((await call('overview',{token:nameDevice.token})).status,401,'name selection never unlocks teacher records');
  eq((await call('join',{student:'Jaden',town_code:townCode})).status,403);
  ok((await call('overview',{},'teacher-good')).roster.includes('Fixture Learner'));
  const privateDevice=await call('join',{student:'Fixture Learner',town_code:townCode});
