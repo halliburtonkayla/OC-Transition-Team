@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Life Quest · Fictional Teacher Preview</title><link rel="stylesheet" href="../assets/classroom-monitor/teacher.css"><style>body{margin:0;background:#f0f2e3;color:#173f43;font:16px/1.5 system-ui}header,main{padding:24px;max-width:1150px;margin:auto}header{background:#fff7dc;border-bottom:3px solid #e3bf69}header p{margin:5px 0}h1{margin:0}button{min-height:42px}</style></head><body><header><h1>Fictional review · Teacher Dashboard</h1><p>This page uses simulated QA evidence only. It does not connect to classrooms or read student profiles.</p><a href="../transition-mission-2.html?practice=1">Open the game in fictional review mode →</a></header><main id="tt-monitor-app"><section id="panel"></section></main><script type="module">
+import {newAdventure,startMission,step,answerQuestion,attemptFor} from '../assets/life-quest/engine.mjs';
+import {monitorDetails} from '../assets/life-quest/report.mjs';
+import {mountLifeQuest} from '../assets/life-quest/teacher.mjs';
+const names=['QA Explorer A','QA Explorer B'],events=[];
+for(const [i,name]of names.entries()){
+ const s=newAdventure('Fictional Explorer','preview-'+i,true);startMission(s,i?2:1);let wrong=false;
+ for(let n=0;n<10000&&attemptFor(s).status==='active';n++){
+  const l=s.active.level;
+  if(l.pending){if(i&&!wrong){answerQuestion(s,l.pending.index,1);wrong=true;}else answerQuestion(s,l.pending.index,0);}else step(s,{right:l.mode==='side',up:l.mode==='roads'},1/60);
+ }
+ const a=attemptFor(s);for(const action of a.actions)events.push({student:name,at:action.at,summary:action.label,details:{action:'transition-mission-2',item:a.id,status:'activity'}});
+ events.push({student:name,at:a.finishedAt||new Date().toISOString(),summary:'Fictional QA simulation completed a mission',details:monitorDetails(a,a.status==='completed'?'completed':'snapshot')});
+}
+mountLifeQuest(document.querySelector('#panel'),{data:{roster:names,devices:names.map(student=>({student,school:'Fictional Practice School'}))},api:async(_action,body)=>({events:events.filter(e=>e.student===body.student)})});
+</script></body></html>

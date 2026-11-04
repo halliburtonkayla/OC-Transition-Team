@@ -3,6 +3,21 @@
   "scope": "All repository HTML pages and their literal local href/src and navigation URLs. External availability and dynamic URLs are not inferred.",
   "pages": [
     {
+      "path": "transition-mission-2.html",
+      "title": "Transition Mission 2.0 — Life Quest",
+      "room": "wow",
+      "links": [
+        {
+          "target": "assets/life-quest/style.css",
+          "type": "stylesheet"
+        },
+        {
+          "target": "assets/life-quest/app.mjs",
+          "type": "script"
+        }
+      ]
+    },
+    {
       "path": "transition-mission.html",
       "title": "Transition Mission · 30 Career Adventures",
       "room": "wow",
