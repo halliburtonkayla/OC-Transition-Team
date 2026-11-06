@@ -1,10 +1,10 @@
 name: Life Quest checks
 on:
   pull_request:
-    paths: ['transition-mission-2.html', 'assets/life-quest/**', 'assets/classroom-monitor/**', 'assets/school-directory/**', 'transition-town.html', 'game-zone.html', 'tests/life-quest*', '.github/workflows/life-quest-checks.yml']
+    paths: ['transition-mission-2.html', 'assets/life-quest/**', 'assets/classroom-monitor/**', 'assets/school-directory/**', 'transition-town.html', 'game-zone.html', 'tests/life-quest*', 'tests/helpers/life-quest-player.mjs', 'tools/build-life-quest-review.mjs', '.github/workflows/life-quest-checks.yml']
   push:
     branches: [main]
-    paths: ['transition-mission-2.html', 'assets/life-quest/**', 'tests/life-quest*']
+    paths: ['transition-mission-2.html', 'assets/life-quest/**', 'tests/life-quest*', 'tests/helpers/life-quest-player.mjs', 'tools/build-life-quest-review.mjs']
 permissions:
   contents: read
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: All 20 missions, avatars, identity, saves, keyboard menus and reporting
         env:
           SCHOOL_JSDOM: /tmp/life-quest-qa/node_modules/jsdom
-        run: node --test tests/life-quest.test.mjs tests/life-quest-dom.test.mjs tests/life-quest-keyboard-routes.test.mjs tests/transition-mission.test.mjs tests/school-release.test.mjs tests/job-missions.test.mjs tests/prism-pour-school.test.mjs
+        run: node --test tests/life-quest.test.mjs tests/life-quest-polish.test.mjs tests/life-quest-dom.test.mjs tests/life-quest-keyboard-routes.test.mjs tests/transition-mission.test.mjs tests/school-release.test.mjs tests/job-missions.test.mjs tests/prism-pour-school.test.mjs
       - name: Existing classroom and student business compatibility
         run: |
           node tests/classroom-monitor.cjs

@@ -1,3 +1,5 @@
+import {createTouchControls} from '../assets/life-quest/touch-controls.mjs';
+import {roadGap,roadInput} from './helpers/life-quest-player.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -15,7 +17,7 @@ const read=p=>fs.readFileSync(new URL('../'+p,import.meta.url),'utf8');
 // Exercise the shipped keyboard handlers and animation loop, never assign positions,
 // objective flags, inventory, lives, unlocked missions, or completed records.
 class KeyboardPlayer {
- constructor(id,{practice=true,local={},session={}}={}){this.practice=practice;this.frames=0;this.roundTrips=0;this.open(id,local,session);}
+ constructor(id,{practice=true,difficulty='supported',local={},session={}}={}){this.practice=practice;this.requestedDifficulty=difficulty;this.frames=0;this.roundTrips=0;this.open(id,local,session);}
  open(id,local={},session={},resume=false){
   this.dom=new JSDOM(read('transition-mission-2.html'),{url:'https://qa.example/transition-mission-2.html'+(this.practice?'?practice=1':''),runScripts:'outside-only',pretendToBeVisual:true});
   const w=this.w=this.dom.window;this.t=0;this.pressed={};
@@ -23,9 +25,9 @@ class KeyboardPlayer {
   if(!this.practice)w.sessionStorage.setItem('ttCurrent','QA Career Explorer');
   w.matchMedia=()=>({matches:false});w.requestAnimationFrame=fn=>this.frame=fn;w.document.hasFocus=()=>true;w.print=()=>{};w.speechSynthesis={cancel(){}};
   w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;};
-  Object.assign(w,{...engine,...curriculum,...reporting,learningStore,learningId,structuredClone,createSound:()=>createSound({}),speak:()=>{},currentStudent:()=>currentStudent(w),profileFor:name=>profileFor(name,w),createQuestRenderer:()=>({resize(){},draw:(_level,profile)=>{this.drawnAvatar=profile.avatar;},portrait(){}})});
+  Object.assign(w,{createTouchControls,...engine,...curriculum,...reporting,learningStore,learningId,structuredClone,createSound:()=>createSound({}),speak:()=>{},currentStudent:()=>currentStudent(w),profileFor:name=>profileFor(name,w),createQuestRenderer:()=>({resize(){},draw:(_level,profile)=>{this.drawnAvatar=profile.avatar;},portrait(){}})});
   this.context=this.dom.getInternalVMContext();vm.runInContext(read('assets/life-quest/app.mjs').replace(/^import .*;\n/gm,''),this.context);
-  if(resume)this.click('continue-button');else{this.click('play-button');w.document.querySelector(`[data-mission="${id}"]`).click();}
+  if(resume)this.click('continue-button');else{w.document.querySelector(`[data-difficulty="${this.requestedDifficulty}"]`).click();this.click('play-button');w.document.querySelector(`[data-district="${Math.floor((id-1)/5)}"]`).click();w.document.querySelector(`[data-mission="${id}"]`).click();}
   if(!resume)this.input({});
  }
  get state(){return vm.runInContext('s',this.context);}
@@ -50,7 +52,7 @@ class KeyboardPlayer {
  }
  resolve(){
   if(!this.w.document.querySelector('#task-dialog').open)return false;
-  const task=vm.runInContext('task',this.context),answer=task.type==='question'?curriculum.MISSIONS[this.level.id-1].questions[task.index].answer:task.answers[0];
+  const task=vm.runInContext('task',this.context),answer=task.type==='question'?engine.questionsFor(this.level)[task.index].answer:task.answers[0];
   this.w.document.querySelector(`[data-answer="${answer}"]`).click();assert.equal(this.w.document.querySelector('#task-next').hidden,false);this.click('task-next');this.pressed={};this.input({});return true;
  }
  enter(){this.input({});this.key('Enter','keydown');this.key('Enter','keyup');this.resolve();}
@@ -72,6 +74,7 @@ class KeyboardPlayer {
  station(id){assert.ok(this.go(()=>this.level.stations.find(s=>s.id===id),{radius:45}));this.enter();}
  exit(){this.go(()=>this.level.exit,{radius:40});for(let i=0;i<8&&!this.complete;i++){this.resolve();this.enter();}assert.ok(this.complete,`Mission ${this.level.id} exit: ${engine.objective(this.level)}`);}
  runSide(){const phase=this.level.phase;while(!this.complete&&this.level.mode==='side'&&this.level.phase===phase){if(!this.resolve())this.input({right:true});}}
+ crossRoads(){const phase=this.level.phase;const travel=target=>{if(this.complete||this.level.phase!==phase)return;let found=false;for(let n=0;n<900;n++){if(roadGap(this.state,target)){found=true;break;}this.wait(.1);}assert.ok(found,'No safe keyboard crossing gap to '+JSON.stringify(target)+' from '+JSON.stringify(this.level.p)+' with '+JSON.stringify(this.level.walls));for(let n=0;n<1800&&!this.complete&&this.level.phase===phase;n++){if(this.resolve())continue;const input=roadInput(this.state,target);if(!input)return;const p=this.level.p,d=input.right||input.left?Math.abs(target.x-p.x):Math.abs(target.y-p.y);this.input(input,Math.min(.05,d/this.state.settings.speed));} };travel({x:this.level.p.x,y:360});if(this.level.walls.length)travel({x:this.level.walls[0].x+this.level.walls[0].w+55,y:this.level.p.y});travel({x:this.level.p.x,y:270});if(this.level.road)travel({x:this.level.road.passX,y:270});travel({x:this.level.p.x,y:180});if(this.level.road?.required===2)travel({x:960-this.level.road.passX,y:180});travel({x:this.level.p.x,y:75});travel({x:this.level.exit.x,y:60});for(let i=0;i<8&&!this.complete&&this.level.phase===phase;i++){if(!this.resolve())this.input({});}}
  collect(){
   while(this.level.items.some(i=>['supply','key'].includes(i.type)&&!i.taken)){
    const id=this.level.items.find(i=>['supply','key'].includes(i.type)&&!i.taken).id;
@@ -127,18 +130,18 @@ function gridSolution(g){
 function play(player){
  const id=player.level.id;
  if([1,9].includes(id)){player.runSide();return;}
- if(id===2){player.go({x:480,y:55},{radius:5});return;}
+ if(id===2){player.crossRoads();return;}
  if(id===3){player.collect();player.exit();return;}
  if(id===4){for(const s of ['s0','s1','s2'])player.station(s);player.exit();return;}
- if(id===5){while(player.level.step<3){const l=player.level,o=l.orders[l.step];player.station(l.carry?o.target:o.source);}player.exit();return;}
+ if(id===5){while(player.level.step<player.level.orders.length){const l=player.level,o=l.orders[l.step];player.station(l.carry?o.target:o.source);}player.exit();return;}
  if(id===6){player.collect();player.exit();return;}
  if(id===7){while(player.level.step<4)player.station('s'+player.level.step);player.exit();return;}
  if(id===8||id===20){for(const s of ['s0','s1','s2'])player.station(s);player.exit();return;}
- if(id===10){while(player.level.phase<2){if(player.level.phase===0)player.runSide();else player.go({x:480,y:55},{radius:5});}while(player.level.step<2)player.station('s'+player.level.step);player.exit();return;}
- if(id===11){for(let i=0;i<3;i++)player.station('s1');player.station('s3');player.station('s4');player.exit();return;}
+ if(id===10){while(player.level.phase<2){if(player.level.phase===0)player.runSide();else player.crossRoads();}while(player.level.step<2)player.station('s'+player.level.step);player.exit();return;}
+ if(id===11){for(let i=0;i<(player.level.budget?.total||600)/200;i++)player.station('s1');player.station('s3');player.station('s4');player.exit();return;}
  if(id===12){player.go(()=>player.level.stations[0],{radius:40});while(!player.level.flags.riding){if(engine.busStopped(player.level))player.enter();else player.wait(.1);}while(engine.busStop(player.level)!=='Training')player.wait(.1);player.enter();player.exit();return;}
  if(id===13){for(const s of ['s0','s1','s2'])player.station(s);player.exit();return;}
- if(id===14){while(player.level.step<3)player.station(player.level.route[player.level.step]);player.exit();return;}
+ if(id===14){while(player.level.step<player.level.route.length)player.station(player.level.route[player.level.step]);player.exit();return;}
  if(id===15){while(player.level.done.length<2){const l=player.level;if(l.carry){const shirt=l.items.find(i=>i.id===l.carry);player.station(shirt.group==='light'?'s0':'s1');}else{const shirt=l.items.find(i=>i.type==='clothes'&&!i.taken);player.go(shirt,{radius:40});player.enter();}}player.station('s2');while(!player.level.flags.clean)player.wait(.1);player.station('s3');player.exit();return;}
  if(id===16){while(player.level.step<3){if(player.level.carry===null){player.go(()=>player.level.parcels[player.level.step],{radius:55});player.enter();}else player.station('bay'+player.level.carry);}player.exit();return;}
  if(id===17){player.station('button');player.wait(2.1);player.go({x:480,y:185},{radius:10});player.station('help');player.exit();return;}
@@ -146,7 +149,7 @@ function play(player){
  if(id===19){for(const action of gridSolution(player.level.grid)){player.input({[action]:true});player.wait(.25);}while(!player.complete){if(!player.resolve())player.input({});}return;}
 }
 
-for(const m of curriculum.MISSIONS)test(`complete keyboard route ${m.id}: ${m.title}`,()=>{
+for(const m of curriculum.MISSIONS)test(`complete Supported keyboard route ${m.id}: ${m.title}`,()=>{
  const player=new KeyboardPlayer(m.id);
  try{
   play(player);assert.ok(player.complete);assert.equal(player.state.completed.length,1);assert.equal(player.attempt.questions.filter(q=>q.correct).length,2);
@@ -165,4 +168,8 @@ test('one signed-in fictional student completes the entire map with the same sav
   }
   assert.equal(player.w.localStorage.getItem('ttWorld'),world);assert.equal(player.w.localStorage.getItem(key),original);assert.equal(player.state.attempts.reduce((sum,a)=>sum+a.questions.filter(q=>q.correct).length,0),40);
  }finally{player.close();}
+});
+
+for(const difficulty of ['standard','challenge'])test(`complete ${difficulty} commute with shipped keyboard controls and mid-route save/resume`,()=>{
+ const player=new KeyboardPlayer(2,{difficulty});try{player.crossRoads();assert.ok(player.complete);assert.equal(player.attempt.failures,0);assert.equal(player.attempt.questions.length,2);assert.equal(player.roundTrips,1);assert.equal(player.state.completed.length,1);}finally{player.close();}
 });

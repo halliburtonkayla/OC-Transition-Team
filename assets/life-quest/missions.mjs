@@ -74,4 +74,4 @@ export const DIFFICULTIES = {
  standard:{label:'Adventure',hazard:1,damageDelay:2,assist:false},
  challenge:{label:'Challenge',hazard:1.3,damageDelay:1.4,assist:false}
 };
-export const DEFAULT_SETTINGS={difficulty:'supported',speed:180,timed:false,reducedMotion:false,voice:false,effects:true,music:true,volume:.35,keys:{up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight',jump:'Space',interact:'Enter',sprint:'ShiftLeft'}};
+export const DEFAULT_SETTINGS={difficulty:'standard',speed:180,timed:false,reducedMotion:false,voice:false,effects:true,music:true,volume:.35,keys:{up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight',jump:'Space',interact:'Enter',sprint:'ShiftLeft'}};

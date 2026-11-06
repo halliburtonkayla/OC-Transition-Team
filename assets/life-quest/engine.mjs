@@ -1,3 +1,5 @@
+import {tuneCourse} from './progression.mjs';
+import {trafficPlan,seedFor,routeQuestions,advanceTraffic} from './road-routes.mjs';
 import {MISSIONS,DEFAULT_SETTINGS,DIFFICULTIES} from './missions.mjs';
 const copy=x=>structuredClone(x),now=()=>new Date().toISOString();
 export const money=n=>'$'+(n/100).toFixed(2);
@@ -11,13 +13,16 @@ export function restoreAdventure(raw,student){
   if(!raw||JSON.stringify(raw).length>2500000)return null;const s=copy(raw);
   if(s.version!==2||s.student!==student||typeof s.id!=='string'||s.id.length>100||!settingsValid(s.settings)||!Array.isArray(s.completed)||s.completed.length>20||s.completed.some((c,i)=>(s.practice?c.mission<1||c.mission>20:c.mission!==i+1)||!Number.isFinite(Date.parse(c.at)))||new Set(s.completed.map(c=>c.mission)).size!==s.completed.length)return null;
   if(!Array.isArray(s.attempts)||s.attempts.length>1000||s.attempts.some(a=>!a||typeof a.id!=='string'||!Number.isInteger(a.mission)||a.mission<1||a.mission>20||!['active','paused','completed','abandoned'].includes(a.status)||!Number.isFinite(a.activeSeconds)||a.activeSeconds<0||!Array.isArray(a.questions)||!Array.isArray(a.actions)||a.actions.some(x=>!x||typeof x.label!=='string'||typeof x.correct!=='boolean'||typeof x.skill!=='string')||!Array.isArray(a.rewardIds)||a.questions.some(q=>typeof q.correct!=='boolean'||!Number.isInteger(q.index)||q.index<0||q.index>1||typeof q.prompt!=='string'||typeof q.response!=='string'))||new Set(s.attempts.map(a=>a.id)).size!==s.attempts.length)return null;
-  for(const a of s.attempts){a.points??=0;if(!settingsValid(a.settings)||['stars','coins','points','failures','restarts'].some(k=>!Number.isInteger(a[k])||a[k]<0||a[k]>100000000))return null;}
+  for(const a of s.attempts){a.points??=0;if(!settingsValid(a.settings)||['stars','coins','points','failures','restarts'].some(k=>!Number.isInteger(a[k])||a[k]<0||a[k]>100000000)||a.routeVariant!==undefined&&(!Number.isInteger(a.routeVariant)||a.routeVariant<0||a.routeVariant>3))return null;}
   s.suspended??={};if(typeof s.suspended!=='object'||Array.isArray(s.suspended)||Object.keys(s.suspended).length>20)return null;
   if(Object.entries(s.suspended).some(([id,run])=>!/^([1-9]|1[0-9]|20)$/.test(id)||!run||run.level?.id!==Number(id)))return null;
   for(const run of [s.active,...Object.values(s.suspended)].filter(Boolean)){const a=s.attempts.find(a=>a.id===run.attemptId),l=run.level;
    if(!a||!['active','paused','completed'].includes(a.status)||!l||l.id!==a.mission||l.id>unlocked(s)||!Number.isFinite(l.p?.x)||!Number.isFinite(l.p?.y)||l.p.x<0||l.p.x>5000||l.p.y<0||l.p.y>900||!Number.isInteger(l.lives)||l.lives<1||l.lives>3||!Array.isArray(l.answered)||l.answered.some(n=>n!==0&&n!==1))return null;
    for(const k of ['items','stations','hazards','walls','platforms','gaps'])if(!Array.isArray(l[k])||l[k].length>500)return null;
    if(!l.flags||typeof l.flags!=='object'||Array.isArray(l.flags)||!Array.isArray(l.inventory)||!Array.isArray(l.done)||!Number.isInteger(l.phase)||l.phase<0||l.phase>(l.id===10?2:0)||l.kind!==MISSIONS[l.id-1].kind||!Number.isFinite(l.width)||l.width!==createLevel(l.id,l.phase).width)return null;
+   const configuration=c=>c&&Number.isInteger(c.seed)&&c.seed>=0&&c.seed<1e9&&Object.hasOwn(DIFFICULTIES,c.difficulty)&&Number.isInteger(c.replay)&&c.replay>=0&&c.replay<=1000;
+   if(l.course&&(!configuration(l.course)||!Number.isInteger(l.course.stage)||l.course.stage<0||l.course.stage>5))return null;
+   if(l.road&&(!configuration(l.road)||!Number.isInteger(l.road.variant)||l.road.variant<0||l.road.variant>3||![1,2].includes(l.road.required)||!Array.isArray(l.road.lanes)||l.road.lanes.length!==4||![l.road.passX,l.road.targetX].every(x=>Number.isFinite(x)&&x>=25&&x<=935)))return null;
    if(l.mode==='grid'&&(!l.grid||!Array.isArray(l.grid.boxes)||l.grid.boxes.length!==2||!Array.isArray(l.grid.goals)||l.grid.goals.length!==2))return null;
    if(l.items.some(i=>!i||typeof i.id!=='string'||typeof i.taken!=='boolean')||l.stations.some(t=>!t||typeof t.id!=='string'||typeof t.label!=='string')||l.hazards.some(h=>!h||typeof h.id!=='string'))return null;
    if(['vx','vy','z','vz','cycle','invulnerable'].some(k=>!Number.isFinite(l.p[k])))return null;
@@ -31,7 +36,7 @@ export function restoreAdventure(raw,student){
 const station=(id,x,y,label,icon='star',extra={})=>({id,x,y,w:74,h:48,label,icon,...extra});
 const item=(id,x,y,type='star',extra={})=>({id,x,y,type,taken:false,...extra});
 const hazard=(id,x,y,axis,range,speed,w=65,h=30)=>({id,x,y,homeX:x,homeY:y,axis,range,speed,w,h});
-export function createLevel(id,phase=0){
+export function createLevel(id,phase=0,roadConfig=null){
  const mission=MISSIONS[id-1],l={id,kind:mission.kind,phase,time:0,limit:100+id*8,lives:3,step:0,phaseSteps:0,answered:[],pending:null,
   p:{x:70,y:450,vx:0,vy:0,z:0,vz:0,facing:1,grounded:true,cycle:0,invulnerable:0},checkpoint:{x:70,y:450},width:960,height:540,
   items:[],stations:[],hazards:[],walls:[],platforms:[],gaps:[],inventory:[],done:[],carry:null,flags:{},message:'',mode:'top',exit:{x:875,y:100,label:'Next portal'},ready:false};
@@ -49,6 +54,16 @@ export function createLevel(id,phase=0){
  }
  const road=id===2||id===10&&phase===1;
  if(road){l.mode='roads';l.p.x=480;l.p.y=500;l.checkpoint={x:480,y:500};l.exit={x:480,y:48,label:'WORKPLACE'};
+  if(roadConfig){
+   l.road=trafficPlan(roadConfig.seed,roadConfig.difficulty,roadConfig.replay);l.limit=120;
+   l.exit={x:l.road.targetX,y:60,label:'WORKPLACE'};
+   for(const [lane,plan] of l.road.lanes.entries())for(const [j,v] of plan.vehicles.entries())l.hazards.push({...hazard('car'+lane+'-'+j,plan.offset+v.offset,plan.y,'loop',1100,plan.speed,v.w,40),lane,color:v.color,travel:0});
+   if(roadConfig.difficulty!=='supported')l.walls.push({x:l.road.variant%2?420:350,y:285,w:120,h:12,label:'Roadwork · go around'});
+   l.items.push(item('commute-pass',l.road.passX,255,'supply',{label:'Work pass'}));
+   if(l.road.required===2)l.items.push(item('route-check',960-l.road.passX,165,'supply',{label:'Route checkpoint'}));
+   for(const [i,y] of [345,255,165,480].entries())l.items.push(item('roadstar'+i,300+(i%2)*350,y));
+   return l;
+  }
   for(let lane=0;lane<4;lane++){const y=135+lane*90;for(let j=0;j<2+(id>2?1:0);j++)l.hazards.push({...hazard('car'+lane+'-'+j,90+j*420,y,'loop',1100,(lane%2?1:-1)*(70+lane*20+id*2),100,40),lane});l.items.push(item('roadstar'+lane,220+(lane%2)*440,y-40));}return l;
  }
  if(id===3){
@@ -87,8 +102,12 @@ export function startMission(s,id,uid){
  s.suspended??={};if(s.active){const old=attemptFor(s);if(old?.status==='active'){s.suspended[s.active.level.id]=copy(s.active);old.status='paused';}}
  if(s.suspended[id]){s.active=s.suspended[id];delete s.suspended[id];attemptFor(s).status='active';return true;}
  const a={id:uid||s.id+'-'+(s.attempts.length+1),mission:id,startedAt:now(),finishedAt:null,activeSeconds:0,status:'active',questions:[],actions:[],rewardIds:[],stars:0,coins:0,points:0,failures:0,restarts:0,settings:copy(s.settings)};
- s.attempts.push(a);s.active={attemptId:a.id,level:createLevel(id)};return true;
+ const replay=s.attempts.filter(x=>x.mission===id&&x.status==='completed').length;
+ const previous=s.attempts.filter(x=>x.mission===id&&Number.isInteger(x.routeVariant)).at(-1);let seed=seedFor(a.id);if(previous)seed=seed-seed%4+(previous.routeVariant+1)%4;
+ const route={seed,difficulty:s.settings.difficulty,replay};
+ s.attempts.push(a);s.active={attemptId:a.id,level:configuredLevel(id,0,route)};if(id===2)a.routeVariant=s.active.level.road.variant;return true;
 }
+const configuredLevel=(id,phase=0,config=null)=>tuneCourse(createLevel(id,phase,config),config);
 function record(s,label,correct=true,skill){const a=attemptFor(s);a.actions.push({label,correct,skill:skill||MISSIONS[a.mission-1].skills[0],at:now()});if(correct)a.points=(a.points||0)+50;return {type:'action',label,correct};}
 const overlap=(x,y,w,h,b)=>x+w/2>b.x&&x-w/2<b.x+b.w&&y>b.y&&y-h<b.y+b.h;
 const near=(p,o,r=72)=>Math.hypot(p.x-o.x,p.y-o.y)<r;
@@ -98,17 +117,18 @@ export function hurt(s,cause){
  const l=s.active.level,a=attemptFor(s);if(l.p.invulnerable>0)return [];
  a.failures++;l.lives--;const reset=l.lives<=0||l.mode==='roads'||l.id===10||cause==='time';
  const events=[{type:'hurt',cause}];
- if(reset){const lives=l.lives>0?l.lives:3;const fresh=createLevel(l.id);fresh.lives=lives;fresh.answered=[...l.answered];fresh.p.invulnerable=DIFFICULTIES[s.settings.difficulty].damageDelay;s.active.level=fresh;a.restarts++;events.push({type:'restart',message:'Mission restarted. Your completed missions are safe.'});}
+ if(reset){const lives=l.lives>0?l.lives:3;const fresh=configuredLevel(l.id,0,l.course||l.road);fresh.lives=lives;fresh.answered=[...l.answered];fresh.p.invulnerable=DIFFICULTIES[s.settings.difficulty].damageDelay;s.active.level=fresh;a.restarts++;events.push({type:'restart',message:'Mission restarted. Your completed missions are safe.'});}
  else{l.p.x=l.checkpoint.x;l.p.y=l.checkpoint.y;l.p.vy=0;l.p.z=0;l.p.vz=0;l.p.invulnerable=DIFFICULTIES[s.settings.difficulty].damageDelay;}
  return events;
 }
 export function answerQuestion(s,index,choice){
- const l=s.active?.level,a=attemptFor(s),q=MISSIONS[l?.id-1]?.questions[index];
+ const l=s.active?.level,a=attemptFor(s),q=questionsFor(l)?.[index];
  if(!q||l.pending?.index!==index||!Number.isInteger(choice)||choice<0||choice>=q.options.length)return {ok:false};
  const correct=choice===q.answer;a.questions.push({index,prompt:q.prompt,response:q.options[choice],correct,skill:q.skill,service:q.service,at:now()});
  if(correct){if(!l.answered.includes(index)){l.answered.push(index);a.points=(a.points||0)+100;}l.pending=null;}
  return {ok:true,correct,message:q.why};
 }
+export const questionsFor=l=>l?routeQuestions(l,MISSIONS[l.id-1].questions):[];
 function ask(s,index){const l=s.active.level;if(l.answered.includes(index))return [];l.pending={index};return [{type:'question',index}];}
 function finish(s){
  const l=s.active.level,a=attemptFor(s);l.ready=true;for(let i=0;i<2;i++)if(!l.answered.includes(i))return ask(s,i);
@@ -119,19 +139,19 @@ function finish(s){
 export function objective(l){
  const k=effectiveKind(l),counts=t=>l.items.filter(i=>i.type===t&&i.taken).length;
  if(k==='runner')return 'Run to '+l.exit.label+'. Give groups space; jump over bags.';
- if(k==='roads')return 'Watch four lanes of traffic. Reach the workplace at the top.';
+ if(k==='roads')return l.road?`${l.road.name} · ${l.inventory.length}/${l.road.required} route items · ${l.inventory.length<l.road.required?'Collect marked items from safe islands, then reach WORKPLACE.':'Find a gap in each lane and reach the marked workplace.'}`:'Watch four lanes of traffic. Reach the workplace at the top.';
  if(k==='maze')return `${counts('supply')}/6 work supplies · ${l.items.find(i=>i.id==='key').taken?'key found':'find the key'}`;
  if(k==='grocery')return `${l.done.length}/3 best buys · ${l.inventory.join(', ')||'Read prices at the shelves'}`;
- if(k==='restaurant')return `Order ${Math.min(3,l.step+1)}/3: ${l.orders[l.step]?.meal||'orders complete'} → Table ${l.step+1} · Carrying: ${l.carry||'nothing'}`;
+ if(k==='restaurant')return `Order ${Math.min(l.orders.length,l.step+1)}/${l.orders.length}: ${l.orders[l.step]?.meal||'orders complete'} → Table ${Number(l.orders[l.step]?.target?.slice(1)||2)-2} · Carrying: ${l.carry||'nothing'}`;
  if(k==='interview')return '10 AM · Room 3 · '+l.items.filter(i=>['resume','badge'].includes(i.id)&&i.taken).length+'/2 interview items';
  if(k==='kitchen')return ['Wash hands first','Collect fruit + yogurt','Mix the bowl','Serve your bowl','Recipe complete'][l.step];
  if(k==='kindness')return `${l.done.length}/3 neighbors helped · build the kindness bridge`;
  if(k==='platform')return 'Jump gaps and ride the moving lift. Midpoint flag saves a checkpoint.';
  if(k==='delivery')return ['Collect your work kit','Deliver the kit to the supervisor','Reach the finish portal'][l.step];
- if(k==='budget')return `Practice tray ${money(l.wallet)} · ${l.step===0?'Collect exactly $6, then pay Transit':l.step===1?'Keep the remaining $2 in Savings':'Budget complete'}`;
+ if(k==='budget')return `Practice tray ${money(l.wallet)} · ${l.step===0?'Collect exactly '+money(l.budget?.total||600)+', then pay Transit':l.step===1?'Keep the remaining '+money(l.budget?.savings||200)+' in Savings':'Budget complete'}`;
  if(k==='bus')return l.flags.riding?'On board · Current stop: '+busStop(l)+' · Enter rings the bell':'Board the BLUE Training bus while it is stopped. Enter to board.';
  if(k==='application')return `${l.done.length}/3 application field cards ready · deliver to desk`;
- if(k==='radio')return `Dispatch: ${l.step<3?['Team B · Supplies','Team A · Packing','Team C · Office'][l.step]:'Return to Radio Base'} · ${l.step}/3 messages delivered`;
+ if(k==='radio')return `Dispatch: ${l.stations.find(st=>st.id===l.route[l.step])?.label||'Return to Radio Base'} · ${l.step}/${l.route.length} messages delivered`;
  if(k==='laundry')return l.flags.clean?'Clothes clean! Take them to the rack.':l.flags.washAt!==undefined?'Wash cycle: '+Math.max(0,Math.ceil(6-(l.time-l.flags.washAt)))+' seconds':`${l.done.length}/2 sorted · Carrying: ${l.carry||'nothing'} · Enter near a shirt to pick it up`;
  if(k==='conveyor')return `Catch ${['RED','BLUE','GOLD'][l.step]||'all done'} parcel → Bay ${['A','B','C'][l.step]||'finished'} · Carrying: ${l.carry===null?'nothing':['red','blue','gold'][l.carry]}`;
  if(k==='signals')return `${signalWalk(l)?'WALK · cross now':'WAIT · request the signal'} · cross the marked strip, then report the blocked path`;
@@ -158,7 +178,7 @@ export function step(s,input={},seconds=1/60){
  if(s.settings.timed&&l.time>l.limit){events.push(...hurt(s,'time'));s.active.level.time=0;return events;}
  if(l.mode==='grid')return l.ready?finish(s):gridMove(s,input,dt);
  const dir=(input.right?1:0)-(input.left?1:0),dy=(input.down?1:0)-(input.up?1:0),speed=s.settings.speed*(input.sprint?1.3:1);
- p.vx=dir*speed;p.vy=l.mode==='side'?p.vy:dy*speed;if(dir)p.facing=dir;if(dir||dy)p.cycle+=dt*speed*.055;
+ p.vx=dir*speed;p.vy=l.mode==='side'?p.vy:dy*speed;if(dir)p.facing=dir;if(dir||dy){p.cycle+=dt*speed*.055;p.look=dir?(dir<0?'left':'right'):(dy<0?'back':'front');}
  if(l.mode==='side'){
   const prevY=p.y;
   const auto=d.assist&&p.grounded&&dir>0&&(l.gaps.some(g=>g.x>p.x&&g.x-p.x<speed*.23+22)||l.walls.some(w=>w.x>p.x&&w.x-p.x<speed*.22+25)||l.hazards.some(h=>h.x>p.x&&h.x-p.x<speed*.22+42));
@@ -178,7 +198,7 @@ export function step(s,input={},seconds=1/60){
   if(input.jump&&p.z===0){p.vz=260;events.push({type:'jump'});}p.z=Math.max(0,p.z+p.vz*dt);p.vz-=850*dt;if(p.z===0)p.vz=0;
  }
  for(const h of l.hazards){
-  if(h.axis==='loop')h.x=((h.homeX+70+l.time*h.speed*d.hazard)%1100+1100)%1100-70;
+  if(h.axis==='loop')h.x=l.road?advanceTraffic(h,l,dt,d.hazard,s.settings.speed):((h.homeX+70+l.time*h.speed*d.hazard)%1100+1100)%1100-70;
   else if(h.axis==='x')h.x=h.homeX+Math.sin(l.time*(Math.abs(h.speed)/90)*d.hazard)*h.range;
   else h.y=h.homeY+Math.sin(l.time*(Math.abs(h.speed)/90)*d.hazard)*h.range;
   const box={x:h.x-h.w/2,y:l.mode==='side'?h.y-h.h:h.y-h.h/2,w:h.w,h:h.h};
@@ -194,10 +214,12 @@ export function step(s,input={},seconds=1/60){
  if(l.id===17&&p.y<325&&p.y>210&&!signalWalk(l))return [...events,...hurt(s,'crossed before WALK')];
  if(l.id===17&&p.y<205)l.flags.crossed=true;
  if(l.mode==='side'&&p.x>l.exit.x-35){if(l.id===10)return [...events,...nextRelay(s)];return [...events,...finish(s)];}
- if(l.mode==='roads'&&p.y<70){if(l.id===10)return [...events,...nextRelay(s)];return [...events,...finish(s)];}
+ if(l.mode==='roads'&&p.y<80){if(!l.road)return p.y<70?[...events,...(l.id===10?nextRelay(s):finish(s))]:events;
+  if(Math.abs(p.x-l.exit.x)<65&&l.inventory.length>=l.road.required){if(!l.flags.routeRecorded){events.push(record(s,'Completed '+l.road.name+' with all route items',true,'Transportation planning'));l.flags.routeRecorded=true;}return [...events,...(l.id===10?nextRelay(s):finish(s))];}
+  if(!l.flags.arrivalNotice){events.push({type:'notice',message:l.inventory.length<l.road.required?'Collect the marked work pass and route checkpoint from the safe islands first.':'Follow the WORKPLACE marker along the sidewalk.'});l.flags.arrivalNotice=true;}}
  return events;
 }
-function nextRelay(s){const l=s.active.level;record(s,'Finished career relay leg '+(l.phase+1));const n=createLevel(10,l.phase+1);n.lives=l.lives;n.answered=l.answered;s.active.level=n;return [{type:'phase',message:'Relay leg '+(n.phase+1)+' · '+objective(n)}];}
+function nextRelay(s){const l=s.active.level;record(s,'Finished career relay leg '+(l.phase+1));const n=configuredLevel(10,l.phase+1,l.course);n.lives=l.lives;n.answered=l.answered;s.active.level=n;return [{type:'phase',message:'Relay leg '+(n.phase+1)+' · '+objective(n)}];}
 function choice(label,options,answers,skill){return {type:'task',label,options,answers,skill};}
 export function interact(s){
  const l=s.active?.level;if(!l||attemptFor(s)?.status!=='active')return [];const k=effectiveKind(l),p=l.p;
@@ -207,16 +229,16 @@ export function interact(s){
  const retry=(message,skill)=>[record(s,message,false,skill),{type:'notice',message}];
  if(l.mode==='side'){if(st?.id==='checkpoint'){l.checkpoint={x:1330,y:470};return [{type:'checkpoint'}];}return [];}
  if(k==='maze'&&near(p,l.exit)){if(l.items.filter(i=>i.type==='supply'&&i.taken).length===6&&l.inventory.includes('key'))return finish(s);l.message='Find all 6 supplies and the brass key first.';return [{type:'notice',message:l.message}];}
- if(k==='grocery'&&st){if(st.id==='s3'){if(l.done.length===3)return finish(s);l.message='Your list needs apples, milk, and oats.';}else if(!l.done.includes(st.id)){const i=Number(st.id.slice(1)),prices=[[100,200],[200,300],[200,400]][i];return [choice('Choose your '+['apples','milk','oats'][i],[money(prices[1])+' · same size',money(prices[0])+' · same size'],[1],'Comparing prices')];}}
+ if(k==='grocery'&&st){if(st.id==='s3'){if(l.done.length===3)return finish(s);l.message='Your list needs apples, milk, and oats.';}else if(!l.done.includes(st.id)){const i=Number(st.id.slice(1)),prices=[[100,200],[200,300],[200,400]][i],offer=l.shopping?.[i];return [choice('Choose your '+['apples','milk','oats'][i]+(offer?' · '+offer.hint:''),offer?.options||[money(prices[1])+' · same size',money(prices[0])+' · same size'],[offer?.answer??1],'Comparing prices')];}}
  if(k==='restaurant'&&st){const o=l.orders[l.step];if(!o){if(near(p,l.exit))return finish(s);return [{type:'notice',message:'All orders delivered. Go to the shift-end portal.'}];}
   if(st.id===o.source&&!l.carry){l.carry=o.meal;return done('Picked up '+o.meal);}
-  if(st.id===o.target&&l.carry===o.meal){l.carry=null;l.step++;return done('Delivered '+o.meal+' to Table '+l.step,'Customer service');}
-  return retry('Check your order: '+o.meal+' → Table '+(l.step+1)+'.','Order accuracy');}
+  if(st.id===o.target&&l.carry===o.meal){l.carry=null;l.step++;return done('Delivered '+o.meal+' to Table '+(Number(o.target.slice(1))-2),'Customer service');}
+  return retry('Check your order: '+o.meal+' → Table '+(Number(o.target.slice(1))-2)+'.','Order accuracy');}
  if(k==='interview'&&st){if(st.id==='s2'&&l.inventory.includes('resume')&&l.inventory.includes('badge'))return finish(s);return retry(st.id==='s2'?'Collect your résumé and ID badge first.':'Your appointment is at 10 AM in room 3.','Interview preparation');}
  if(k==='kitchen'&&st){if(st.id==='s'+l.step){l.step++;const e=done(['Washed hands','Collected fruit and yogurt','Mixed the bowl','Served the no-heat recipe'][l.step-1],'Following a recipe');if(l.step===4)return [...e,...finish(s)];return e;}return retry('Follow the recipe: '+objective(l),'Following a recipe');}
  if(k==='kindness'&&st&&!l.done.includes(st.id))return [choice(st.label,['Ask what help is wanted, listen, and follow through.','Ignore them and laugh.','Decide everything for them.'],[0],'Supportive relationships')];
  if(k==='delivery'&&st){if(st.id==='s'+l.step){l.step++;return done(l.step===1?'Collected a work kit':'Delivered the kit to the supervisor');}}
- if(k==='budget'&&st){if(st.id==='s0'||st.id==='s1'){l.wallet+=st.id==='s0'?100:200;return done('Added practice coin: tray '+money(l.wallet),'Money management');}if(st.id==='s2'){l.wallet=0;return [{type:'notice',message:'Practice coin tray reset.'}];}if(st.id==='s3'&&l.step===0){if(l.wallet===600){l.wallet-=400;l.step=1;return done('Paid $4 transit fare; $2 remains','Budgeting');}return [{type:'notice',message:'Build exactly $6 before paying. Reset the tray if needed.'}];}if(st.id==='s4'&&l.step===1&&l.wallet===200){l.wallet=0;l.step=2;return [...done('Saved the remaining $2','Budgeting'),...finish(s)];}}
+ if(k==='budget'&&st){if(st.id==='s0'||st.id==='s1'){l.wallet+=st.id==='s0'?100:200;return done('Added practice coin: tray '+money(l.wallet),'Money management');}if(st.id==='s2'){l.wallet=0;return [{type:'notice',message:'Practice coin tray reset.'}];}if(st.id==='s3'&&l.step===0){if(l.wallet===(l.budget?.total||600)){l.wallet-=l.budget?.fare||400;l.step=1;return done('Paid '+money(l.budget?.fare||400)+' transit fare; '+money(l.wallet)+' remains','Budgeting');}return [{type:'notice',message:'Build exactly '+money(l.budget?.total||600)+' before paying. Reset the tray if needed.'}];}if(st.id==='s4'&&l.step===1&&l.wallet===(l.budget?.savings||200)){l.wallet=0;l.step=2;return [...done('Saved the remaining '+money(l.budget?.savings||200),'Budgeting'),...finish(s)];}}
  if(k==='bus'){
   if(l.flags.riding){if(busStop(l)==='Training'){l.flags.riding=false;l.p={...p,x:860,y:90};l.ready=true;return [...done('Rang the bell and exited at Training','Public transportation'),...finish(s)];}return retry('This is '+busStop(l)+'. Wait for Training, then ring the bell.','Public transportation');}
   if(st?.id==='training'){if(busStopped(l)){l.flags.riding=true;l.flags.boardAt=l.time;return done('Boarded the Training bus','Public transportation');}return [{type:'notice',message:'Wait until the blue bus stops. It returns every 12 seconds.'}];}
@@ -239,7 +261,7 @@ export function interact(s){
  if(k==='schedule'&&st){if(st.id==='s'+l.step){l.step++;const e=done('Completed shift checklist: '+st.label,'Time management');return l.step===4?[...e,...finish(s)]:e;}return retry('Next appointment: '+objective(l),'Time management');}
  if(k==='advocacy'&&st&&!l.done.includes(st.id)){const labels=['I need a ramp to reach the next area.','A written checklist helps me follow the steps.','A quiet space helps me focus.'];return [choice('Request the support at this beacon',[labels[Number(st.id.slice(1))],'I should never ask for help.'],[0],'Self-advocacy')];}
  if(near(p,l.exit)){
-  const ready=k==='kindness'&&l.done.length===3||k==='delivery'&&l.step===2||k==='restaurant'&&l.step===3||k==='radio'&&l.step===3||k==='conveyor'&&l.step===3||k==='advocacy'&&l.done.length===3||k==='bus'&&l.ready;
+  const ready=k==='kindness'&&l.done.length===3||k==='delivery'&&l.step===2||k==='restaurant'&&l.step===l.orders.length||k==='radio'&&l.step===l.route.length||k==='conveyor'&&l.step===3||k==='advocacy'&&l.done.length===3||k==='bus'&&l.ready;
   if(ready)return finish(s);
  }
  return [{type:'notice',message:l.message||'Move close to a station, item, or portal and press Enter.'}];
@@ -254,5 +276,5 @@ export function answerTask(s,task,choiceIndex){
  if((l.kind==='kindness'||l.kind==='advocacy')&&l.done.length===3)l.flags.gateOpen=true;
  return [e,{type:'task-complete',message:'Good choice! '+(l.flags.gateOpen?'The path is now open.':'Continue your mission.')}];
 }
-export function resetPuzzle(s){if(s.active?.level.id!==19)return false;const old=s.active.level,fresh=createLevel(19);fresh.answered=old.answered;fresh.time=old.time;fresh.lives=old.lives;s.active.level=fresh;record(s,'Reset the move-in puzzle to try another route',false,'Planning ahead');return true;}
-export function restartMission(s){if(!s.active)return false;const old=s.active.level,fresh=createLevel(old.id);fresh.answered=old.answered;s.active.level=fresh;attemptFor(s).restarts++;return true;}
+export function resetPuzzle(s){if(s.active?.level.id!==19)return false;const old=s.active.level,fresh=configuredLevel(19,0,old.course);fresh.answered=old.answered;fresh.time=old.time;fresh.lives=old.lives;s.active.level=fresh;record(s,'Reset the move-in puzzle to try another route',false,'Planning ahead');return true;}
+export function restartMission(s){if(!s.active)return false;const old=s.active.level,fresh=configuredLevel(old.id,0,old.course||old.road);fresh.answered=old.answered;s.active.level=fresh;attemptFor(s).restarts++;return true;}

@@ -1,41 +1,41 @@
-# Life Quest verification — November 4, 2026
+# Life Quest review verification — November 5, 2026
 
-## Automated verification
+This revision updates draft PR #23. It does not merge, publish, deploy, change Site access or write live student records.
 
-The new suite has 64 passing tests: 37 engine/integration tests, 6 focused DOM workflow tests, and 21 complete keyboard-route/campaign tests. Combined verification has 170 passing tests across Life Quest, the original Transition Mission, existing school activities, Job Missions, and Prism Pour school integration.
+## Automated checks
 
-```sh
-npm install --prefix /tmp/life-quest-qa --no-save jsdom@26.1.0
-SCHOOL_JSDOM=/tmp/life-quest-qa/node_modules/jsdom node --test \
-  tests/life-quest.test.mjs tests/life-quest-dom.test.mjs tests/life-quest-keyboard-routes.test.mjs \
-  tests/transition-mission.test.mjs tests/school-release.test.mjs \
-  tests/job-missions.test.mjs tests/prism-pour-school.test.mjs
+```bash
+npm install --prefix /tmp/life-quest-qa --no-save jsdom@26.1.0 esbuild@0.25.12
+SCHOOL_JSDOM=/tmp/life-quest-qa/node_modules/jsdom node --test tests/life-quest.test.mjs tests/life-quest-polish.test.mjs tests/life-quest-dom.test.mjs tests/life-quest-keyboard-routes.test.mjs tests/transition-mission.test.mjs tests/school-release.test.mjs tests/job-missions.test.mjs tests/prism-pour-school.test.mjs
 node tests/classroom-monitor.cjs
 node tests/student-shop-core.cjs
 node tools/release-audit.mjs
 git diff --check
 ```
 
-The existing classroom suite also passes its 101 access, evidence, identity, session, and concurrency assertions. The existing business suite passes its 59 shop/banking/training assertions. Release audit: 397 active source files, 2,341 local references, zero syntax errors and zero missing references. The original Mission HTML and assets have no diff from the base commit.
+The full suite passes **233 tests**. Existing classroom and business suites pass **101** and **59** assertions. The release audit reports no syntax errors or missing active local references. The workflow includes added progression, sprite, route, startup-failure and customization regressions.
 
-Coverage includes:
+- Complete keyboard routes through all 20 missions in **Supported mode**, exact mid-mission close/reopen checks, and a complete campaign using one fictional saved Town avatar. These are automated DOM playthroughs, not 20 manual browser playthroughs.
+- Full **Adventure and Challenge** commutes through the shipped keyboard handlers and saved resumption.
+- **48** real-movement commute cases: four seeds, three difficulties and all four player speeds, without disabling collisions. Safe gaps, objectives, no-loss completion, two decisions and restored metadata are checked.
+- Harder restaurant, grocery, budget and radio workloads require every objective. Both advanced box layouts are solved through actual legal pushes.
+- Retries, replay variation, capped escalation, exact course restoration, malformed metadata and legacy checkpoints.
+- All directional character frames render using saved appearance fields. Practice customization stays out of Town storage. A changed live identity clears evidence and locks the game.
+- Remapping, native Tab, pause, speed, mute/volume, reduced decorative motion, truthful wrong/correct evidence and private reporting transport.
+- Module-load failure produces one stable explanation without altering saves or automatically reloading.
 
-- Every mission's distinct objective, exit gating, both real-life decisions, and saved restoration.
-- Sequential completion of all 20, completed-level replay, and suspension/restoration of unfinished later missions.
-- Complete keyboard routes from the real starting point through every objective and exit in all 20 missions. The new suite drives the shipped keyboard event handlers and animation loop in a DOM simulation; it does not assign player positions, inventory, objective flags, lives, unlocks, or completion records. A path planner chooses directional keys around the actual walls and moving hazards.
-- An exact save/close/reopen/resume check during each mission, followed by completing the mission. A separate full campaign verifies sequential unlocks, all 40 correct decisions, 20 saved mission reports, and the same personalized Town avatar across the whole map; the original Town and game records remain unchanged.
-- Focused station/task unit tests still place fictional actors at interaction points to isolate scoring and objective rules. These complement the complete routes; none of these automated DOM simulations are claimed as 20 full manual browser playthroughs.
-- Movement/jump state in all 20; all supported movement speeds across hallway/platform routes; wall and traffic collisions; hazard speeds; three-life recovery; points and reward idempotency.
-- Bus boarding/stop timing, recipe order, budget arithmetic, dispatch sequencing, laundry cycle, moving parcels, WALK signal, shift order, and a solver-confirmed box-puzzle route.
-- Keyboard events and menu launch for all 20 in DOM tests; remapping, pause, reduced-motion setting, mute, report printing, and same-device resume.
-- Fictional personalized avatar colors/hairstyle/outfit; no Town ledger/profile writes; live identity-switch locking and clearing of printable content.
-- Honest wrong/correct accuracy, unscored empty records, report escaping, existing service sanitization, duplicate snapshot handling, private teacher mounting, stale asynchronous load rejection, and class/individual printing.
-- Central-time date boundaries on 23-hour and 25-hour daylight-saving days.
+## Browser review and limits
 
-## Browser verification
+The portable practice build was checked in Chromium through an internal local preview. Home/portrait, world map, districts, traffic, hallway and furnished rooms were reviewed; movement, pause/settings, fictional customization, reports, reload and continuation were exercised. The actual modular launcher was also checked in fictional practice mode. The portable copy has no external script/style/image dependencies. Direct file-protocol opening is blocked by this cloud browser policy, so that specific path was not tested here; the identical portable HTML was tested over the internal HTTP preview. Verify opening the downloaded file on a classroom computer before classroom use.
 
-The actual Chromium preview was operated through its UI using fictional practice data. Every mission was launched and rendered. The first mission was played through its classroom portal, a wrong choice and explanation, both correct decisions, and the completion celebration. Keyboard movement, reward collection, saved reopening, the map, and the grocery environment were visually inspected. The separate reporting category loaded two fictional histories with 100% and 67% question accuracy and exposed class and individual print controls. Screenshots are in this folder.
+The previous hosted preview displayed its sign-in wall before Life Quest ran; available error logs were empty. The precise earlier retry prompt was not reproduced. Its root cause is unconfirmed. The portable review removes the hosted/authentication dependency; this does not mean the hosted environment was repaired or redeployed.
 
-The browser review found and corrected an HTTP-preview compatibility problem in the teacher pane's mount identifier; no insecure-context `crypto.randomUUID` dependency remains there. It also prompted an immediate draw on mission selection, reduced redundant HUD DOM updates, and a compact gameplay layout with visible keyboard directions.
+`transition-mission.html`, `assets/transition-mission/`, shared learning storage, classroom services, rosters and financial records are unchanged. The workflow change adds tests and has no deployment step.
 
-No live student profiles were edited, no classroom service was authorized from the review pages, and no deployment occurred. Automated complete keyboard routes, save/reopen checks, and a full sequential campaign cover all 20; only the first mission received a full manual browser playthrough. Other browser families, physical school laptops, and approved-device live reporting are not claimed as verified. Those are appropriate classroom-pilot checks after review.
+Artwork remains sprite/Canvas 2.5D, with runtime palette and supported hair/accessory variations. It is not a full 3D character editor or exact original-portrait recreation. Existing browser-local save and login/reporting limits remain. Physical school laptops, other browser families and real approved-device teacher synchronization require the separately approved pilot. Manual full-campaign play at every advanced setting is not claimed.
+
+## Implemented views
+
+![Town map](review-map.jpg)
+
+![Hallway and animated characters](review-hallway.jpg)

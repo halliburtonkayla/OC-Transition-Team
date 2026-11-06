@@ -1,93 +1,59 @@
 # Transition Mission 2.0 — Life Quest
 
-Twenty playable career and independent-living missions, built as a separate canvas game. The original `transition-mission.html` and every file in `assets/transition-mission/` are unchanged. Its avatar renderer, original synthesized sound, and valley artwork are reused as read-only dependencies.
+Sign in to Transition Town, enter the school, and choose **Learning Arcade → Play Life Quest**. The game is also listed in the School Directory under **The Wow Zone**, alongside the original Transition Mission. Students can resume from **Continue Adventure** on the same device and browser.
 
-## Review before deployment
+Computers support arrows or WASD, Space to jump, Enter to interact, Shift to run, and Escape to pause. Phones and tablets show a direction pad and action buttons. Students can also enable or hide on-screen controls in Settings.
 
-This branch is for review. It does not deploy the game, change a database, migrate a roster, or modify student financial records.
+The actual branch now uses directional animated sprite characters, the illustrated town map, hallway art, textured room scenes, furnished stations, vehicle artwork, and a blue/gold interface. The original Transition Mission and its assets are unchanged. This remains a lightweight Canvas 2D/2.5D game; it is not a new full 3D engine or an exact recreation of the mockup's camera angles.
 
-1. Check out `feature/transition-mission-2-life-quest`.
-2. Serve the repository as a static site, for example with `python -m http.server 8000`.
-3. Open `http://localhost:8000/transition-mission-2.html?practice=1`.
-4. Choose **Play Game** to review any of the 20 missions. This explicit practice mode uses a fictional character and a separate tab-only save. It never loads the classroom recorder or reads real student profiles. Merely visiting a mission does not mark it complete.
-5. For the reporting interface without a teacher login or live data, open `http://localhost:8000/tests/life-quest-teacher-preview.html`. Click **Load Life Quest results**. The page clearly labels all evidence as fictional QA simulations.
-6. For a local integration check, use fictional `ttCurrent` and `ttWorld.residents` fixtures. Do not use live student records. Normal mode reads the same login and avatar fields as the existing Town.
+## Private testing
 
-After a separately approved deployment, the game appears beside the original on the WOW Zone shelf, the existing school game menu, and the Game & Simulator Zone. No hallway shortcut buttons are added. Its home offers Play Game, Continue Adventure, Choose Completed Level, My Progress, Character, and Settings.
+Download **Life_Quest_Private_Review.html** and open it in a current desktop browser. This self-contained practice build needs no server, sign-in gate, hosted preview, separate asset download, roster, or classroom recorder. All 20 destinations are available across four district tabs. It forces a fictional identity even without `?practice=1` and excludes the real profile adapter and recorder script.
 
-## The missions
+**Character** offers fictional palette, hairstyle, outfit/accessory and character variations. **My Progress** prints the actual practice results. Practice saves remain in that browser tab, separate from classroom progress. Keep the tab open or print results before closing it. Blocked storage produces a saving-unavailable notice. Browser speech depends on installed voices; the game and synthesized effects/music require no audio service.
 
-| # | Mission | Playable mechanic |
-|---|---|---|
-| 1 | Race to Class | Side-scrolling hallway; jump bags, avoid groups, reach classroom 204 |
-| 2 | Cross Town to Work | Four independently moving traffic lanes and safe islands |
-| 3 | Workplace Maze | Alternating shelf corridors, six supplies, a key, and patrol carts |
-| 4 | Grocery Store Rush | Find three shelves, compare equal-size prices, fill the list, check out |
-| 5 | Restaurant Rush | Pick up the current meal and deliver it to its matching table |
-| 6 | Job Interview Adventure | Gather résumé and badge; use the appointment to find room 3 |
-| 7 | Kitchen Safety Quest | Wash, collect fruit and yogurt, mix, serve; avoid hazards |
-| 8 | Friendship & Kindness | Meet three characters, choose support, open the kindness bridge |
-| 9 | Skyline Platform Trail | Gaps, a moving lift, patrol obstacles, and a midpoint checkpoint |
-| 10 | Final Career Challenge | Longer run → denser road crossing → workplace kit delivery |
-| 11 | Budget Builder | Assemble exactly $6, pay $4 transit, reserve $2 savings |
-| 12 | Catch the Right Bus | Board the stopped Training bus and ring at the correct stop |
-| 13 | Application Delivery | Build availability, honest strength, and reference cards; submit |
-| 14 | Radio Team Relay | Follow changing dispatch instructions in the correct delivery order |
-| 15 | Laundry Day Lab | Carry and sort light/dark shirts, start a cycle, wait, hang clothes |
-| 16 | Parcel Dispatch | Intercept moving requested parcels and dispatch to matching bays |
-| 17 | Safe Community Patrol | Request WALK, wait for the signal, cross the strip, report a barrier |
-| 18 | Plan My Shift | Complete clock-in, stocking, break, and clock-out appointments in order |
-| 19 | Move-In Puzzle | Push-only box puzzle with storage goals, walls, and an R reset |
-| 20 | My Future, My Voice | Request three specific supports, open the summit gate, navigate hazards |
+To review source, check out this branch, run `python -m http.server 8000`, and open `http://localhost:8000/transition-mission-2.html?practice=1`. The disconnected teacher fixture remains at `http://localhost:8000/tests/life-quest-teacher-preview.html`. Do not authorize a classroom device during review.
 
-Each mission has two required, original real-life decisions at its exit event, with explanations after mistakes. Grocery, application, kindness, and advocacy decisions also affect physical objectives. Incorrect scored actions and responses remain in the evidence; a correction does not erase the first attempt. Game stars, coins, and points have no financial effect in Town.
+To rebuild the portable file:
 
-## Keyboard and supports
+```bash
+npm install --prefix /tmp/life-quest-qa --no-save esbuild@0.25.12
+LIFE_QUEST_ESBUILD=/tmp/life-quest-qa/node_modules/esbuild node tools/build-life-quest-review.mjs --out /absolute/path/Life_Quest_Private_Review.html
+```
 
-- Arrows or WASD move; Space jumps; Enter interacts; Shift runs; Escape pauses. Tab remains native for menus and dialog choices. The box puzzle also uses R to reset just the puzzle.
-- Settings remap the seven game actions, change movement speed, select Supported/Adventure/Challenge, and offer an optional timer. Escape and Tab remain reserved. R is reserved for puzzle reset.
-- Supported mode slows hazards, assists obstacle jumps, and helps across gaps, including at gentle speed. Adventure and Challenge require the player to time jumps and avoid collisions. Later missions add longer routes, denser traffic, faster patrols, sequencing, timing, and multi-part objectives.
-- Reduced motion stops extra bobbing, confetti, arrival effects, and the home character's idle animation. Movement needed to play remains visible.
-- Optional browser speech, original synthesized music, reward effects, sound off, and volume controls require no external audio service. Speech availability depends on the browser.
-- Settings and report dialogs stop gameplay timing. Decision dialogs count participation for up to 30 seconds after input. Hidden tabs, pause, and inactivity over 30 seconds do not add active seconds.
+It embeds scripts, styles and seven art assets. Metadata records the source commit and script SHA-256. The builder rejects retained recorder/network dependencies; it neither deploys nor writes to GitHub.
 
-## Identity, character, and progress
+## Characters, controls and saves
 
-The game reads only the current login's Town avatar colors, hairstyle, outfit, and supported glasses. Assigned business portrait artwork uses the original Mission's rendering/cropping approach. A compatible character is supplied when no avatar exists. The same character appears in every playable scene. Character editing goes to the existing Town creator, where the student explicitly saves a profile change; Life Quest never saves an avatar into Town.
+The renderer reads the validated Town fields: skin, hair, shirt, pants, hair style, outfit/accessories, and gender. Cached sprite frames apply the palette and supported hair/accessory variations. It does not import the original Mission renderer or paste portrait head crops onto bodies. The artwork is a new interpretation of saved customization, not the student's original mesh or portrait. Assigned business portrait files remain untouched. Original sprite/background files were copied unchanged from Kayla's November 5 private review; customization happens at runtime.
 
-The existing `learningStore` uses the separate `transition-mission-2` activity namespace. Identity changes lock the game, stop audio, and clear report content. Saves checkpoint positions, objectives, lives, questions, rewards, current mission, attempt evidence, settings, completion times, and active time. Unfinished missions are suspended when replaying an earlier level, so returning restores their work. Failure never removes completed missions. Road hits and relay failures restart only that mission; three lost lives elsewhere restart only the current mission. Platform checkpoints support ordinary single-life retries.
+Only fictional practice offers local appearance controls. Classroom mode keeps the existing read-only profile adapter. Life Quest never writes Town avatars, bank balances, rosters or original-game storage.
 
-### Architecture limits and the compatible approach
+Arrows/WASD move, Space jumps, Enter interacts, Shift runs, Escape pauses, and R resets the box puzzle. Native Tab navigation, remapping, four movement speeds, optional timing, reduced decorative motion, speech, music/effects, mute and volume remain available.
 
-**Adventure saves are on this browser/device.** They are not cross-device cloud saves. Guests and the explicit fictional review mode use tab storage. If browser storage is blocked, corrupt, or full, the UI explains that saving is unavailable; corrupt data is kept rather than silently overwritten. Reports can still be printed from the current session.
+The separate `transition-mission-2` namespace, version-2 checkpoint, suspended missions, completion evidence, active participation timing, printable report and approved-device teacher reporting remain intact. New metadata is saved and validated; legacy checkpoints still restore. Restarts affect only the current mission. No live classroom recording or student records were used in QA. Saves remain browser/device-local, and the existing name-based login is not tamper-proof authentication.
 
-**The existing name-based Town login is not secure student authentication.** Per-profile keys and identity guards prevent accidental cross-profile loading/writes through this game, and it provides no UI to browse other students' local history. A person with access to the same browser storage, developer tools, or another student's selected Town identity can still inspect or alter browser-local data. This static architecture cannot honestly guarantee tamper-proof student identity or records. Separate OS/browser profiles provide a practical shared-device boundary; stronger isolation and cross-device saves need a separately designed authenticated student backend. This branch does not weaken existing authentication or claim local saves are secure cloud records.
+## Difficulty and variety
 
-**Private dashboard evidence uses the existing approved-device classroom service.** The service binds events to the device's student identity and authenticates teacher reads. No public student reporting endpoint, service credential, new table, or schema is introduced. The new game does not query other students' data. Missing recording permissions or an unavailable connection do not fabricate dashboard results. The student-device report remains available.
+New adventures start in **Adventure**. Existing saved supports and unfinished layouts are preserved. Movement speed and hazard pacing respond immediately; stored layouts/workloads stay intact until a new attempt so settings changes do not discard objectives.
 
-## Teacher reporting
+| Mechanic | Supported | Adventure | Challenge |
+| --- | --- | --- | --- |
+| Cross Town | 8 vehicles, 1 pickup | 12 vehicles, 2 pickups, roadwork | 16 vehicles, 2 pickups, roadwork |
+| Restaurant | 3 deliveries | 4 seeded deliveries | 5 seeded deliveries |
+| Grocery | Fixed equal-size prices | Changing equal-size prices | Unit-cost comparisons |
+| Budget | $6 total / $4 transit / $2 savings | $12 / $7 / $5 | $18 / $11 / $7 |
+| Radio | 3 destinations | 4 changing instructions | 5 changing instructions |
+| Box puzzle | Original goals/walls | More distant goals | Distant goals plus another wall |
 
-The authenticated dashboard has a separate **Transition Mission 2.0** category. It loads actual retained history for a selected student or the roster, within dates interpreted in America/Chicago, including daylight-saving boundaries. It shows school, mission, status, date, active duration, stars, question accuracy, relevant Pre-ETS categories, and skills needing practice. It supports an individual printout and a class summary.
+Traffic alternates directions, mixes vehicle lengths, includes deliberate gaps and lane-specific acceleration, and gets faster toward work. A specific workplace and required route pickups prevent a straight sprint from completing the mission. Four variants rotate across new attempts, with eight commute-planning decisions. Retries keep the route; completed replays add capped escalation (maximum 16%). **Try a new traffic route** retains the abandoned attempt's local evidence and all earlier completions.
 
-The game sends compact snapshots every 15 seconds while open, at recorded decisions, at pause/exit, and at completion, plus individual action/response evidence. All fields pass through the existing classroom service allowlist. Event summaries are browser-reported evidence, not teacher observations. A completed event is required for dashboard completion; visits and clicks never become completions. Duplicate snapshots do not multiply attempts. The student report contains the complete locally recorded activities; classroom reports contain only events actually received and retained by the service. Existing retention, pauses, authorization, and connection limits apply.
+Later patrols require tighter timing. Runner obstacles use seeded spacing/movement; the platform mission keeps its lift, gaps and checkpoint. Other missions retain their distinct physical objectives: maze supplies/key, interview documents/appointment, ordered recipe, supportive encounters, three-part relay, bus stops, application fields, laundry cycle, moving parcels, WALK signals, shift tasks and self-advocacy gates. Each retains two required recorded exit decisions. This is seeded variety, not an unlimited content generator; some curricula intentionally repeat for practice.
 
-During review, no live classroom/device authorization or database recording was exercised. The existing sanitizer and teacher UI were tested against fictional evidence. School-device network and approved-device end-to-end verification remain part of the deployment pilot.
+## Loading investigation
 
-## Files and integration boundaries
+The earlier hosted preview currently serves a ChatGPT sign-in gate before the game. Available error logs contained no events, and the game source has no automatic reload/retry loop. These observations do **not** establish the exact cause of the earlier retry prompts. The account/preview environment remains a plausible cause; a failed module/asset request is another possible failure class.
 
-- `transition-mission-2.html` and `assets/life-quest/`: separate launcher, curriculum, physics/objectives, rendering, read-only profile adapter, reporting, teacher pane, and styles.
-- `assets/classroom-monitor/student.js`: add this page to the existing recorder allowlist only.
-- `assets/classroom-monitor/teacher.js`: import and mount the new category behind the existing teacher gate; other views remain intact.
-- School catalogue, school game menu, Game Zone, and the activity inventory: add the new tile while preserving the original tile.
-- Existing school directory and dashboard script query versions are refreshed so browsers load the new integration.
-- `tests/life-quest*` and `.github/workflows/life-quest-checks.yml`: fictional regression tests and the isolated report preview.
+The portable file removes that hosted gate and dependent requests. The repository launcher also has a stable startup error panel if a module fails, with a bounded diagnostic message, preserved saves and no automatic reload. The hosted sign-in environment itself was not redeployed or claimed repaired.
 
-## Validation
-
-See [verification.md](verification.md). Screenshots show fictional review sessions:
-
-![Adventure home](home.jpg)
-![Adventure map](map.jpg)
-![Grocery mission](grocery.jpg)
-![Mission celebration](celebration.jpg)
-![Teacher category with fictional evidence](teacher-report.jpg)
+See [verification.md](verification.md) for checks and remaining pilot limits.

@@ -1,3 +1,4 @@
+import {walkRoad} from './helpers/life-quest-player.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,7 +10,7 @@ import {learningStore} from '../assets/learning/progress.mjs';
 import {profileFor} from '../assets/life-quest/profile.mjs';
 import {createSound} from '../assets/transition-mission/sound.mjs';
 const require=createRequire(import.meta.url),C=require('../assets/classroom-monitor/core.js');
-const fictional=(id=1)=>{const s=newAdventure('Fictional Explorer','qa',true);assert.ok(startMission(s,id));return s;};
+const fictional=(id=1)=>{const s=newAdventure('Fictional Explorer','qa',true);s.settings.difficulty='supported';assert.ok(startMission(s,id));return s;};
 function position(s,x,y){Object.assign(s.active.level.p,{x,y,vx:0,vy:0,z:0,vz:0,grounded:true});}
 function at(s,id){const st=s.active.level.stations.find(x=>x.id===id);assert.ok(st,id);position(s,st.x,st.y);return interact(s);}
 function task(s,id,answer=0){const e=at(s,id).find(e=>e.type==='task');assert.ok(e,'task '+id);return answerTask(s,e,answer);}
@@ -17,20 +18,21 @@ function gate(s){for(let i=0;i<5&&attemptFor(s).status==='active';i++){const l=s
 function run(s,stopWhen){for(let i=0;i<20000;i++){const l=s.active.level;if(stopWhen?.(l)||attemptFor(s).status==='completed')return;if(l.pending){answerQuestion(s,l.pending.index,0);continue;}step(s,{right:l.mode==='side',up:l.mode==='roads'},1/60);}assert.fail('route did not finish');}
 export function solveMission(s,id){
  switch(id){
- case 1:case 2:case 9:run(s);break;
+ case 1:case 9:run(s);break;
+ case 2:walkRoad(s);gate(s);break;
  case 3:for(const c of s.active.level.items.filter(i=>['supply','key'].includes(i.type))){position(s,c.x,c.y+15);step(s,{},1/60);}gate(s);break;
- case 4:for(let i=0;i<3;i++)task(s,'s'+i,1);gate(s);break;
- case 5:for(let i=0;i<3;i++){at(s,'s'+i);at(s,'s'+(i+3));}gate(s);break;
+ case 4:for(let i=0;i<3;i++)task(s,'s'+i,s.active.level.shopping?.[i]?.answer??1);gate(s);break;
+ case 5:while(s.active.level.step<s.active.level.orders.length){const o=s.active.level.orders[s.active.level.step];at(s,o.source);at(s,o.target);}gate(s);break;
  case 6:for(const c of s.active.level.items.filter(i=>i.id==='resume'||i.id==='badge')){position(s,c.x,c.y+15);step(s,{},1/60);}at(s,'s2');gate(s);break;
  case 7:for(let i=0;i<4;i++)at(s,'s'+i);gate(s);break;
  case 8:for(let i=0;i<3;i++)task(s,'s'+i);gate(s);break;
  case 10:{run(s,l=>l.phase===1); // Prove the longer running course using actual physics.
    // Test road finish/phase transition separately from traffic collision tests.
-   position(s,480,65);step(s,{},1/60);assert.equal(s.active.level.phase,2);at(s,'s0');at(s,'s1');gate(s);break;}
- case 11:at(s,'s1');at(s,'s1');at(s,'s1');at(s,'s3');at(s,'s4');gate(s);break;
+   walkRoad(s);assert.equal(s.active.level.phase,2);at(s,'s0');at(s,'s1');gate(s);break;}
+ case 11:for(let i=0;i<(s.active.level.budget?.total||600)/200;i++)at(s,'s1');at(s,'s3');at(s,'s4');gate(s);break;
  case 12:at(s,'training');for(let i=0;i<610;i++)step(s,{},1/60);interact(s);gate(s);break;
  case 13:for(let i=0;i<3;i++)task(s,'s'+i);gate(s);break;
- case 14:for(const id of ['s2','s1','s3'])at(s,id);gate(s);break;
+ case 14:for(const id of s.active.level.route)at(s,id);gate(s);break;
  case 15:for(const [id,washer]of [['light-shirt','s0'],['dark-shirt','s1']]){const c=s.active.level.items.find(i=>i.id===id);position(s,c.x,c.y);interact(s);at(s,washer);}at(s,'s2');position(s,50,80);for(let i=0;i<365;i++)step(s,{},1/60);at(s,'s3');gate(s);break;
  case 16:for(let i=0;i<3;i++){const c=s.active.level.parcels[i];position(s,c.x,c.y);interact(s);at(s,'bay'+i);}gate(s);break;
  case 17:at(s,'button');position(s,180,365);for(let i=0;i<122;i++)step(s,{},1/60);position(s,480,200);step(s,{},1/60);at(s,'help');gate(s);break;
@@ -58,11 +60,11 @@ for(const m of MISSIONS)test(`mission ${m.id}: ${m.title} has a functional objec
  const s=solveMission(fictional(m.id),m.id),a=attemptFor(s);assert.equal(a.status,'completed');assert.equal(s.completed[0].mission,m.id);assert.equal(a.questions.length,2);assert.equal(a.questions.filter(q=>q.correct).length,2);assert.ok(restoreAdventure(JSON.parse(JSON.stringify(s)),s.student));
 });
 test('sequential full adventure, saved resumes, completed-level replay and idempotent unlocks',()=>{
- let s=newAdventure('QA Sequential','qa-campaign');for(let id=1;id<=20;id++){assert.ok(startMission(s,id));solveMission(s,id);assert.equal(s.completed.length,id);s=restoreAdventure(JSON.parse(JSON.stringify(s)),s.student);assert.ok(s,'restore after '+id);}
+ let s=newAdventure('QA Sequential','qa-campaign');s.settings.difficulty='supported';for(let id=1;id<=20;id++){assert.ok(startMission(s,id));solveMission(s,id);assert.equal(s.completed.length,id);s=restoreAdventure(JSON.parse(JSON.stringify(s)),s.student);assert.ok(s,'restore after '+id);}
  assert.ok(startMission(s,4));solveMission(s,4);assert.equal(s.completed.length,20);assert.equal(s.attempts.length,21);
 });
 test('replaying a completed level retains unfinished work in a later mission',()=>{
- let s=newAdventure('QA Replay','qa-replay');startMission(s,1);solveMission(s,1);startMission(s,2);step(s,{right:true},.05);const savedX=s.active.level.p.x,attempt=attemptFor(s).id;startMission(s,1);solveMission(s,1);assert.equal(s.completed.length,1);s=restoreAdventure(JSON.parse(JSON.stringify(s)),s.student);assert.ok(s);startMission(s,2);assert.equal(attemptFor(s).id,attempt);assert.equal(s.active.level.p.x,savedX);assert.equal(s.attempts.length,3);
+ let s=newAdventure('QA Replay','qa-replay');s.settings.difficulty='supported';startMission(s,1);solveMission(s,1);startMission(s,2);step(s,{right:true},.05);const savedX=s.active.level.p.x,attempt=attemptFor(s).id;startMission(s,1);solveMission(s,1);assert.equal(s.completed.length,1);s=restoreAdventure(JSON.parse(JSON.stringify(s)),s.student);assert.ok(s);startMission(s,2);assert.equal(attemptFor(s).id,attempt);assert.equal(s.active.level.p.x,savedX);assert.equal(s.attempts.length,3);
 });
 test('all supported movement speeds traverse the hallway and moving-platform route',()=>{
  for(const speed of [120,180,240,300])for(const id of [1,9]){const s=fictional(id);s.settings.speed=speed;run(s);assert.equal(attemptFor(s).status,'completed');assert.equal(attemptFor(s).failures,0,`speed ${speed}, mission ${id}`);}
@@ -74,13 +76,13 @@ test('movement, jumping and collision detection exist in every mission',()=>{
  const s=fictional(3),l=s.active.level;position(s,170,250);step(s,{right:true},1/30);assert.ok(l.p.x<=171,'wall blocks side entry');
 });
 test('traffic collision resets only this mission; three-life loss retains earlier completions and evidence',()=>{
- const s=newAdventure('QA Prior','qa-prior');startMission(s,1);solveMission(s,1);startMission(s,2);const before=structuredClone(s.completed);s.active.level.p.x=300;const a=attemptFor(s);a.questions.push({index:0,correct:false,skill:'Safety',response:'wait',prompt:'fixture',service:'Workplace Readiness Training',at:new Date().toISOString()});
+ const s=newAdventure('QA Prior','qa-prior');s.settings.difficulty='supported';startMission(s,1);solveMission(s,1);startMission(s,2);const before=structuredClone(s.completed);s.active.level.p.x=300;const a=attemptFor(s);a.questions.push({index:0,correct:false,skill:'Safety',response:'wait',prompt:'fixture',service:'Workplace Readiness Training',at:new Date().toISOString()});
  for(let i=0;i<3;i++){s.active.level.p.invulnerable=0;hurt(s,'traffic');assert.equal(s.active.level.p.x,480);assert.deepEqual(s.completed,before);}
  assert.equal(s.active.level.lives,3);assert.equal(a.failures,3);assert.equal(a.restarts,3);assert.equal(a.questions.length,1);
 });
 test('real moving traffic, faster difficulty and later hazards affect actual collision outcomes',()=>{
  const values=[];for(const difficulty of ['supported','standard','challenge']){const s=fictional(2);s.settings.difficulty=difficulty;step(s,{},.05);values.push(s.active.level.hazards[0].x);}assert.ok(values[0]>values[1]&&values[1]>values[2]);
- const s=fictional(2),h=s.active.level.hazards[0];position(s,h.x,h.y+8);step(s,{},1/60);assert.equal(attemptFor(s).failures,1);
+ const s=fictional(2);step(s,{},1/60);const h=s.active.level.hazards.find(h=>h.x>50&&h.x<900);position(s,h.x,h.y+8);step(s,{},1/60);assert.equal(attemptFor(s).failures,1);
  assert.ok(createLevel(20).hazards[0].speed>createLevel(4).hazards[0].speed);
  assert.ok(createLevel(10).width>createLevel(1).width);
 });
