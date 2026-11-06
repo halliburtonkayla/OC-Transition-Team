@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#102738">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Team Bowling">
+  <title>Team Bowling 2.0 · Extended School Program</title>
+  <meta name="description" content="Answer, aim and bowl together. First-grade math and spelling unlock every turn in a team bowling game.">
+  <link rel="stylesheet" href="assets/esp-bowling/game.css">
+  <script type="module" src="assets/esp-bowling/game.mjs"></script>
+</head>
+<body>
+  <header class="topbar"><a href="extended-school-program.html">← ESP games</a><span class="brand">AFTER SCHOOL <b>ARCADE</b></span><div class="tools"><button id="fullscreen" type="button">Full screen</button><button id="settings" type="button">Teacher options</button></div></header>
+  <main id="app">
+    <section class="heading"><div><p class="eyebrow">LEARN IT. ROLL IT. CHEER TOGETHER.</p><h1>Team <span>Bowling</span><small>2.0</small></h1></div><p class="rule-card"><b>1</b> Answer <i>→</i> <b>2</b> Aim <i>→</i> <b>3</b> Bowl</p></section>
+    <section id="setup" class="setup" aria-labelledby="setup-title">
+      <div class="setup-art" aria-hidden="true"><div class="marquee">LET’S <span>ROLL!</span></div><div id="preview-alley"></div><div class="art-caption">A little learning.<br>A whole lot of cheering.</div></div>
+      <form id="setup-form" class="setup-form"><p class="eyebrow">TEACHER SETUP</p><h2 id="setup-title">Your crew. Your lanes.</h2><p class="muted">A correct answer earns one roll. Everyone gets the same number of turns.</p>
+        <fieldset class="mode-choice"><legend>How will you play?</legend><label><input type="radio" name="mode" value="shared" checked><span><strong>One shared lane</strong><small>1–6 teams · take turns</small></span></label><label><input type="radio" name="mode" value="split"><span><strong>Two split lanes</strong><small>2 teams · play side by side</small></span></label></fieldset>
+        <div class="setting-grid"><label>Number of teams<select name="teams" id="team-count"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label><label>Kids on each team<select name="players"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></label><label>Questions<select name="subject"><option value="mix">Math + spelling</option><option value="math">Math only</option><option value="spelling">Spelling only</option></select></label><label>Turns per child<select name="rounds"><option value="1">1 turn · quick game</option><option value="2" selected>2 turns</option><option value="3">3 turns</option></select></label></div>
+        <p id="mode-note" class="setup-note">Teams rotate after every roll. Use player numbers instead of names.</p>
+        <button class="primary start" type="submit">Open the lanes <span>→</span></button>
+        <button type="button" id="cancel-setup" class="quiet" hidden>Keep playing this game</button>
+        <p class="privacy">No names, logins or personal data. Scores stay in this tab until you leave or refresh. Starting a new game clears these scores.</p>
+      </form>
+    </section>
+    <section id="play" hidden aria-label="Bowling game"><div id="scoreboard" class="scoreboard" aria-label="Team scores"></div><p id="play-note" class="play-note"></p><div id="lanes" class="lanes"></div></section>
+    <section id="celebration" hidden class="celebration" aria-labelledby="finish-title"><div class="trophy" aria-hidden="true">★</div><p class="eyebrow">EVERYONE GOT A TURN</p><h2 id="finish-title" tabindex="-1">Nice teamwork!</h2><p id="winner"></p><div id="final-scores"></div><button id="play-again" class="primary">Play again with this crew</button><button id="new-setup" class="quiet">Change teams or questions</button></section>
+    <p id="display-note" class="display-note" role="status"></p>
+    <footer>One pin = one point. Friendly classroom scoring, with no strike bonuses.<br>Touch, pen, mouse or keyboard. No timer. Keep trying until you get it.</footer>
+  </main>
+  <noscript><p>Turn on JavaScript to play Team Bowling.</p></noscript>
+</body>
+</html>

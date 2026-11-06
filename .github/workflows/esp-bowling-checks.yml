@@ -1,0 +1,29 @@
+name: ESP team bowling checks
+on:
+  pull_request:
+    paths: ['esp-bowling.html', 'assets/esp-bowling/**', 'tests/esp-bowling*', '.github/workflows/esp-bowling-checks.yml']
+  push:
+    branches: [main]
+    paths: ['esp-bowling.html', 'assets/esp-bowling/**', 'tests/esp-bowling*']
+permissions:
+  contents: read
+jobs:
+  bowling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install isolated test dependency
+        run: npm install --prefix /tmp/esp-bowling-qa --no-save jsdom@26.1.0
+      - name: Question gates, fair turns, scores and interrupted UI flows
+        env:
+          SCHOOL_JSDOM: /tmp/esp-bowling-qa/node_modules/jsdom
+        run: node --test tests/esp-bowling*.test.mjs
+      - name: Syntax checks
+        run: |
+          node --check assets/esp-bowling/core.mjs
+          node --check assets/esp-bowling/game.mjs
+          node --check assets/esp-bowling/art.mjs
