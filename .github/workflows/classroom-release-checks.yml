@@ -18,6 +18,8 @@ jobs:
         run: node tools/release-audit.mjs
       - name: Existing games, shared shops, privacy and financial regressions
         run: |
+          node tests/business-rehearsal.cjs
+          node tests/business-rehearsal-edge.cjs
           node tests/pricing-stage.cjs
           node tests/student-shop-core.cjs
           node tests/main-attraction-studio.cjs
@@ -43,6 +45,7 @@ jobs:
           NODE_PATH: /tmp/classroom-qa/node_modules
           SCHOOL_JSDOM: /tmp/classroom-qa/node_modules/jsdom
         run: |
+          node tests/business-rehearsal-dom.cjs
           node --test tests/school-release.test.mjs
           node tests/career-lab-ui.cjs
       - name: Install Chromium

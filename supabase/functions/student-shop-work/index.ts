@@ -7,6 +7,7 @@ import '../../../assets/student-businesses/work-ops-core.js';
 import '../../../assets/main-attraction/service-core.js';
 import '../../../assets/main-attraction/studio-core.js';
 import '../../../assets/business-workday/core.js';
+import '../../../assets/business-workday/rehearsal-core.js';
 import '../../../assets/student-businesses/pricing-guard.js';
 
 // Reuse the current classroom/teacher code validation without copying any codes.
@@ -73,7 +74,9 @@ Deno.serve(async(req:Request)=>{
   if(!approvedDevice?.approved_at||!approvedDevice.school||approvedDevice.revoked_at||!Number.isFinite(Date.parse(approvedDevice.expires_at))||Date.parse(approvedDevice.expires_at)<=Date.now())return out({error:'This device is waiting for approval or its access expired. Ask Miss Kayla to reconnect it.'},403);
   const canonical=(n:string)=>({'Max':'Bradley','Max / Bradley':'Bradley','Nick':'Nicholas','Aubry':'Aubrey','Jayden':'Jaden'} as Record<string,string>)[n]||n;
   const student=canonical(approvedDevice.student),owner=Object.keys(Core.config(shop).owners).find(n=>canonical(n)===student);
-  if(data.action&&typeof data.action==='object'){data.action.actor=owner||student;data.action.device='approved-device:'+approvedDevice.id;}
+  const identity={actor:owner||student,device:'approved-device:'+approvedDevice.id};
+  const snapshot=(state:unknown,revision:number)=>out({state,revision,identity,rehearsalVersion:1});
+  if(data.action&&typeof data.action==='object'){data.action.actor=identity.actor;data.action.device=identity.device;}
   const hiredRows=async(employee?:string)=>{
    const filter='tt_interview_decisions_latest?select=applicant_id,applicant_name&shop_id=eq.'+encodeURIComponent(shop)+'&decision=eq.Hired&limit=200'+(employee?'&applicant_id=eq.'+encodeURIComponent(employee):'');
    return (await db(filter)).rows.filter((r:any)=>!!(globalThis as any).TTShopStaff[shop+':'+String(r.applicant_id).replace(/-short$/,'')]&&(!employee||String(r.applicant_id).replace(/-short$/,'')===employee)).map((r:any)=>({applicant_id:String(r.applicant_id).replace(/-short$/,''),applicant_name:r.applicant_name}));
@@ -82,18 +85,18 @@ Deno.serve(async(req:Request)=>{
   if(data.action?.type==='hires')return out({hires:await hiredRows()});
   if(data.action?.type==='staff'&&!(await hiredRows(String(data.action.employee||''))).length)return out({error:'Hire this applicant in the interview room and send the decision before assigning classroom work.'},400);
   if(data.action?.type==='read'){
-   const {rows}=await db(query+'&select=state,revision');return out({state:shop==='main-attraction'?(globalThis as any).MAStudio.ensure(rows[0]?.state||Core.initial(shop)):rows[0]?.state||Core.initial(shop),revision:rows[0]?.revision||0});
+   const {rows}=await db(query+'&select=state,revision');return snapshot(shop==='main-attraction'?(globalThis as any).MAStudio.ensure(rows[0]?.state||Core.initial(shop)):rows[0]?.state||Core.initial(shop),rows[0]?.revision||0);
   }
   const requestId=String(data.requestId||'');if(!/^[a-zA-Z0-9-]{8,100}$/.test(requestId))return out({error:'This task needs a valid request ID. Reload the shop.'},400);
   // Optimistic compare-and-swap prevents two Chromebooks from spending the same
   // balance or completing the same food portion. Request IDs make retries safe.
   for(let attempt=0;attempt<5;attempt++){
    const {rows}=await db(query+'&select=state,revision');const row=rows[0];
-   let current=row?.state||Core.initial(shop);if(shop==='main-attraction'){(globalThis as any).MAStudio.ensure(current);if(!current.studio.importedLegacy?.length){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code));const digest=Array.from(new Uint8Array(bytes),x=>x.toString(16).padStart(2,'0')).join('');for(const oldWorkspace of [...new Set([workspace,...(workspace==='classroom'?['salon']:[])])]){const legacyScope='main-attraction-service-v1:'+digest.slice(0,32)+':'+oldWorkspace;const oldRows=(await db('tt_shop_workspaces?shop=eq.main-attraction&scope=eq.'+encodeURIComponent(legacyScope)+'&select=state')).rows;if(oldRows[0])current=(globalThis as any).MAStudio.importLegacy(current,oldRows[0].state,legacyScope);}}}
-   if(current.seen.includes(requestId))return out({state:current,revision:row?.revision||0});
+   let current=row?.state||Core.initial(shop);if(shop==='main-attraction'&&!String(data.action?.type||'').startsWith('rehearsal-')){(globalThis as any).MAStudio.ensure(current);if(!current.studio.importedLegacy?.length){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code));const digest=Array.from(new Uint8Array(bytes),x=>x.toString(16).padStart(2,'0')).join('');for(const oldWorkspace of [...new Set([workspace,...(workspace==='classroom'?['salon']:[])])]){const legacyScope='main-attraction-service-v1:'+digest.slice(0,32)+':'+oldWorkspace;const oldRows=(await db('tt_shop_workspaces?shop=eq.main-attraction&scope=eq.'+encodeURIComponent(legacyScope)+'&select=state')).rows;if(oldRows[0])current=(globalThis as any).MAStudio.importLegacy(current,oldRows[0].state,legacyScope);}}}
+   if(current.seen.includes(requestId))return snapshot(current,row?.revision||0);
    if(shop==='main-attraction'&&data.action?.type==='salon-service'){const rows=(await db('tt_interview_decisions_latest?select=applicant_id,applicant_name&shop_id=eq.main-attraction&decision=eq.Hired&limit=100')).rows;data.action.hires=rows.filter((r:any)=>['morgan','avery'].includes(r.applicant_id));}let next;try{next=Core.reduce(current,data.action,requestId);}catch(e){return out({error:(e as Error).message},400);}
    const result=row?await db(query+'&revision=eq.'+row.revision,'PATCH',{state:next,revision:row.revision+1,updated_at:new Date().toISOString()}):await db('tt_shop_workspaces','POST',{scope,shop,state:next,revision:1});
-   if(result.rows.length)return out({state:result.rows[0].state,revision:result.rows[0].revision});
+   if(result.rows.length)return snapshot(result.rows[0].state,result.rows[0].revision);
   }
   return out({error:'A teammate updated this station. Refresh and try the task again.'},409);
  }catch(e){
