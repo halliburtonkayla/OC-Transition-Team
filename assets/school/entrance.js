@@ -11,7 +11,7 @@ window.schoolBuildingScene = function () {
       <a class="hall-door hall-near-left" href="school-career-lab.html"><small>CAREER WING</small><strong>Job Exploration</strong><span>Enter →</span></a>
       <button class="hall-door hall-mid-left" onclick="schoolClassrooms()"><small>LEARN</small><strong>Lesson Classrooms</strong><span>Enter →</span></button>
       <button class="hall-door hall-far-left" onclick="collegeFair()"><strong>College & Training</strong><span>Enter →</span></button>
-      <button class="hall-door hall-near-right" onclick="schoolGames()"><small>Educational Games</small><strong>Learning Arcade</strong><span>Enter →</span></button>
+      <button class="hall-door hall-near-right" onclick="schoolGames()"><small>THE WOW ZONE</small><strong>Learning Arcade</strong><span>Enter →</span></button>
       <button class="hall-door hall-mid-right" onclick="shortTraining()"><strong>Training Video Lab</strong><span>Enter →</span></button>
       <button class="hall-door hall-far-right" onclick="collegeHowTo()"><strong>Resource Room</strong><span>Enter →</span></button>
       <a class="hall-door hall-developer" href="developer-lab.html"><small>CREATE</small><strong>Developer Lab</strong><span>Plan & build →</span></a>
@@ -41,7 +41,7 @@ window.schoolDirectoryDialog = function () {
   dialog.querySelector('.directory-close').onclick=close;
   dialog.addEventListener('close',()=>{try{window.speechSynthesis?.cancel();}catch{}dialog.remove();trigger?.focus();},{once:true});
   dialog.showModal();
-  import('../school-directory/directory.mjs?v=20261106arcade').then(m=>{
+  import('../school-directory/directory.mjs?v=20261110esp').then(m=>{
     if(dialog.isConnected)m.renderSchool(dialog.querySelector('.school-directory-dialog-content'),false,{compact:true,onBack:close});
   }).catch(()=>{
     dialog.querySelector('.school-directory-dialog-content').innerHTML='<p>The directory could not load. You can still use the school doors.</p><a href="school-directory.html">Open the directory page</a>';

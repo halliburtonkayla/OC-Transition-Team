@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Grove Grand Prix">
+  <meta name="theme-color" content="#132f3b">
+  <title>Grove Grand Prix · ESP Race Club</title>
+  <meta name="description" content="A friendly race for one, two, or four players. Low, color-coded controls for a classroom display, with single-view turns on a phone.">
+  <link rel="stylesheet" href="assets/esp-race/race.css">
+  <script type="module" src="assets/esp-race/race.mjs"></script>
+</head>
+<body>
+  <main id="race-app" class="race-app">
+    <header class="topbar">
+      <a href="extended-school-program.html" class="back-link" aria-label="Back to Extended School Program">← <span>ESP</span></a>
+      <div class="brand"><span class="flag-mark" aria-hidden="true">⚑</span><span>GROVE <b>GRAND PRIX</b><small>ESP RACE CLUB</small></span></div>
+      <div class="top-tools"><button id="help" type="button" aria-label="How to play">?</button><button id="fullscreen" type="button">⛶ <span>Full screen</span></button></div>
+    </header>
+
+    <section class="race-stage" aria-label="Race views">
+      <div id="viewports" class="viewports" data-views="2"></div>
+      <div id="welcome" class="stage-overlay">
+        <section class="welcome-card" aria-labelledby="title">
+          <p class="eyebrow">SMALL RACERS. BIG ADVENTURES.</p>
+          <h1 id="title">Ready. Set.<br><em>Let’s roll.</em></h1>
+          <p class="intro">A little friendly competition.<br>A whole lot of <strong>“I did it!”</strong></p>
+          <div class="feature-chips"><span>1 lap</span><span>1–4 racers</span><span>No one gets left behind</span></div>
+        </section>
+        <div class="race-sticker" aria-hidden="true"><b>01</b><span>GROVE<br>GRAND PRIX</span></div>
+      </div>
+      <div id="countdown" class="countdown" role="status" aria-live="polite" hidden></div>
+      <section id="finish" class="finish-overlay" aria-labelledby="finish-title" hidden>
+        <div class="finish-card"><span class="finish-flag" aria-hidden="true">⚑</span><p class="eyebrow">ONE LAP. A BIG HIGH FIVE.</p><h2 id="finish-title">What a drive!</h2><div id="results" class="results"></div><p id="finish-note"></p></div>
+      </section>
+      <div id="pause-screen" class="pause-screen" hidden><div><span aria-hidden="true">Ⅱ</span><h2>Take a pit stop.</h2><p>Press Keep racing below when you’re ready.</p></div></div>
+    </section>
+
+    <section class="bottom-deck" aria-label="Player controls and race setup">
+      <div id="setup" class="setup-bar">
+        <fieldset class="player-choice"><legend>Who’s racing?</legend><div><button data-count="1" aria-pressed="false" type="button">1 <span>racer</span></button><button data-count="2" aria-pressed="true" type="button">2 <span>racers</span></button><button data-count="4" aria-pressed="false" type="button">4 <span>racers</span></button></div></fieldset>
+        <label class="view-choice">How to play<select id="play-style"><option value="auto">Fit this screen</option><option value="turns">Take turns · one view</option><option value="split">Together · split screen</option></select></label>
+        <label class="assist-choice"><input id="cruise" type="checkbox" checked><span>Cruise assist<small>Cars go. You steer.</small></span></label>
+        <button id="start" class="primary start" type="button">Let’s race <span aria-hidden="true">↗</span></button>
+      </div>
+      <div id="race-bar" class="race-bar" hidden><p id="race-status" role="status" aria-live="polite">Collect stars. Steer around cones.</p><div class="race-actions"><button id="pause" type="button">Ⅱ <span>Pause</span></button><button id="restart" type="button">↻ <span>New race</span></button><button id="next" class="primary" type="button" hidden>Next racer →</button></div></div>
+      <div id="controls" class="controls" aria-label="Color-coded racer controls"></div>
+      <p id="layout-note" class="layout-note"></p>
+    </section>
+  </main>
+  <dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-head"><p class="eyebrow">WELCOME TO THE CLUB</p><button id="close-help" type="button" aria-label="Close how to play">×</button></div><h2 id="help-title">A race everyone can reach.</h2><p>Steer with <b>← →</b>. Hold <b>↑</b> to speed up. Hold <b>↓</b> to slow down. Collect stars and steer around cones. One lap finishes the race, and every racer gets to finish.</p><p><b>Cruise assist</b> keeps your car moving, so one finger or a mouse is enough to play. Turn it off to practise holding ↑ while steering.</p><h3>Choose your screen</h3><p><b>Big classroom board:</b> two side-by-side views or four views in a grid. All racer buttons stay along the bottom. Your board must support multiple simultaneous touches for children to play together. Try the buttons with two people before class.</p><p><b>Phone or small screen:</b> one big view. Two or four racers take turns on the same course. Turn times are compared after everyone finishes. Small screens always use this layout.</p><h3>Keyboard controls</h3><ul><li>Coral: arrow keys</li><li>Blue: W / A / S / D</li><li>Gold: I / J / K / L</li><li>Violet: numpad 8 / 4 / 5 / 6</li></ul><p>In turn mode, arrow keys control the current racer. Escape pauses. Keyboard hardware may limit how many keys can be held together.</p><p><b>iPhone:</b> if full screen is unavailable, use Safari’s Share → Add to Home Screen → Open as Web App, then launch from your Home Screen. You can also play in the browser.</p><p class="prototype-note">Driving prototype for review. A curriculum-specific learning challenge has not been selected or added yet. Physical classroom-board and iPhone testing are still pending.</p><button id="help-done" class="primary" type="button">Ready to roll</button></dialog>
+  <noscript><p class="no-script">This race needs JavaScript enabled.</p></noscript>
+</body>
+</html>

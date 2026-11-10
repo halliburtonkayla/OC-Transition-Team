@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ESP Games">
+  <meta name="theme-color" content="#163f46">
+  <title>Extended School Program · Number Match</title>
+  <meta name="description" content="One shared memory board. Turn over two cards, then give the next player a turn. Match numbers to amounts together.">
+  <link rel="stylesheet" href="assets/extended-school-program/game.css?v=20261107color">
+  <script type="module" src="assets/extended-school-program/game.mjs?v=20261107color"></script>
+</head>
+<body>
+  <div id="match-party" aria-hidden="true"></div>
+  <header class="program-header">
+    <a class="back-link" href="extended-school-program.html">← ESP games</a>
+    <span class="program-name">Extended School Program</span>
+    <div class="header-tools"><button class="teacher-button" id="fullscreen" type="button" aria-pressed="false">Full screen</button><button class="teacher-button" id="teacher" type="button">Teacher options</button></div>
+  </header>
+  <main class="game-shell">
+    <section class="game-heading" aria-labelledby="game-title">
+      <div><p class="eyebrow">PLAY TOGETHER · TAKE TURNS</p><h1 id="game-title">Number <span>Match</span></h1><p class="intro">Find the number. Match the amount.</p></div>
+      <div class="progress-display"><span id="board-label">BOARD 1</span><strong><span id="pair-count">0</span><span class="progress-slash">/</span><span id="pair-total">6</span></strong><span>pairs found together</span></div>
+    </section>
+    <section class="turn-bar" aria-label="Whose turn">
+      <span class="turn-symbol" aria-hidden="true">2</span>
+      <div id="turn-message" role="status" aria-live="polite" aria-atomic="true"><strong>Flip two cards.</strong><span>Then let the next player try.</span></div>
+    </section>
+    <section id="board" class="board" aria-label="Shared number matching board"></section>
+  <section class="team-celebration" hidden id="celebration" aria-labelledby="celebration-title" aria-describedby="celebration-copy">
+    <div class="team-star" aria-hidden="true">★</div><p class="eyebrow">EVERY TURN HELPED</p><h2 id="celebration-title">You did it together!</h2><p id="celebration-copy">All six pairs found.</p>
+    <p id="next-board-note">The next board is getting ready.</p>
+    <div class="dialog-actions"><button type="button" id="pause-next" class="quiet-button">Pause here</button><button type="button" id="continue-next" class="primary-button">Next board →</button></div>
+  </section>
+    <p class="board-note" id="board-note">One puzzle for the whole group. Every player gets two flips.</p>
+    <p class="save-note" id="display-note" role="status"></p>
+    <p class="save-note" id="save-note" role="status"></p>
+  </main>
+  <dialog id="teacher-dialog" aria-labelledby="teacher-title">
+    <form id="teacher-form">
+      <p class="eyebrow">GROWN-UP CONTROLS</p><h2 id="teacher-title">Set up the next game</h2>
+      <p>Match each number to the same amount of gems. Each child flips two cards, then lets the next child try. Wrong pairs flip back automatically. Every match gets a colorful celebration!</p>
+      <label for="starting-level">Cards on the new board</label>
+      <select id="starting-level"><option value="0">12 cards · 6 pairs</option><option value="1">16 cards · 8 pairs</option><option value="2">20 cards · 10 pairs</option><option value="3">24 cards · 12 pairs</option></select>
+      <p class="teacher-note">Completed boards advance automatically: 12 → 16 → 20 → 24 cards. After 24, enjoy another shuffled 24-card board.</p>
+      <p class="teacher-note">Starting a new game replaces only this group's current puzzle. No names, logins, student reports, or individual scores are used. The current puzzle stays in this tab when refreshed.</p>
+      <div class="dialog-actions"><button type="button" id="keep-board" class="quiet-button">Keep this board</button><button type="submit" class="primary-button">Start new game</button></div>
+    </form>
+  </dialog>
+
+  <noscript><p class="noscript">Turn on JavaScript to play the shared matching game.</p></noscript>
+</body>
+</html>

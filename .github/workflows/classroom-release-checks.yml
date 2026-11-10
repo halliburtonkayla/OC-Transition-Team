@@ -43,7 +43,7 @@ jobs:
           NODE_PATH: /tmp/classroom-qa/node_modules
           SCHOOL_JSDOM: /tmp/classroom-qa/node_modules/jsdom
         run: |
-          node --test tests/school-release.test.mjs
+          node --test tests/school-release.test.mjs tests/esp-neon/*.test.mjs
           node tests/career-lab-ui.cjs
       - name: Install Chromium
         run: /tmp/classroom-qa/node_modules/.bin/playwright install --with-deps chromium
@@ -55,6 +55,7 @@ jobs:
           node tests/career-feud-browser.cjs
           node tests/career-feud-players-browser.cjs
           node tests/hub-smoke-browser.cjs
+          node tests/esp-neon-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
