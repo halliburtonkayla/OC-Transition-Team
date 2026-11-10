@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eaf4ef">
+  <meta name="description" content="A shared classroom number-line game. Add and subtract on number lines from 1–10 or 1–20, with helpful hops and no student logins.">
+  <title>Little Leap · Number Line Pond</title>
+  <link rel="stylesheet" href="assets/esp-number-line/game.css">
+  <script type="module" src="assets/esp-number-line/game.mjs"></script>
+</head>
+<body>
+  <main id="app">
+    <header class="topbar">
+      <a class="back" href="extended-school-program.html" aria-label="Back to Extended School Program">← <span>ESP</span></a>
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" width="40" height="40"><path d="M9 29 Q18 4 30 18 M23 16 L31 18 L31 10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div><b>Little Leap</b><span>NUMBER LINE POND</span></div></div>
+      <button id="settings" class="icon-button" aria-label="Open teacher and accessibility controls">⚙ <span>Teacher</span></button>
+    </header>
+
+    <section class="game" aria-label="Shared classroom number-line game">
+      <div class="session-row"><span class="session-tag">PLAY TOGETHER</span><span id="turn-label">Turn 1 of 32</span><span id="session-label">16 friends · 2 turns each</span><span id="level-label" class="level-tag">Level 1 · Addition</span></div>
+      <div class="progress-track" aria-hidden="true"><div id="progress"></div></div>
+      <div class="question-area">
+        <div class="instruction"><p class="eyebrow" id="operation">LET’S ADD</p><h1>Where will we land?</h1><p id="direction">Start at the first number. Count your hops.</p></div>
+        <div class="equation" id="equation" aria-label="Loading question">
+          <span id="first">?</span><span id="operator">+</span><span id="second">?</span><span class="equals">=</span><span id="blank" class="blank">?</span>
+        </div>
+      </div>
+
+      <section class="pond" aria-label="Number line">
+        <div class="cloud cloud-one" aria-hidden="true"></div><div class="cloud cloud-two" aria-hidden="true"></div>
+        <div class="sun" aria-hidden="true"></div><div class="hill hill-back" aria-hidden="true"></div><div class="hill hill-front" aria-hidden="true"></div>
+        <div class="pond-label"><span class="leaf-dot" aria-hidden="true"></span><span id="pond-instruction">Start here, then take small hops.</span></div>
+        <div class="water-shine" aria-hidden="true"></div>
+        <div class="number-line">
+          <svg id="arcs" viewBox="0 0 1000 180" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="frog" id="frog" aria-hidden="true"><i class="eye left"></i><i class="eye right"></i><i class="cheek left"></i><i class="cheek right"></i><i class="smile"></i><i class="foot left"></i><i class="foot right"></i></div>
+          <div class="stones" id="stones" aria-hidden="true"></div>
+        </div>
+        <p class="hop-counter" id="hop-count">Ready to hop</p>
+      </section>
+
+      <section class="control-deck" aria-label="Your turn controls">
+        <div class="help-row"><button id="listen" class="secondary">◖)) <span>Read to me</span></button><button id="hop" class="secondary"><span aria-hidden="true">→</span> <span id="hop-text">Try 1 hop</span></button><button id="restart-hops" class="secondary" aria-label="Restart the number-line hops">↺ <span>Start hops again</span></button></div>
+        <p class="feedback" id="feedback" role="status" aria-live="polite" aria-atomic="true">Tap an answer. You can try the hops first.</p>
+        <div class="answer-row" id="answer-row"><div class="choices" id="choices" aria-label="Choose the missing answer"></div>
+        <button id="next" class="next" hidden>Next friend <span aria-hidden="true">→</span></button></div>
+        <p class="quiet-note" id="quiet-note">Take your time. We learn together.</p>
+      </section>
+    </section>
+    <footer>EXTENDED SCHOOL PROGRAM <span aria-hidden="true">·</span> Add & subtract · 1–10 and 1–20</footer>
+  </main>
+
+  <dialog id="teacher-dialog" aria-labelledby="teacher-title">
+    <div class="dialog-top"><div><p class="eyebrow">A LITTLE HELP</p><h2 id="teacher-title">Classroom controls</h2></div><button class="icon-button" id="close-settings" aria-label="Close classroom controls">✕</button></div>
+    <p>One shared screen. No student names, accounts, timers, or scores.</p>
+    <label class="level-setting" for="level-select"><b>Choose a level</b><select id="level-select"><option value="1">Level 1 · Addition · 1–10</option><option value="2">Level 2 · Subtraction · 1–10</option><option value="3">Level 3 · Mixed · 1–10</option><option value="4">Level 4 · Mixed · 1–20</option></select><small>The chosen level stays the same for every friend until you change it.</small></label>
+    <label class="setting"><span><b>Read each question</b><small>Uses the device’s built-in reading voice.</small></span><input id="auto-read" type="checkbox"></label>
+    <label class="setting"><span><b>Gentle success sound</b><small>Off by default for a calm classroom.</small></span><input id="sound" type="checkbox"></label>
+    <label class="setting"><span><b>Reduce movement</b><small>Show the hop path without animation.</small></span><input id="motion" type="checkbox"></label>
+    <label class="setting"><span><b>Letter shortcuts</b><small>A/B/C, H, R, N. Turn off for speech-input tools. Tab and Enter still work.</small></span><input id="shortcuts" type="checkbox" checked></label>
+    <button id="fullscreen" class="wide secondary">⛶ Full screen</button>
+    <p id="fullscreen-help" class="small">If full screen is unavailable, use focus view. On iPhone, Safari → Share → Add to Home Screen can hide the browser bars.</p>
+    <details><summary>How to play & keyboard help</summary><p>Read the equation with a missing answer. Optional one-step hops help children count forward for addition or backward for subtraction. Choose A, B, or C. A correct answer glows, fills the blank, and replays the hops. Tap Next friend to pass the turn.</p><p>Keyboard: Tab to move; Enter/Space to activate. A/B/C choose answers, H makes one hop, R reads the question, N goes to the next friend when ready. No dragging is required.</p><p>32 turns lets 16 children have two turns. Continue afterward if needed. Each level has at least 45 different equations. No equation repeats in that level until its deck is used up. Switching levels keeps each deck’s place. Anonymous progress lasts in this browser tab until it is closed or a new class starts.</p></details>
+    <button id="new-class" class="wide secondary reset">Start a new class session</button>
+  </dialog>
+  <dialog id="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">Start fresh?</h2><p>This clears only this game’s anonymous turn progress and shuffles the questions.</p><div class="dialog-actions"><button id="cancel-reset" class="secondary">Keep this session</button><button id="confirm-reset" class="primary">Start new session</button></div></dialog>
+  <noscript>This game needs JavaScript. Please enable it in your browser to play.</noscript>
+</body>
+</html>
