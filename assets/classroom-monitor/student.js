@@ -3,6 +3,7 @@
 const ROOT=new URL('../../',document.currentScript.src),ENDPOINT='https://tyzpophjoptciihaszqj.supabase.co/functions/v1/classroom-monitor';
 const allowed=/^(school-career-lab|transition-game-show|transition-town|prism-pour|letter-lane|transition-mission(?:-2)?|count-to-100|money-counting-game|memory-match|laundry-weather-game|cdc-(?:center|sort-it|hygiene|hands-on|job-match|cooking-match|cleaning)|build-your-own-story|interactive-stories|watch-and-learn|job-description-detectives|job-missions|student-business|business-workday|shop-floor|cool-vibes|the-zoo|3k-tire-shop|guardian-angel|main-attraction(?:-service|-appointments|-workstations|-studio)?|student-businesses|business-startup-marketplace|bank|grocery-(?:store|employee|trip)|pizza-(?:shop|employee)|coffee-(?:shop|employee)|transition-life|independent-living|housing-office|fire-department|salon-simulator|childcare-career-center)\.html$/;
 if(!allowed.test(location.pathname.split('/').pop()))return;
+if(!window.TTEmploymentLoading){const mail=document.createElement('script');mail.src=new URL('assets/employment/bootstrap.js?v=1',ROOT);document.head.append(mail);}
 const canon=n=>({Max:'Bradley',Nick:'Nicholas',Aubry:'Aubrey',Jayden:'Jaden'})[n]||n;
 const name=()=>canon(sessionStorage.ttCurrent||localStorage.ttCurrent||'');
 const key=n=>'ttMonitorDevice:'+n,sessionKey=n=>'ttMonitorSession:'+n;
