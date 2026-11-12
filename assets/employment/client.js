@@ -4,7 +4,7 @@ const ROOT=new URL('../../',document.currentScript.src),API='https://tyzpophjopt
 const C=TTEmploymentCore,Q=TTInterviewQuestions,KEY='ttPrivateEmploymentSession',esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=id=>document.getElementById(id),name=()=>sessionStorage.getItem('ttCurrent')||'',canon=()=>C.canonical(name());
 const load=(store,key,fallback)=>{try{return JSON.parse(store.getItem(key)||'null')||fallback}catch{return fallback}};
-let teacherSyncing=false,teacherSent=new Set();
+let teacherSyncing=false,teacherSent=new Set(),ackWorking=false;
 let session=load(sessionStorage,KEY,null),mail=[],modal=null,party=null,working=false,scanning=false,seen=new Set(),registered=new Set(),identity=name(),editor=null,dirty=false,teacherData=null,audio=null,available=null,generation=0;
 let muted=localStorage.getItem('ttMailMuted')==='true',still=localStorage.getItem('ttMailStill')==='true';
 const auth=()=>load(sessionStorage,'ttMonitorPinAuth',null)?.token;
@@ -33,9 +33,19 @@ async function connect(){
  $('ttMailConnect').onclick=async()=>{const n=name();$('ttMailConnect').disabled=true;try{const d=await call('pair',{student:C.canonical(n)});if(n!==name())return;session={name:n,token:d.token,pair:d.pair_code,id:d.device_id};sessionStorage.setItem(KEY,JSON.stringify(session));await openMailbox();}catch(e){error(e);if($('ttMailConnect'))$('ttMailConnect').disabled=false;}};
 }
 function drawWaiting(message){show('Private mailbox',`<p class="tt-eyebrow">${esc(name())}</p><h1>Waiting for Miss Kayla</h1><p>Show her this pairing code and ask her to connect this student device in Live Classroom Monitor.</p><h1>${esc(session?.pair||'')}</h1><p>${esc(message)}</p><button id="ttMailRetry" class="tt-primary">Check connection</button><button id="ttMailReset">Request a new connection</button>`);$('ttMailRetry').onclick=openMailbox;$('ttMailReset').onclick=()=>{sessionStorage.removeItem(KEY);session=null;connect();};}
-async function loadMail(){const g=generation,n=name();let all=[],after='';do{const d=await call('list',{after});if(g!==generation||n!==name())throw Error('Student changed. Open your own mailbox.');applyEmployment(d.applications||[]);all.push(...d.mail);after=d.next||'';}while(after);mail=all.sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));updateLaunch();return mail;}
+async function loadMail(){await flushAcks();const g=generation,n=name();let all=[],after='';do{const d=await call('list',{after});if(g!==generation||n!==name())throw Error('Student changed. Open your own mailbox.');applyEmployment(d.applications||[]);all.push(...d.mail);after=d.next||'';}while(after);mail=all.sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));const pending=load(localStorage,ackKey(),{});mail.forEach(m=>{if(Object.hasOwn(pending,m.id)){m.acknowledged_at||=new Date().toISOString();if(pending[m.id])m.read_at||=m.acknowledged_at;}});updateLaunch();return mail;}
 function updateLaunch(){const local=document.querySelector('button[onclick="mailbox()"]');if(local)local.textContent=session?'📬 Mail · '+mail.filter(m=>!m.read_at).length+' unread':'📬 Mail · Connect';const b=$('ttMailLaunch');if(b)b.textContent='✉ My Mail'+(mail.filter(m=>!m.read_at).length?' · '+mail.filter(m=>!m.read_at).length:'');}
-async function ack(ids,read=false){for(let n=0;n<ids.length;n+=100)await call(read?'read':'ack',{ids:ids.slice(n,n+100)});const now=new Date().toISOString();mail.forEach(m=>{if(ids.includes(m.id)){m.acknowledged_at=now;if(read)m.read_at=now;}});}
+const ackKey=()=> 'ttMailAcknowledgements:'+C.hash(canon());
+async function flushAcks(){
+ if(ackWorking||!session||session.name!==name())return;ackWorking=true;const key=ackKey(),g=generation;
+ try{const pending=load(localStorage,key,{});for(const read of [false,true]){const ids=Object.keys(pending).filter(id=>pending[id]===read);for(let n=0;n<ids.length;n+=100){if(g!==generation)return;const batch=ids.slice(n,n+100);await call(read?'read':'ack',{ids:batch});const current=load(localStorage,key,{});for(const id of batch)if(current[id]===read)delete current[id];localStorage.setItem(key,JSON.stringify(current));}}}finally{ackWorking=false;}
+}
+async function ack(ids,read=false){
+ const key=ackKey(),pending=load(localStorage,key,{});for(const id of ids)pending[id]=read||pending[id]===true;
+ // Only opaque message IDs and read flags are queued; no names, message bodies or answers.
+ localStorage.setItem(key,JSON.stringify(pending));const now=new Date().toISOString();mail.forEach(m=>{if(ids.includes(m.id)){m.acknowledged_at=now;if(read)m.read_at=now;}});updateLaunch();
+ flushAcks().catch(()=>{});
+}
 async function openMailbox(){
  if(!session||session.name!==name())return connect();
  try{await loadMail();await scan();await loadMail();editor=null;dirty=false;

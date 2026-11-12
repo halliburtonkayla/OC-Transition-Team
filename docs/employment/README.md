@@ -14,7 +14,7 @@ Only the service role can read/write the new tables or execute the command RPC. 
 
 **Why extra pairing is necessary:** current Town sign-in is a name selector, and classroom tokens may be restored from localStorage. Neither alone proves who is using a shared computer. Private mail must not become accessible merely by choosing another name. Existing locally stored Town records are retained, not converted into a security boundary. This PR does not claim to secure copies of legacy data already stored on classroom devices.
 
-Teacher decisions, invitation rounds, legacy status updates, mailbox delivery, and command receipts commit in one PostgreSQL transaction. Unique event keys prevent duplicate mail; command IDs recover a lost-response retry; revisions reject stale writes. Reading and acknowledging the celebration are separate operations. READ LATER acknowledges the celebration but leaves the message unread.
+Teacher decisions, invitation rounds, legacy status updates, mailbox delivery, and command receipts commit in one PostgreSQL transaction. Unique event keys prevent duplicate mail; command IDs recover a lost-response retry; revisions reject stale writes. Reading and acknowledging the celebration are separate operations. READ LATER acknowledges the celebration but leaves the message unread. A small local retry queue stores only opaque message IDs/read flags (no names, bodies, or answers), so Read Later can close even when the acknowledgement connection fails; the acknowledgement syncs when that device reconnects.
 
 ## Included experience
 
