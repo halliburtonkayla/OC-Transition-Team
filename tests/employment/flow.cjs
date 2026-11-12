@@ -1,0 +1,45 @@
+const {fixture}=require('./fixture.cjs'),assert=require('node:assert/strict'),{randomUUID:uuid}=require('node:crypto');
+const C=require('../../assets/employment/core.js'),Q=require('../../assets/employment/questions.js');
+(async()=>{const f=await fixture();let n=0;const eq=(a,b,msg)=>{assert.deepEqual(a,b,msg);n++};const ok=(x,msg)=>{assert.ok(x,msg);n++};
+try{
+ const a=await f.pair(),b=await f.pair('QA Other'),pending=await f.pair('QA Student',false);
+ eq((await f.call('employment_list',pending)).status,403,'unapproved devices cannot read mail');
+ eq((await f.call('employment_list',{...a,expected_student:'QA Other'})).status,403,'name swapping rejected');
+ eq((await f.call('employment_decide',a)).status,401,'students cannot decide');
+ const registration={...a,command_id:uuid(),source_id:'qa-cashier',position:'Cashier',business:'Transition Town Grocery',details:{resident:'QA Student'}};
+ let r=await f.call('employment_register',registration);eq(r.status,200,JSON.stringify(r));eq(r.application.student,'QA Student');
+ eq((await f.call('employment_register',registration)).status,200);eq((await f.call('employment_list',a)).mail.length,1,'duplicate receipt suppressed');
+ const decision={command_id:uuid(),source_id:'qa-cashier',revision:1,decision:'Interview Requested',question_set:'cashier',feedback:'Please share your ideas.'};
+ r=await f.call('employment_decide',decision,true);eq(r.status,200,JSON.stringify(r));const id=r.interview.id;eq(r.interview.questions.length,10);
+ eq((await f.call('employment_decide',decision,true)).interview.id,id,'lost-response retry returns same interview');
+ const mailbox=(await f.call('employment_list',a)).mail;eq(mailbox.length,2);const invitation=mailbox.find(x=>x.interview_id);ok(!invitation.acknowledged_at&&!invitation.read_at);
+ eq((await f.call('employment_list',b)).mail.length,0,'no other student mail');eq((await f.call('employment_interview',{...b,id})).status,404,'cross-account interview blocked');
+ eq((await f.call('employment_ack',{...b,ids:[invitation.id]})).status,200);ok(!(await f.call('employment_list',a)).mail.find(x=>x.id===invitation.id).acknowledged_at,'cross-account acknowledgement cannot change another message');
+ await f.call('employment_ack',{...a,ids:[invitation.id]});let msg=(await f.call('employment_list',a)).mail.find(x=>x.id===invitation.id);ok(msg.acknowledged_at);eq(msg.read_at,null,'Read Later keeps unread');
+ await f.call('employment_read',{...a,ids:[invitation.id]});ok((await f.call('employment_list',a)).mail.find(x=>x.id===invitation.id).read_at);
+ const qs=r.interview.questions,first={question_id:qs[0].id,mode:'typed',answer:'I want to learn customer service.'};
+ const save={...a,id,command_id:uuid(),revision:1,responses:[first],complete:false};r=await f.call('employment_save',save);eq(r.status,200,JSON.stringify(r));eq(r.interview.status,'in_progress');
+ eq((await f.call('employment_save',save)).interview.revision,2,'retry does not advance revision twice');
+ const otherBrowser=await f.pair();eq((await f.call('employment_interview',{...otherBrowser,id})).interview.responses[0].answer,first.answer,'separate device resumes saved response');
+ eq((await f.call('employment_save',{...save,command_id:uuid(),responses:[]})).status,409,'stale saves fail');
+ eq((await f.call('employment_save',{...save,command_id:uuid(),revision:2,complete:true})).status,400,'incomplete submission rejected');
+ eq((await f.call('employment_save',{...save,command_id:uuid(),revision:2,responses:[{...first,mode:'choice',answer:'tampered'}]})).status,400);
+ const responses=qs.map(q=>({question_id:q.id,mode:'choice',answer:q.choices[0]}));r=await f.call('employment_save',{...otherBrowser,id,command_id:uuid(),revision:2,responses,complete:true});eq(r.status,200,JSON.stringify(r));ok(r.interview.completed_at);
+ const overview=await f.call('employment_teacher_list',{},true);eq(overview.interviews[0].responses.length,10);eq(overview.interviews[0].status,'completed');eq(overview.applications[0].decision,'Interview Requested','answers never hire automatically');
+ r=await f.call('employment_decide',{...decision,command_id:uuid(),revision:2,decision:'Approved / Hired',feedback:'Welcome to the team.'},true);eq(r.status,200,JSON.stringify(r));
+ ok((await f.call('employment_list',otherBrowser)).mail.some(x=>x.title==='Approved / Hired'&&x.body.includes('Welcome')));
+ eq((await f.db.query("select decision from tt_job_decisions where source_id='qa-cashier'")).rows[0].decision,'Approved / Hired','legacy employment decision preserved');
+ await f.call('employment_lock',a);eq((await f.call('employment_list',a)).status,401,'signed-out token revoked');
+ const again=await f.pair();ok((await f.call('employment_list',again)).mail.some(x=>x.title==='Approved / Hired'),'mail persists across new login');
+ r=await f.call('employment_decide',{...decision,command_id:uuid(),revision:3,decision:'Second Interview Requested'},true);eq(r.status,200,JSON.stringify(r));eq(r.interview.round,2);eq((await f.call('employment_teacher_list',{},true)).interviews[0].responses.length,10,'first-round answers retained');
+ eq((await f.call('employment_decide',{...decision,command_id:uuid(),revision:3,decision:'Declined'},true)).status,409,'concurrent stale decision rejected');
+ await f.db.query("insert into tt_town_messages(from_name,to_name,body)values('Miss Kayla','QA Student','Your schedule is ready.')");ok((await f.call('employment_list',again)).mail.some(x=>x.body==='Your schedule is ready.'),'phone message reaches mailbox');
+ await f.db.query("insert into tt_town_messages(from_name,to_name,body)values('Miss Kayla','Everyone','Town announcement.')");ok((await f.call('employment_list',b)).mail.some(x=>x.body==='Town announcement.'),'broadcast reaches all accounts');
+ for(const [role]of Object.entries(Q.profiles)){const qs=Q.questions(role);eq(qs.length,10);eq(new Set(qs.map(x=>x.id)).size,10);ok(qs.every(q=>q.choices.length===3));}
+ const world={residents:{'QA Student':{checking:5000,notifications:['A bill is due.','A bill is due.'],history:['Bank deposit recorded'],life:{date:'2026-11-12',bills:[{id:'b1',kind:'rent',amount:200,due:'2026-11-10'}]}}}},before=JSON.stringify(world);const events=C.events(world,'QA Student');eq(new Set(events.map(x=>x.event_key)).size,events.length);eq(JSON.stringify(world),before,'collector never mutates balances or records');
+ const billWorld={residents:{'QA Student':{utilities:{lastElectricPaid:2},notifications:['CITY HALL: Your electric bill is due.']}}};const billKey=C.events(billWorld,'QA Student')[0].event_key;billWorld.residents['QA Student'].utilities.lastElectricPaid=4;ok(C.events(billWorld,'QA Student')[0].event_key!==billKey,'a new utility billing cycle produces new mail');
+ const eventCommand={...again,command_id:uuid(),events};await f.call('employment_events',eventCommand);const count=(await f.call('employment_list',again)).mail.length;await f.call('employment_events',{...eventCommand,command_id:uuid()});eq((await f.call('employment_list',again)).mail.length,count,'event duplicates suppressed across reconnects');
+ const ordinary=await f.pair('QA Other');await f.db.query('update tt_monitor_devices set private_mail=false where id=$1',[ordinary.device_id]);eq((await f.call('employment_list',ordinary)).status,403,'saved ordinary classroom authorization cannot unlock private mail');
+ for(const role of ['anon','authenticated']){await f.db.exec('set role '+role);await assert.rejects(f.db.query('select * from tt_student_mail'));n++;await assert.rejects(f.db.query("select tt_employment_command('events','forged',gen_random_uuid(),'{}')"));n++;await f.db.exec('reset role');}
+ console.log('PASS '+n+' connected flow, PostgreSQL, security, concurrency, curriculum and preservation assertions');
+}finally{await f.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

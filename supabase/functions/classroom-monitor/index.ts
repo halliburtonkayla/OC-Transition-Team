@@ -1,4 +1,4 @@
-import '../../../assets/classroom-monitor/core.js';
+import '../../../assets/classroom-monitor/core.js';import '../../../assets/employment/core.js';import '../../../assets/employment/questions.js';import './employment.js';
 const C=(globalThis as any).TTMonitorCore;
 const BASE=Deno.env.get('SUPABASE_URL')!,KEY=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const ORIGIN='https://halliburtonkayla.github.io';
@@ -114,6 +114,7 @@ Deno.serve(async(req:Request)=>{
  if(!allowed)return out({error:'Origin not allowed.'},403);if(req.method==='OPTIONS')return new Response('',{headers});if(req.method!=='POST')return out({error:'Use POST.'},405);
  try{
   if(Number(req.headers.get('content-length')||0)>100000)fail(413,'Request too large.');const raw=await req.text();if(raw.length>100000)fail(413,'Request too large.');const b=JSON.parse(raw),action=String(b.action||'');
+  if(action.startsWith('employment_'))return out(await (globalThis as any).TTEmploymentServer.handle({b,req,api,student,teacher,roster:async()=>[...new Set([...await roster(),...await nameSignInRoster()])],fail,hash}));
   if(action==='town_profiles')return out({students:await townNameProfiles()});
   if(action==='town_sign_in')return out({student:await townStudent(b.code)});
   const cfg=await settings();

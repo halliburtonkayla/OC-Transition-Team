@@ -1,0 +1,50 @@
+name: Student mailbox and job interviews
+on:
+  pull_request:
+  push:
+    branches: [feature/student-mail-job-interviews]
+permissions:
+  contents: read
+jobs:
+  isolated-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned isolated test tools
+        run: npm install --prefix /tmp/tt-employment-qa --no-save @electric-sql/pglite@0.3.14 playwright@1.51.1 jsdom@26.1.0
+      - name: PostgreSQL transactions and actual Edge authorization
+        env:
+          TT_PGLITE: /tmp/tt-employment-qa/node_modules/@electric-sql/pglite
+        run: node tests/employment/flow.cjs
+      - name: Existing accounts, banking, work, payroll and school regressions
+        env:
+          NODE_PATH: /tmp/tt-employment-qa/node_modules
+          SCHOOL_JSDOM: /tmp/tt-employment-qa/node_modules/jsdom
+        run: |
+          node tests/classroom-monitor.cjs
+          node tests/town-name-sign-in.cjs
+          node tests/pricing-stage.cjs
+          node tests/student-shop-core.cjs
+          node tests/business-workday.cjs
+          node tests/business-workday-edge.cjs
+          node tests/payday-notification.cjs
+          node tests/transition-life-core.test.cjs
+          node --test tests/school-release.test.mjs
+          node tools/release-audit.mjs
+      - name: Install headless Chromium
+        run: node /tmp/tt-employment-qa/node_modules/playwright/cli.js install --with-deps chromium-headless-shell
+      - name: Separate-browser student and teacher workflow
+        env:
+          NODE_PATH: /tmp/tt-employment-qa/node_modules
+          TT_PGLITE: /tmp/tt-employment-qa/node_modules/@electric-sql/pglite
+        run: node tests/employment/browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fictional-student-mail-interview-review
+          path: docs/employment/evidence/
+          if-no-files-found: ignore

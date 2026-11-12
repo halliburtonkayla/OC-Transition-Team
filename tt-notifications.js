@@ -13,7 +13,7 @@ function items(w){
  out.push({source_id:String(source).slice(0,200),kind,applicant:String(from||'Guest').slice(0,120),employer:String(employer||'Transition Town').slice(0,200),title:String(title||'Notification').slice(0,200),body:String(body||'').slice(0,16000),recipient:String(to||'Miss Kayla').slice(0,200),details:new TextEncoder().encode(json).length<=60000?safe:{summary:'See notification text for details.'}});
  }
  function app(a,employer,resident,kind='application'){const name=String(a.resident||a.student||a.name||resident||'Guest'),position=String(a.position||a.job||'Job Application'),source=employer+':'+(a.id||fingerprint(JSON.stringify([name,position,a.submitted||a.date||''])));
- add(source,kind,name,employer,position,name+' submitted '+position+'. Status: '+String(a.status||'Pending Miss Kayla Review'),a);}
+ add(source,kind,a.resident||resident||name,employer,position,name+' submitted '+position+'. Status: '+String(a.status||'Pending Miss Kayla Review'),{...a,town_owner:a.resident||resident||name});}
  (w.fireApplications||[]).forEach(a=>app(a,'Transition Town Fire Department'));
  (w.groceryApplications||[]).forEach(a=>app(a,'Transition Town Grocery'));
  (w.pizzaApplications||[]).forEach(a=>app(a,'Transition Town Pizza Shop'));
@@ -42,3 +42,5 @@ function sync(){
 window.TTNotifications={sync,items,url:URL,key:KEY};
 sync();setInterval(()=>{if(!document.hidden)sync()},5000);window.addEventListener('online',sync);window.addEventListener('pagehide',sync);document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync()});
 })();
+/* Reuse the existing student mailbox and authenticated classroom service. */
+(function(){const s=document.createElement('script');s.src=new URL('assets/employment/bootstrap.js?v=1',document.currentScript.src);document.head.append(s);})();
