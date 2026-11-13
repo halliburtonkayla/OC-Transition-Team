@@ -1,0 +1,18 @@
+/* Scoped to neighborhood navigation. Existing map, account and sheet behavior stays intact. */
+.ttNeighborhoodNav{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;background:#06152d}
+.ttNeighborhoodNav button{min-height:46px;padding:10px 16px;border:2px solid #ffd86a;border-radius:24px;background:#123b79;color:white;font:700 15px system-ui;cursor:pointer;box-shadow:0 3px 10px #0005}
+.ttNeighborhoodNav button:hover{background:#1e559b;transform:none}
+.ttNeighborhoodNav button:focus-visible,.ttNeighborhoodHotspot:focus-visible{outline:4px solid #ffea80;outline-offset:2px}
+.ttNeighborhoodStatus{margin:0!important;padding:4px 12px;background:#06152d;color:#e5efff;text-align:center;font:600 13px system-ui}
+#ttNeighborhoodStage{position:relative;width:100%;overflow:hidden;transition:height .4s ease;background:#06152d}
+.ttNeighborhoodTrack{display:flex;width:100%;align-items:flex-start;transition:transform .45s cubic-bezier(.22,.8,.25,1);will-change:transform}
+.ttNeighborhoodPanel{box-sizing:border-box;flex:0 0 100%;min-width:0;margin:0;padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ttNeighborhoodMap{position:relative;width:100%;min-width:760px}
+.ttNeighborhoodMap>img{display:block;width:100%;height:auto;pointer-events:none}
+.ttNeighborhoodMap .ttNeighborhoodHotspot{position:absolute;display:block;margin:0;padding:0;min-height:0;border:0;border-radius:10px;background:transparent;box-shadow:none;cursor:pointer;touch-action:manipulation}
+.ttNeighborhoodMap .ttNeighborhoodHotspot:hover{background:#fff2;transform:none}
+.ttNeighborhoodMap .ttNeighborhoodHotspot:focus-visible{background:#fff3;z-index:2}
+.ttNeighborhoodMap .ttNeighborhoodArrow{border-radius:40px;border:2px solid #eac35e;background:#062756;color:#fff;font:italic 700 clamp(12px,1.3vw,23px) Georgia,serif}
+.ttNeighborhoodNote{font:14px/1.45 system-ui;color:#dbe9ff;background:#102544;margin:0;padding:10px 14px}
+@media(max-width:600px){.ttNeighborhoodNav{gap:8px;padding:8px}.ttNeighborhoodNav button{font-size:12px;padding:8px 10px;max-width:49%}.ttNeighborhoodNote{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.ttNeighborhoodTrack,#ttNeighborhoodStage{transition:none}}
