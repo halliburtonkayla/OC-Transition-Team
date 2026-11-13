@@ -22,7 +22,7 @@ let prevented=false;nav.events.keydown({key:'ArrowLeft',preventDefault(){prevent
 const buttons=elements.filter(e=>e.tag==='button'&&e.className?.includes('Hotspot'));
 const find=name=>buttons.find(b=>b.attributes['aria-label'].startsWith(name));
 click(find('Back to Original'));eq(status.textContent,'Original Town · 1 of 3');click(find('Next: Residential'));eq(status.textContent,'Residential Neighborhood · 3 of 3');click(find('Next: Original'));eq(status.textContent,'Original Town · 1 of 3');
-click(find('Home & Beyond'));eq(navTarget,'home-beyond.html');click(find('Library'));eq(sheet.includes('not open yet'),true);click(find('Movie Theater'));eq(sheet.includes('still being prepared'),true);
+click(find('Home & Beyond'));eq(navTarget,'home-beyond.html');click(find('Library'));eq(navTarget,'town-library/index.html');click(find('Movie Theater'));eq(sheet.includes('still being prepared'),true);
 allowed=false;calls=[];click(find('Oak Ridge'));eq(calls,['need'],'signed-out click cannot access rentals');allowed=true;calls=[];click(find('Oak Ridge'));eq(calls,['need','oak']);calls=[];click(find('Town Center'));eq(calls,['need','center']);calls=[];click(find('House 1:'));eq(calls,['need','house']);
 eq(buttons.filter(x=>x.attributes['aria-label'].startsWith('House ')).length,10);eq(buttons.filter(x=>x.attributes['aria-label'].startsWith('Estate ')).length,4);
 for(const b of buttons){for(const p of ['left','top','width','height'])assert.ok(parseFloat(b.style[p])>=0);assert.ok(parseFloat(b.style.left)+parseFloat(b.style.width)<=100);assert.ok(parseFloat(b.style.top)+parseFloat(b.style.height)<=100)}checks+=buttons.length;

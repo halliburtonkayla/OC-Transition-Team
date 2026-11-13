@@ -84,7 +84,7 @@
     pending(title, 'The storefront is part of the new business neighborhood. Its dedicated student business activities are still being prepared.');
   }
   const district = scene(panels[1], 'business.webp', 'Business neighborhood with the Library, Gamer’s Den, Burger Palace, Movie Theater, Home & Beyond, Car Haven and No Doubt Farm Equipment Repair.', '1672 / 941');
-  hotspot(district, 'Library', [8, 9, 27, 27], () => pending('Library', 'The interactive story collection will open here after its separate release.'));
+  hotspot(district, 'Library', [8, 9, 27, 27], () => { window.location.href = 'town-library/index.html'; });
   hotspot(district, 'Gamer’s Den', [36, 9, 28, 26], () => business('Gamer’s Den'));
   hotspot(district, 'Burger Palace', [68, 9, 24, 27], () => business('Burger Palace'));
   hotspot(district, 'Movie Theater', [35, 37, 29, 22], () => pending('Movie Theater', 'Educational videos and the theater interior are still being prepared and checked.'));
