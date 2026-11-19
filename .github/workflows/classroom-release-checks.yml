@@ -21,6 +21,7 @@ jobs:
           node tests/pricing-stage.cjs
           node tests/student-shop-core.cjs
           node tests/main-attraction-studio.cjs
+          node tests/main-attraction-showcase.cjs
           node tests/business-workday.cjs
           node tests/business-workday-edge.cjs
           node tests/classroom-monitor.cjs

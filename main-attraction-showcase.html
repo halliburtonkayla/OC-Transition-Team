@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#301626">
+  <meta name="description" content="Walk through The Main Attraction and get six clients ready for the school style showcase.">
+  <title>The Main Attraction · Showcase Shift</title>
+  <script src="assets/town-visit.js?v=20261021a"></script>
+  <link rel="stylesheet" href="assets/main-attraction/showcase.css?v=1">
+</head>
+<body class="showcase-page">
+  <div id="ma-showcase" class="showcase-game" data-asset-path="assets/main-attraction/">
+    <header class="shift-topbar">
+      <a class="shift-back" href="main-attraction.html">← The Main Attraction</a>
+      <div class="shift-tools">
+        <span class="shift-cash" id="shift-cash" aria-label="Practice cash">$0</span>
+        <button type="button" id="shift-sound" aria-pressed="false">Sound off</button>
+        <button type="button" data-notebook="upgrades">Upgrades</button>
+        <button type="button" data-notebook="log">Skills log</button>
+      </div>
+    </header>
+
+    <main class="shift-layout">
+      <section class="world-panel" aria-labelledby="shift-title">
+        <div class="world-heading">
+          <div>
+            <p class="shift-eyebrow">Transition Town · Workplace Readiness</p>
+            <h1 id="shift-title">Showcase Shift</h1>
+          </div>
+          <span class="room-name" id="shift-room-name">Salon floor</span>
+        </div>
+        <div class="world" id="shift-world" data-room="salon" role="group" tabindex="0"
+             aria-label="Walkable salon floor" aria-describedby="shift-controls">
+          <img class="world-art" id="shift-room-art" src="assets/main-attraction/salon.webp"
+               alt="The Main Attraction's pink salon, with a front desk, seating area and nail tables">
+          <div id="shift-markers" class="world-markers"></div>
+          <div id="shift-actor" class="shift-actor" aria-hidden="true">
+            <span class="actor-sprite"></span>
+          </div>
+        </div>
+        <p class="world-controls" id="shift-controls">Tap a station to walk there, or use arrow keys and press Enter when you reach it.</p>
+        <p class="world-status" id="shift-status" role="status" aria-live="polite"></p>
+      </section>
+      <section class="shift-side" id="shift-side" aria-label="Current client and salon task"></section>
+    </main>
+
+    <dialog class="shift-notebook" id="shift-notebook" aria-labelledby="shift-notebook-title">
+      <div class="notebook-head">
+        <h2 id="shift-notebook-title"></h2>
+        <form method="dialog"><button type="submit">Close</button></form>
+      </div>
+      <div id="shift-notebook-content"></div>
+    </dialog>
+    <noscript><p class="world-status">Turn on JavaScript to play Showcase Shift.</p></noscript>
+  </div>
+  <script src="assets/main-attraction/showcase-core.js?v=1" defer></script>
+  <script src="assets/main-attraction/showcase.js?v=1" defer></script>
+</body>
+</html>
