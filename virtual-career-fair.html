@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="same-origin">
+  <title>Virtual Career Fair | Transition Town</title>
+  <link rel="stylesheet" href="assets/career-fair/style.css">
+</head>
+<body class="cf-body">
+  <a class="cf-skip" href="#cf-main">Skip to career fair content</a>
+  <header class="cf-header">
+    <img src="assets/career-fair/art/header.webp" alt="" width="1671" height="241">
+    <p class="cf-sr">Transition Town Virtual Career Fair</p>
+    <nav aria-label="Career fair">
+      <a href="#home">Home</a>
+      <a href="#booths">Career booths</a>
+      <a href="#progress">My progress</a>
+      <a href="#worksheets">My worksheets</a>
+      <a href="#badges">My badges</a>
+      <a id="cf-teacher-link" href="classroom-monitor.html#career-fair">Teacher report</a>
+      <a href="#help">Help</a>
+    </nav>
+  </header>
+  <div class="cf-wrap">
+    <div class="cf-account">
+      <a href="#home">← Fair entrance</a>
+      <span id="cf-identity"></span>
+      <a id="cf-sign-in" href="transition-town.html?next=virtual-career-fair.html">Town sign-in</a>
+    </div>
+    <p id="cf-storage" class="cf-status" role="status"></p>
+    <main id="cf-main" tabindex="-1"></main>
+  </div>
+  <section id="cf-print" class="cf-print" aria-label="Print material"></section>
+  
+  <script defer src="assets/classroom-monitor/student.js?v=20261119careerfair"></script>
+  <script type="module" src="assets/career-fair/app.mjs"></script>
+</body>
+</html>
